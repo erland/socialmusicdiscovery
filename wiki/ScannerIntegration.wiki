@@ -21,3 +21,6 @@ Questions to answer:
   # Should we use the interger based tracks.id column or the SHA256 column in database relations ? 
     # Do we even need to join between the different databases ?
     # Is there a difference in performance when joining integer columns compared to varchar(64) columns ?
+  # How does an added track during SBS scanning affect our DB ?
+  # How does a removed track during SBS scanning affect our DB ?
+  # How does an updated track during SBS scanning affect our DB ?
