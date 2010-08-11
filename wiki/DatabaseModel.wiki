@@ -1,0 +1,8 @@
+#summary Database model
+
+= Introduction =
+
+This page contains a description of the structure and contents of the information managed by the Social Music Discovery Application
+
+
+= Details =
