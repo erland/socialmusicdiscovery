@@ -4,6 +4,12 @@
 
 This is a brief overview of the requires of different functionality areas
 
+The main functional goals are to enhance Squeezebox devices with:
+  * Good support for classical music and jazz music (which is the most neglected genres on the Squeezebox devices today)
+  * Good support to discover music in your local library through smart playlist/mixing capabilities
+  * Good support to discover and preview new music which you currently don't own
+  * Good support for sharing recommendations about interesting music between Squeezebox owners
+
 
 = Local Browsing =
 
@@ -45,3 +51,9 @@ The following information should be possible to import from online sources
 The following information should be possible to manage through the user interface of the Social Music Discovery Application
 
   *
+
+= Smart playlists/mixing =
+
+The following type of smart playlists/mixing functionality should be supported
+
+  * 
