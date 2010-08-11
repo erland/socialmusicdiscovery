@@ -24,3 +24,6 @@ Questions to answer:
   # How does an added track during SBS scanning affect our DB ?
   # How does a removed track during SBS scanning affect our DB ?
   # How does an updated track during SBS scanning affect our DB ?
+  # Do we need to be able to pre-calculate the unique id to improve performance of scanning on slow hardware ?
+    * If it's needed we can implement a separate tool that calculates the id and stores it in a custom tag. The scanner can read the custom tag and use the id in it if it exists and only calculate if the custom tag isn't available.
+    * We need to tool that can verify the id in the custom tag towards a newly calculated id based on the lastest audio data in the file
