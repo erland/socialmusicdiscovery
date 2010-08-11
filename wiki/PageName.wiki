@@ -1,0 +1,10 @@
+#summary Scanner integration
+
+= Introduction =
+
+This is a brief description of the current ideas regarding scanner integration. The purpose of the scanner integration is to:
+* Make it possible connect SBS standard tables with the Social Music Discovery database tables
+* Make it possible to import tag information into the Social Music Discovery database tables
+
+
+= Details =
