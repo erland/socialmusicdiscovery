@@ -1,0 +1,47 @@
+#summary Requirements
+
+= Introduction =
+
+This is a brief overview of the requires of different functionality areas
+
+
+= Local Browsing =
+
+The following browsing functionality towards the local Social Music Discovery database should be supported.
+
+  * 
+
+= Local Searching =
+
+The following search functionality towards the local Social Music Discovery database should be supported.
+
+  * 
+
+= Local Context Menus =
+The following context menu related functionality towards the local Social Music Discovery database should be supported.
+
+  * 
+
+= Local Now Playing screen =
+
+The following information from the local Social Music Discovery database should be possible to display on the Now Playing screen of the various players.
+
+  * 
+
+= Import from tags =
+
+The following information should be possible to import from tags in scanned music files
+
+  * 
+
+= Import from online sources =
+
+The following information should be possible to import from online sources
+
+  * 
+
+= Managed information =
+
+The following information should be possible to manage through the user interface of the Social Music Discovery Application
+
+  *
