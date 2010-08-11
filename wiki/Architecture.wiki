@@ -1,0 +1,38 @@
+#summary Architecture of the project
+
+= Introduction =
+
+This page describes the main modules of the project, this will have to be detailed a lot more at the moment it just gives you a very brief overview.
+
+= Social Music Discover Plugin =
+
+Plugin in SBS written in Perl, responsible for all functions closely related to SBS.
+
+Responsibilities are:
+  * Ensure that the new uniqueID column in the SBS tracks table is filled with the same id every time SBS performs a rescan of a track. The id should be the same for a specific file independent if the file has been moved, renamed or retagged.
+  * Hook into the global search feature in SBS to implement search functionality towards the Social Music Discovery managed database
+  * Hook into the browse menu in SBS to implement browse menus towards the Social Music Discovery managed database
+
+= Social Music Discovery Application =
+
+Standalone application that manage the data in Socail Music Discovery Database. Doesn't have to be written in Perl, it's better to select some language that's suitable for developing GUI's.
+
+Responsibilities are:
+  * Handle all write operations towards the Social Music Discovery Database
+  * 
+
+Restrictions in version 1:
+  * Will be focused at managing data in version 1, there will be no player control related functions until later versions. If the user want to change or show what's playing he/she needs to use one of the standard Squeezebox interfaces (IR, SqueezePlay, SBS web, iPhone/iPad/Android)
+
+The local database that stores all locally managed data including any data cached/replicated from online sources. 
+
+= Social Music Discovery Online =
+
+Central server that manage shared data among all users. 
+
+Responsibilities are:
+  * 
+
+
+Restrictions in version 1
+  * We haven't decided yet if the central server will be included in version 1
