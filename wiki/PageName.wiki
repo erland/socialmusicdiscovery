@@ -3,8 +3,21 @@
 = Introduction =
 
 This is a brief description of the current ideas regarding scanner integration. The purpose of the scanner integration is to:
-* Make it possible connect SBS standard tables with the Social Music Discovery database tables
-* Make it possible to import tag information into the Social Music Discovery database tables
+  * Make it possible connect SBS standard tables with the Social Music Discovery database tables
+  * Make it possible to import tag information into the Social Music Discovery database tables
 
 
 = Details =
+
+The general idea during scanning is:
+  # Standard SBS scanner will scan a music file
+  # The Social Music Discovery plugin will get a callback after the track has been stored in the standard SBS database tracks table
+  # In the callback, we will calculate a unique id for the music file. At the moment the plan is to calculate a SHA256 based on the audio bytes in the music file.
+  # The unique id will be stored in the tracks table in SBS database in a new column
+
+Questions to answer:
+  # Should we use SHA256 for the unique id which is used in the relation between SBS database and Social Music Discovery database ?
+  # If SHA256 is selected, which implementation should we choose ?
+  # Should we use the interger based tracks.id column or the SHA256 column in database relations ? 
+    # Do we even need to join between the different databases ?
+    # Is there a difference in performance when joining integer columns compared to varchar(64) columns ?
