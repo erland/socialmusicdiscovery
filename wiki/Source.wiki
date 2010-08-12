@@ -1,0 +1,34 @@
+===Browsing===
+Browsing the svn repository via a web browse can either be done by going to
+https://code.google.com/p/socialmusicdiscovery/source/browse
+
+Or by browsing the svn repository directly
+https://socialmusicdiscovery.googlecode.com/svn
+
+===Command-Line Access===
+====Project members====
+Project members authenticate over HTTPS to allow committing changes.
+If you plan to make changes, use this command to check out the code as yourself using HTTPS:
+
+*{{{Plugin}}}* ([https://code.google.com/p/socialmusicdiscovery/source/browse/plugin/trunk/src browse])
+ {{{svn checkout https://socialmusicdiscovery.googlecode.com/svn/localserver/trunk localserver --username yourgooglecodeid}}}
+
+*{{{Local Server}}}* ([https://code.google.com/p/socialmusicdiscovery/source/browse/plugin/trunk/src browse])
+ {{{svn checkout https://socialmusicdiscovery.googlecode.com/svn/localserver/trunk localserver --username yourgooglecodeid}}}
+
+When prompted, enter your generated [http://code.google.com/hosting/settings googlecode.com password].
+
+====Anonymous access====
+Non-members may check out a read-only working copy anonymously over HTTP.
+Use this command to anonymously check out the latest project source code:
+
+*{{{Plugin}}}* ([http://code.google.com/p/socialmusicdiscovery/source/browse/plugin/trunk/src browse])
+ {{{svn checkout http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk localserver}}}
+
+*{{{Local Server}}}* ([http://code.google.com/p/socialmusicdiscovery/source/browse/plugin/trunk/src browse])
+ {{{svn checkout http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk localserver}}}
+
+
+===GUI and IDE Access===
+
+This project's Subversion repository may be accessed using many different [http://subversion.tigris.org/links.html#clients client programs and plug-ins]. See your client's documentation for more information.
