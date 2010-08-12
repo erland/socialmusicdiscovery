@@ -1,0 +1,28 @@
+#summary Changes required in SBS
+
+= Introduction =
+
+This is the description of various changes that would be preferred or required in Squeezebox Server API's or database structure to make the integration with Social Music Discovery to work.
+
+= Scanner integration (smdID) =
+
+To implement the scanner integration we at least need the following enhancements in Squeezebox Server
+  * A plugin hook where our plugin can register a callback function that SBS calls after a track has been scanned. The plugin at least need to get the url to the music file as input, preferably also a hash with the tag data and the SBS id of the track (tracks.id column).
+  * A new column in the tracks table in SBS database with the size of a varchar(64) where we can store our smdID
+  * We probably also need a plugin hook which is called at the end of the rescan where we get the type of rescan as input. At the moment it's not clear if we need this but based on earlier experience with Custom Scan there are sometimes some post processing you like to do after the scanning has ended.
+  * We want to be able to execute both inside the separate scanner process used for full rescan as well as inside the SBS process when an incremental in-process scanning is executed.
+
+= Browse integration =
+
+To be able to integrate in a good way with SBS browse menus we need the 'onebrowser' work planned for SBS 7.6. The integration will be based on the following registration calls:
+  * New menus are registered by calling the new Slim::Menu::BrowseLibrary->registerNode function, it's also used for replacing standard menus.
+    * Implementation of presentation on IP3K, SqueezePlay and web will be handled by standard SBS code, the plugin just have to provide the data.
+
+It would be possible to get it to work without the 'onebrowser' changes but it would require a lot more work since we would have to re-implement the SBS web interface browsing HTML pages. IP3K and SqueezePlay based browse menus can also be implemented in current 7.5 release but it requires a bit more work. It's not possible to replace the standard browse menus in SBS 7.5.
+
+= Search integration =
+
+To be able to integrate with SBS search functionality the global search menu for "My Music" will have to be replaced with our own version. This means that the search functionality for artists, albums, songs and playlists will have to be re-implemented if we want to add search possibilities towards our own database. We can also just add another "Social Music Discovery" search provider.
+  * Search providers are registered through the Slim::Menu::GlobalSearch->registerInfoProvider function
+
+Note, the 'onebrowser' work might possibly also affect the search registration so this is something we need to keep track off.
