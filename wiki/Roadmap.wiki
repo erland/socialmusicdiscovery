@@ -1,0 +1,73 @@
+#summary Roadmap
+
+= Introduction =
+
+This is a description of the roadmap of the project at a high level.
+
+Note, this is just an initial sketch, it probably needs to be changed a lot as soon as we start to analyze the requirements and architecture and combine our thoughts.
+
+Feel free to add anything you think is suitable to include or not to include in a specific version.
+
+
+= Version 0.1 (Requirements/Architecture/Design) =
+
+The intention with this version is to establish the requiremenst, architecture and design choices at a high level and possibly also select important components required for the next step.
+
+This version includes:
+  * Documentation of main requirements/goals
+  * Some kind of documentation of the data model
+  * Some kind of documentation of the architecture/design
+
+This version does not include:
+  * Anything executable which makes sense to end user
+
+
+= Version 0.2 (Proof of concept) =
+
+The intention with this version is to have an initial version that's executable and which can be used to get feedback on the concept
+
+This version includes:
+  * Decide which parts/functionality that is important to secure to ensure the concept works
+  * Executable version what contains some important part
+    * Should be possible to try for early alpha testers that want to give feedback on conceptual level
+  * Identify any API that's is needed towards the standard Squeezebox Server code
+
+This version does not include:
+  * Anything executable which makes sense to end user
+
+
+= Version 0.5 (Alpha testing of functionality) =
+
+The intention with this version is to have something that interested non developer alpha testers can try out and give feedback on.
+
+This version includes:
+  * Integration with Squeezebox Server scanner
+  * Local database with persistent storage of all important entities
+  * Initial version of the management interface for at least one platform that can be used to manage the data in the local database
+  * Some browse and search functionality towards the local persistent database that's available through at least one of the current Squeezebox interfaces (IP3K, SqueezePlay or web)
+
+This version does not include:
+  * Something that can be used to start register information about aritsts/albums that will be guaranteed to be upgradable to the final version
+  * Something that can be used in the living room
+
+
+= Version 0.9 (Beta testing) =
+
+The intention with this version is to have something that can be used by beta testers that want to help finding all the bugs.
+
+This version includes:
+  *
+
+This version does not include:
+  * A stable product usable in the living room
+
+
+= Version 1.0 (initial official release) =
+
+The intention with this version is to have an initial release that can be used by end users and has the stability good enough for a living room setup.
+
+This version includes:
+  *
+
+This version does not include
+  * 
