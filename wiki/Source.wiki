@@ -7,7 +7,7 @@ Browsing the svn repository via a web browse can either be done by going to
 https://code.google.com/p/socialmusicdiscovery/source/browse
 
 Or by browsing the svn repository directly
-https://socialmusicdiscovery.googlecode.com/svn
+http://socialmusicdiscovery.googlecode.com/svn
 
 ===Command-Line Access===
 ====Project members====
@@ -26,10 +26,10 @@ When prompted, enter your generated [http://code.google.com/hosting/settings goo
 Non-members may check out a read-only working copy anonymously over HTTP.
 Use this command to anonymously check out the latest project source code:
 
-*{{{Plugin}}}* ([http://code.google.com/p/socialmusicdiscovery/source/browse/plugin/trunk browse])
+*{{{Plugin}}}* ([https://code.google.com/p/socialmusicdiscovery/source/browse/plugin/trunk browse])
  {{{svn checkout http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk localserver}}}
 
-*{{{Local Server}}}* ([http://code.google.com/p/socialmusicdiscovery/source/browse/localserver/trunk browse])
+*{{{Local Server}}}* ([https://code.google.com/p/socialmusicdiscovery/source/browse/localserver/trunk browse])
  {{{svn checkout http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk localserver}}}
 
 
