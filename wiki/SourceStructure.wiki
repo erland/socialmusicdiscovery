@@ -1,0 +1,21 @@
+#summary Source code structure
+
+= SVN structure =
+The top level svn tree starts here:
+  https://socialmusicdiscovery.googlecode.com/svn
+However, only use this if you like to add a new main module that doesn't fit in any of the sub structures listed below.
+
+The svn source code tree is divided in the following structure to be able to contain the various parts
+   * *localserver/trunk* (https://socialmusicdiscovery.googlecode.com/svn/localserver/trunk)
+     * *src* (Sub directory that contains the source code)
+   * *plugin/trunk* (https://socialmusicdiscovery.googlecode.com/svn/plugin/trunk) 
+     * *src* (Sub directory that contains the source code)
+   * *prototypes* (https://socialmusicdiscovery.googlecode.com/svn/prototypes) 
+     * Create your a sub directory under the "prototypes" directory if you like to commit some prototyping project which we haven't decided if it should be part of the official release yet. We shouldn't need to have any "trunk", "tags", "branches" structure under each prototype directory but we can decide for each prototype what's needed.
+   * *tools* (https://socialmusicdiscovery.googlecode.com/svn/tools)
+     * Create a sub directory under the "tools" directory for external tools, for example the unique ID verification tool would be suitable to commit here, the directory should have its own "trunk", "branches", "tags" directories to make it possible to manage different releases later on, for example:
+     * *uniqueidverifier*
+        * *trunk*
+          * *src* (this is where all the source code for the tool is)
+        * *tags*
+        * *branches*
