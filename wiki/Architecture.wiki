@@ -36,3 +36,10 @@ Responsibilities are:
 
 Restrictions in version 1
   * We haven't decided yet if the central server will be included in version 1
+
+
+= Social Music Discovery Tools =
+
+== smdID verifier ==
+
+A tool that can take a directory or file as input and recalculate the smdID based on the audio data of the file and check it against a smdID stored in the SOCIALMUSICDISCOVERYID custom tag.
