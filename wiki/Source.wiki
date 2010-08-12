@@ -1,3 +1,7 @@
+===List changes===
+To list latest changes in the svn repository, you just need to go to:
+https://code.google.com/p/socialmusicdiscovery/source/list
+
 ===Browsing===
 Browsing the svn repository via a web browse can either be done by going to
 https://code.google.com/p/socialmusicdiscovery/source/browse
