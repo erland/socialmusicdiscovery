@@ -2,6 +2,7 @@
 
 = Introduction =
 
+== Main goals ==
 This is a brief overview of the requires of different functionality areas
 
 The main functional goals are to enhance Squeezebox devices with:
@@ -10,6 +11,10 @@ The main functional goals are to enhance Squeezebox devices with:
   * Good support to discover and preview new music which you currently don't own
   * Good support for sharing recommendations about interesting music between Squeezebox owners
 
+
+== Non-Goals ==
+
+  * This is about music. Video support (movies, YouTube?, etc.) are not design goals. 
 
 = Local Browsing =
 
