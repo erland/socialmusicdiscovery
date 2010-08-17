@@ -65,16 +65,19 @@ The following type of smart playlists/mixing functionality should be supported
   * 
 
 = Non-Functional Requirements =
-System requirements, hardware, performance, etc.
 
+== System requirements ==
   * System should "work" on low powered servers such as [http://en.wikipedia.org/wiki/SheevaPlug SheevaPlug], [http://vortexbox.org/ VortexBox appliances] or left over PCs with only a modest CPU (say 1 gHz core and 512 MB RAM).
   * System must run on all mainstream platforms: 
     * Windows (XP, 2003 Server and later)
     * Unix
     * Mac OS X
+== Performance == 
   * Scanning time should be "reasonable" which will depend upon both server configuration and size of the music library. 
      * A 100 000 tracks library should be possible to completely scan during a night (8 hours)
      * It's acceptable if larger libraries might require pre-calculated smdID's in a custom tag to get decent scanning performance
      * It's acceptable if advanced scanning functions, like audio analysis to improve mixing capabilities, might need longer scan times as long as their result can be tied to the track using tags, smdID or similar mechanisms
   * Often used browse functions should have a response time of maximum 3 seconds in a 100 000 tracks library
   * Often used search functions should have a response time of maximum 5 seconds in a 100 000 tracks library
+== Legal ==
+  * System is developed and distributed using the BSD Open Source license (http://www.opensource.org/licenses/bsd-license.php)
