@@ -15,6 +15,7 @@ The main functional goals are to enhance Squeezebox devices with:
 == Non-Goals ==
 
   * This is about music. Video support (movies, YouTube?, etc.) are not design goals. 
+  * We want to try to do this together with Logitech so there isn't any goal to completely replace Squeezebox Server with this solution. Preferably we should be able to benefit from new features added by Logitech and at the same time add our own extra features on top of that.
 
 = Local Browsing =
 
