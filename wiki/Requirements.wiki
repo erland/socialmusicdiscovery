@@ -67,7 +67,7 @@ The following type of smart playlists/mixing functionality should be supported
 = Non-Functional Requirements =
 System requirements, hardware, performance, etc.
 
-  * System should "work" on low powered servers such as [http://en.wikipedia.org/wiki/SheevaPlug SheevaPlug], [http://vortexbox.org/ VortexBox appliances] or left over PCs with only a modest CPU (say 1 gHz core and 1GB RAM).
+  * System should "work" on low powered servers such as [http://en.wikipedia.org/wiki/SheevaPlug SheevaPlug], [http://vortexbox.org/ VortexBox appliances] or left over PCs with only a modest CPU (say 1 gHz core and 512 MB RAM).
   * System must run on all mainstream platforms: 
     * Windows (XP, 2003 Server and later)
     * Unix
