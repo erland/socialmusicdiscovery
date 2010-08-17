@@ -1,0 +1,54 @@
+#summary Use cases/Usage scenarios
+
+= Introduction =
+
+The purpose here is to describe how common usage scenarios are supposed to be performed from a user perspective. 
+
+*Note!*
+The scenarios described below are just samples, we haven't decided if this is how it is supposed to work yet.
+
+= Adding new music =
+
+== Scenario 1: Adding new local music (no automatic import, online lookup) ==
+
+  # User adds some music files to the music folder using the file manager of their choice
+  # SBS performs an automatic scan and the new music shows up in the SMD user interface as new available music that can be added to the library
+  # In SMD user interface, the user selects the new music files and/or folder and selects to add it to the library
+    * User is asked if musicbrainz id's and similar online identities should be found
+    * If selected, the user is offered a list of matching search result and is asked to select the one that matches the added music.
+
+Result after scenario:
+  * Only selected new music has been added to SMD library and gets available in the SMD browse/search menus. Unselected music is not added to SMD library and are only available through the standard SBS menus.
+  * Online id's for the new music is stored in SMD library
+
+
+== Scenario 2: Adding new local music (automatic import, online lookup) ==
+
+  # User adds some music files to the music folder using the file manager of their choice
+  # SBS performs an automatic scan and the new music is automatically added to the SMD library. 
+  # In SMD user interface, the user is shown that new music has been added to the library but is missing online identifiers. User is asked if musicbrainz id's and similar online identities should be found.
+  # If selected, the user is offered a list of matching search result and is asked to select the one that matches the added music.
+
+Result after scenario:
+  * All new music has been added to SMD library and gets available in the SMD browse/search menus
+  * Online id's for the new music is stored in SMD library
+
+
+= Updating music =
+
+== Scenario 3: Updating local music (no automatic import) ==
+
+  # User updates some of the existing music files with some tagging software
+  # SBS performs an automatic scan and the updated tag values the SMD user interface indicates a list of files that have been updated. User selects to view changes through the SMD interface and can optionally select to overwrite SMD data with the new updated tag values.
+
+Result after scenario:
+  * Only selected music is updated also in SMD library and gets available in the SMD browse/search menus. Unselected music still keeps its old attribute values in SMD database.
+
+
+== Scenario 4: Updating local music (automatic import) ==
+
+  # User updates some of the existing music files with some tagging software
+  # SBS performs an automatic scan and the updated tag values are automatically overwriting the corresponding information in the SMD library.
+
+Result after scenario:
+  * All updated music is updated also in SMD library and gets available in the SMD browse/search menus
