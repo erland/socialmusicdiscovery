@@ -7,5 +7,5 @@ Have fun with this page
 
 = Embeding google drawing shared image =
 
-You have to add a fake parameter ending with .png to see the image:
+Has a direct http link, you have to add a fake parameter ending with .png to see the image:
 https://docs.google.com/drawings/pub?id=1SNpxKsXldvIxM_zHvewt1hzChyzpRPRLBa1BVjyzexo&w=993&h=536&foobar.png
