@@ -1,0 +1,11 @@
+#labels Phase-Design,identifiers,smdID
+This page is about the use of identifiers in SMD
+
+= Introduction =
+
+There can be a lot of identifiers, this page tries to summarize information about this identifiers, generally and more specifically in SMD
+
+
+= smdID =
+
+smdID is the identifier SMD use to keep track of music files. Basically, it is a hash of the audio part of the music file. This permits to keep the same ID even if the file is modified (for example, if tags are modified in the file).
