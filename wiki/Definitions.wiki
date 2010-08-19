@@ -3,6 +3,6 @@
 = Definitions and abbreviations =
 
   * SMD - Social Music Discovery, the abbreviation of the whole project
-  * smdID - Unique identity that is used to synchronize a track in SBS database with the contents in the local SMD database
+  * smdID - See [Identifiers] for more information
 
 See also the [Architecture architecture description] for a description of the different modules in the project.
