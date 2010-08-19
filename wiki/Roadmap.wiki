@@ -71,3 +71,24 @@ This version includes:
 
 This version does not include
   * 
+
+= Version 1.x =
+
+The intention with this version is to add additional minor functionality that makes SMD more user friendly than the 1.0 release.
+
+This version includes:
+  *
+
+= Version 2.x =
+
+The intention with this version is to add additional major functionality what would greatly enhance the SMD experience. Things included in this release should be realistic to accomplish with about 5 active contributors.
+
+This version includes:
+  *
+
+= Version 10.x (future) =
+
+This is a release which we currently don't know if we will ever reach, it's just here to be able to remember stuff what would be nice to support some time in the distant future.
+
+This version includes:
+  *
