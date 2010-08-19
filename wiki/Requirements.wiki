@@ -72,6 +72,12 @@ The following type of smart playlists/mixing functionality should be supported
     * Mac OS X
     * Unix
     * Windows (XP, 2003 Server and later)
+== i18N/L10N/G11N ==
+  * System must handle "international characters" (UTF-8, UTF-16, ...?) in database and UI
+  * System must be localizable in terms of language and locale (number and date formats, collating sequence, etc)
+  * Strings and other resources must be localizable to present texts in user's preferred (local) language
+  * System should ideally support BiDI language? Maybe at some point. Depending on UI technology, this may or may not present a challenge (effort ranging from a checkbox setting to an entire project in its own rigth)
+
 == Performance == 
   * Scanning time should be "reasonable" which will depend upon both server configuration and size of the music library. 
      * A 100 000 tracks library should be possible to completely scan during a night (8 hours)
