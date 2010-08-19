@@ -4,6 +4,9 @@
 
 This page describes the main modules of the project, this will have to be detailed a lot more at the moment it just gives you a very brief overview.
 
+= SMD, The big picture =
+https://docs.google.com/drawings/pub?id=1oihZop12VWgQYJhoQEtHfoog4A73i6Gt8qLVJR5ZtbI&w=611&h=357&foobar.png
+
 = Social Music Discover Plugin =
 
 Plugin in SBS written in Perl, responsible for all functions closely related to SBS.
