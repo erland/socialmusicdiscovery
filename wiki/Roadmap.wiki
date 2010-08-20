@@ -43,8 +43,12 @@ The intention with this version is to have something that interested non develop
 This version includes:
   * Integration with Squeezebox Server scanner
   * Local database with persistent storage of all important entities
-  * Initial version of the management interface for at least one platform that can be used to manage the data in the local database
-  * Some browse and search functionality towards the local persistent database that's available through at least one of the current Squeezebox interfaces (IP3K, SqueezePlay or web)
+  * Initial version of the management user interface for at least one platform that can be used to manage the data in the local database
+  * First version of Data Management API
+  * First version of Browse/Search API
+  * First version Browse/Search API client for SBS
+  * First version of Import Media API
+  * First version of Import Media API module for SBS
 
 This version does not include:
   * Something that can be used to start register information about aritsts/albums that will be guaranteed to be upgradable to the final version
@@ -56,7 +60,11 @@ This version does not include:
 The intention with this version is to have something that can be used by beta testers that want to help finding all the bugs.
 
 This version includes:
-  *
+  * 
+
+This version might include:
+  * First version of Data Source API
+  * First version of Data Source API module for Musicbrainz
 
 This version does not include:
   * A stable product usable in the living room
@@ -67,8 +75,7 @@ This version does not include:
 The intention with this version is to have an initial release that can be used by end users and has the stability good enough for a living room setup.
 
 This version includes:
-  *
-
+  * 
 This version does not include
   * 
 
@@ -77,18 +84,29 @@ This version does not include
 The intention with this version is to add additional minor functionality that makes SMD more user friendly than the 1.0 release.
 
 This version includes:
-  *
+  * Playlist management (creating of static playlists)
+
+This version might include:
+  * 
 
 = Version 2.x =
 
 The intention with this version is to add additional major functionality what would greatly enhance the SMD experience. Things included in this release should be realistic to accomplish with about 5 active contributors.
 
 This version includes:
-  *
+  * Player Control API for a generic player type
+  * Player control module for SBS
+  * Player control through SMD user interface
+
+This version might include:
+  * uPnP client for Browse/Search API making it possible to browse/search SMD library from a uPnP client.
+  * iPad interface to manage SMD data
+  * Support for management of smart playlists
+  * Player control module for one additional type of player besides Squeezeboxes
 
 = Version 10.x (future) =
 
 This is a release which we currently don't know if we will ever reach, it's just here to be able to remember stuff what would be nice to support some time in the distant future.
 
-This version includes:
-  *
+This version might include:
+  * Import Media API module for direct file scanning (instead of using SBS scanner)
