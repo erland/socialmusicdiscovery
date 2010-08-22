@@ -88,4 +88,6 @@ Pre-requisite: User has access to one or more external resources that can presen
     ## variant: add previewed tracks (not currently available in user's library) to wishlist for later action (buy CD, buy online, find in not-yet-subscribed service). This is only relevant if user is discovering music thru a service that allows "previewing".
 
 Result after scenario:
-  # User has a zero, one or many new tracks, albums or artists in playlist(s) or wishlist(s)
+  # User has a zero, one or many new tracks, albums or artists in playlist(s) or wishlist(s). 
+  # Regular playlists (static or dynamic) are ready for use. 
+  # Wishlists can be used to preview music if such a service is available, or as a manual "shopping list". Wishlists are *not* formatted for automatic purchasing with any online music sources.
