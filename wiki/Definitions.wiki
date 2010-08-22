@@ -1,13 +1,15 @@
 #summary Definitions and abbreviations
 
 = Definitions and abbreviations =
-
+  * IP3K - Firmware in Squeezebox Classic, Boom, Transporter and older devices. 
   * library - a catalog of a user's digital music collection, including the actual files  (compare to a regular library of books).
   * metadata source - an online repository of metadata such as "artist", "year" or "genre". Examples are freedb, !MusicBrainz or Discogs.
   * music collection - digital music files residing on local disc (local collection) or an online music source (online collection) that the user has full, high quality access to.
   * online music source - a site that lets the user play specific music (contrast: web radio). Can be free or subscription-based (examples: Last.FM, Spotify ...)
   * preview - to listen to music in lower quality (lower bitrate, short snippet, interrupted by commercials, ...)
+  * SBS - SqueezeBox Server (with Control Panel and Web UI for user and admin) 
   * SMD - Social Music Discovery, the abbreviation of the whole project
   * smdID - See [Identifiers] for more information
+  * SqueezePlay = the desktop version of the Jive / Squeezebox Controller software (http://wiki.slimdevices.com/index.php/SqueezePlay)
 
 See also the [Architecture architecture description] for a description of the different modules in the project.
