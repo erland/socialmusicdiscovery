@@ -10,6 +10,6 @@
   * SBS - SqueezeBox Server (with Control Panel and Web UI for user and admin) 
   * SMD - Social Music Discovery, the abbreviation of the whole project
   * smdID - See [Identifiers] for more information
-  * !SqueezePlay = the desktop version of the Jive / Squeezebox Controller software (http://wiki.slimdevices.com/index.php/SqueezePlay)
+  * !SqueezePlay - the desktop version of the Jive / Squeezebox Controller software (http://wiki.slimdevices.com/index.php/SqueezePlay)
 
 See also the [Architecture architecture description] for a description of the different modules in the project.
