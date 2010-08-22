@@ -2,10 +2,12 @@
 
 = Definitions and abbreviations =
 
-  * SMD - Social Music Discovery, the abbreviation of the whole project
-  * smdID - See [Identifiers] for more information
-  * library - a user's collection of digital music, residing on local disc or an online music source
+  * metadata source - an online repository of metadata such as "artist", "year" or "genre". Examples are freedb, MusicBraimz or Discogs.
+  * music collection - digital music files residing on local disc (local collection) or an online music source (online collection) that the user has full, high quality access to
+  * library - a catalog of a user's digital music collection
   * online music source - a site that lets the user play music. Can be free or subscription-based (examples: Last.FM, Spotify, Pandora, ...)
   * preview - to listen to music in lower quality (lower bitrate, short snippet, interrupted by commercials, ...)
+  * SMD - Social Music Discovery, the abbreviation of the whole project
+  * smdID - See [Identifiers] for more information
 
 See also the [Architecture architecture description] for a description of the different modules in the project.
