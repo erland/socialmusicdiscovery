@@ -103,6 +103,7 @@ This version might include:
   * iPad interface to manage SMD data
   * Support for management of smart playlists
   * Player control module for one additional type of player besides Squeezeboxes
+  * Support for multiple libraries/users
 
 = Version 10.x (future) =
 
