@@ -87,3 +87,4 @@ The following type of smart playlists/mixing functionality should be supported
   * Often used search functions should have a response time of maximum 5 seconds in a 100 000 tracks library
 == Legal ==
   * System is developed and distributed using the BSD Open Source license (http://www.opensource.org/licenses/bsd-license.php)
+  * System will honor copyrights and will not make inapproriate use of online resources.
