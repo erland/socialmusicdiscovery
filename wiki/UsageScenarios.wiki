@@ -77,17 +77,17 @@ Result after scenario:
 
 = Listening to Music =
 
-== Scenario 5: Exploring music by external influence (community sources) ==
+== Scenario 1: Exploring music by external influence (community sources) ==
 Pre-requisite: User has access to one or more external resources that can present new music. Examples are Last.FM, Pandora or Amazon for 'top tracks', or social networks that can present recommendations from friends.
 
-  # User browses an online source. Trusting in the wisdom of crowds, user quickly gets the most popular tracks for a number of new / unknown artists in a new playlist. 
-    # future extension: user chooses a preferred and/or weighted mixture of online sources
+  # User browses an online source. Trusting in the wisdom of crowds, user quickly gets suggestions for the most popular tracks for a number of new / unknown artists. 
+    # extension: user chooses a preferred and/or weighted mixture of online sources
   # User plays selected tracks from available music resources (online or local disc) and marks track, album or artist based on personal opinion. 
     ## variant: add tracks to static playlist
     ## variant: add tracks, albums or artists to a dynamic playlist by setting metadata ("rank", "star", "like", etc)
-    ## variant: add previewed tracks (not currently available in user's library) to wishlist for later action (buy CD, buy online, find in not-yet-subscribed service). This is only relevant if user is discovering music thru a service that allows "previewing".
+    ## variant: add previewed tracks (not currently available in user's library) to wishlist for later action (buy CD, buy online, find in not-yet-subscribed service). This is only relevant if user is exploring music thru a service that allows "previewing".
 
 Result after scenario:
   # User has a zero, one or many new tracks, albums or artists in playlist(s) or wishlist(s). 
   # Regular playlists (static or dynamic) are ready for use. 
-  # Wishlists can be used to preview music if such a service is available, or as a manual "shopping list". Wishlists are *not* formatted for automatic purchasing with any online music sources.
+  # Wishlists can be used to preview music if such a service is available, or as a manual "shopping list". Wishlists are *not* formatted for automatic purchase with any online music sources.
