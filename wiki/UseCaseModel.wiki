@@ -1,0 +1,27 @@
+#summary Use case model
+
+= Introduction =
+
+This is a model that describes all use cases involved in SMD.
+
+Note that this is just a first preliminary version, so we have something to discuss around.
+
+Some definitions/indications that might be good to know about:
+  * *red color* - Indicates that this use case probably won't be included in version 1
+  * *music entity* - A generic name for a song, album, work, recording, contributor or some other definition that is used to identify music
+  * *contributor* - A generic name for all kinds of contributors on a song, such as artist, band, composer, conductor, performer
+
+The make the model easier to understand it's divided into a number of sub models.
+
+= Use Case Model =
+== Administration ==
+[http://yuml.me/edit/4da1b8e3 http://yuml.me/4da1b8e3.png]
+
+== Library maintenance ==
+[http://yuml.me/edit/4f2b230 http://yuml.me/4f2b230.png]
+
+== Playlist management ==
+[http://yuml.me/edit/554232d http://yuml.me/554232d.png]
+
+== Listening and exploring music ==
+[http://yuml.me/edit/37bafac9 http://yuml.me/37bafac9.png]
