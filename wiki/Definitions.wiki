@@ -6,6 +6,7 @@
   * *library* - a user's digital music Collection including a Catalog and the actual files  (compare to a regular library of books).
   * *(online) metadata source* - an online repository of metadata such as "artist", "year" or "genre". Examples: freedb, !MusicBrainz or Discogs.
   * *(music) collection* - digital music files residing on local disc (local Collection) or an online music source (online Collection) that the user has full, high quality access to.
+  * *music entity* - a song, album, work, recording, artist, composer, conductor, performer or other time of definition that describes an object related to music metadata.
   * *online (music) source* - a site that lets the user play specific music (contrast: web radio). Can be free or subscription-based with previews and/or high quality tracks. Examples: Last.FM or Spotify.
   * *preview* - to listen to music in lower quality (lower bitrate, short snippet, interrupted by commercials, ...)
   * *SBS* - !SqueezeBox Server (with Control Panel and Web UI for user and admin) 
