@@ -1,16 +1,16 @@
 #summary Definitions and abbreviations
 
 = Definitions and abbreviations =
-  * catalog - a catalog of a user's digital music Collection, *excluding* the actual files.
-  * IP3K - Firmware in Squeezebox Classic, Boom, Transporter and older devices. 
-  * library - a user's digital music Collection including a Catalog and the actual files  (compare to a regular library of books).
-  * metadata source - an online repository of metadata such as "artist", "year" or "genre". Examples: freedb, !MusicBrainz or Discogs.
-  * (music) collection - digital music files residing on local disc (local Collection) or an online music source (online Collection) that the user has full, high quality access to.
-  * online (music) source - a site that lets the user play specific music (contrast: web radio). Can be free or subscription-based with previews and/or high quality tracks. Examples: Last.FM or Spotify.
-  * preview - to listen to music in lower quality (lower bitrate, short snippet, interrupted by commercials, ...)
-  * SBS - !SqueezeBox Server (with Control Panel and Web UI for user and admin) 
-  * SMD - Social Music Discovery, the abbreviation of the whole project
-  * smdID - See [Identifiers] for more information
-  * !SqueezePlay - the desktop version of the Jive / Squeezebox Controller software (http://wiki.slimdevices.com/index.php/SqueezePlay)
+  * *catalog* - a catalog of a user's digital music Collection, *excluding* the actual files.
+  * *IP3K* - Firmware in Squeezebox Classic, Boom, Transporter and older devices. 
+  * *library* - a user's digital music Collection including a Catalog and the actual files  (compare to a regular library of books).
+  * *(online) metadata source* - an online repository of metadata such as "artist", "year" or "genre". Examples: freedb, !MusicBrainz or Discogs.
+  * *(music) collection* - digital music files residing on local disc (local Collection) or an online music source (online Collection) that the user has full, high quality access to.
+  * *online (music) source* - a site that lets the user play specific music (contrast: web radio). Can be free or subscription-based with previews and/or high quality tracks. Examples: Last.FM or Spotify.
+  * *preview* - to listen to music in lower quality (lower bitrate, short snippet, interrupted by commercials, ...)
+  * *SBS* - !SqueezeBox Server (with Control Panel and Web UI for user and admin) 
+  * *SMD* - Social Music Discovery, the abbreviation of the whole project
+  * *smdID* - See [Identifiers] for more information
+  * *!SqueezePlay* - the desktop version of the Jive / Squeezebox Controller software (http://wiki.slimdevices.com/index.php/SqueezePlay)
 
 See also the [Architecture architecture description] for a description of the different modules in the project.
