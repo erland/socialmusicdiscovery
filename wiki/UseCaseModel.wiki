@@ -13,6 +13,28 @@ Some definitions/indications that might be good to know about:
 
 The make the model easier to understand it's divided into a number of sub models.
 
+= Actors =
+Note, the below list are not persons it's actors/roles that each does a specific kind of operations towards the system. In many homes one users is going to act as all actors while other family member might mostly focus on one or two of the roles.
+
+  * *System Administrator*
+    * Installs the system and configure it to work as desired in the specific setup. Also handle things like backing up important data and make sure any scheduled operations are executed correctly and at the right time.
+  * *Library Maintainer*
+    * Maintains the data in the system, this is about adding new music and ensure that it has all the necessary meta data and connections to identities in online sources to make music exploration effective. 
+  * *Music Explorer* 
+    * Either knows what to listen to and just find it and start playing or tries to find interesting music with the local library but also music from other sources not yet managed by SMD. Review recommendations of new music from friends and post his/her own recommendations to friends.
+
+== User interfaces per actor/role ==
+  * *System Administrator*
+    * Installation program
+    * Settings dialog within SMD Application interface, typically accessed from a computer
+  * *Library Maintainer*
+    * SMD Application interface on computer, tablet or iPad
+  * *Music Explorer*
+    * Explore, listen to and preview music directly on Squeezebox Touch, Radio, Controller
+    * Explore, listen to and preview music using IR-remote towards any Squeezebox
+    * Explore, listen to and preview music using SMD Application interface using a computer, tablet or iPad. Audio output when listening or previewing will always go through a Squeezebox.
+    * Show information from *Now Playing* screen on any Squeezebox
+
 = Use Case Model =
 == Administration ==
 [http://yuml.me/edit/4da1b8e3 http://yuml.me/4da1b8e3.png]
