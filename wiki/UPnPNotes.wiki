@@ -41,7 +41,11 @@ The UPnP standard is available at [http://www.upnp.org/ http://www.upnp.org], wh
 
 UPnP/DLNA seems to be everywhere in Winwows 7. Windows Media Player can act as a Media Server (library) or a Media Renderer (player). You can stream media from another WMP computer or even control this remote WMP.
 
-There's even a [http://www.foobar2000.org/components/view/foo_upnp plugin for foobar] to use it as a a Media Server or a Media Renderer.
+Screenshot of WMP controling and streaming from another device through UPnp:
+
+http://www.winsupersite.com/images/blog/wmp_playto_2.jpg
+
+There's even a [http://www.foobar2000.org/components/view/foo_upnp plugin for foobar] to use it as a a Media Server or a Media Renderer (see [http://bubbleguuum.free.fr/foo_upnp/fooupnpiconbuttons.png screenshot]).
 
 [http://opentools.homeip.net/dev-tools-for-upnp Developer Tools for UPnP Technologies]
 are a set of tools built for windows with .Net that can be used to browse, sniff and do a lot of things with UPnP.
