@@ -1,0 +1,23 @@
+This page is a bunch of notes taken during inquiry about upnp/dlna technologies
+
+= Introduction =
+
+The openness of SMD was discussed on the mailing list. SMD is primary designed for the SqueezeBoxes universe, but it seems that this universe could be broaden. As it was discussed on the mailing-list, technologies like UPnP/DLNA could be somehow interesting for SMD.
+
+It was decided on the mailing list that today (20100825), openness isn't a short term objectives for SMD, but could possibly remain a future goal. To prevent the risk of feature creep (and never ending talk on the list)
+
+As of today (20100825), at very early stages of the project, it was decided that openness seems to be an interesting long term goal but that it should be totally out of scope for first versions.
+
+This page summarize some information about this technology for a possible future use
+
+
+= UPnP Technology =
+
+UPnp is a device protocol designed for auto discovery and zero configuration (for more exact definition, there's [http://en.wikipedia.org/wiki/Universal_Plug_and_Play wikipedia]: 
+
+ The UPnP architecture allows device-to-device networking of personal computers, networked home appliances, consumer electronics devices and wireless devices. 
+ It is a distributed, open architecture protocol based on established standards such as the Internet Protocol Suite (TCP/IP), HTTP, XML, and SOAP.
+
+== UPnP AV ==
+
+UPnP AV is an audio and video extension of UPnP. This extension defines different AV Components wich can be used through a network connection. These components can be media library (which can be browsed, searched, etc.), media player, media remote... (more information on [http://en.wikipedia.org/wiki/UPnP#UPnP_AV_standards wikipedia] ) 
