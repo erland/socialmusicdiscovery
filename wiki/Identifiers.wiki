@@ -3,9 +3,28 @@ This page is about the use of identifiers in SMD
 
 = Introduction =
 
-There can be a lot of identifiers, this page tries to summarize information about this identifiers, generally and more specifically in SMD
+There can be a lot of identifiers, this page tries to summarize information about this identifiers, generally and more specifically in SMD.
 
+== Different type of identifiers ==
+
+Here's a list of different levels of _song/file_ identification:
+
+{{{
+1. Song/Work identifier (like shazam?)
+2. Performance/Recording identifier (like PUID?)
+3. Decoded waveform identifier
+4. Encoded waveform identifier
+
+To be clear:
+1. If I sing a few seconds, the identifier can recognize Beethoven's
+9th symphony
+2. MusicMagic PUID (no explanation needed I think)
+3. FLAC/ALAC/Shorten from the same perfect rip will have the same ID
+4. FLAC/ALAC/Shorten from the same perfect rip will have different IDs
+}}}
 
 = smdID =
 
 smdID is the identifier SMD use to keep track of music files. Basically, it is a hash of the audio part of the music file. This permits to keep the same ID even if the file is modified (for example, if tags are modified in the file).
+
+The exact definition of smdID seems to be still open (as of 20100825)
