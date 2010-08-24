@@ -21,3 +21,34 @@ UPnp is a device protocol designed for auto discovery and zero configuration (fo
 == UPnP AV ==
 
 UPnP AV is an audio and video extension of UPnP. This extension defines different AV Components wich can be used through a network connection. These components can be media library (which can be browsed, searched, etc.), media player, media remote... (more information on [http://en.wikipedia.org/wiki/UPnP#UPnP_AV_standards wikipedia] ) 
+
+The UPnP standard is available at [http://www.upnp.org/ http://www.upnp.org], where you can find a lot of information (examples and uses cases are available in documents). For example, here is some "use cases" defined in [http://www.upnp.org/specs/av/UPnP-av-ContentDirectory-v1-Service.pdf ContentDirectory v1 specification]:
+{{{
+ 2.8.2. Content setup for Browsing and Searching
+ 2.8.3. Browsing
+ 2.8.4. Searching
+ 2.8.5. Browsing, Searching, and References
+ 2.8.6. Browsing, Searching, and Filtering
+ 2.8.7. Object Creation
+ 2.8.8. File Transfer of a resource in Objects
+ 2.8.9. Playlist Manipulation
+ 2.8.10. Internet Content Representation
+ 2.8.11. Vendor Metadata Extensions
+}}}
+
+
+== Tools, UPnP software, etc. ==
+
+UPnP/DLNA seems to be everywhere in Winwows 7. Windows Media Player can act as a Media Server (library) or a Media Renderer (player). You can stream media from another WMP computer or even control this remote WMP.
+
+There's even a [http://www.foobar2000.org/components/view/foo_upnp plugin for foobar] to use it as a a Media Server or a Media Renderer.
+
+[http://opentools.homeip.net/dev-tools-for-upnp Developer Tools for UPnP Technologies]
+are a set of tools built for windows with .Net that can be used to browse, sniff and do a lot of things with UPnP.
+
+== SDKs, Libs... ==
+
+It seems that UPnP stacks exists to help using UPnP, some of them are listed there:
+http://upnp.org/sdcps-and-certification/resources/sdks/
+
+The OpenSource frameworks available at "[http://www.cybergarage.org/twiki/bin/view/Main/UPnPFramework Cybergarage]" exists for Java, Perl, etc.
