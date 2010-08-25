@@ -1,0 +1,23 @@
+#summary Use case: 015 Add relation with metadata source
+
+=== Purpose ===
+Add relation between a music entity and data in metadata sources. The user is shown a list of supported metadata sources and after selecting one the meta source is search for matching entries. If there are more than one matching entry the user is asked to select the correct one. The purpose of adding a relation to an online source is to make it possible to view or import online data related to the music entity.
+
+Note that the actual searching in the metadata source is handled in a separate use case.
+
+  * Actors
+    * Library Maintainer
+
+=== Preconditions ===
+  * A music entity has been selected in SMD
+
+=== Main flow ===
+  # User selects which metadata source to use
+  # User is shown a list of available matches in selected metadata source
+  # User select which of the available matches to add a relation to
+
+=== Alternate/Exception flows ===
+  * No matches in metadata source are found
+
+=== Postconditions ===
+  * Relation between music entity and metadata source is added to SMD
