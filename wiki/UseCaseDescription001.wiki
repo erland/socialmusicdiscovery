@@ -1,4 +1,4 @@
-#summary 001 Install
+#summary Use case: 001 Install
 
 === Purpose ===
 Install SMD Application
