@@ -6,6 +6,9 @@
   * Actors
     * <Actor using the use case>
     * 
+{{{
+<narrative version of the use case>
+}}}
 
 === Preconditions ===
   * <Short description of precondition that has to be fulfilled before the use case starts>
