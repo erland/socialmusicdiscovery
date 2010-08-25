@@ -1,0 +1,23 @@
+#summary 001 Install
+
+=== Purpose ===
+Install SMD Application
+
+  * Actors
+    * System Administrator
+
+=== Preconditions ===
+  * N/A
+
+=== Main flow ===
+  # User approves license
+  # User approves default installation path or change to a custom path
+  # System verifies available disc space
+  # SMD is installed
+
+=== Alternate/Exception flows ===
+  * Out of disc space
+    # Error message is show to the user that more disc space is required
+
+=== Postconditions ===
+  * SMD Application is installed
