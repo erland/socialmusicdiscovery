@@ -1,0 +1,31 @@
+#summary <use case id> <Name of use case>
+
+=== Purpose ===
+<Short description of use case>
+
+  * Actors
+    * <Actor using the use case>
+    * 
+
+=== Preconditions ===
+  * <Short description of precondition that has to be fulfilled before the use case starts>
+  *
+
+=== Main flow ===
+  # <First the user does this>
+  # <Then the user does this>
+  # <After that the system does this>
+  #
+
+=== Alternate/Exception flows ===
+  * <Some alternative flow>
+    # <Optional step by step description of alternative flow>
+    #
+  * <Some exception flow>
+    # <Optional step by step description of exception flow>
+    #
+  * 
+
+=== Postconditions ===
+  * <Short description of new state after the use case is finished successfully>
+  * 
