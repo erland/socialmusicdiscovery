@@ -1,4 +1,4 @@
-#summary <use case id> <Name of use case>
+#summary Use case: <use case id> <Name of use case>
 
 === Purpose ===
 <Short description of use case>
