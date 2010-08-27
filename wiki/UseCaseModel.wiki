@@ -23,57 +23,7 @@ Note, the below list are not persons it's actors/roles that each does a specific
   * *Music Explorer* 
     * Either knows what to listen to and just find it and start playing or tries to find interesting music with the local library but also music from other sources not yet managed by SMD. Review recommendations of new music from friends and post his/her own recommendations to friends.
 
-== User interface functionality per actor ==
-This section gives you an example what kind of functions each actor will be able to reach from the different user interfaces available. Note that this will just give you some kind of idea what kind of functionality each interface provides, all functionality available is not listed in this section.
-
-  * *Installation program*
-    * *System Administrator*
-      * Install, uninstall or upgrade SMD
-  * *SMD Application on a tablet/iPad*
-    * *Library Maintainer*
-      * Add, remove songs to SMD
-      * Manage metadata about songs and other music entities
-        * Edit attributes about songs and other music entities
-        * Imported from SBS
-        * Imported from online metadata sources
-    * *Music Explorer*
-      * Manage playlists
-        * Add/remove playlists
-        * Add/remove songs in playlists
-          * Local songs
-          * Online songs
-        * Modify criteras for smart playlists
-        * Import playlists from online sources
-  * *SMD Application on a Computer*
-    * *System Administrator*
-      * Change SMD configuration settings
-      * Manage backup/restore of SMD data
-    * *Library Maintainer*
-      * See "SMD Application on tablet/iPad"
-    * *Music Explorer*
-      * See "SMD Application on tablet/iPad"
-  * *Squeezebox player interface* (Both Classic/Transporter and newer Radio/Touch players)
-    * *Music Explorer*
-      * Browse, search, explore local SMD library
-      * Show information about currently playing song
-      * Explore online data related to local SMD library
-        * Similar artists
-        * Biographies
-        * Reviews
-      * Browse online recommentations
-        * Recommendations from friends
-        * Top charts
-        * Reviews
-      * Listening to music
-        * Playing playlists
-        * Previewing online music found while exloring online sources
-  * *SBS web interface*
-    * *Music Explorer*
-      * See "Squeezebox player interface"
-  * *iPhone/Android or other similar small screen devices*
-    * *Music Explorer*
-      * See "Squeezebox player interface"
-
+For a better understanding of the different actors also feel free to look at "[UserInterface user interface]" description.
 
 = Use Case Model =
 == Administration ==
