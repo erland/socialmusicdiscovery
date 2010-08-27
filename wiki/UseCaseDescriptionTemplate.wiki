@@ -12,7 +12,7 @@
 a list of actions, very straightforward, minimal if or optional
 elements>
 
-=== Alternates/Exceptions ===
+=== Additional Information ===
   * <Some alternative scenario>
   * <Some exception that could happen and needs to be handled>
-  *
+  * <Some extra information to make the use case easier to understand>
