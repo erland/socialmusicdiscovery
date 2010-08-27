@@ -1,4 +1,6 @@
 #summary Use case: 013 Add relation to contributor
+=== Goal ===
+Add a relation between a music entity and a contributor in SMD
 
 === Description ===
 The user wants to add a relation between a music entity and a contributor. The music entity the user selects to create the relation from can be any type of music entity, for example an album, song, work, artist, composer, conductor, performer. The user finds the contributor (artist, composer, conductor, performer) which he wants to add a relation to through the "[UseCaseDescription018 Find music entity]" use case. 
@@ -14,6 +16,9 @@ If the initial music entity was a contributor, the type is instead things like:
   * influenced by
 After adding the relation it's stored in SMD and can be used later on when exploring music.
 
+
+=== Alternatives/Exceptions ===
+  * N/A
 
 === Actors ===
   * Library Maintainer
