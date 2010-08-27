@@ -1,34 +1,18 @@
 #summary Use case: <use case id> <Name of use case>
 
 === Purpose ===
-<Short description of use case>
+<One line purpose of use case>
 
-  * Actors
+=== Actors ===
     * <Actor using the use case>
     * 
-{{{
-<narrative version of the use case>
-}}}
 
-=== Preconditions ===
-  * <Short description of precondition that has to be fulfilled before the use case starts>
+=== Description ===
+<free multilline description, in the narrative form or as
+a list of actions, very straightforward, minimal if or optional
+elements>
+
+=== Alternates/Exceptions ===
+  * <Some alternative scenario>
+  * <Some exception that could happen and needs to be handled>
   *
-
-=== Main flow ===
-  # <First the user does this>
-  # <Then the user does this>
-  # <After that the system does this>
-  #
-
-=== Alternate/Exception flows ===
-  * <Some alternative flow>
-    # <Optional step by step description of alternative flow>
-    #
-  * <Some exception flow>
-    # <Optional step by step description of exception flow>
-    #
-  * 
-
-=== Postconditions ===
-  * <Short description of new state after the use case is finished successfully>
-  * 
