@@ -9,6 +9,6 @@ Update SMD data with new tag information scanned by SBS for existing songs
 === Description ===
 Actor gets an indication that updated data is available in SBS, this happens after a rescan has been performed in SBS that resulted in some change in the SBS database. The actor selects to list the songs that have updated tags and selects to update SMD with the new information. SMD is updated with the new data from SBS. 
 
-=== Alternates/Exceptions ===
+=== Additional Information ===
   * The actor can select to only update individual songs/albums, by default all changes are selected.
   * The new data imported can be any tag information scanned by standard SBS scanner or any custom tags scanned by the SMD extension to SBS scanner.
