@@ -54,7 +54,6 @@ For a better understanding of the different actors also feel free to look at "[U
   * [UseCaseDescription011 Remove relation to contributor]
   * [UseCaseDescription012 Remove relation with metadata source]
   * [UseCaseDescription013 Add relation to contributor]
-  * [UseCaseDescription014 Add relation to contributor]
   * [UseCaseDescription015 Add relation with metadata source]
   * [UseCaseDescription016 Update from SBS]
   * [UseCaseDescription017 Update from metadata source]
