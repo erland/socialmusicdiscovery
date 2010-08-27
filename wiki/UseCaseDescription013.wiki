@@ -20,5 +20,5 @@ If the initial music entity was a contributor, the type is instead things like:
 After adding the relation it's stored in SMD and can be used later on when exploring music.
 
 
-=== Alternatives/Exceptions ===
+=== Additional Information ===
   * N/A
