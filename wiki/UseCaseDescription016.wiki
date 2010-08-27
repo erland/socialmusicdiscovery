@@ -1,21 +1,14 @@
 #summary Use case: 016 Update from SBS
 
 === Purpose ===
-List music in SBS which have different values on attributes compared to SMD library and make it possible to update the corresponding songs in SMD based on the SBS attribute values. During the process the user can select exactly which songs he/she wants to update the attributes on.
+Update SMD data with new tag information scanned by SBS for existing songs
 
-  * Actors
+=== Actors ===
     * Library Maintainer
 
-=== Preconditions ===
-  * N/A
+=== Description ===
+Actor gets an indication that updated data is available in SBS, this happens after a rescan has been performed in SBS that resulted in some change in the SBS database. The actor selects to list the songs that have updated tags and selects to update SMD with the new information. SMD is updated with the new data from SBS. 
 
-=== Main flow ===
-  # System checks which data in SBS that doesn't match the contents of the SMD database
-  # System lists available changes on music entities already in SMD
-  # User select which songs or albums that should be updated in SMD
-  # System updates selected items in SMD database with the attribute values from SBS
-
-=== Alternate/Exception flows ===
-  * 
-=== Postconditions ===
-  * Selected items are updated in SMD
+=== Alternates/Exceptions ===
+  * The actor can select to only update individual songs/albums, by default all changes are selected.
+  * The new data imported can be any tag information scanned by standard SBS scanner or any custom tags scanned by the SMD extension to SBS scanner.
