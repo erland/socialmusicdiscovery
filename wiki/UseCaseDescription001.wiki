@@ -9,5 +9,5 @@ Install SMD on a computer
 === Description ===
 Actor starts the installation program and is shown the license. After approving the license the actor selects the installation path and SMD is installed. When the installation is finished the actor is shown a confirmation that the installation has succeeded successfully.
 
-=== Alternates/Exceptions ===
+=== Additional Information ===
   * Check and abort installation if there aren't not enough disc space
