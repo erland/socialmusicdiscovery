@@ -1,23 +1,13 @@
 #summary Use case: 001 Install
 
 === Purpose ===
-Install SMD Application
+Install SMD on a computer
 
-  * Actors
+=== Actors ===
     * System Administrator
 
-=== Preconditions ===
-  * N/A
+=== Description ===
+Actor starts the installation program and is shown the license. After approving the license the actor selects the installation path and SMD is installed. When the installation is finished the actor is shown a confirmation that the installation has succeeded successfully.
 
-=== Main flow ===
-  # User approves license
-  # User approves default installation path or change to a custom path
-  # System verifies available disc space
-  # SMD is installed
-
-=== Alternate/Exception flows ===
-  * Out of disc space
-    # Error message is show to the user that more disc space is required
-
-=== Postconditions ===
-  * SMD Application is installed
+=== Alternates/Exceptions ===
+  * Check and abort installation if there aren't not enough disc space
