@@ -1,5 +1,5 @@
+#summary Various identifiers used in SMD
 #labels Phase-Design,identifiers,smdID
-This page is about the use of identifiers in SMD
 
 = Introduction =
 
