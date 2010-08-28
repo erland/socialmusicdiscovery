@@ -1,7 +1,7 @@
-#summary Use case: 015 Add relation with metadata source
+#summary Use case: 015 Add relation between SMD entity and a metadata source
 
 === Purpose ===
-Add a relation between a music entity in SMD and a online metadata source
+Add a relation between a music entity in SMD and a online metadata source or social network
 
 === Actors ===
     * Library Maintainer
@@ -15,3 +15,4 @@ After the search has been performed the actor is presented with list of matching
 
 === Additional Information ===
   * The actual search is performed by the "[UseCaseDescription019 Find data in metadata source]" use case, search criterias is initiated automatically based on selected music entity.
+  * A social network with formal music capabilities/identifier is considered as a metadata source
