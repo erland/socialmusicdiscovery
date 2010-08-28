@@ -3,7 +3,7 @@
 = Introduction =
 Here are some casual descriptions of system users. They are not "actors" in the sense of Use Case actors, nor are they necessarily physical persons - at least not different persons. The same physical person can be Adam, Libby, Erica or Paul. But rarely at the same time (that would be schizophrenic ;-)
 
-They are more meant to illustrate the "mindset" a person would have when doing certain tasks, loosely expressed in the spirit of a "Persona" (http://www.agilemodeling.com/artifacts/personas.htm). 
+They are more meant to illustrate the "mindset" a person would have when doing certain tasks, loosely expressed in the spirit of a "Persona" (http://www.agilemodeling.com/artifacts/personas.htm). Also, they are of course not meant to be specific, all-encompassing descriptions of the only users we expect. It's just examples, with lots of room for variation.
 
 = Adam the Administrator =
 
