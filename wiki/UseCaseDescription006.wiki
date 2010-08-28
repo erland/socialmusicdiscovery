@@ -1,0 +1,24 @@
+#summary Use case: 006 remove unused elements from the library
+#labels Use-Case,Library-Maintainer
+
+=== Purpose ===
+Remove unused elements from SMD data library
+
+=== Actors ===
+    * Library Maintainer
+
+=== Description ===
+The library can gets polluted with unused entities. They could be old entities from songs that were removed from the library or entities created automatically and not assigned anymore. By "removing entity objects that aren't used anymore", the actor can do some
+cleanup of the database.
+<br/> *Narrative 1:* The user (music explorer) is browsing its collection by a
+given type of entity and he selects an elements that returns no
+answer. The actor is offered an action to "delete this unused entity".
+<br/> *Narrative 2*: The user (library maintainer) wants to do some cleanup in
+the library.He choose an action "find unused entities" and is
+presented a list of entity types (eg: contributor, song, album) that
+contains unused elements. He can chose which of these unused entities
+he wants to remove
+
+=== Additional Information ===
+  * The actor can select to only update individual songs/albums, by default all changes are selected.
+  * The new data imported can be any tag information scanned by standard SBS scanner or any custom tags scanned by the SMD extension to SBS scanner.
