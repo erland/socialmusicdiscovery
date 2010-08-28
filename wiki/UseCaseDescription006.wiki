@@ -1,4 +1,4 @@
-#summary Use case: 006 remove unused elements from the library
+#summary Use case: 006 Remove unused elements from the library
 #labels Use-Case,Library-Maintainer
 
 === Purpose ===
