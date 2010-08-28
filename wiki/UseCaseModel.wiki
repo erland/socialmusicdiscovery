@@ -1,4 +1,5 @@
 #summary Use case model
+#labels Use-Cases
 
 = Introduction =
 
@@ -46,7 +47,7 @@ For a better understanding of the different actors also feel free to look at "[U
   * [UseCaseDescription003 Upgrade]
   * [UseCaseDescription004 Change configuration]
   * [UseCaseDescription005 Add music entity]
-  * [UseCaseDescription006 Remove unused elements from the library]
+  * [UseCaseDescription006 Remove unused entities from the library]
   * [UseCaseDescription007 Modify music entity]
   * [UseCaseDescription008 Add songs from online source]
   * [UseCaseDescription009 Add SBS songs]
