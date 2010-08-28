@@ -18,13 +18,13 @@ The make the model easier to understand it's divided into a number of sub models
 Note, the below list are not persons it's actors/roles that each does a specific kind of operations towards the system. In many homes one users is going to act as all actors while other family member might mostly focus on one or two of the roles.
 
   * *System Administrator*
-    * Installs the system and configure it to work as desired in the specific setup. Also handle things like backing up important data and make sure any scheduled operations are executed correctly and at the right time.
+    * Installs the system and configure it to work as desired in the specific setup. Also handles things like backing up important data and make sure any scheduled operations are executed correctly and at the right time.
   * *Library Maintainer*
     * Maintains the data in the system, this is about adding new music and ensure that it has all the necessary meta data and connections to identities in online sources to make music exploration effective. 
   * *Music Explorer* 
     * Either knows what to listen to and just find it and start playing or tries to find interesting music with the local library but also music from other sources not yet managed by SMD. Review recommendations of new music from friends and post his/her own recommendations to friends.
 
-For a better understanding of the different actors also feel free to look at "[UserInterface user interface]" description.
+For a better understanding of the different actors also feel free to look at "[Personas personas]" or the "[UserInterface user interface]" descriptions.
 
 = Use Case Model =
 == Administration ==
