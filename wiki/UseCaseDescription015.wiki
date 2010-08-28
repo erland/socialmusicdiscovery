@@ -1,7 +1,8 @@
-#summary Use case: 015 Add relation between SMD entity and a metadata source
+#summary Use case: 015 Link SMD music entity with a metadata source
+#labels Use-Case
 
 === Purpose ===
-Add a relation between a music entity in SMD and a online metadata source or social network
+Create a relation between a music entity in SMD and a online metadata source or social network
 
 === Actors ===
     * Library Maintainer
