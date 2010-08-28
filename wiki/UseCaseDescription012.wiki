@@ -1,0 +1,14 @@
+#summary Use case: 012 Remove link between SMD music entity and a metadata source
+#labels Use-Case
+
+=== Purpose ===
+Remove a link between SMD music entity and a metadata source.
+
+=== Actors ===
+    * Library Maintainer
+
+=== Description ===
+Actor wants to remove an existing link between a music entity and an online data source. Actor first selects music entity. He is shown a list of existing links he could remove.
+<br/>Result: the link is removed from SMD library
+
+=== Additional Information ===
