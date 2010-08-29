@@ -9,7 +9,7 @@ They are more meant to illustrate the "mindset" a person would have when doing c
 
 Adam knows about computers since he uses them at work. Although not an IT professional, he is interested and skilled enough to install several computers at home. All family members have their own computer, and he has a local file server for sharing documents, photos. music and home video. This server runs SBS and SMD. 
 
-Adam's is not particularly interested in music, he is the family's camera guy. He installs the system because his family wants to listen to music. Adam is not really interested in the system as such, he expects it to be easily installed and require very modest administration so he can keep editing his home videos. He wants the system updates to take place automatically (or at least easily), like most of today's applications. 
+Adam is not particularly interested in music, he is the family's camera guy. He installs the system because his family wants to listen to music. Adam is not really interested in the system as such, he expects it to be easily installed and require very modest administration so he can keep editing his home videos. He wants the system updates to take place automatically (or at least easily), like most of today's applications. 
 
 Adam knows that the system is open source, and is prepared to go online to seek help on forums when problems occur. That's what he does with his video tools. But he really wants the system to run without ever touching it after installation.
 
