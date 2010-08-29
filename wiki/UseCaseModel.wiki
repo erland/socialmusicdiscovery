@@ -27,11 +27,14 @@ Note, the below list are not persons it's actors/roles that each does a specific
 For a better understanding of the different actors also feel free to look at "[Personas personas]" or the "[UserInterface user interface]" descriptions.
 
 = Use Case Model =
+All models files and images can be found in svn here:
+https://socialmusicdiscovery.googlecode.com/svn/wiki/UseCaseModel
+
 == Administration ==
-[http://yuml.me/edit/4da1b8e3 http://yuml.me/4da1b8e3.png]
+[http://socialmusicdiscovery.googlecode.com/svn/wiki/UseCaseModel/Administration.png]
 
 == Library maintenance ==
-[http://yuml.me/edit/4f2b230 http://yuml.me/4f2b230.png]
+[http://socialmusicdiscovery.googlecode.com/svn/wiki/UseCaseModel/Maintenance.png]
 
 == Playlist management ==
 [http://yuml.me/edit/554232d http://yuml.me/554232d.png]
