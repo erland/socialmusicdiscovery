@@ -72,7 +72,11 @@ Paul doesn't really care about computers. Paul gets satisfaction from listening 
 = Claire the Classic = 
 Claire is much like Paul in the sense that she primarily likes to listen to music. But where Paul is mostly interested in "modern" music, Claire favors classical music. 
 
-Due to the nature of the music, Claire uses other ways to browse and explore; things like "Conductor" or "Composer" matter to her.
+Due to the nature of the music, Claire uses other ways to browse and explore; things like "Conductor" or "Composer" matter to her. And since Claire and Paul listens to different types of music, they have very different perspectives on the music collection. For Claire, all the stuff that Paul listens to is "Pop", whereas Paul considers AC/DC to be "Classical music".
+
+Claire is very happy that she can browse the library in a different way than Paul. Most of her music is stored in a different location than Paul's, but she can browse his collection when she wants to, just as any other external music source. Only difference is that Paul's collection is local. 
+
+There are a few songs and artists in Paul's collection that Claire actually likes; she has selectively included some of Jon Lord's orchestral works and tagged it her own way. But she would never admit this to Paul.
 
 <more to be added by someone who knows Claire>
 
