@@ -15,6 +15,11 @@ This section contains online metadata sources that would be interesting to integ
   * *DBTune*
     * http://dbtune.org/
     * Could be interesting, more investigation needed.
+  * *Discogs*
+    * http://www.discogs.com/
+    * Nice API, free (but should verify now)
+    * Lot of detailed information
+    * very complete
   * *FreeDB2*
     * http://www.freedb2.org/
     * Do we need it ? Or is this information already in the tags ?
