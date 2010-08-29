@@ -25,9 +25,9 @@ With SMD, the tagging tools are no longer necessary; rather than tagging the ind
 
 For good reasons, Libby has formed her own opinion on the data quality of online resources, and chooses the ones she trusts the most. Since she uses freeDB for initial tagging when ripping files, she disables freeDB in SMD. When importing new files, she manually moderates additional imports from !MusicBrainz and Discogs. Libby is more interested in getting the hard facts right then the subjective opinions on genres. She is usually happy with the defaults suggested by !MusicBrainz, but on occasion, she changes some tags. Since Libby's brother likes Metallica and AC/DC, he has forbidden her to tag Neil Young as "Hard Rock".
 
-Using Libby's high quality meta data, Libby's brother can tell what each of all the Scotts and Youngs did on  "Dirty Deeds Done Dirt Cheap", what albums the song appears on, when they were released, and on what labels. But Libby doesn't recognize the song on the radio.
+Using Libby's high quality meta data, Libby's brother can tell what each of all the Scotts and Youngs did on  "Dirty Deeds Done Dirt Cheap", what albums the song appears on, when they were released, and on what labels. But Libby doesn't recognize the song on the radio. But since she has all metadata in order, Libby has asked the system to generate associations between all band members that also have solo careers (such as The Beatles, George Harrison, John Lennon, Plastic Ono Band, Paul !McCartney and Wings). She has also generated links to all other constellations that band members appear in.
 
-Libby gets satisfaction from a perfectly organized music catalog, without any contradictions or missing fields. She prides herself with having metadata that nobody knew existed (and nobody will ever use). Just for the joy of having it. In perfect order.
+Libby gets satisfaction from a perfectly organized music catalog, without any contradictions or missing fields. She prides herself with having metadata that nobody knew existed (and nobody will ever use). Just for the joy of having it. In perfect order. And she loves the ability to play all tracks where John Lennon contributes in one way or another.
 
 SMD loves Libby. Without Libby, SMD would not work. 
 
@@ -68,3 +68,15 @@ One of the things Paul likes best is the ability to share what is now playing am
 Since Paul discovers new music both at home and in mobile situations, he shares his musical preferences between his mobile gadgets and the system at home. When he finds something interesting on the way home, he wants to listen more on his home system. And vice versa, when he finds a new favorite at home, he wants to bring the music with him when he leaves for office.
 
 Paul doesn't really care about computers. Paul gets satisfaction from listening to music. A lot. The neighbors will testify to this.
+
+= Claire the Classic = 
+Claire is much like Paul in the sense that she primarily likes to listen to music. But where Paul is mostly interested in "modern" music, Claire favors classical music. 
+
+Due to the nature of the music, Claire uses other ways to browse and explore; things like "Conductor" or "Composer" matter to her.
+
+<more to be added by someone who knows Claire>
+
+= John the Jazzer =
+John is much like Paul and Claire, but John listens almost exclusively to Jazz music.
+
+<more to be added by someone who knows John>
