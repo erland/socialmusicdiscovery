@@ -1,0 +1,55 @@
+#summary Online sources that would be interesting to integrate with
+
+= Introduction =
+This is a page where we collect information about different online sources which would be interesting to integrate in SMD.
+
+= Online metadata sources =
+This section contains online metadata sources that would be interesting to integrate in SMD.
+  * *Amazon.com*
+    * http://aws.amazon.com/
+    * User ratings and reviews
+    * Album images
+  * *AMG (allmusic.com)*
+    * http://www.allmusic.com
+    * Have API but with expensive licensing costs which makes it hard to integrate
+  * *DBTune*
+    * http://dbtune.org/
+    * Could be interesting, more investigation needed.
+  * *FreeDB2*
+    * http://www.freedb2.org/
+    * Do we need it ? Or is this information already in the tags ?
+  * *Gracenote CDDB*
+    * http://www.gracenote.com/
+    * Commercial, licensing costs has to be investigated
+  * *LastFM*
+    * http://www.last.fm/api
+    * Very interesting for integration
+    * Statistical data based on play counts from world, region and friends
+    * Album/Artist images
+    * Biographies
+  * *Musicbrainz*
+    * Metadata API: http://wiki.musicbrainz.org/XMLWebService
+    * Very interesting for integration, especially for the musicbrainz identities
+  * *Music Ontology*
+    * http://musicontology.com/
+    * http://wiki.musicontology.com/
+    * Sample data: http://wiki.musicontology.com/index.php/Examples
+    * Standard for meta data, also seems to have services to get the data
+    * Could be interesting, more investigation needed.
+  *
+
+
+= Online streaming sources =
+This section contains online streaming sources that would be interesting to integrate in SMD.
+
+  * *Grooveshark* 
+    * http://listen.grooveshark.com
+    * Have a streaming API but it's only available on request
+    * Streaming only available to premium members
+  * *Spotify* 
+    * http://developer.spotify.com
+    * XML based HTTP API for metadata with links to Spotify urls
+    * Native API for streaming
+    * Can probably be integrated through the third party Spotify plugin available in SBS
+    * Streaming only available to premium members
+  * 
