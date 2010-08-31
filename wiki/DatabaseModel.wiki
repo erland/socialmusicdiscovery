@@ -5,11 +5,11 @@
 This page contains a description of the structure and contents of the information managed by the Social Music Discovery Application
 
 
-= Logical =
+= Domain Model =
 *Note!*
 *This is a very preliminary sketch based on previous XML work, needs to be adjusted.*
 
 The model file can be found in svn here: https://socialmusicdiscovery.googlecode.com/svn/wiki/DatabaseModel/
-[http://socialmusicdiscovery.googlecode.com/svn/wiki/DatabaseModel/DatabaseModelLogical.png]
+[http://socialmusicdiscovery.googlecode.com/svn/wiki/DatabaseModel/DomainModel.png]
 
 = Physical =
