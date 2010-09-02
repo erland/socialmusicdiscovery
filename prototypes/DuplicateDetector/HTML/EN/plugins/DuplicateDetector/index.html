@@ -1,0 +1,32 @@
+[%- pagetitle = 'PLUGIN_DUPLICATEDETECTOR' | string; pageicon = 'PLUGIN_DUPLICATEDETECTOR' -%]
+
+[%- pwd_list = BLOCK -%]/
+	<a href="[% webroot %]plugins/DuplicateDetector/index.html?player=[% player | uri %]">
+		[% "PLUGIN_DUPLICATEDETECTOR" | string %]
+	</a>
+[% END -%]
+[% PROCESS pageheader.html %]
+		[% IF pluginDuplicateDetectorNoOfBytes %]
+			[% "PLUGIN_DUPLICATEDETECTOR_NOOFBYTES" | string %] [% pluginDuplicateDetectorNoOfBytes %]<br/>
+		[% END %]
+		[% IF pluginDuplicateDetectorScanning %]
+			[% "PLUGIN_DUPLICATEDETECTOR_SCANNING" | string %] [% pluginDuplicateDetectorCurrent %] [% "OUT_OF" | string %] [% pluginDuplicateDetectorTotal %]<br/>
+			[% "PLUGIN_DUPLICATEDETECTOR_CURRENT" | string %] [% pluginDuplicateDetectorCurrentFile | utf8decode %]<br/>
+		[% ELSE %]
+			[% "PLUGIN_DUPLICATEDETECTOR_SCANNED" | string %] [% pluginDuplicateDetectorTotal %]<br/>
+		[% END %]
+			[% "PLUGIN_DUPLICATEDETECTOR_DUPLICATES" | string %] 
+			[% IF pluginDuplicateDetectorDuplicates>0 %]
+				[% pluginDuplicateDetectorDuplicates %] <a href="[% webroot %]plugins/DuplicateDetector/duplicates.binfile">[% "PLUGIN_DUPLICATEDETECTOR_SHOW_DUPLICATES" | string %]</a>
+			[% ELSE %]
+				[% pluginDuplicateDetectorDuplicates %]
+			[% END %]
+			<br/><br/>
+			<a href="[% webroot %]plugins/DuplicateDetector/index.html">[% "PLUGIN_DUPLICATEDETECTOR_REFRESH" | string %]</a>
+			[% IF pluginDuplicateDetectorScanning %]
+			<a href="[% webroot %]plugins/DuplicateDetector/index.html?stop=1">[% "PLUGIN_DUPLICATEDETECTOR_STOP" | string %]</a>
+			[% ELSE %]
+			<a href="[% webroot %]plugins/DuplicateDetector/index.html?start=1">[% "PLUGIN_DUPLICATEDETECTOR_START" | string %]</a>
+			[% END %]
+			</td>
+[% PROCESS pagefooter.html %]
