@@ -1,0 +1,53 @@
+DUPLICATEDETECTOR
+	EN	Duplicate Detector
+
+PLUGIN_DUPLICATEDETECTOR
+	EN	Duplicate Detector
+
+SETUP_PLUGIN_DUPLICATEDETECTOR_GROUP
+	EN	Duplicate Detector
+
+SETUP_PLUGIN_DUPLICATEDETECTOR_GROUP_DESC
+	EN	The Duplicate Detector plugin detects duplicate music files in your music library, it is just a plugin to test features for future enhancements of the Squeezebox Server
+
+SETUP_PLUGIN_DUPLICATEDETECTOR_SECTION
+	EN	Settings Section
+
+SETUP_PLUGIN_DUPLICATEDETECTOR_SECTION_DESC
+	EN	Select a settings section
+
+PLUGIN_DUPLICATEDETECTOR_SETTINGS
+	EN	Various Settings
+
+PLUGIN_DUPLICATEDETECTOR_REFRESH
+	EN	Refresh
+
+PLUGIN_DUPLICATEDETECTOR_START
+	EN	Start detection
+
+PLUGIN_DUPLICATEDETECTOR_STOP
+	EN	Stop detection
+
+PLUGIN_DUPLICATEDETECTOR_CURRENT
+	EN	Checking: 
+
+PLUGIN_DUPLICATEDETECTOR_SCANNING
+	EN	Detecting
+
+PLUGIN_DUPLICATEDETECTOR_SCANNED
+	EN	Detected: 
+
+PLUGIN_DUPLICATEDETECTOR_DUPLICATES
+	EN	Duplicates: 
+
+PLUGIN_DUPLICATEDETECTOR_NOOFBYTES
+	EN	Detecting using (number of bytes): 
+
+PLUGIN_DUPLICATEDETECTOR_SHOW_DUPLICATES
+	EN	Show duplicates
+
+SETUP_PLUGIN_DUPLICATEDETECTOR_NOOFBYTES
+	EN	Number of bytes
+
+SETUP_PLUGIN_DUPLICATEDETECTOR_NOOFBYTES_DESC
+	EN	Number of bytes in audio data to include when detecting if files are duplicates

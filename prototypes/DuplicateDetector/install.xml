@@ -1,0 +1,20 @@
+<?xml version='1.0' standalone='yes'?>
+<extension>
+  <name>PLUGIN_DUPLICATEDETECTOR</name>
+  <creator>Erland Isaksson</creator>
+  <defaultState>enabled</defaultState>
+  <description>SETUP_PLUGIN_DUPLICATEDETECTOR_GROUP_DESC</description>
+  <email>erland@isaksson.info</email>
+  <homepageURL>http://wiki.erland.isaksson.info</homepageURL>
+  <id>1467FEE4-1B70-4628-9963-EA1E801FCA92</id>
+  <module>Plugins::DuplicateDetector::Plugin</module>
+  <optionsURL>plugins/DuplicateDetector/settings/basic.html</optionsURL>
+  <targetApplication>
+    <id>SqueezeCenter</id>
+    <maxVersion>*</maxVersion>
+    <minVersion>7.5.0</minVersion>
+  </targetApplication>
+  <type>2</type>
+  <version>0.1</version>
+</extension>
+

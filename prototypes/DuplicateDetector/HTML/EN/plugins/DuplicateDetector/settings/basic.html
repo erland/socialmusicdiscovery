@@ -1,0 +1,10 @@
+[% page = "PLUGIN_DUPLICATEDETECTOR" %]
+[% PROCESS settings/header.html %]
+
+[% PROCESS plugins/DuplicateDetector/settings/subpage_chooser.html %]
+
+[% WRAPPER setting title="SETUP_PLUGIN_DUPLICATEDETECTOR_NOOFBYTES" desc="SETUP_PLUGIN_DUPLICATEDETECTOR_NOOFBYTES_DESC" %]
+	<input type="text" class="stdedit" name="pref_noofbytes" id="noofbytes" value="[% prefs.noofbytes %]" size="15">
+[% END %]
+        
+[% PROCESS settings/footer.html %]
