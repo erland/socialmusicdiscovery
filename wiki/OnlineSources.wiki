@@ -41,7 +41,10 @@ This section contains online metadata sources that would be interesting to integ
     * Sample data: http://wiki.musicontology.com/index.php/Examples
     * Standard for meta data, also seems to have services to get the data
     * Could be interesting, more investigation needed.
-  *
+  * *Wikipedia*
+    * http://en.wikipedia.org/wiki/Template:Infobox_musical_artist
+    * Special template for music artists where information could be retrieved
+  * 
 
 
 = Online streaming sources =
@@ -57,4 +60,104 @@ This section contains online streaming sources that would be interesting to inte
     * Native API for streaming
     * Can probably be integrated through the third party Spotify plugin available in SBS
     * Streaming only available to premium members
+  * *Deezer*
+    * http://www.deezer.com/en/api
+    * Supported on MySB.com
+    * Could possibly be integrated through MySB.com
+  * *Napster*
+    * http://developer.napster.com/
+    * Supported on MySB.com ?
+    * Could possibly be integrated through MySB.com ?
+  * *Rhapsody*
+    * http://webservices.rhapsody.com/
+    * Might have interesting metadata besides streaming as they have a specific service for this.
+    * Supported on MySB.com ?
+    * Could possibly be integrated through MySB.com ?
+  * *Pandora*
+    * http://pandora.com
+    * http://code.google.com/p/openpandora/
+    * Supported on MySB.com ?
+    * Could possibly be integrated through MySB.com ?
+  * *Slacker*
+    * http://www.slacker.com/
+    * Supported on MySB.com ?
+    * Could possibly be integrated through MySB.com ?
   * 
+
+= Other not yet investigated source =
+  * *eMusic*
+    * http://developer.emusic.com/
+    * Preview music
+    * License have restriction regarding competing applications
+  * *Society of Sound*
+    * http://blog.bowers-wilkins.com/
+    * Music related community
+  * *YouTube*
+    * http://code.google.com/apis/youtube/overview.html
+    * Mainly audio previewing is of interest
+    * Micense forbids separating the audio from stream, so this might be problematic
+    * Might be possible to integrate as links that open a YouTube video in a web browser
+  * *Facebook*
+    * http://developers.facebook.com/
+    * Recommendations from friends
+  * *Twitter*
+    * http://apiwiki.twitter.com/
+    * Recommendations from friends
+  * *Fanfare Magazine Archive*
+    * http://www.fanfarearchive.com/
+    * Reviews
+    * Don't seem to have any API
+  * *Uncut* (magazine)
+    * http://www.uncut.co.uk/
+    * Magazine/Articles
+    * Don't seem to have any API
+  * *AmericanaUI* (magazine)
+    * http://www.americana-uk.com
+    * Magazine/Articles
+    * Don't seem to have any API
+  * *Zane Lowe* (rss feed)
+    * http://www.bbc.co.uk/blogs/zanelowe/rss.xml
+    * New recommendation once a day
+  * *tape.tv*
+    * http://www.tape.tv
+    * Video watching site, only audio is of interest to us
+    * Only available in Germany and maybe some other countries soon
+    * Does it have an API ?
+  * *pitchfork* (blog)
+    * http://pitchfork.com/
+    * Reviews/Articles
+    * Don't seem to have any API, maybe some RSS is available ?
+  * *Hype Machine* (blog)
+    * http://hypem.com/
+    * http://musichackdayboston.pbworks.com/Location-aware+Blog-aware+Contextual+Concerts+Listing
+    * Reviews/Articles
+  * *Blip.fm*
+    * http://api.blip.fm/
+    * Sharing music
+  * *Soundvenue* (Blog)
+    * http://www.soundvenue.com/
+  * *Resident Advisor* (Blog)
+    * http://www.residentadvisor.net/
+  * *Boomkat* (store?)
+    * http://boomkat.com/
+    * Spotify integration: http://www.spotikat.com/
+  * *Metacritic*
+    * http://www.metacritic.com/albums
+    * Reviews
+  * *Bleep* (store)
+    * http://bleep.com/
+  * *Electroambientspace*
+    * http://www.electroambientspace.com/
+    * Reviews
+  * *Drowned in Sound*
+    * http://drownedinsound.com/
+    * Reviews
+  * *Gigwize*
+    * http://www.gigwise.com/
+    * Concerts
+  * *Live Nation*
+    * http://www.livenation.com/
+    * Concerts
+    * Had and API but they no longer accept new users, at least not on their international site
+  * 
+  
