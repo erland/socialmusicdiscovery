@@ -16,7 +16,7 @@
 
 See also the [Architecture architecture description] for a description of the different modules in the project.
 
-= Domain defintions =
+= Domain definitions =
   * *Collection*
     * A collection of _Performance_ entries, this can either be a album, single or some other kind of collection.
   * *Contributor*
