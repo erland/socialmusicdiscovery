@@ -15,6 +15,16 @@
 		[% ELSE %]
 			[% "PLUGIN_DUPLICATEDETECTOR_SCANNED" | string %] [% pluginDuplicateDetectorTotal %]<br/>
 		[% END %]
+			[% "PLUGIN_DUPLICATEDETECTOR_CHECKSUMDUPLICATES" | string %] 
+			[% IF pluginDuplicateDetectorChecksumDuplicates>0 %]
+				[% pluginDuplicateDetectorChecksumDuplicates %] <a href="[% webroot %]plugins/DuplicateDetector/checksumduplicates.binfile">[% "PLUGIN_DUPLICATEDETECTOR_SHOW_CHECKSUMDUPLICATES" | string %]</a>
+			[% ELSE %]
+				[% pluginDuplicateDetectorChecksumDuplicates %]
+			[% END %]
+			[% IF pluginDuplicateDetectorIncorrectDuplicates>0 %]
+				&nbsp;(<a href="[% webroot %]plugins/DuplicateDetector/incorrectduplicates.binfile">[% "PLUGIN_DUPLICATEDETECTOR_SHOW_INCORRECTDUPLICATES" | string %]: [% pluginDuplicateDetectorIncorrectDuplicates %]</a>)
+			[% END %]
+			<br/>
 			[% "PLUGIN_DUPLICATEDETECTOR_DUPLICATES" | string %] 
 			[% IF pluginDuplicateDetectorDuplicates>0 %]
 				[% pluginDuplicateDetectorDuplicates %] <a href="[% webroot %]plugins/DuplicateDetector/duplicates.binfile">[% "PLUGIN_DUPLICATEDETECTOR_SHOW_DUPLICATES" | string %]</a>
