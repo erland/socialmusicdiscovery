@@ -1,6 +1,7 @@
 #summary Definitions and abbreviations
 
 = Definitions and abbreviations =
+  * *acoustic fingerprint* - acoustic fingerprint is an identifier generated from an audio signal, that can be used to fuzzily identify a song.
   * *catalog* - a catalog of a user's digital music Collection, *excluding* the actual files.
   * *IP3K* - Firmware in Squeezebox Classic, Boom, Transporter and older devices. 
   * *library* - a user's digital music Collection including a Catalog and the actual files  (compare to a regular library of books).
