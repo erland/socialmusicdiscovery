@@ -18,6 +18,8 @@
 See also the [Architecture architecture description] for a description of the different modules in the project.
 
 = Domain definitions =
+  * *Album*
+    * A number of tracks recorded and released as a set, traditionally on one or a few CDs or LPs.
   * *Collection*
     * A collection of _Performance_ entries, this can either be a album, single or some other kind of collection.
   * *Contributor*
@@ -28,6 +30,10 @@ See also the [Architecture architecture description] for a description of the di
     * Specific recording of a _Work_, could be either a recording on an album or recording from a concert. If the _Work_ is a symphony by Beethoven the _Performance_ would be a recording of that symphony with a specific conductor.
   * *Release*
     * A release of a specific _Collection_ or _Performance_. This is used to for example identify the UK and US releases of a specific album as individual entities as it might for example have different album covers.
+  * *Single*
+    * Essentially a single track recorded and released on its own. Traditionally with another song or alternative mix on the flip-side ("B-side"), today often accompanied by alternative mixes of the same track.
+  * *Song*
+    * A piece of music that may have been recorded several times in different ways by several artists. Original composer(s) is not always known (a song may be "traditional").
   * *Track* 
     * Reference to one or several music files with a specific smdID
     * Reference to a URL pointing to a song in a online music source
