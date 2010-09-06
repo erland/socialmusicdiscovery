@@ -27,7 +27,9 @@ See also the [Architecture architecture description] for a description of the di
   * *Label*
     * A company that is responsible for the production and distribution of a _Performance_ or _Collection_.
   * *Performance*
-    * Specific recording of a _Work_, could be either a studio recording or a recording from a concert. If the _Work_ is a symphony by Beethoven the _Performance_ would be a recording of that symphony with a specific conductor.
+    * Specific performance of a _Work_, could be either a studio performance or a a concert. If the _Work_ is a symphony by Beethoven the _Performance_ would be a performance of that symphony with a specific conductor.
+  * *Recording*
+    * A specific recording or "mix" of a _Performance_.  A specific _Performance_ may be recorded and/or mixed in several ways. One example is a re-mix of old mono recordings to add artificial stereo, another is "radio edit" or "clean versions" of a studio _Performance_.
   * *Release*
     * A release of a specific _Collection_ or _Performance_. This is used to for example identify the UK and US releases of a specific _Albums_ as individual entities as they might for example have different album covers and/or content (eg. different track order, bonus tracks etc).
   * *Single*
