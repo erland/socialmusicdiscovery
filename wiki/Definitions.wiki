@@ -27,14 +27,15 @@ See also the [Architecture architecture description] for a description of the di
   * *Label*
     * A company that is responsible for the production and distribution of a _Performance_ or _Collection_.
   * *Performance*
-    * Specific recording of a _Work_, could be either a recording on an album or recording from a concert. If the _Work_ is a symphony by Beethoven the _Performance_ would be a recording of that symphony with a specific conductor.
+    * Specific recording of a _Work_, could be either a studio recording or a recording from a concert. If the _Work_ is a symphony by Beethoven the _Performance_ would be a recording of that symphony with a specific conductor.
   * *Release*
-    * A release of a specific _Collection_ or _Performance_. This is used to for example identify the UK and US releases of a specific album as individual entities as it might for example have different album covers.
+    * A release of a specific _Collection_ or _Performance_. This is used to for example identify the UK and US releases of a specific _Albums_ as individual entities as they might for example have different album covers and/or content (eg. different track order, bonus tracks etc).
   * *Single*
     * Essentially a single track recorded and released on its own. Traditionally with another song or alternative mix on the flip-side ("B-side"), today often accompanied by alternative mixes of the same track.
   * *Song*
     * A piece of music that may have been recorded several times in different ways by several artists. Original composer(s) is not always known (a song may be "traditional").
   * *Track* 
+    * A _Performance_ in one specific _Release_ (the same _Performance_ may appear in several _Releases_)
     * Reference to one or several music files with a specific smdID
     * Reference to a URL pointing to a song in a online music source
   * *Work*
