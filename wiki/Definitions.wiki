@@ -4,7 +4,7 @@
   * *acoustic fingerprint* - acoustic fingerprint is an identifier generated from an audio signal, that can be used to fuzzily identify a song.
   * *catalog* - a catalog of a user's digital music Collection, *excluding* the actual files.
   * *IP3K* - Firmware in Squeezebox Classic, Boom, Transporter and older devices. 
-  * *library* - a user's digital music Collection including a Catalog and the actual files  (compare to a regular library of books).
+  * *library* - a user's digital music Collection *including* a Catalog and the actual files  (compare to a regular library of books).
   * *(online) metadata source* - an online repository of metadata such as "artist", "year" or "genre". Examples: freedb, !MusicBrainz or Discogs.
   * *(music) collection* - digital music files residing on local disc (local Collection) or an online music source (online Collection) that the user has full, high quality access to.
   * *music entity* - a song, album, work, recording, artist, composer, conductor, performer or other time of definition that describes an object related to music metadata. See the "Domain defintions" section below.
@@ -46,7 +46,7 @@ See also the [Architecture architecture description] for a description of the di
     * A release of a specific _Album_, _Single_ or _Recording_. This is used to for example identify the UK and US releases of a specific _Albums_ as individual entities as they might for example have different album covers and/or content (eg. different track order, bonus tracks etc).
   * *Remix*
     * A new version of an existing _Recording_. A _Remix_ is a special type of _Recording_.
-  * *Single* (similar to Album)
+  * *Single* (similar to Album since it is based on an original _Recording_.
     * Essentially a single track recorded and released on its own. Traditionally with another song or alternative mix on the flip-side ("B-side"), today often accompanied by alternative mixes of the same track.
   * *Song* (also called Work)
     * A piece of music that may have been recorded several times in different ways by several artists. Original composer(s) is not always known (a song may be "traditional").
