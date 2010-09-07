@@ -20,10 +20,20 @@ See also the [Architecture architecture description] for a description of the di
 = Domain definitions =
   * *Album*
     * A number of tracks recorded and released as a set, traditionally on one or a few CDs or LPs.
+  * *Artist* (specific type of _Contributor_)
+    * A person that significantly contributes to a _Performance_, typically as a singer or one of the lead musicians.
+  * *Band* (specific type of _Contributor_)
+    * A group of _Contributor_s that contributes to a _Performance_ as a group. A _Band_ may consists of both singers and other kind of musicians. 
+  * *Composer* (specific type of _Contributor_)
+    * A _Contributor_ who has composed the music on a _Song_ or _Work_
+  * *Conductor* (specific type of _Contributor_)
+    * A _Contributor_ who leads an _Orchestra_ using visible gestures when doing a _Performance_
   * *Contributor*
     * A person or band that in some way contributes to a _Work_/_Song_ or _Performance_. This could be a composer, conductor, artist, band, musician, orchestra, ensemble or some other kind of performer.
   * *Label*
     * A company that is responsible for the production and distribution of a _Performance_, _Single_ or _Album_.
+  * *Orchestra* (specific type of _Contributor_)
+    * A group of _Contributor_s that contributes to a _Performance_ as a group, a _Orchestra_ typically only consists of musicians and controlled by a _Conductor_.
   * *Part* (sometimes called _Movement_)
     * Specific section of a Work. A _Performance_ can be defined for a whole _Work_ (the _Performance_ of an opera), but sometimes, a _Performance_ can be defined for each _Part_.
   * *Performance* (sometimes called _Recording_)
