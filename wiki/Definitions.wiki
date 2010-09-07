@@ -37,9 +37,9 @@ See also the [Architecture architecture description] for a description of the di
   * *Part* (sometimes called _Movement_)
     * Specific section of a Work. A _Recording_ can be defined for a whole _Work_ (the _Recording_ of an opera), but sometimes, a _Recording_ can be defined for each _Part_.
   * *Performance* (sometimes called _Recording_)
-    * Specific performance of a _Work_, could be either a studio performance or a a concert.
+    * Specific performance of a _Work_, could be either a studio performance or a concert.
   * *Recording* (sometimes called _Performance_)
-    * Specific recording of a _Work_, could be either a studio recording or a live concert recording. If the _Work_ is a symphony by Beethoven the _Recording_ would be a recorded performance of that symphony with a specific conductor. A _Remix_ of recording, for example "radio edit" or "clean version" is a separate _Recording_. 
+    * Specific recording of a _Work_, could be either a studio recording or a live concert recording. If the _Work_ is a symphony by Beethoven the _Recording_ would be a recorded performance of that symphony with a specific conductor. A _Remix_ of a recording, for example "radio edit" or "clean version", is a separate _Recording_. 
   * *Release*
     * A release of a specific _Album_, _Single_ or _Recording_. This is used to for example identify the UK and US releases of a specific _Albums_ as individual entities as they might for example have different album covers and/or content (eg. different track order, bonus tracks etc).
   * *Remix*
