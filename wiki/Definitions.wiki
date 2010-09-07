@@ -49,7 +49,7 @@ See also the [Architecture architecture description] for a description of the di
   * *Remix*
     * A new version of an existing _Recording_. A _Remix_ is a special type of _Recording_.
   * *Series*
-    * A collection of related _Albums_ in succession. Their relationship is not fixed, but generally share a common concept or theme, most often by the same _Contributor_. The perception of a series is somewhat subjective, sometimes the work is conceived as a multiple-album work (contrast: _Box_ or multi-disc _Album_). Examples: Karl Jenkins/"Adiemus", House of Blues/"Essential Blues".
+    * A collection of related _Albums_ in succession. Their relationship is not fixed, but generally share a common concept or theme, most often by the same _Contributor_. The perception of a series is somewhat subjective, sometimes the work is conceived as a multiple-album work (contrast: _Box_ or multi-disc _Album_). Examples: Karl Jenkins "Adiemus", House of Blues "Essential Blues".
   * *Single* (similar to Album since it is based on an original _Recording_.
     * Essentially a single track recorded and released on its own. Traditionally with another song or alternative mix on the flip-side ("B-side"), today often accompanied by alternative mixes of the same track.
   * *Song* (also called Work)
