@@ -23,7 +23,7 @@ See also the [Architecture architecture description] for a description of the di
   * *Artist* (specific type of _Contributor_)
     * A person that significantly contributes to a _Recording_, typically as a singer or one of the lead musicians.
   * *Band* (specific type of _Contributor_)
-    * A group of _Contributor_s that contributes to a _Recording_ as a group. A _Band_ may consists of both singers and other kind of musicians. 
+    * A group of _Contributors_ that contributes to a _Recording_ as a group. A _Band_ may consists of both singers and other kind of musicians.
   * *Compilation*
     * An _Album_ with independently recorded tracks by the same or different artists. Exmples are "Greatest Hits" or "Essential Classics".
   * *Composer* (specific type of _Contributor_)
@@ -35,7 +35,7 @@ See also the [Architecture architecture description] for a description of the di
   * *Label*
     * A company that is responsible for the production and distribution of a _Recording_, _Single_ or _Album_.
   * *Orchestra* (specific type of _Contributor_)
-    * A group of _Contributor_s that contributes to a _Recording_ as a group, a _Orchestra_ typically only consists of musicians and controlled by a _Conductor_.
+    * A group of _Contributors_ that contributes to a _Recording_ as a group, a _Orchestra_ typically only consists of musicians and controlled by a _Conductor_.
   * *Part* (sometimes called _Movement_)
     * Specific section of a Work. A _Recording_ can be defined for a whole _Work_ (the _Recording_ of an opera), but sometimes, a _Recording_ can be defined for each _Part_.
   * *Performance* (sometimes called _Recording_)
