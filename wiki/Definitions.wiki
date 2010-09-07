@@ -24,6 +24,8 @@ See also the [Architecture architecture description] for a description of the di
     * A person that significantly contributes to a _Recording_, typically as a singer or one of the lead musicians.
   * *Band* (specific type of _Contributor_)
     * A group of _Contributor_s that contributes to a _Recording_ as a group. A _Band_ may consists of both singers and other kind of musicians. 
+  * *Compilation*
+    * An _Album_ with independently recorded tracks by the same or different artists. Exmples are "Greatest Hits" or "Essential Classics".
   * *Composer* (specific type of _Contributor_)
     * A _Contributor_ who has composed the music on a _Song_ or _Work_
   * *Conductor* (specific type of _Contributor_)
