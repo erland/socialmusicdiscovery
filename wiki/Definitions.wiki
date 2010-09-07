@@ -26,7 +26,7 @@ See also the [Architecture architecture description] for a description of the di
     * A group of _Contributors_ that contributes to a _Recording_ as a group. A _Band_ may consists of both singers and other kind of musicians.
   * *Box*
     * A selection of coherent _Albums_, typically 5-10 original _Albums_ by a specific _Artist_ packaged in one box, often accompanied by biographical material (examples: Black Sabbath "The Ozzy Osbourne Years", "Mozart Edition: Complete Works" on 170 discs). A _Box_ can also hold _Compilations_ by different _Artists_ (example: "Classical Masterpieces of the Millennium").
-  * *Compilation*
+  * *Compilation* (specific type of _Album_)
     * An _Album_ where the _Tracks_ are independently recorded _Recordings_ by the same or different artists. Typical examples are "Greatest Hits" and "Essential Classics".
   * *Composer* (specific type of _Contributor_)
     * A _Contributor_ who has composed the music on a _Song_ or _Work_
