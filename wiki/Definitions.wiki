@@ -47,10 +47,10 @@ See also the [Architecture architecture description] for a description of the di
   * *Release*
     * A release of a specific _Album_, _Single_ or _Recording_. This is used to for example identify the UK and US releases of a specific _Albums_ as individual entities as they might for example have different album covers and/or content (eg. different track order, bonus tracks etc).
   * *Remix*
-    * A new version of an existing _Recording_. A _Remix_ is a special type of _Recording_.
+    * A new version of an existing _Recording_. A _Remix_ is a special type of _Recording_ that is based on an original _Recording_.
   * *Series*
     * A collection of related _Albums_ in succession. Their relationship is not fixed, but generally share a common concept or theme, most often by the same _Contributor_. The perception of a series is somewhat subjective, sometimes the work is conceived as a multiple-album work (contrast: _Box_ or multi-disc _Album_). Examples: Karl Jenkins "Adiemus", House of Blues "Essential Blues".
-  * *Single* (similar to Album since it is based on an original _Recording_.
+  * *Single* (similar to Album)
     * Essentially a single track recorded and released on its own. Traditionally with another song or alternative mix on the flip-side ("B-side"), today often accompanied by alternative mixes of the same track.
   * *Song* (also called Work)
     * A piece of music that may have been recorded several times in different ways by several artists. Original composer(s) is not always known (a song may be "traditional").
