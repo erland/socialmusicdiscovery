@@ -21,22 +21,22 @@ See also the [Architecture architecture description] for a description of the di
   * *Album*
     * A number of tracks recorded and released as a set, traditionally on one or a few CDs or LPs.
   * *Contributor*
-    * A person or band that in some way contributes to a _Work_ or _Performance_. This could be a composer, conductor, artist, band, musician, orchestra, ensemble or some other kind of contributor.
+    * A person or band that in some way contributes to a _Work_/_Song_ or _Performance_. This could be a composer, conductor, artist, band, musician, orchestra, ensemble or some other kind of performer.
   * *Label*
     * A company that is responsible for the production and distribution of a _Performance_, _Single_ or _Album_.
-  * *Performance*
-    * Specific performance of a _Work_, could be either a studio performance or a a concert. If the _Work_ is a symphony by Beethoven the _Performance_ would be a performance of that symphony with a specific conductor.
-  * *Recording*
-    * A specific recording or "mix" of a _Performance_.  A specific _Performance_ may be recorded and/or mixed in several ways. One example is a re-mix of old mono recordings to add artificial stereo, another is "radio edit" or "clean versions" of a studio _Performance_.
+  * *Part* (sometimes called _Movement_)
+    * Specific section of a Work. A _Performance_ can be defined for a whole _Work_ (the _Performance_ of an opera), but sometimes, a _Performance_ can be defined for each _Part_.
+  * *Performance* (sometimes called _Recording_)
+    * Specific performance of a _Work_, could be either a studio performance or a a concert. If the _Work_ is a symphony by Beethoven the _Performance_ would be a performance of that symphony with a specific conductor. A re-mix of recording, for example "radio edit" or "clean version" is a separate _Performance_. 
   * *Release*
     * A release of a specific _Album_, _Single_ or _Performance_. This is used to for example identify the UK and US releases of a specific _Albums_ as individual entities as they might for example have different album covers and/or content (eg. different track order, bonus tracks etc).
-  * *Single*
+  * *Single* (similar to Album)
     * Essentially a single track recorded and released on its own. Traditionally with another song or alternative mix on the flip-side ("B-side"), today often accompanied by alternative mixes of the same track.
-  * *Song*
+  * *Song* (also called Work)
     * A piece of music that may have been recorded several times in different ways by several artists. Original composer(s) is not always known (a song may be "traditional").
   * *Track* 
     * A _Performance_ in one specific _Release_ (the same _Performance_ may appear in several _Releases_)
     * Reference to one or several music files with a specific smdID
     * Reference to a URL pointing to a song in a online music source
-  * *Work*
-    * A composed piece of music, often called "song" in pop/rock music or "work" in classical music
+  * *Work* (also called Song)
+    * A piece of music that may have been recorded several times in different ways by several artists or conductors, often used in classical music instead of _Song_
