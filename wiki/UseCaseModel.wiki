@@ -37,9 +37,13 @@ https://socialmusicdiscovery.googlecode.com/svn/wiki/UseCaseModel
 [http://socialmusicdiscovery.googlecode.com/svn/wiki/UseCaseModel/Maintenance.png]
 
 == Playlist management ==
+As a guide to possible use cases in this area take a look at [MusicListenerFunctionality]
+
 [http://yuml.me/edit/b558358 http://yuml.me/b558358.png]
 
 == Listening and exploring music ==
+As a guide to possible use cases in this area take a look at [MusicListenerFunctionality]
+
 [http://yuml.me/edit/40f86e75 http://yuml.me/40f86e75.png]
 
 = Use case descriptions =
