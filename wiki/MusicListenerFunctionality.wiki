@@ -1,0 +1,54 @@
+#summary Temporary page for Music Listener functionality
+
+= Introduction =
+
+Think about at least the following different use case categories:
+  # Find something interesting in your own library
+  # Find some interesting new music which you don't own yet
+  # Actively or inactively share data/recommendations which helps other users to find something interesting
+  # Playlist management
+  # Manage social network
+
+*Note!*
+*This page is just a temporary page to collect material to make it possible to create a use case model for Music Listener.*
+
+= Find something interesting in your own library =
+  * Browse for an Album or Recording in local SMD library
+  * Search for an Album or Recording in local SMD library
+  * Play a saved playlist
+  * Play a smart playlist
+  * Play a smart mix (think MusicIP) based on selected Recording or Artist
+  * List similar artists based on selected Artist which is also available in local SMD library
+  * View artist images for selected Artist
+  * View Artist biography
+  * Automatically update local SMD playback history after a Recording has been played
+  * Play mix based on random Recordings from Artists similar to the current selected Artist
+  * Play mix based on random Recordings similar to the current selected Recording
+
+= Find some interesting new music which you don't own yet =
+  * View discography for selected Artist
+  * Preview a Recording not in local SMD library through an online music source
+  * View top rated Albums by other people
+  * View top played Albums by other people
+  * View top rated Recordings by other people for the selected Artist
+  * View top played Recordings by other people for the selected Artist
+  * View user/professional reviews for Album not in local SMD
+  * List recommended Artists, Albums and Recordings from friends
+  * List similar artists based on selected Artist which is not available in local SMD library
+
+= Share data/recommendations to other users =
+  * Automatically submit information about a played Recording to central server
+  * Recommend an Artist, Recording or Album to other users
+  * Rate an Album or Recording and make it available to other users
+  * Review an Album or Recording and make it available to other users
+
+= Playlist management =
+  * Manage a static saved playlist (add, remove Recordings from it)
+  * Manage a smart playlist
+
+= Manage social network =
+This is probably handled through existing services but it can act as a source what kind of functionality we need in the services we decide to integrate with.
+
+  * Find other SMD user based on name or account identity
+  * Add other SMD user to your friend list
+  * Remove a user from your friend list
