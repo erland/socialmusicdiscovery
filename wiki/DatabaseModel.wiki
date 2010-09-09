@@ -12,4 +12,20 @@ This page contains a description of the structure and contents of the informatio
 The model file can be found in svn here: https://socialmusicdiscovery.googlecode.com/svn/wiki/DatabaseModel/
 [http://socialmusicdiscovery.googlecode.com/svn/wiki/DatabaseModel/DomainModel.png]
 
+== Pages or sites containing work about music concepts/modeling == 
+ * http://musicontology.com/ (apparently very mature work on the topic)
+ * http://wiki.musicontology.com/index.php/Main_Page
+ * http://wiki.musicontology.com/index.php/Data_Sources
+ * http://wiki.musicontology.com/index.php/Classes_Schemas
+ * http://wiki.musicbrainz.org/Next_Generation_Schema (based on musicbrainz errors)
+ * http://wiki.musicbrainz.org/Object_Model (all about music brainz model)
+ * http://wiki.musicbrainz.org/Nadelnder_Bambus
+ * http://wiki.musicbrainz.org/Advanced_Relationships (lot of stuff on relationship)
+ * http://wiki.musicbrainz.org/Advanced_Relationship_Attribute
+ * http://wiki.musicbrainz.org/Category:Relationship_Type
+ * http://www.discogs.com/help/submission-guidelines-release.html
+ * http://www.discogs.com/help/submission-guidelines-glossary.html
+ * http://www.discogs.com/help/submission-guidelines-updating-an-artist.html
+
+
 = Physical =
