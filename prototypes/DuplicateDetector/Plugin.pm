@@ -243,12 +243,36 @@ sub scanTrack {
 		$currentTrackFile = Slim::Utils::Misc::pathFromFileURL($track->url);
 		$log->debug("Scanning track $currentTrack: ".$currentTrackFile);
 
-		my $data = Audio::Scan->scan( $currentTrackFile , { md5_size => $noOfBytes });
+		my $data = undef;
+		my ($start, $end) = Slim::Music::Info::isFragment($track->url);
+		my $cuesheetAudioSize = undef;
+		if (defined $start || defined $end) {
+			my $md5size = $noOfBytes;
+			if($md5size>$track->audio_size) {
+				$md5size = $track->audio_size;
+			}
+			my $md5_offset = $track->audio_offset + ($track->audio_size / 2) - ($md5size/2);
+			$log->debug("Detecting $currentTrackFile, using MD5 size=$md5size, offset=$md5_offset");
+			$data = Audio::Scan->scan( $currentTrackFile , { md5_size => $md5size, md5_offset => $md5_offset });
+			$cuesheetAudioSize = $track->audio_size;
+		}else {
+			my $md5size = $noOfBytes;
+			if($md5size>$track->audio_size) {
+				$md5size = $track->audio_size;
+			}
+			my $md5_offset = $track->audio_offset + ($track->audio_size / 2) - ($md5size/2);
+			$log->debug("Detecting $currentTrackFile, using MD5 size=$md5size, offset=$md5_offset");
+			$data = Audio::Scan->scan( $currentTrackFile , { md5_size => $md5size, md5_offset => $md5_offset });
+		}
+
 		my $checksum = $data->{info}->{audio_md5};
 		if( !$checksum) {
 			$log->error("Unable to calculate checksum for: $currentTrackFile");
 		}
-		my $size = $data->{info}->{audio_size};
+		my $size = $cuesheetAudioSize;
+		if(!$size) {
+			$size = $data->{info}->{audio_size};
+		}
 		if(!$size) {
 			$log->error("Unable to get audio size for: $currentTrackFile");
 		}
@@ -316,8 +340,7 @@ sub webIndex {
 	$sth->fetch();
 	$sth->finish();
 
-	my $dbh = Slim::Schema->storage->dbh();
-	my $sth = $dbh->prepare("SELECT ifnull(sum(cnt),0) from (SELECT count(*) as cnt FROM duplicatedetector_tracks GROUP BY smdid,audiosize HAVING count(*)>1) duplicates");
+	$sth = $dbh->prepare("SELECT ifnull(sum(cnt),0) from (SELECT count(*) as cnt FROM duplicatedetector_tracks GROUP BY smdid,audiosize HAVING count(*)>1) duplicates");
 	my $duplicates = 0;
 	$sth->execute();
 	$sth->bind_col(1, \$duplicates);
