@@ -14,11 +14,18 @@ http://socialmusicdiscovery.googlecode.com/svn
 Project members authenticate over HTTPS to allow committing changes.
 If you plan to make changes, use this command to check out the code as yourself using HTTPS:
 
+*{{{Wiki/Documentation}}}* ([https://code.google.com/p/socialmusicdiscovery/source/browse/wiki browse])
+ {{{svn checkout https://socialmusicdiscovery.googlecode.com/svn/wiki wiki --username yourgooglecodeid}}}
+
+
 *{{{Plugin}}}* ([https://code.google.com/p/socialmusicdiscovery/source/browse/plugin/trunk browse])
  {{{svn checkout https://socialmusicdiscovery.googlecode.com/svn/localserver/trunk localserver --username yourgooglecodeid}}}
 
 *{{{Local Server}}}* ([https://code.google.com/p/socialmusicdiscovery/source/browse/localserver/trunk browse])
  {{{svn checkout https://socialmusicdiscovery.googlecode.com/svn/localserver/trunk localserver --username yourgooglecodeid}}}
+
+*{{{Prototypes}}}* ([https://code.google.com/p/socialmusicdiscovery/source/browse/prototypes browse])
+ {{{svn checkout https://socialmusicdiscovery.googlecode.com/svn/prototypes prototypes --username yourgooglecodeid}}}
 
 When prompted, enter your generated [http://code.google.com/hosting/settings googlecode.com password].
 
@@ -31,6 +38,9 @@ Use this command to anonymously check out the latest project source code:
 
 *{{{Local Server}}}* ([https://code.google.com/p/socialmusicdiscovery/source/browse/localserver/trunk browse])
  {{{svn checkout http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk localserver}}}
+
+*{{{Prototypes}}}* ([https://code.google.com/p/socialmusicdiscovery/source/browse/prototypes browse])
+ {{{svn checkout http://socialmusicdiscovery.googlecode.com/svn/prototypes prototypes}}}
 
 
 ===GUI and IDE Access===
