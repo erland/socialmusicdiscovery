@@ -256,13 +256,8 @@ sub scanTrack {
 			$data = Audio::Scan->scan( $currentTrackFile , { md5_size => $md5size, md5_offset => $md5_offset });
 			$cuesheetAudioSize = $track->audio_size;
 		}else {
-			my $md5size = $noOfBytes;
-			if($md5size>$track->audio_size) {
-				$md5size = $track->audio_size;
-			}
-			my $md5_offset = $track->audio_offset + ($track->audio_size / 2) - ($md5size/2);
-			$log->debug("Detecting $currentTrackFile, using MD5 size=$md5size, offset=$md5_offset");
-			$data = Audio::Scan->scan( $currentTrackFile , { md5_size => $md5size, md5_offset => $md5_offset });
+			$log->debug("Detecting $currentTrackFile, using MD5 size=$noOfBytes, offset=(default)");
+			$data = Audio::Scan->scan( $currentTrackFile , { md5_size => $noOfBytes);
 		}
 
 		my $checksum = $data->{info}->{audio_md5};
