@@ -159,5 +159,10 @@ This section contains online streaming sources that would be interesting to inte
     * http://www.livenation.com/
     * Concerts
     * Had and API but they no longer accept new users, at least not on their international site
-  * 
-  
+  * *Google* 
+    * http://www.billboard.biz/bbbiz/content_display/industry/e3ifbadade3d03a99b1a14b4cb8b34c7122
+    * Rumor of Google music service
+  * *Ping*
+    * http://www.apple.com/itunes/ping/
+    * No known API, at least not yet
+  *   
