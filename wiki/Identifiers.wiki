@@ -25,6 +25,6 @@ To be clear:
 
 = smdID =
 
-smdID is the identifier SMD use to keep track of music files. Basically, it is a hash of the audio part of the music file. This permits to keep the same ID even if the file is modified (for example, if tags are modified in the file).
+smdID is the identifier SMD use to keep track of music files. Basically, it is a hash of the encoded audio part of the music file. This permits to keep the same ID even if the file is modified (for example, if tags are modified in the file).
 
 The exact definition of smdID seems to be still open (as of 20100825)
