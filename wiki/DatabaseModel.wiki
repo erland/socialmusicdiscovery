@@ -8,6 +8,7 @@ This page contains a description of the structure and contents of the informatio
 = Domain Model =
 The model files can be found in svn here: https://socialmusicdiscovery.googlecode.com/svn/wiki/DatabaseModel/
 
+Sample albums represented with the domain model structures can be found the page: [DomainModelSamples]
 == Core model ==
 [http://socialmusicdiscovery.googlecode.com/svn/wiki/DatabaseModel/DomainModel.png]
 
