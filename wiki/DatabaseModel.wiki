@@ -8,17 +8,14 @@ This page contains a description of the structure and contents of the informatio
 = Domain Model =
 The model files can be found in svn here: https://socialmusicdiscovery.googlecode.com/svn/wiki/DatabaseModel/
 
-== Revised version ==
-*Note!*
-*This is a preliminary model, it might still need som adjustments*
-
-[http://socialmusicdiscovery.googlecode.com/svn/wiki/DatabaseModel/p2rDomaninModel.png]
-
-== Early version based on previous XML version ==
-*Note!*
-*This is a very preliminary sketch based on previous XML work, it's just here as a background, the revised model shown above is the latest official version *
-
+== Core model ==
 [http://socialmusicdiscovery.googlecode.com/svn/wiki/DatabaseModel/DomainModel.png]
+
+== Subjective model ==
+[http://socialmusicdiscovery.googlecode.com/svn/wiki/DatabaseModel/SubjectiveModel.png]
+
+== Classification model ==
+[http://socialmusicdiscovery.googlecode.com/svn/wiki/DatabaseModel/Classification.png]
 
 == Pages or sites containing work about music concepts/modeling == 
  * http://musicontology.com/ (apparently very mature work on the topic)
