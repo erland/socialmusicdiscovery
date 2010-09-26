@@ -20,6 +20,7 @@ This section contains online metadata sources that would be interesting to integ
     * Nice API, free (but should verify now): http://www.discogs.com/help/api
     * Lot of detailed information
     * very complete
+    * Also have a complete database dump: http://www.discogs.com/data/
   * *FreeDB2*
     * http://www.freedb2.org/
     * Do we need it ? Or is this information already in the tags ?
@@ -35,6 +36,7 @@ This section contains online metadata sources that would be interesting to integ
   * *Musicbrainz*
     * Metadata API: http://wiki.musicbrainz.org/XMLWebService
     * Very interesting for integration, especially for the musicbrainz identities
+    * Also have a raw database dump: http://musicbrainz.org/doc/Database_Download
   * *Music Ontology*
     * http://musicontology.com/
     * http://wiki.musicontology.com/
@@ -165,4 +167,7 @@ This section contains online streaming sources that would be interesting to inte
   * *Ping*
     * http://www.apple.com/itunes/ping/
     * No known API, at least not yet
+  * *FreeDB*
+    * http://www.freedb.org/
+    * Also have a raw database dump: http://ftp.freedb.org/pub/freedb/
   *   
