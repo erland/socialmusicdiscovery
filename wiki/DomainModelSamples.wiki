@@ -64,3 +64,11 @@ References:
 
 References:
   * http://www.discogs.com/release/49619
+
+== Stray Song (single track without reference to Release) ==
+A typical "one hit wonders" or "download hit". Song can be found in several releases, typically various compilations, but these are of secondary (or no) interest.
+
+*Crazy Frog - Axel F*
+
+References: 
+  * http://www.discogs.com/Crazy-Frog-Axel-F/release/1264072
