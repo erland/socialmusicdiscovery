@@ -71,6 +71,6 @@ A typical "one hit wonder" or "download hit". Song can be found in several relea
 *Crazy Frog - Axel F*
 
 References: 
-  * http://www.discogs.com/Crazy-Frog-Axel-F/release/1264072
+  * http://www.discogs.com/Crazy-Frog-Axel-F/master/154160
 
 [https://socialmusicdiscovery.googlecode.com/svn/wiki/DatabaseModel/sample_%20CrazyFrog.png]
