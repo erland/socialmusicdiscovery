@@ -1,0 +1,66 @@
+#summary Domain model samples
+
+= Introduction =
+
+This page contains a number of sample albums which have been modeled in the domain model. The purpose of this page is just to illustrate how different kind of albums should be represented.
+
+The reference domain model which should be used when creating the samples is found on the [DatabaseModel] page
+
+= Domain model samples =
+== Compilation album ==
+*The Bodyguard (Original Soundtrack Album)*
+References:
+  * http://www.discogs.com/master/61126
+  * http://www.discogs.com/Various-The-Bodyguard-Original-Soundtrack-Album/release/1794218
+
+=== The Bodyguard (with complete meta data) ===
+Note! Only 4 tracks has been modeled of the complete album.
+[http://socialmusicdiscovery.googlecode.com/svn/wiki/DatabaseModel/sample_%20The%20Bodyguard.png]
+=== The Bodyguard (with limited meta data) ===
+Note! Only 4 tracks has been modeled of the complete album. This model illustrates how this album could be represented if you only have access to meta data typically found in tags, such as ARTIST, ALBUM, TITLE, TRACKNUMBER, YEAR
+[http://socialmusicdiscovery.googlecode.com/svn/wiki/DatabaseModel/sample_%20The%20Bodyguard%20brief.png]
+
+== Classical album, multiple works ==
+*Beethoven: Violin Concerto; Bernstein / Hahn, Zinman*
+
+References:
+  * http://www.arkivmusic.com/classical/album.jsp?album_id=451
+  * http://www.amazon.com/Beethoven-Violin-Concerto-Bernstein-Serenade/dp/B00000GV4L
+[http://socialmusicdiscovery.googlecode.com/svn/wiki/DatabaseModel/sample_%20Beethoven_Bernstein_%20Hilary%20Hahn.png]
+
+== Multi disc album ==
+*Frank Zappa - Joe's Garage* box
+
+References:
+  * http://www.discogs.com/master/35995
+  * http://www.discogs.com/master/36001
+
+[http://socialmusicdiscovery.googlecode.com/svn/wiki/DatabaseModel/sample_%20FrankZappa.png]
+
+== Album with parts represented as multiple tracks ==
+*Pink Floyd - Ummagumma*
+
+References:
+  * http://www.discogs.com/master/20692
+
+[http://socialmusicdiscovery.googlecode.com/svn/wiki/DatabaseModel/Release-PinkFloydUmmagumma.png]
+
+== Album with multiple parts as a single track ==
+*Alan Parsons Project, The - The Turn Of A Friendly Card*
+
+References:
+  * http://www.discogs.com/release/1921980
+
+[http://socialmusicdiscovery.googlecode.com/svn/wiki/DatabaseModel/Release-AppTurnOfFriendlyCard.png]
+
+== Album with remixes by different DJs ==
+*King Britt / Ashley Beedle - Southport Weekender Volume 8*
+
+References:
+  * http://www.discogs.com/release/1686522
+
+== Album with remixes with several works remixed in a new work in single track ==
+*2 Many DJ's - As Heard On Radio Soulwax Pt. 2*
+
+References:
+  * http://www.discogs.com/release/49619
