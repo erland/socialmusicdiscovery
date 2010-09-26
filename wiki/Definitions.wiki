@@ -21,24 +21,24 @@ See also the [Architecture architecture description] for a description of the di
   * *Album* (also known as _Release_)
     * A number of tracks recorded and released as a set, traditionally on one or a few CDs or LPs.
   * *Artist*
-    * A common name for a single person (_SoloCareer_) or a group of people (_CollaborativeCareer_) that performs on one or several _Recording_s.
-  * *Band* (specific type of _Contributor_, also known as _CollaborativeCareer)
-    * See description for _CollaborativeCareer_
+    * A common name for a single person (_Solo Career_) or a group of people (_Collaborative Career_) that performs on one or several _Recording_s.
+  * *Band* (specific type of _Contributor_, also known as _Collaborative Career)
+    * See description for _Collaborative Career_
   * *Box* (specific type of _Release_)
     * A selection of coherent _Release_s, typically 5-10 original _Release_s by a specific _Artist_ packaged in one box, often accompanied by biographical material (examples: Black Sabbath "The Ozzy Osbourne Years", "Mozart Edition: Complete Works" on 170 discs). A _Box_ can also hold _Compilations_ by different _Artists_ (example: "Classical Masterpieces of the Millennium"). A _Box_ is represented as a _Release_ which consists of two or more other _Releases_.
-  * *CollaborativeCareer* (also known as _Band_)
-    * A group of people that is known under a group name that contributes together as a group on one or several _Recording_s. A group represented as a _CollaborativeCareer_ may consists of both singers and other kind of musicians and is commonly known as _Band_ or _Orchestra_.
+  * *Collaborative Career* (also known as _Band_)
+    * A group of people that is known under a group name that contributes together as a group on one or several _Recording_s. A group represented as a _Collaborative Career_ may consists of both singers and other kind of musicians and is commonly known as _Band_ or _Orchestra_.
   * *Compilation* (specific type of _Album_)
     * An _Album_ where the _Tracks_ are independently recorded _Recordings_ by the same or different artists. Typical examples are "Greatest Hits" and "Essential Classics".
   * *Composer* (specific type of _Contributor_)
     * A _Contributor_ who has composed the music on a _Song_ or _Work_
   * *Conductor* (specific type of _Contributor_)
     * A _Contributor_ who leads an _Orchestra_ using visible gestures when doing a _Recording_
-  * *File* (specific type of _PlayableElement_)
+  * *File* (specific type of _Playable Element_)
     * Reference to one or several music files with a specific smdID
   * *Label*
     * A company that is responsible for the production and distribution of a _Recording_, _Single_ or _Album_.
-  * *Orchestra* (also known as _CollaborativeCareer_)
+  * *Orchestra* (also known as _Collaborative Career_)
     * A group of _Contributors_ that contributes to a _Recording_ as a group, a _Orchestra_ typically only consists of musicians and controlled by a _Conductor_.
   * *Part* (sometimes called _Movement_)
     * Specific section of a Work. A _Recording_ can be defined for a whole _Work_ (the _Recording_ of an opera), but sometimes, a _Recording_ can be defined for each _Part_.
@@ -47,12 +47,12 @@ See also the [Architecture architecture description] for a description of the di
   * *Performance* (sometimes called _Recording_)
     * See description for _Recording_
   * *Person*
-    * A physical person that acts as _Composer_ on a work or _Performer_/_Conductor_ on a _Recording_. A _Person_ is only represented once and is represented under it's real name. Many persons are known under an alias/artist name when they are performing on a _Recording_, the alias/artist name is handled as a _SoloCareer_.
-  * *PlayableElement*
+    * A physical person that acts as _Composer_ on a work or _Performer_/_Conductor_ on a _Recording_. A _Person_ is only represented once and is represented under it's real name. Many persons are known under an alias/artist name when they are performing on a _Recording_, the alias/artist name is handled as a _Solo Career_.
+  * *Playable Element*
     * Representation of a physical file or online stream that represent a specific _Recording_ that can be played.
   * *Recording* (sometimes called _Performance_)
-    * Specific recording of a _Work_, could be either a studio recording or a live concert recording. If the _Work_ is a symphony by Beethoven the _Recording_ would be a recorded performance of that symphony with a specific conductor. A _Remix_ of a recording, for example "radio edit" or "clean version", is a separate _Recording_. The _Recording_ can always be represented as a single music files, if there multiple _Recording_s are required to represent a complete _Work_, it's recommended to use a _RecordingSession_ to represent the _Work_ and a _Recording_ for each _Part_ of the work.
-  * *RecordingSession*
+    * Specific recording of a _Work_, could be either a studio recording or a live concert recording. If the _Work_ is a symphony by Beethoven the _Recording_ would be a recorded performance of that symphony with a specific conductor. A _Remix_ of a recording, for example "radio edit" or "clean version", is a separate _Recording_. The _Recording_ can always be represented as a single music files, if there multiple _Recording_s are required to represent a complete _Work_, it's recommended to use a _Recording Session_ to represent the _Work_ and a _Recording_ for each _Part_ of the work.
+  * *Recording Session*
     * A collection of one or several _Recording_s which was recorded at the same time and place.
   * *Release*
     * A release of a specific _Box_,_Album_, _Single_ or _Recording_. The UK and US releases of a specific _Album_ is represented as two individual _Release_s with a relation to the release that represents the master _Release_. They might for example have different album covers and/or content (eg. different track order, bonus tracks etc).
@@ -62,15 +62,15 @@ See also the [Architecture architecture description] for a description of the di
     * A collection of related _Albums_ in succession. Their relationship is not fixed, but generally share a common concept or theme, most often by the same _Contributor_. The perception of a series is somewhat subjective, sometimes the work is conceived as a multiple-album work (contrast: _Box_ or multi-disc _Album_). Examples: Karl Jenkins "Adiemus", House of Blues "Essential Blues".
   * *Single* (similar to Album)
     * Essentially a single track recorded and released on its own. Traditionally with another song or alternative mix on the flip-side ("B-side"), today often accompanied by alternative mixes of the same track.
-  * *SoloCareer* (specific type of _Artist_)
-    * A person that significantly contributes to one or several _Recording_s or _Work_s, typically as a composer, singer or one of the lead musicians. The difference between a _SoloCareer_ and a _Person_ is that a _Person_ might have multiple careers where he/she is known under different aliases.
+  * *Solo Career* (specific type of _Artist_)
+    * A person that significantly contributes to one or several _Recording_s or _Work_s, typically as a composer, singer or one of the lead musicians. The difference between a _Solo Career_ and a _Person_ is that a _Person_ might have multiple careers where he/she is known under different aliases.
   * *Song* (also called Work)
     * A piece of music that may have been recorded several times in different ways by several artists. Original composer(s) is not always known (a song may be "traditional").
-  * *Stream* (specific type of _PlayableElement_)
+  * *Stream* (specific type of _Playable Element_)
     * Reference to a URL pointing to a song in a online music source
   * *Track* 
     * A _Recording_ in one specific _Release_ (the same _Recording_ may appear in several _Releases_)
-    * Reference to one or several _PlayableElement_ of the type _File_
-    * Reference to one or several _PlayableElement_ of the type _Stream_
+    * Reference to one or several _Playable Element_ of the type _File_
+    * Reference to one or several _Playable Element_ of the type _Stream_
   * *Work* (also called Song)
     * A piece of music that may have been recorded several times in different ways by several artists or conductors, often used in classical music instead of _Song_
