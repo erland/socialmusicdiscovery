@@ -24,6 +24,8 @@ Think about at least the following different use case categories:
   * Automatically update local SMD playback history after a Recording has been played
   * Play mix based on random Recordings from Artists similar to the current selected Artist
   * Play mix based on random Recordings similar to the current selected Recording
+  * Play a random mix based on history (random from least often played song/albums, from most often played song/album)
+  * Play a random mix based on complex criteria 
 
 = Find some interesting new music which you don't own yet =
   * View discography for selected Artist
@@ -35,6 +37,9 @@ Think about at least the following different use case categories:
   * View user/professional reviews for Album not in local SMD
   * List recommended Artists, Albums and Recordings from friends
   * List similar artists based on selected Artist which is not available in local SMD library
+  * List songs from RSS/Atom feeds, from web browsing history
+  * Keep track of loved/hated songs, artists (to allow blacklisting of most hated elements or to discover more from loved elements)
+  * Automatically add loved elements to amazon wish list, to last.fm loved tracks (or any other online source)
 
 = Share data/recommendations to other users =
   * Automatically submit information about a played Recording to central server
