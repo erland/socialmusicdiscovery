@@ -25,7 +25,8 @@ Think about at least the following different use case categories:
   * Play mix based on random Recordings from Artists similar to the current selected Artist
   * Play mix based on random Recordings similar to the current selected Recording
   * Play a random mix based on history (random from least often played song/albums, from most often played song/album)
-  * Play a random mix based on complex criteria 
+  * Play a random mix based on complex criteria
+  * "Drill down" on available genres, successively narrowing selection (e.g. Jazz=>Piano|Guitar or Piano=>Jazz|Rock) 
 
 = Find some interesting new music which you don't own yet =
   * View discography for selected Artist
