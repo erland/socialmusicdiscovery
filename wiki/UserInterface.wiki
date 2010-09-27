@@ -19,7 +19,7 @@ For more information of the available actors, see the "[UseCaseModel use case mo
         * Edit attributes about songs and other music entities
         * Imported from SBS
         * Imported from online metadata sources
-    * *Music Explorer*
+    * *Music Listener*
       * Manage playlists
         * Add/remove playlists
         * Add/remove songs in playlists
@@ -33,10 +33,10 @@ For more information of the available actors, see the "[UseCaseModel use case mo
       * Manage backup/restore of SMD data
     * *Library Maintainer*
       * See "SMD Application on tablet/iPad"
-    * *Music Explorer*
+    * *Music Listener*
       * See "SMD Application on tablet/iPad"
   * *Squeezebox player interface* (Both Classic/Transporter and newer Radio/Touch players)
-    * *Music Explorer*
+    * *Music Listener*
       * Browse, search, explore local SMD library
       * Show information about currently playing song
       * Explore online data related to local SMD library
@@ -51,10 +51,10 @@ For more information of the available actors, see the "[UseCaseModel use case mo
         * Playing playlists
         * Previewing online music found while exloring online sources
   * *SBS web interface*
-    * *Music Explorer*
+    * *Music Listener*
       * See "Squeezebox player interface"
   * *iPhone/Android or other similar small screen devices*
-    * *Music Explorer*
+    * *Music Listener*
       * See "Squeezebox player interface"
 
 = Installation program =
