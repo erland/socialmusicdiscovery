@@ -19,14 +19,19 @@ Think about at least the following different use case categories:
   * Play a smart playlist
   * Play a smart mix (think MusicIP) based on selected Recording or Artist
   * List similar artists based on selected Artist which is also available in local SMD library
+  * List (and play) related artists based on family relations to selected artist
+  * List (and play) related artists based on bands/group/orcestras where selected artist has contributed 
+  * List (and play) related artists based on recordings where selected artist has contributed 
+  * List (and play) other recordings where artist(s) of selected recording has/have contributed 
   * View artist images for selected Artist
   * View Artist biography
   * Automatically update local SMD playback history after a Recording has been played
+  * When collecting statistics, separate distinct "play this item" commands from playing dynamically generated lists
   * Play mix based on random Recordings from Artists similar to the current selected Artist
   * Play mix based on random Recordings similar to the current selected Recording
   * Play a random mix based on history (random from least often played song/albums, from most often played song/album)
   * Play a random mix based on complex criteria
-  * "Drill down" on available genres, successively narrowing selection (e.g. Jazz=>Piano|Guitar or Piano=>Jazz|Rock) 
+  * Play selection by "drill down" on available genres, successively narrowing selection (e.g. Jazz=>Piano|Guitar or Piano=>Jazz|Rock) 
 
 = Find some interesting new music which you don't own yet =
   * View discography for selected Artist
@@ -41,12 +46,14 @@ Think about at least the following different use case categories:
   * List songs from RSS/Atom feeds, from web browsing history
   * Keep track of loved/hated songs, artists (to allow blacklisting of most hated elements or to discover more from loved elements)
   * Automatically add loved elements to amazon wish list, to last.fm loved tracks (or any other online source)
+  * See what friends are currently listening to, optionally listen to same song (if it is available locally or online)
 
 = Share data/recommendations to other users =
   * Automatically submit information about a played Recording to central server
   * Recommend an Artist, Recording or Album to other users
   * Rate an Album or Recording and make it available to other users
   * Review an Album or Recording and make it available to other users
+  * Expose "now playing" to friends
 
 = Playlist management =
   * Manage a static saved playlist (add, remove Recordings from it)
