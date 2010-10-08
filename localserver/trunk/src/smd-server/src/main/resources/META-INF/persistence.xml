@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="1.0">
+    <persistence-unit name="smd" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <class>org.socialmusicdiscovery.server.business.model.core.Label</class>
+        <class>org.socialmusicdiscovery.server.business.model.core.Release</class>
+        <class>org.socialmusicdiscovery.server.business.model.core.Medium</class>
+        <class>org.socialmusicdiscovery.server.business.model.core.Track</class>
+        <class>org.socialmusicdiscovery.server.business.model.core.Recording</class>
+        <class>org.socialmusicdiscovery.server.business.model.core.RecordingSession</class>
+        <class>org.socialmusicdiscovery.server.business.model.core.Work</class>
+        <class>org.socialmusicdiscovery.server.business.model.core.Contributor</class>
+        <class>org.socialmusicdiscovery.server.business.model.core.Artist</class>
+        <class>org.socialmusicdiscovery.server.business.model.core.Person</class>
+        <class>org.socialmusicdiscovery.server.business.model.core.PlayableElement</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+            <property name="hibernate.connection.url" value="jdbc:derby:smd-database"/>
+            <property name="hibernate.connection.driver_class" value="org.apache.derby.jdbc.EmbeddedDriver"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyDialect"/>
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+            <property name="hibernate.connection.username" value=""/>
+            <property name="hibernate.connection.password" value=""/>
+        </properties>
+    </persistence-unit>
+</persistence>
