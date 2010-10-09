@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <dataset>
+    <org.socialmusicdiscovery.server.business.model.core.Label name="Arista"/>
+    <org.socialmusicdiscovery.server.business.model.core.Release date="1992-01-01" name="The Bodyguard (Original Soundtrack Album)">
+        <relation id="label" class="org.socialmusicdiscovery.server.business.model.core.Label" index="name" value="Arista"/>
+    </org.socialmusicdiscovery.server.business.model.core.Release>
+
+     <org.socialmusicdiscovery.server.business.model.core.Person name="Dolly Rebecca Parton"/>
+     <org.socialmusicdiscovery.server.business.model.core.Person name="Ricky Minor"/>
+     <org.socialmusicdiscovery.server.business.model.core.Person name="Kenneth Brian Edmonds"/>
+     <org.socialmusicdiscovery.server.business.model.core.Person name="Daryl L. Simmons"/>
+     <org.socialmusicdiscovery.server.business.model.core.Person name="Antonio M. Reid"/>
+     <org.socialmusicdiscovery.server.business.model.core.Person name="Whitney Elisabeth Houston"/>
+     <org.socialmusicdiscovery.server.business.model.core.Person name="William Harrison Withers, Jr."/>
+     <org.socialmusicdiscovery.server.business.model.core.Person name="David Bryon Cole"/>
+     <org.socialmusicdiscovery.server.business.model.core.Person name="Robert Manuel Clivilles"/>
+     <org.socialmusicdiscovery.server.business.model.core.Person name="Clarence Alexander Scarborough"/>
+     <org.socialmusicdiscovery.server.business.model.core.Person name="Tommy Never"/>
+     <org.socialmusicdiscovery.server.business.model.core.Person name="Alan Antonio Silverstri"/>
+     <org.socialmusicdiscovery.server.business.model.core.Person name="Gary Grant"/>
+     <org.socialmusicdiscovery.server.business.model.core.Person name="William Ross"/>
+     <org.socialmusicdiscovery.server.business.model.core.Person name="Michelle Shupack"/>
+
+     <org.socialmusicdiscovery.server.business.model.core.Artist name="Dolly Parton">
+         <relation id="person" class="org.socialmusicdiscovery.server.business.model.core.Person" index="name" value="Dolly Rebecca Parton"/>
+     </org.socialmusicdiscovery.server.business.model.core.Artist>
+     <org.socialmusicdiscovery.server.business.model.core.Artist name="Ricky Minor">
+         <relation id="person" class="org.socialmusicdiscovery.server.business.model.core.Person" index="name" value="Ricky Minor"/>
+     </org.socialmusicdiscovery.server.business.model.core.Artist>
+     <org.socialmusicdiscovery.server.business.model.core.Artist name="Babyface">
+         <relation id="person" class="org.socialmusicdiscovery.server.business.model.core.Person" index="name" value="Kenneth Brian Edmonds"/>
+         </org.socialmusicdiscovery.server.business.model.core.Artist>
+     <org.socialmusicdiscovery.server.business.model.core.Artist name="Daryl Simmons">
+         <relation id="person" class="org.socialmusicdiscovery.server.business.model.core.Person" index="name" value="Daryl L. Simmons"/>
+         </org.socialmusicdiscovery.server.business.model.core.Artist>
+     <org.socialmusicdiscovery.server.business.model.core.Artist name="L.A. Reid">
+         <relation id="person" class="org.socialmusicdiscovery.server.business.model.core.Person" index="name" value="Antonio M. Reid"/>
+         </org.socialmusicdiscovery.server.business.model.core.Artist>
+     <org.socialmusicdiscovery.server.business.model.core.Artist name="Whitney Houston">
+         <relation id="person" class="org.socialmusicdiscovery.server.business.model.core.Person" index="name" value="Whitney Elisabeth Houston"/>
+         </org.socialmusicdiscovery.server.business.model.core.Artist>
+     <org.socialmusicdiscovery.server.business.model.core.Artist name="Bill Withers">
+         <relation id="person" class="org.socialmusicdiscovery.server.business.model.core.Person" index="name" value="William Harrison Withers, Jr."/>
+         </org.socialmusicdiscovery.server.business.model.core.Artist>
+     <org.socialmusicdiscovery.server.business.model.core.Artist name="David Cole">
+         <relation id="person" class="org.socialmusicdiscovery.server.business.model.core.Person" index="name" value="David Bryon Cole"/>
+         </org.socialmusicdiscovery.server.business.model.core.Artist>
+     <org.socialmusicdiscovery.server.business.model.core.Artist name="Robert Clivilles">
+         <relation id="person" class="org.socialmusicdiscovery.server.business.model.core.Person" index="name" value="Robert Manuel Clivilles"/>
+         </org.socialmusicdiscovery.server.business.model.core.Artist>
+     <org.socialmusicdiscovery.server.business.model.core.Artist name="Skip Scarborough">
+         <relation id="person" class="org.socialmusicdiscovery.server.business.model.core.Person" index="name" value="Clarence Alexander Scarborough"/>
+         </org.socialmusicdiscovery.server.business.model.core.Artist>
+     <org.socialmusicdiscovery.server.business.model.core.Artist name="Tommy Never">
+         <relation id="person" class="org.socialmusicdiscovery.server.business.model.core.Person" index="name" value="Tommy Never"/>
+         </org.socialmusicdiscovery.server.business.model.core.Artist>
+     <org.socialmusicdiscovery.server.business.model.core.Artist name="Alan Silverstri">
+         <relation id="person" class="org.socialmusicdiscovery.server.business.model.core.Person" index="name" value="Alan Antonio Silverstri"/>
+         </org.socialmusicdiscovery.server.business.model.core.Artist>
+     <org.socialmusicdiscovery.server.business.model.core.Artist name="Gary Grant">
+         <relation id="person" class="org.socialmusicdiscovery.server.business.model.core.Person" index="name" value="Gary Grant"/>
+         </org.socialmusicdiscovery.server.business.model.core.Artist>
+     <org.socialmusicdiscovery.server.business.model.core.Artist name="William Ross">
+         <relation id="person" class="org.socialmusicdiscovery.server.business.model.core.Person" index="name" value="William Ross"/>
+         </org.socialmusicdiscovery.server.business.model.core.Artist>
+     <org.socialmusicdiscovery.server.business.model.core.Artist name="Michelle Visage">
+         <relation id="person" class="org.socialmusicdiscovery.server.business.model.core.Person" index="name" value="Michelle Shupack"/>
+         </org.socialmusicdiscovery.server.business.model.core.Artist>
+     <org.socialmusicdiscovery.server.business.model.core.Artist name="The S.O.U.L. S.Y.S.T.E.M."/>
+
+     <org.socialmusicdiscovery.server.business.model.core.Work name="I Will Always Love You">
+         <org.socialmusicdiscovery.server.business.model.core.Contributor id="contributors" type="composer">
+             <relation id="artist" class="org.socialmusicdiscovery.server.business.model.core.Artist" index="name" value="Dolly Parton"/>
+         </org.socialmusicdiscovery.server.business.model.core.Contributor>
+         <org.socialmusicdiscovery.server.business.model.core.Recording reverseid="work">
+             <relation id="work" class="org.socialmusicdiscovery.server.business.model.core.Work" index="name" value="I Will Always Love You"/>
+             <org.socialmusicdiscovery.server.business.model.core.Contributor id="contributors" type="performer">
+                 <relation id="artist" class="org.socialmusicdiscovery.server.business.model.core.Artist" index="name" value="Whitney Houston"/>
+             </org.socialmusicdiscovery.server.business.model.core.Contributor>
+             <org.socialmusicdiscovery.server.business.model.core.Contributor id="contributors" type="conductor">
+                 <relation id="artist" class="org.socialmusicdiscovery.server.business.model.core.Artist" index="name" value="Ricky Minor"/>
+             </org.socialmusicdiscovery.server.business.model.core.Contributor>
+             <org.socialmusicdiscovery.server.business.model.core.Track reverseid="recording" number="1">
+                 <reverserelation id="tracks" class="org.socialmusicdiscovery.server.business.model.core.Release" index="name" value="The Bodyguard (Original Soundtrack Album)"/>
+             </org.socialmusicdiscovery.server.business.model.core.Track>
+         </org.socialmusicdiscovery.server.business.model.core.Recording>
+     </org.socialmusicdiscovery.server.business.model.core.Work>
+
+     <org.socialmusicdiscovery.server.business.model.core.Work name="Queen Of The Night">
+         <org.socialmusicdiscovery.server.business.model.core.Contributor id="contributors" type="composer">
+             <relation id="artist" class="org.socialmusicdiscovery.server.business.model.core.Artist" index="name" value="Babyface"/>
+         </org.socialmusicdiscovery.server.business.model.core.Contributor>
+         <org.socialmusicdiscovery.server.business.model.core.Contributor id="contributors" type="composer">
+             <relation id="artist" class="org.socialmusicdiscovery.server.business.model.core.Artist" index="name" value="Daryl Simmons"/>
+         </org.socialmusicdiscovery.server.business.model.core.Contributor>
+         <org.socialmusicdiscovery.server.business.model.core.Contributor id="contributors" type="composer">
+             <relation id="artist" class="org.socialmusicdiscovery.server.business.model.core.Artist" index="name" value="L.A. Reid"/>
+         </org.socialmusicdiscovery.server.business.model.core.Contributor>
+         <org.socialmusicdiscovery.server.business.model.core.Contributor id="contributors" type="composer">
+             <relation id="artist" class="org.socialmusicdiscovery.server.business.model.core.Artist" index="name" value="Whitney Houston"/>
+         </org.socialmusicdiscovery.server.business.model.core.Contributor>
+         <org.socialmusicdiscovery.server.business.model.core.Recording reverseid="work">
+             <org.socialmusicdiscovery.server.business.model.core.Contributor id="contributors" type="performer">
+                 <relation id="artist" class="org.socialmusicdiscovery.server.business.model.core.Artist" index="name" value="Whitney Houston"/>
+             </org.socialmusicdiscovery.server.business.model.core.Contributor>
+             <org.socialmusicdiscovery.server.business.model.core.Track reverseid="recording" number="5">
+                 <reverserelation id="tracks" class="org.socialmusicdiscovery.server.business.model.core.Release" index="name" value="The Bodyguard (Original Soundtrack Album)"/>
+             </org.socialmusicdiscovery.server.business.model.core.Track>
+         </org.socialmusicdiscovery.server.business.model.core.Recording>
+     </org.socialmusicdiscovery.server.business.model.core.Work>
+
+     <org.socialmusicdiscovery.server.business.model.core.Work name="It's Gonna Be A Lovely Day">
+         <org.socialmusicdiscovery.server.business.model.core.Contributor id="contributors" type="composer">
+             <relation id="artist" class="org.socialmusicdiscovery.server.business.model.core.Artist" index="name" value="Bill Withers"/>
+         </org.socialmusicdiscovery.server.business.model.core.Contributor>
+         <org.socialmusicdiscovery.server.business.model.core.Contributor id="contributors" type="composer">
+             <relation id="artist" class="org.socialmusicdiscovery.server.business.model.core.Artist" index="name" value="David Cole"/>
+         </org.socialmusicdiscovery.server.business.model.core.Contributor>
+         <org.socialmusicdiscovery.server.business.model.core.Contributor id="contributors" type="composer">
+             <relation id="artist" class="org.socialmusicdiscovery.server.business.model.core.Artist" index="name" value="Michelle Visage"/>
+         </org.socialmusicdiscovery.server.business.model.core.Contributor>
+         <org.socialmusicdiscovery.server.business.model.core.Contributor id="contributors" type="composer">
+             <relation id="artist" class="org.socialmusicdiscovery.server.business.model.core.Artist" index="name" value="Robert Clivilles"/>
+         </org.socialmusicdiscovery.server.business.model.core.Contributor>
+         <org.socialmusicdiscovery.server.business.model.core.Contributor id="contributors" type="composer">
+             <relation id="artist" class="org.socialmusicdiscovery.server.business.model.core.Artist" index="name" value="Skip Scarborough"/>
+         </org.socialmusicdiscovery.server.business.model.core.Contributor>
+         <org.socialmusicdiscovery.server.business.model.core.Contributor id="contributors" type="composer">
+             <relation id="artist" class="org.socialmusicdiscovery.server.business.model.core.Artist" index="name" value="Tommy Never"/>
+         </org.socialmusicdiscovery.server.business.model.core.Contributor>
+         <org.socialmusicdiscovery.server.business.model.core.Recording reverseid="work">
+             <org.socialmusicdiscovery.server.business.model.core.Track reverseid="recording" number="9">
+                 <reverserelation id="tracks" class="org.socialmusicdiscovery.server.business.model.core.Release" index="name" value="The Bodyguard (Original Soundtrack Album)"/>
+             </org.socialmusicdiscovery.server.business.model.core.Track>
+             <org.socialmusicdiscovery.server.business.model.core.Contributor id="contributors" type="performer">
+                 <relation id="artist" class="org.socialmusicdiscovery.server.business.model.core.Artist" index="name" value="The S.O.U.L. S.Y.S.T.E.M."/>
+             </org.socialmusicdiscovery.server.business.model.core.Contributor>
+         </org.socialmusicdiscovery.server.business.model.core.Recording>
+     </org.socialmusicdiscovery.server.business.model.core.Work>
+
+     <org.socialmusicdiscovery.server.business.model.core.Work name="Theme From The Bodyguard">
+         <org.socialmusicdiscovery.server.business.model.core.Contributor id="contributors" type="composer">
+             <relation id="artist" class="org.socialmusicdiscovery.server.business.model.core.Artist" index="name" value="Alan Silverstri"/>
+         </org.socialmusicdiscovery.server.business.model.core.Contributor>
+         <org.socialmusicdiscovery.server.business.model.core.Recording reverseid="work">
+             <org.socialmusicdiscovery.server.business.model.core.Track reverseid="recording" number="13">
+                 <reverserelation id="tracks" class="org.socialmusicdiscovery.server.business.model.core.Release" index="name" value="The Bodyguard (Original Soundtrack Album)"/>
+             </org.socialmusicdiscovery.server.business.model.core.Track>
+             <org.socialmusicdiscovery.server.business.model.core.Contributor id="contributors" type="performer">
+                 <relation id="artist" class="org.socialmusicdiscovery.server.business.model.core.Artist" index="name" value="Gary Grant"/>
+             </org.socialmusicdiscovery.server.business.model.core.Contributor>
+             <org.socialmusicdiscovery.server.business.model.core.Contributor id="contributors" type="conductor">
+                  <relation id="artist" class="org.socialmusicdiscovery.server.business.model.core.Artist" index="name" value="William Ross"/>
+             </org.socialmusicdiscovery.server.business.model.core.Contributor>
+         </org.socialmusicdiscovery.server.business.model.core.Recording>
+     </org.socialmusicdiscovery.server.business.model.core.Work>
+
+ </dataset>
