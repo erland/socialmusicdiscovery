@@ -2,6 +2,9 @@
 <persistence xmlns="http://java.sun.com/xml/ns/persistence" version="1.0">
     <persistence-unit name="smd" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
+
+        <class>org.socialmusicdiscovery.server.business.model.SMDEntityReference</class>
+
         <class>org.socialmusicdiscovery.server.business.model.core.Label</class>
         <class>org.socialmusicdiscovery.server.business.model.core.Release</class>
         <class>org.socialmusicdiscovery.server.business.model.core.Medium</class>
@@ -13,6 +16,13 @@
         <class>org.socialmusicdiscovery.server.business.model.core.Artist</class>
         <class>org.socialmusicdiscovery.server.business.model.core.Person</class>
         <class>org.socialmusicdiscovery.server.business.model.core.PlayableElement</class>
+
+        <class>org.socialmusicdiscovery.server.business.model.subjective.Credit</class>
+        <class>org.socialmusicdiscovery.server.business.model.subjective.Relation</class>
+        <class>org.socialmusicdiscovery.server.business.model.subjective.Series</class>
+
+        <class>org.socialmusicdiscovery.server.business.model.classification.Classification</class>
+
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <property name="hibernate.connection.url" value="jdbc:derby:smd-database"/>

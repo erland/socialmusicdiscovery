@@ -3,20 +3,26 @@ package org.socialmusicdiscovery.server.business.model.core;
 import org.socialmusicdiscovery.server.business.model.SMDEntity;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "release")
 @javax.persistence.Entity
 @Table(name = "releases")
 public class Release extends SMDEntity<Release> {
     private Date date;
+    @Column(nullable = false)
     private String name;
     @ManyToOne
     @JoinColumn(name="label_id")
     private Label label;
     @OneToMany
-    @JoinColumn(name = "release_id")
+    @JoinColumn(name = "release_id", nullable = false)
     private Collection<Medium> mediums;
     @OneToMany
     @JoinColumn(name = "release_id")

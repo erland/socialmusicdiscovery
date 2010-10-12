@@ -3,9 +3,14 @@ package org.socialmusicdiscovery.server.business.model.core;
 import org.socialmusicdiscovery.server.business.model.SMDEntity;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Collection;
 import java.util.Date;
 
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "recording")
 @javax.persistence.Entity
 @Table(name = "recordings")
 public class Recording extends SMDEntity<Recording> {
@@ -17,7 +22,7 @@ public class Recording extends SMDEntity<Recording> {
     @OneToMany
     @JoinColumn(name="recording_id")
     private Collection<Contributor> contributors;
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name="work_id")
     private Work work;
 

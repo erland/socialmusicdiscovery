@@ -3,12 +3,18 @@ package org.socialmusicdiscovery.server.business.model.core;
 import org.socialmusicdiscovery.server.business.model.SMDEntity;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Collection;
 import java.util.Date;
 
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "work")
 @javax.persistence.Entity
 @Table(name = "works")
 public class Work extends SMDEntity<Work> {
+    @Column(nullable = false)
     private String name;
     private Date date;
     @OneToMany

@@ -1,151 +1,88 @@
-package org.socialmusicdiscovery.server.business.model.core;
+package org.socialmusicdiscovery.server.business.model;
 
-import org.apache.derby.impl.io.VFMemoryStorageFactory;
 import org.dbunit.DatabaseUnitException;
-import org.dbunit.database.DatabaseConnection;
-import org.dbunit.database.IDatabaseConnection;
-import org.dbunit.dataset.IDataSet;
-import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.dbunit.operation.DatabaseOperation;
 import org.socialmusicdiscovery.server.business.logic.SMDApplication;
+import org.socialmusicdiscovery.server.business.model.core.*;
+import org.socialmusicdiscovery.test.BaseTestCase;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.persistence.Query;
-import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.SQLNonTransientConnectionException;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Iterator;
 
 
-public class PersistentTest {
-    private EntityManagerFactory emFactory;
-
-    private EntityManager em;
-
-    private final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy");
-
+public class CoreTest extends BaseTestCase {
     @BeforeTest
     public void setUp()  {
-        try {
-            Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-            DriverManager.getConnection("jdbc:derby:memory:unit-test;create=true").close();
-            //DriverManager.getConnection("jdbc:derby:target/unit-test;create=true").close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        try {
-            emFactory = Persistence.createEntityManagerFactory("smd");
-            em = emFactory.createEntityManager();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        super.setUp();
     }
 
     @AfterTest
-    public void tearDown() throws SQLException, IOException {
-           if (em != null && em.isOpen()) {
-               em.close();
-           }
-           if (emFactory != null && emFactory.isOpen()) {
-               emFactory.close();
-           }
-           try {
-               DriverManager.getConnection("jdbc:derby:memory:unit-test;shutdown=true").close();
-               //DriverManager.getConnection("jdbc:derby:target/unit-test;shutdown=true").close();
-           } catch (SQLNonTransientConnectionException ex) {
-               if (ex.getErrorCode() != 45000) {
-                   throw ex;
-               }
-               // Shutdown success
-           }
-           VFMemoryStorageFactory.purgeDatabase(new File("target/unit-test").getCanonicalPath());
-       }
-
-
-    private void loadTestData(String file) throws ClassNotFoundException, SQLException, DatabaseUnitException, MalformedURLException {
-        loadTestData(DatabaseOperation.CLEAN_INSERT,"src/test/test-data/"+this.getClass().getPackage().getName().replaceAll("\\.","/")+"/"+file);
-    }
-    private void addTestData(String file) throws ClassNotFoundException, SQLException, DatabaseUnitException, MalformedURLException {
-        loadTestData(DatabaseOperation.INSERT,"src/test/test-data/"+this.getClass().getPackage().getName().replaceAll("\\.","/")+"/"+file);
-    }
-
-    private void loadTestData(DatabaseOperation dboperation,String file) throws ClassNotFoundException, SQLException, DatabaseUnitException, MalformedURLException {
-        Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-        IDatabaseConnection connection = new DatabaseConnection(DriverManager.getConnection("jdbc:derby:memory:unit-test","",""));
-        //IDatabaseConnection connection = new DatabaseConnection(DriverManager.getConnection("jdbc:derby:target/unit-test","",""));
-        FlatXmlDataSetBuilder builder = new FlatXmlDataSetBuilder();
-        builder.setColumnSensing(true);
-        IDataSet ds = builder.build(new File(file));
-        dboperation.execute(connection,ds);
+    public void tearDown() {
+        super.tearDown();
     }
 
     @Test
-    public void testModelCreation() throws ParseException, Exception {
-        loadTestData("Empty Tables.xml");
+    public void testModelCreation() throws Exception {
+        loadTestData(getClass().getPackage().getName(),"Empty Tables.xml");
         em.getTransaction().begin();
         try {
             Release release = new Release();
             release.setName("The Bodyguard (Original Soundtrack Album)");
             release.setDate(DATE_FORMAT.parse("1992"));
-            em.persist(release);
+            releaseRepository.create(release);
 
             Work work = new Work();
             work.setName("I Will Always Love You");
-            em.persist(work);
+            workRepository.create(work);
 
             Contributor contributorDollyParton = new Contributor();
             contributorDollyParton.setType("composer");
             Artist artistDollyParton = new Artist();
             artistDollyParton.setName("Dolly Parton");
-            em.persist(artistDollyParton);
+            artistRepository.create(artistDollyParton);
             contributorDollyParton.setArtist(artistDollyParton);
-            em.persist(contributorDollyParton);
+            contributorRepository.create(contributorDollyParton);
 
             work.setContributors(Arrays.asList(contributorDollyParton));
-            em.persist(work);
+            workRepository.create(work);
 
             Recording recording = new Recording();
             recording.setWork(work);
-            em.persist(recording);
+            recordingRepository.create(recording);
 
             Contributor contributorWhitneyHouston= new Contributor();
             contributorWhitneyHouston.setType("artist");
             Artist artistWhitneyHouston= new Artist();
             artistWhitneyHouston.setName("Whitney Houston");
-            em.persist(artistWhitneyHouston);
+            artistRepository.create(artistWhitneyHouston);
             contributorWhitneyHouston.setArtist(artistWhitneyHouston);
-            em.persist(contributorWhitneyHouston);
+            contributorRepository.create(contributorWhitneyHouston);
 
             Contributor contributorRickyMinor= new Contributor();
             contributorRickyMinor.setType("conductor");
             Artist artistRickyMinor= new Artist();
             artistRickyMinor.setName("Ricky Minor");
-            em.persist(artistRickyMinor);
+            artistRepository.create(artistRickyMinor);
             contributorRickyMinor.setArtist(artistRickyMinor);
-            em.persist(contributorRickyMinor);
+            contributorRepository.create(contributorRickyMinor);
 
             recording.setContributors(Arrays.asList(contributorWhitneyHouston,contributorRickyMinor));
-            em.persist(recording);
+            recordingRepository.create(recording);
 
             Track track = new Track();
             track.setNumber(1);
             track.setRecording(recording);
-            em.persist(track);
+            trackRepository.create(track);
 
             release.setTracks(Arrays.asList(track));
-            em.persist(release);
+            releaseRepository.create(release);
         }
         finally{
             em.getTransaction().commit();
@@ -193,8 +130,8 @@ public class PersistentTest {
     }
 
     @Test
-    public void testModelRead() throws ClassNotFoundException, SQLException, DatabaseUnitException, MalformedURLException {
-        loadTestData("The Bodyguard.xml");
+    public void testModelRead() throws Exception {
+        loadTestData(getClass().getPackage().getName(),"The Bodyguard.xml");
         em.getTransaction().begin();
         try {
             Query query = em.createQuery("from Release where name=:name");

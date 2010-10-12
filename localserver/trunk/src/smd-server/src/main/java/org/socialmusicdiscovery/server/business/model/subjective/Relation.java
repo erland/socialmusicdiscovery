@@ -1,30 +1,44 @@
 package org.socialmusicdiscovery.server.business.model.subjective;
 
 import org.socialmusicdiscovery.server.business.model.SMDEntity;
+import org.socialmusicdiscovery.server.business.model.SMDEntityReference;
 
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @javax.persistence.Entity
 @Table(name="relations")
-public class Relation extends SMDEntity<Relation> {
-    //TODO: How do we annotate this to make it fit all entities ?
-    private SMDEntity from;
-    //TODO: How do we annotate this to make it fit all entities ?
-    private SMDEntity to;
+@IdClass(RelationPK.class)
+public class Relation {
+    @Id
+    private String type;
 
-    public SMDEntity getFrom() {
-        return from;
+    @Id
+    private String fromId;
+
+    @Id
+    private String toId;
+
+    public String getType() {
+        return type;
     }
 
-    public void setFrom(SMDEntity from) {
-        this.from = from;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public SMDEntity getTo() {
-        return to;
+    public String getFromId() {
+        return fromId;
     }
 
-    public void setTo(SMDEntity to) {
-        this.to = to;
+    public void setFromId(String fromId) {
+        this.fromId = fromId;
+    }
+
+    public String getToId() {
+        return toId;
+    }
+
+    public void setToId(String toId) {
+        this.toId = toId;
     }
 }
