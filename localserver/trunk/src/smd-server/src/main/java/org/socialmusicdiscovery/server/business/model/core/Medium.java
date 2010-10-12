@@ -5,8 +5,13 @@ import org.socialmusicdiscovery.server.business.model.SMDEntity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Collection;
 
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "medium")
 @javax.persistence.Entity
 @Table(name = "mediums")
 public class Medium extends SMDEntity<Medium> {

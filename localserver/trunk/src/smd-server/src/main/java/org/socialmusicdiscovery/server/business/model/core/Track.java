@@ -3,8 +3,13 @@ package org.socialmusicdiscovery.server.business.model.core;
 import org.socialmusicdiscovery.server.business.model.SMDEntity;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Collection;
 
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "track")
 @javax.persistence.Entity
 @Table(name = "tracks")
 public class Track extends SMDEntity<Track> {
@@ -14,7 +19,7 @@ public class Track extends SMDEntity<Track> {
     private Recording recording;
 
     @OneToMany
-    @JoinColumn(name="track_id")
+    @JoinColumn(name="track_id", nullable = false)
     private Collection<PlayableElement> playableElements;
 
     public Integer getNumber() {

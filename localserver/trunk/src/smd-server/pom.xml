@@ -10,6 +10,25 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
             <version>3.3.2.GA</version>
+            <exclusions>
+                    <exclusion>
+                            <groupId>asm</groupId>
+                            <artifactId>asm</artifactId>
+                    </exclusion>
+                    <exclusion>
+                            <groupId>asm</groupId>
+                            <artifactId>asm-attrs</artifactId>
+                    </exclusion>
+                    <exclusion>
+                            <groupId>cglib</groupId>
+                            <artifactId>cglib</artifactId>
+                    </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib-nodep</artifactId>
+            <version>2.1_3</version>
         </dependency>
         <dependency>
             <groupId>org.apache.derby</groupId>
@@ -34,6 +53,52 @@
             <version>1.5.2</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- @Inject support -->
+        <dependency>
+          <groupId>com.google.inject</groupId>
+          <artifactId>guice</artifactId>
+          <version>2.0</version>
+        </dependency>
+
+        <!-- JSON support in management api -->
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-json</artifactId>
+            <version>1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-server</artifactId>
+            <version>1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>jsr311-api</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <!-- JSON HTTP client testing -->
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>1.4</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Embedded web server -->
+        <dependency>
+            <groupId>com.sun.grizzly</groupId>
+            <artifactId>grizzly-servlet-webserver</artifactId>
+            <version>1.9.18</version>
+        </dependency>
+
+        <!-- Required to make DbUnit work with DatabaseSequenceFilter -->
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>3.2.1</version>
+        </dependency>
     </dependencies>
 
     <repositories>
@@ -47,6 +112,16 @@
     </repositories>
 
     <build>
+  <pluginManagement>
+    <plugins>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.2</version>
+      </plugin>
+    </plugins>
+  </pluginManagement>
+
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -90,8 +165,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.2</version>
                 <configuration>
                     <appendAssemblyId>false</appendAssemblyId>
+                    <ignoreDirFormatExtensions>false</ignoreDirFormatExtensions>
                     <attach>false</attach>
                     <descriptors>
                         <descriptor>src/main/assemble/jarpackage.xml</descriptor>

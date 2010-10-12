@@ -3,9 +3,14 @@ package org.socialmusicdiscovery.server.business.model.core;
 import org.socialmusicdiscovery.server.business.model.SMDEntity;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Collection;
 import java.util.Date;
 
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "recording_session")
 @javax.persistence.Entity
 @Table(name = "recording_sessions")
 public class RecordingSession extends SMDEntity<RecordingSession> {
@@ -13,10 +18,11 @@ public class RecordingSession extends SMDEntity<RecordingSession> {
     @OneToMany
     @JoinColumn(name= "session_id")
     private Collection<Contributor> contributors;
-    @ManyToOne
-    @JoinColumn(name="work_id")
-    private Work work;
 
+    @OneToMany
+    @JoinColumn(name="session_id")
+    private Collection<Recording> recordings;
+    
     public Date getDate() {
         return date;
     }
@@ -33,11 +39,11 @@ public class RecordingSession extends SMDEntity<RecordingSession> {
         this.contributors = contributors;
     }
 
-    public Work getWork() {
-        return work;
+    public Collection<Recording> getRecordings() {
+        return recordings;
     }
 
-    public void setWork(Work work) {
-        this.work = work;
+    public void setRecordings(Collection<Recording> recordings) {
+        this.recordings = recordings;
     }
 }

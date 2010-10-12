@@ -11,4 +11,12 @@
     <persons/>
     <releases/>
     <labels/>
+    <credits/>
+    <series/>
+    <release_series/>
+    <relations/>
+    <credits/>
+    <classifications/>
+    <classification_references/>
+    <smdentity_references/>
 </dataset>

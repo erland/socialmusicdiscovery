@@ -1,23 +1,26 @@
 package org.socialmusicdiscovery.server.business.model.classification;
 
 import org.socialmusicdiscovery.server.business.model.SMDEntity;
+import org.socialmusicdiscovery.server.business.model.SMDEntityReference;
 
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Collection;
 
 @javax.persistence.Entity
 @Table(name="classifications")
 public class Classification extends SMDEntity {
+    @Column(nullable = false)
     private String type;
     private String name;
     @OneToMany
     @JoinColumn(name="parent_id")
     private Collection<Classification> childs;
-    //TODO: How do we annotate this ?
-    private SMDEntity entity;
+
+    @OneToMany
+    @JoinTable(name="classification_references",
+          joinColumns=@JoinColumn(name="classification_id"),
+          inverseJoinColumns=@JoinColumn(name="reference_id"))
+    private Collection<SMDEntityReference> references;
 
     public String getType() {
         return type;
@@ -41,5 +44,13 @@ public class Classification extends SMDEntity {
 
     public void setChilds(Collection<Classification> childs) {
         this.childs = childs;
+    }
+
+    public Collection<SMDEntityReference> getReferences() {
+        return references;
+    }
+
+    public void setReferences(Collection<SMDEntityReference> references) {
+        this.references = references;
     }
 }
