@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<extensions>
+	<details>
+		<title lang="EN">Social Music Discovery (ALPHA test versions)</title>
+	</details>
+	<plugins>
+		<plugin name="SocialMusicDiscovery" version="0.1.242" minTarget="7.5.0" maxTarget="7.6+">
+			<title lang="EN">Social Music Discovery *Alpha*</title>
+			<desc lang="EN">Support plugin for the Social Music Discovery application</desc>
+			<creator>Social Music Discovery project</creator>
+			<url>http://socialmusicdiscovery.googlecode.com/files/SocialMusicDiscovery-0.1.242.zip</url>
+			<sha>2b880388dec337f60c59bfc6e43f2cbd9ec13557</sha>
+			<link>http://socialmusicdiscovery.googlecode.com</link>
+		</plugin>
+	</plugins>
+</extensions>
+
