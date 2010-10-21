@@ -170,4 +170,10 @@ This section contains online streaming sources that would be interesting to inte
   * *FreeDB*
     * http://www.freedb.org/
     * Also have a raw database dump: http://ftp.freedb.org/pub/freedb/
+  * *Freebase*
+    * http://www.freebase.com
+    * Metadata site that contains a lot of relations to related sites
+    * Contains a lot more than music but it feels like the information about music might be of interest
+    * Have API for both read and write
+    * http://www.freebase.com/docs/data
   *   
