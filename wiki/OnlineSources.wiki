@@ -176,4 +176,9 @@ This section contains online streaming sources that would be interesting to inte
     * Contains a lot more than music but it feels like the information about music might be of interest
     * Have API for both read and write
     * http://www.freebase.com/docs/data
+  * *iTunes Music Store*
+    * Have a JSON based search API
+    * http://www.apple.com/itunes/affiliates/resources/documentation/itunes-store-web-service-search-api.html
+    * 30 seconds previews are available without having to use iTunes, this could possibly be useful.
+    * AMG ID to iTunes ID mapping are available, this could possibly be useful to be able to open a web browser towards AMG web site
   *   
