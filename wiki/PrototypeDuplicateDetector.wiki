@@ -1,0 +1,19 @@
+#summary Duplicate Detector prototype
+
+= General =
+
+This is the "Duplicate Detector" plugin which is available in the following repository:
+  * http://erlandplugins.googlecode.com/svn/repository/trunk/testing.xml
+
+The intention of this plugin was to verify how good a MD5 calculated SMD identifier would work in comparison to a SHA-256 version.
+
+This plugin has also been discussed a bit on the Logitech forums in the following thread:
+http://forums.slimdevices.com/showthread.php?p=573731
+
+The plugin source code is commited in our repository:
+https://socialmusicdiscovery.googlecode.com/svn/prototypes/DuplicateDetector/
+
+Regarding collistions, the current possibilities in the Audio::Scan library are:
+  * Check the whole file (by using a large number)
+  * Check only the beginning of the file
+  * In 7.6 only: Check only a part of the file starting with an offset, this makes it possible to use the middle of the file.
