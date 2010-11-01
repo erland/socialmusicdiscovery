@@ -1,0 +1,67 @@
+#summary Build instructions for various project parts
+
+= General instructions =
+== Building with Maven ==
+To build with maven in the top directory run:
+{{{
+mvn install
+}}}
+
+The result will be a jar file in the "target" directory. The jar file is self contained and contains all references needed to run the server.
+
+To remove all the binaries, you can run:
+{{{
+mvn clean
+}}}
+
+== Generating IntelliJ IDEA project files ==
+To generate IntelliJ IDEA project files, in the top directory run:
+{{{
+mvn idea:idea
+}}}
+
+This will generate IntelliJ IDEA project files. In addition to this, you might need to setup the JDK inside IntelliJ IDEA to point to the same JDK as defined by JAVA_HOME.
+
+*Note!*
+The IntelliJ project files will only build the class files, if you want the self contained JAR you need to use maven to build.
+
+To remove all the IntelliJ IDEA project files, you can run:
+{{{
+mvn idea:clean
+}}}
+
+== Generating Eclipse project files ==
+To generate Eclipse project files, in the top directory run:
+{{{
+mvn eclipse:eclipse
+}}}
+
+This will generate Eclipse project files. 
+
+To open it in Eclipse you need to:
+  # Create a new workspace (or use an existing one) in Eclipse
+  # In Eclipse, select "File/Import.../General/Exisiting Projects into Workspace" and point to the top directory where you executed the mvn eclipse:eclipse command and select the project to import.
+  # To make Eclipse find the dependencies, you also need to goto "Preferences/Java/Build Path/Classpath Variables" and setup a new variable M2_REPO that points to the ~/.m2/repository directory (the directory where your local Maven repository is stored)
+
+*Note!*
+The Eclipse project files will only build the class files, if you want the self contained JAR you need to use maven to build.
+
+To remove all the Eclipse project files, you can run:
+{{{
+mvn eclipse:clean
+}}}
+
+= SMD server =
+
+The svn path is:
+  * https://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/
+
+To run, you build with maven as described above and then run:
+  * java -jar smd-sserver-1.0-SNAPSHOT.jar
+
+= SMD plugin =
+The svn path is:
+  * https://socialmusicdiscovery.googlecode.com/svn/plugin/trunk/src/SocialMusicDiscovery/
+
+The latest official build is available in this repository which you can configure in SBS Settings/Plugins:
+  * http://socialmusicdiscovery.googlecode.com/svn/repository/alpha.xml
