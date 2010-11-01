@@ -1,0 +1,16 @@
+#summary Neo4J prototype of SMD Server
+
+= General =
+The neo4j prototype version of SMD server is available in svn under prototypes:
+  * https://socialmusicdiscovery.googlecode.com/svn/prototypes/neo4j/
+
+The code is only here in case someone is interested or we like to use it in the future, the current strategy is to use the [SoftwareSMDServer JPA version]
+
+The differences compared to the JPA version is:
+  * DbUnit can't be used for loading the database so it uses a custom made loader, it's probably not generic enough to use for everything but it works for this sample.
+  * The annotations on the model objects differs since they use the jo4neo annotations instead of JPA annotations, besides the annotations the Java part of the model objects should be exactly the same as the JPA version. The only exception is the id attribute in SMDEntity class which need to be a neo4j identity.
+  * The access code uses neo4j specific queries as JPA query language obviously doesn't work towards neo4j
+
+Besides the above differences it does exactly the same thing as the JPA version.
+
+*Note!* The Neo4J version was built using an early version of the JPA version so it doesn't contain the complete model and also doesn't contain all the other functionality.
