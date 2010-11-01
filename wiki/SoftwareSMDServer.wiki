@@ -1,0 +1,129 @@
+#summary Description of SMD Server
+
+= General =
+
+The project consists of:
+  * The domain model implemented as Java with JPA annotations, currently the core model is complete while the subjective/classification model still misses some stuff
+  * A simple unit test case that updates the model through code
+  * A simple unit test case that loads the database using DbUnit and then queries for the loaded Release and prints it to the screen
+  * Derby is used as database, the unit test uses a in-memory version of derby so it doesn't store anything on the disk
+  * When building it also produces a target/hibernate3/sql/schema.sql which contains the schema if you like to look at it separately.
+
+The project also builds a smd-server-1.0-SNAPSHOT.jar which can be executed as: 
+java -jar smd-sserver-1.0-SNAPSHOT.jar
+
+This jar file bundles Derby and creates an empty database persisted in a "smd-database" directory when launched the first time and just prints all Releases in the database. To fill the database, connect to it with your favorite SQL client that is able to connect towards Derby.
+
+You will need the Derby JDBC driver: org.apache.derby.jdbc.EmbeddedDriver
+And the url is something like: jdbc:derby:smd-database
+
+The "smd-database" part of the url can also be a full path to the database directory, the above url presumes it's in a "smd-database" subdirectory under the current directory but you can also use something like: dbc:derby:/somedir/someotherdir/smd-database
+
+= Design Choices =
+
+These design choices are preliminary, so don't consider them final.
+
+  * We are now using UUID's as primary keys and we have also added a new SMDEntityReference entity that contains the unique key for all entities and a second column with the type of entity a specific key represent. 
+
+  * There are some very preliminary representation of some of the subjective entities. In the database some of them are represented with an intermediate table to ensure that the subjective entities doesn't have to add column to the core entities. 
+
+  * There is a repository/dao class for each entity to encapsulate JPA a bit from the other business logic and also separate the data access from everything else. 
+
+  * Google Guice is used to have support for injections even if we don't execute in a J2EE application server. It's currently used to inject JPA EntityController and the new Repository classes in the right places without having to use some service locator or similar solution.
+
+  * There is a HTTP JSON interface for the management api, currently it's only implemented as two CRUD's, on for Artist and one for Person. It should be fairly simple to offer a XML version of the same API if we like to. 
+
+  * The JSON api is implemented using Jersey the JAX-RS reference implementation from Sun/Oracle and it's driven by the Grizzly embedded HTTP server. We haven't decided yet if we want a full blown web or even J2EE server or if we should use something embedded like Grizzly. 
+
+= Relations between Core and Subjective model =
+Below follows a sample of some of the database tables to represent the subjective entity classification(genres/tags) and it's relation to to the core entities artists and releases. As you probably can see there is no direct relation between artists/releases and classification, instead their relations goes through the smdentity_references table which ensures consistency and also ensures that classification entries can be tied to any core entity without modifying the database. We might of course limit this a little bit in the application layer or in the user interface but there is no limitation in the database.
+
+In core model:
+{{{
+    create table artists (
+        id varchar(36) not null,
+        name varchar(255) not null,
+        person_id varchar(36),
+        alias_artist_id varchar(36),
+        primary key (id)
+    );
+
+    create table releases (
+        id varchar(36) not null,
+        date timestamp,
+        name varchar(255) not null,
+        label_id varchar(36),
+        primary key (id)
+    );
+
+    create table smdentity_references (
+        id varchar(36) not null,
+        type varchar(255) not null,
+        primary key (id)
+    );
+}}}
+
+
+And in subjective model:
+{{{
+    create table classification_references (
+        classification_id varchar(36) not null,
+        reference_id varchar(36) not null,
+        unique (reference_id)
+    );
+
+    create table classifications (
+        id varchar(36) not null,
+        name varchar(255),
+        type varchar(255) not null,
+        parent_id varchar(36),
+        primary key (id)
+    );
+}}}
+
+The relevant constraints looks like this:
+{{{
+    alter table artists 
+        add constraint FKD4590A0CDE6F986D 
+        foreign key (id) 
+        references smdentity_references;
+
+    alter table releases 
+        add constraint FKDF23D94CDE6F986D 
+        foreign key (id) 
+        references smdentity_references;
+
+    alter table classification_references 
+        add constraint FK87ED808174C9DB6E 
+        foreign key (classification_id) 
+        references classifications;
+
+    alter table classification_references 
+        add constraint FK87ED8081C07B75E1 
+        foreign key (reference_id) 
+        references smdentity_references;
+
+    alter table classifications 
+        add constraint FKC27C494DDE6F986D 
+        foreign key (id) 
+        references smdentity_references;
+
+    alter table classifications 
+        add constraint FKC27C494DDBA1A02A 
+        foreign key (parent_id) 
+        references classifications;
+}}}
+
+In the Java code all this is represented by four Java objects:
+  * Artist
+     * http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/java/org/socialmusicdiscovery/server/business/model/core/Artist.java
+
+  * Release
+     * http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/java/org/socialmusicdiscovery/server/business/model/core/Release.java
+
+  * SMDEntityReference
+     * http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/java/org/socialmusicdiscovery/server/business/model/SMDEntityReference.java
+
+And the subjective part in:
+  * Classification
+     * http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/java/org/socialmusicdiscovery/server/business/model/classification/Classification.java
