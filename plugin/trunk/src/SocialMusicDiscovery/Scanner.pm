@@ -622,7 +622,7 @@ sub getDirectTagsAsJSON {
 	$iterator = Slim::Schema->rs('Track')->search({ 'audio' => 1, 'remote' => 0 },{'order_by' => 'url'});
 	my $count = $iterator->count;
 	if(defined($size) && defined($offset)) {
-		$iterator = Slim::Schema->rs('Track')->search({ 'audio' => 1, 'remote' => 0 },{'order_by' => 'url'})->slice($offset,$offset+$size);
+		$iterator = Slim::Schema->rs('Track')->search({ 'audio' => 1, 'remote' => 0 },{'order_by' => 'url'})->slice($offset,$offset+$size-1);
 	}
 
 	my $url;
@@ -638,11 +638,14 @@ sub getDirectTagsAsJSON {
 	my $track = $iterator->next;
 	while ($track) {
 		my $file = Slim::Utils::Misc::pathFromFileURL($track->url);
+		my $type = Slim::Music::Info::typeFromPath($file);
+
 		my ($smdID,$fileTags) = readTags($track);
 		my $item = {
 			'smdID' => $smdID,
 			'url' => $track->url,
 			'file' => $file,
+			'format' => $type,
 		};
 
 		my @tags = ();
