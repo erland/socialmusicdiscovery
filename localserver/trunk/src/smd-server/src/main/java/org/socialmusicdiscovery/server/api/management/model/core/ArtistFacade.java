@@ -1,21 +1,21 @@
-package org.socialmusicdiscovery.server.api.management.core;
+package org.socialmusicdiscovery.server.api.management.model.core;
 
-import org.socialmusicdiscovery.server.api.management.BaseCRUDFacade;
-import org.socialmusicdiscovery.server.business.model.core.Recording;
-import org.socialmusicdiscovery.server.business.repository.core.RecordingRepository;
+import org.socialmusicdiscovery.server.api.management.model.BaseCRUDFacade;
+import org.socialmusicdiscovery.server.business.model.core.Artist;
+import org.socialmusicdiscovery.server.business.repository.core.ArtistRepository;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.Arrays;
 import java.util.Collection;
 
-@Path("/recordings")
-public class RecordingFacade extends BaseCRUDFacade<Recording, RecordingRepository> {
+@Path("/artists")
+public class ArtistFacade extends BaseCRUDFacade<Artist, ArtistRepository> {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Collection<Recording> search(@QueryParam("name") String name) {
+    public Collection<Artist> search(@QueryParam("name") String name) {
         if(name != null) {
-            return repository.findByNameWithRelations(name,Arrays.asList("reference"), null);
+            return repository.findByNameWithRelations(name, Arrays.asList("reference"), null);
         }else {
             return repository.findAllWithRelations(Arrays.asList("reference"), null);
         }
@@ -25,7 +25,7 @@ public class RecordingFacade extends BaseCRUDFacade<Recording, RecordingReposito
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
     @Override
-    public Recording get(@PathParam("id") String id) {
+    public Artist get(@PathParam("id") String id) {
         return super.get(id);
     }
 
@@ -33,8 +33,8 @@ public class RecordingFacade extends BaseCRUDFacade<Recording, RecordingReposito
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Override
-    public Recording create(Recording recording) {
-        return super.create(recording);
+    public Artist create(Artist artist) {
+        return super.create(artist);
     }
 
     @PUT
@@ -42,8 +42,8 @@ public class RecordingFacade extends BaseCRUDFacade<Recording, RecordingReposito
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
     @Override
-    public Recording update(@PathParam("id") String id, Recording recording) {
-        return super.update(id,recording);
+    public Artist update(@PathParam("id") String id, Artist artist) {
+        return super.update(id, artist);
     }
 
     @DELETE
