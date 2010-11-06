@@ -48,6 +48,8 @@ squeezeboxserver.host=mynas
 
 The properties can also be overriden by specifying them as a -D JVM parameter when launching the application.
 
+= Management API =
+The documentation of the management API to manage the data and module in SMD can be found [SoftwareSMDServerManagementAPI]
 = Design Choices =
 
 These design choices are preliminary, so don't consider them final.
