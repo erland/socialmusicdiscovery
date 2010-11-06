@@ -5,24 +5,29 @@
     <artifactId>smd-server</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <scm>
+        <connection>scm:svn:http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server</connection>
+        <developerConnection>scm:svn:https://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server</developerConnection>
+    </scm>
+
     <dependencies>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
             <version>3.3.2.GA</version>
             <exclusions>
-                    <exclusion>
-                            <groupId>asm</groupId>
-                            <artifactId>asm</artifactId>
-                    </exclusion>
-                    <exclusion>
-                            <groupId>asm</groupId>
-                            <artifactId>asm-attrs</artifactId>
-                    </exclusion>
-                    <exclusion>
-                            <groupId>cglib</groupId>
-                            <artifactId>cglib</artifactId>
-                    </exclusion>
+                <exclusion>
+                    <groupId>asm</groupId>
+                    <artifactId>asm</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>asm</groupId>
+                    <artifactId>asm-attrs</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>cglib</groupId>
+                    <artifactId>cglib</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -71,9 +76,9 @@
 
         <!-- @Inject support -->
         <dependency>
-          <groupId>com.google.inject</groupId>
-          <artifactId>guice</artifactId>
-          <version>2.0</version>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>2.0</version>
         </dependency>
 
         <!-- JSON support in management api -->
@@ -126,14 +131,14 @@
     </repositories>
 
     <build>
-  <pluginManagement>
-    <plugins>
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.2</version>
-      </plugin>
-    </plugins>
-  </pluginManagement>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>2.2</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
 
 
         <plugins>
