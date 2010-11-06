@@ -1,0 +1,8 @@
+org.socialmusicdiscovery.server.business.logic.injections.PropertiesModule
+org.socialmusicdiscovery.server.business.logic.injections.JPAModule
+org.socialmusicdiscovery.server.business.logic.injections.ExecutorServiceModule
+org.socialmusicdiscovery.server.business.logic.injections.MediaImportManagerModule
+org.socialmusicdiscovery.server.business.logic.injections.database.DerbyProviderModule
+org.socialmusicdiscovery.server.business.logic.injections.database.H2ProviderModule
+org.socialmusicdiscovery.server.business.logic.injections.database.HSQLProviderModule
+org.socialmusicdiscovery.server.business.logic.injections.database.MySQLProviderModule

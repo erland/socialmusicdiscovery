@@ -1,8 +1,8 @@
 package org.socialmusicdiscovery.server.business.repository.core;
 
 import com.google.inject.Inject;
-import org.socialmusicdiscovery.server.business.repository.SMDEntityRepositoryImpl;
 import org.socialmusicdiscovery.server.business.model.core.Label;
+import org.socialmusicdiscovery.server.business.repository.SMDEntityRepositoryImpl;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -14,7 +14,11 @@ public class LabelRepositoryImpl extends SMDEntityRepositoryImpl<Label> implemen
     public LabelRepositoryImpl(EntityManager em) {super(em);}
 
     public Collection<Label> findByName(String name) {
-        Query query = entityManager.createQuery("from Label where name=:name");
+        return findByNameWithRelations(name, null, null);
+    }
+
+    public Collection<Label> findByNameWithRelations(String name, Collection<String> mandatoryRelations, Collection<String> optionalRelations) {
+        Query query = entityManager.createQuery(queryStringFor("e",mandatoryRelations, optionalRelations)+" where e.name=:name");
         query.setParameter("name",name);
         return query.getResultList();
     }

@@ -1,5 +1,6 @@
 package org.socialmusicdiscovery.server.business.model.core;
 
+import org.hibernate.annotations.Index;
 import org.socialmusicdiscovery.server.business.model.SMDEntity;
 
 import javax.persistence.*;
@@ -8,6 +9,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "work")
@@ -15,14 +18,15 @@ import java.util.Date;
 @Table(name = "works")
 public class Work extends SMDEntity<Work> {
     @Column(nullable = false)
+    @Index(name ="nameIndex")
     private String name;
     private Date date;
     @OneToMany
     @JoinColumn(name="parent_id")
-    private Collection<Work> parts;
+    private Set<Work> parts = new HashSet<Work>();
     @OneToMany
     @JoinColumn(name="work_id")
-    private Collection<Contributor> contributors;
+    private Set<Contributor> contributors = new HashSet<Contributor>();
 
     public String getName() {
         return name;
@@ -40,19 +44,19 @@ public class Work extends SMDEntity<Work> {
         this.date = date;
     }
 
-    public Collection<Work> getParts() {
+    public Set<Work> getParts() {
         return parts;
     }
 
-    public void setParts(Collection<Work> parts) {
+    public void setParts(Set<Work> parts) {
         this.parts = parts;
     }
 
-    public Collection<Contributor> getContributors() {
+    public Set<Contributor> getContributors() {
         return contributors;
     }
 
-    public void setContributors(Collection<Contributor> contributors) {
+    public void setContributors(Set<Contributor> contributors) {
         this.contributors = contributors;
     }
 }

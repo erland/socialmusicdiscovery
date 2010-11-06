@@ -8,5 +8,6 @@ import java.util.Collection;
 
 @ImplementedBy(PersonRepositoryImpl.class)
 public interface PersonRepository extends SMDEntityRepository<Person> {
-    public Collection<Person> findByName(String name);
+    Collection<Person> findByName(String name);
+    Collection<Person> findByNameWithRelations(String name, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
 }

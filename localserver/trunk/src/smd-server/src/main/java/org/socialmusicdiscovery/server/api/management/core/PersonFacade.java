@@ -1,84 +1,56 @@
 package org.socialmusicdiscovery.server.api.management.core;
 
-import com.google.inject.Inject;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-import org.socialmusicdiscovery.server.business.logic.InjectHelper;
+import org.socialmusicdiscovery.server.api.management.BaseCRUDFacade;
 import org.socialmusicdiscovery.server.business.model.core.Person;
 import org.socialmusicdiscovery.server.business.repository.core.PersonRepository;
 
-import javax.persistence.EntityManager;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.Arrays;
 import java.util.Collection;
 
 @Path("/persons")
-public class PersonFacade {
-    @Inject
-    private PersonRepository personRepository;
-
-    @Inject
-    private EntityManager em;
-
-    public PersonFacade() {
-        InjectHelper.injectMembers(this);}
-
+public class PersonFacade extends BaseCRUDFacade<Person,PersonRepository> {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/search")
-    public Collection<Person> getPersons(@QueryParam("name") String name) {
+    public Collection<Person> search(@QueryParam("name") String name) {
         if(name != null) {
-            return personRepository.findByName(name);
+            return repository.findByNameWithRelations(name,Arrays.asList("reference"), null);
         }else {
-            Collection<Person> result = personRepository.findAll();
-            return result;
+            return repository.findAllWithRelations(Arrays.asList("reference"), null);
         }
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/get")
-    public Person getPerson(@QueryParam("id") String id) {
-        return personRepository.findById(id);
+    @Path("/{id}")
+    @Override
+    public Person get(@PathParam("id") String id) {
+        return super.get(id);
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/create")
-    public Person createPerson(Person person) {
-        em.getTransaction().begin();
-        personRepository.create(person);
-        em.getTransaction().commit();
-        return person;
+    @Override
+    public Person create(Person person) {
+        return super.create(person);
     }
 
-    @POST
+    @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/update")
-    public Person updatePerson(Person person) {
-        em.getTransaction().begin();
-        person = personRepository.merge(person);
-        em.getTransaction().commit();
-        return person;
+    @Path("/{id}")
+    @Override
+    public Person update(@PathParam("id") String id, Person person) {
+        return super.update(id,person);
     }
-    
-    @GET
+
+    @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/delete")
-    public JSONObject deletePerson(@QueryParam("id") String id) throws JSONException {
-        if(id!=null) {
-            em.getTransaction().begin();
-            Person person = personRepository.findById(id);
-            if(person!=null) {
-                personRepository.remove(person);
-                em.getTransaction().commit();
-                return new JSONObject().put("success",true);
-            }else {
-                em.getTransaction().commit();
-            }
-        }
-        return new JSONObject().put("success",false);
+    @Path("/{id}")
+    @Override
+    public void delete(@PathParam("id") String id) {
+        super.delete(id);
     }
 }

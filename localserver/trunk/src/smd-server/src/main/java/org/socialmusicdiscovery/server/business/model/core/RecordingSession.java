@@ -8,6 +8,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "recording_session")
@@ -17,11 +19,11 @@ public class RecordingSession extends SMDEntity<RecordingSession> {
     private Date date;
     @OneToMany
     @JoinColumn(name= "session_id")
-    private Collection<Contributor> contributors;
+    private Set<Contributor> contributors = new HashSet<Contributor>();
 
     @OneToMany
     @JoinColumn(name="session_id")
-    private Collection<Recording> recordings;
+    private Set<Recording> recordings = new HashSet<Recording>();
     
     public Date getDate() {
         return date;
@@ -31,19 +33,19 @@ public class RecordingSession extends SMDEntity<RecordingSession> {
         this.date = date;
     }
 
-    public Collection<Contributor> getContributors() {
+    public Set<Contributor> getContributors() {
         return contributors;
     }
 
-    public void setContributors(Collection<Contributor> contributors) {
+    public void setContributors(Set<Contributor> contributors) {
         this.contributors = contributors;
     }
 
-    public Collection<Recording> getRecordings() {
+    public Set<Recording> getRecordings() {
         return recordings;
     }
 
-    public void setRecordings(Collection<Recording> recordings) {
+    public void setRecordings(Set<Recording> recordings) {
         this.recordings = recordings;
     }
 }

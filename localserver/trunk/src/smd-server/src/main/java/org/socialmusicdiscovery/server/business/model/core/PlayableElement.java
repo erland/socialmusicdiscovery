@@ -1,5 +1,6 @@
 package org.socialmusicdiscovery.server.business.model.core;
 
+import org.hibernate.annotations.Index;
 import org.socialmusicdiscovery.server.business.model.SMDEntity;
 
 import javax.persistence.Column;
@@ -13,11 +14,22 @@ import javax.xml.bind.annotation.XmlRootElement;
 @javax.persistence.Entity
 @Table(name = "playable_elements")
 public class PlayableElement extends SMDEntity<PlayableElement> {
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1024)
     private String uri;
+    @Column(nullable = false)
+    @Index(name ="smdIDIndex")
+    private String smdID;
     @Column(nullable = false)
     private String format;
     private Integer bitrate;
+
+    public String getSmdID() {
+        return smdID;
+    }
+
+    public void setSmdID(String smdID) {
+        this.smdID = smdID;
+    }
 
     public String getUri() {
         return uri;
