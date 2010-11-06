@@ -105,7 +105,7 @@ More objects will be added, but this is what we have at the moment.
 The paths when managing media importers are as follows:
   * *List all importers in progress using GET*
     {{{
-http://localhost:9998/mediaimportermodules
+http://localhost:9998/mediaimportmodules
     }}}
   Where the result looks something like this:
     {{{
@@ -121,7 +121,7 @@ http://localhost:9998/mediaimportermodules
 
   * *Check current status of a specific module using GET*
     {{{
-http://localhost:9998/mediaimportermodules/squeezeboxserver
+http://localhost:9998/mediaimportmodules/squeezeboxserver
     }}}
   Where the result looks something like this:
     {{{
@@ -134,7 +134,7 @@ http://localhost:9998/mediaimportermodules/squeezeboxserver
     }}}
   * *Start a new import using a specific module using POST*
     {{{
-http://localhost:9998/mediaimportermodules/squeezeboxserver
+http://localhost:9998/mediaimportmodules/squeezeboxserver
     }}}
   Where the result looks something like this:
     {{{
@@ -142,7 +142,7 @@ http://localhost:9998/mediaimportermodules/squeezeboxserver
     }}}
   * *Abort an executing import module using DELETE*
     {{{
-http://localhost:9998/mediaimportermodules/squeezeboxserver
+http://localhost:9998/mediaimportmodules/squeezeboxserver
     }}}
 
 As you can see, most paths looks more or less exactly the same, it's the HTTP action that controls what type of operation that will be executed.
