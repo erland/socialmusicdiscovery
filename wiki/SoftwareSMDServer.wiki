@@ -19,6 +19,35 @@ And the url is something like: jdbc:derby:smd-database
 
 The "smd-database" part of the url can also be a full path to the database directory, the above url presumes it's in a "smd-database" subdirectory under the current directory but you can also use something like: dbc:derby:/somedir/someotherdir/smd-database
 
+= Configuration =
+The smd-server module can be configured through a configuration file called _socialmusicdiscovery.properties_ which will be loaded either from the current directory or from the classpath. If it doesn't exist, the default configuration will be loaded from the bundled [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/resources/socialmusicdiscovery-default.properties socialmusicdiscovery-default.properties] file.
+
+Some sample properties are:
+  * *org.socialmusicdiscovery.server.database* (default: derby)
+    * Specifies which database backend that should be used, sample of possible values:
+      * *h2* - H2 database stored persistent on disk
+      * *derby* - Apache Derby database stored persistent on disk
+      * *hsql* - HyperSQL database stored persistent on disk
+      * *mysql-sbs* - The bundled MySQL database in Squeezebox Server accessible on port 9092 (Not that it's only accessible from the same machine as SBS by default)
+      * *mysql-standalone* - A standalone MySQL database accessible on port 3306
+    * There are also a number of debug/analysis related database options
+      * *derby-memory* - Apache Derby in-memory database, contents cleared at exit
+      * *h2-memory* - H2 in-memory database, contents cleared at exit
+      * *h2-trace* - H2 database with trace level 2 enabled which makes it possible to get some query performance statistics
+
+  * *squeezeboxserver.host* (default: localhost)
+    * Hostname where SBS is installed, this is used by the import module when retrieving data from SBS and also by the mysql-sbs database provider option.
+
+  * *squeezeboxserver.port* (default: 9000)
+    * Port which SBS web interface is using
+
+You only need to specify the properties you like to override, so if you for example are running SBS on a separate machine (mynas) you can have a socialmusicdiscovery.properties file that looks like:
+{{{
+squeezeboxserver.host=mynas
+}}}
+
+The properties can also be overriden by specifying them as a -D JVM parameter when launching the application.
+
 = Design Choices =
 
 These design choices are preliminary, so don't consider them final.
