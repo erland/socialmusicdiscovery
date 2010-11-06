@@ -1,26 +1,35 @@
 package org.socialmusicdiscovery.server.business.model.classification;
 
+import org.hibernate.annotations.*;
 import org.socialmusicdiscovery.server.business.model.SMDEntity;
 import org.socialmusicdiscovery.server.business.model.SMDEntityReference;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 @javax.persistence.Entity
 @Table(name="classifications")
+@org.hibernate.annotations.Table(appliesTo="classifications", indexes = { @Index(name="typeAndNameIndex", columnNames={"name", "type"} )})
 public class Classification extends SMDEntity {
     @Column(nullable = false)
+    @Index(name ="typeIndex")
     private String type;
+    @Column(nullable = false)
+    @Index(name ="nameIndex")
     private String name;
     @OneToMany
     @JoinColumn(name="parent_id")
-    private Collection<Classification> childs;
+    private Set<Classification> childs = new HashSet<Classification>();
 
-    @OneToMany
+    @ManyToMany
     @JoinTable(name="classification_references",
           joinColumns=@JoinColumn(name="classification_id"),
           inverseJoinColumns=@JoinColumn(name="reference_id"))
-    private Collection<SMDEntityReference> references;
+    private Set<SMDEntityReference> references = new HashSet<SMDEntityReference>();
 
     public String getType() {
         return type;
@@ -38,19 +47,19 @@ public class Classification extends SMDEntity {
         this.name = name;
     }
 
-    public Collection<Classification> getChilds() {
+    public Set<Classification> getChilds() {
         return childs;
     }
 
-    public void setChilds(Collection<Classification> childs) {
+    public void setChilds(Set<Classification> childs) {
         this.childs = childs;
     }
 
-    public Collection<SMDEntityReference> getReferences() {
+    public Set<SMDEntityReference> getReferences() {
         return references;
     }
 
-    public void setReferences(Collection<SMDEntityReference> references) {
+    public void setReferences(Set<SMDEntityReference> references) {
         this.references = references;
     }
 }

@@ -13,7 +13,7 @@ public abstract class SMDEntityRepositoryImpl<E extends SMDEntity> extends Entit
     }
 
 	public void create(E entity) {
-        if(entity.getReference()==null) {
+        if(entity.getReference()==null || entity.getReference().getId() == null) {
             entity.setReference(SMDEntityReference.forEntity(entity));
             entityManager.persist(entity.getReference());
         }
@@ -21,8 +21,9 @@ public abstract class SMDEntityRepositoryImpl<E extends SMDEntity> extends Entit
     }
 
     public E merge(E entity) {
-        if(entity.getReference()==null) {
+        if(entity.getReference()==null || entity.getReference().getId() == null) {
             entity.setReference(SMDEntityReference.forEntity(entity));
+            entityManager.merge(entity.getReference());
         }
         return super.merge(entity);
     }

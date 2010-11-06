@@ -36,6 +36,21 @@
             <version>10.6.1.0</version>
         </dependency>
         <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.13</version>
+        </dependency>
+        <dependency>
+            <groupId>hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>1.8.0.7</version>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.2.144</version>
+        </dependency>
+        <dependency>
             <groupId>org.dbunit</groupId>
             <artifactId>dbunit</artifactId>
             <version>2.4.8</version>
@@ -78,12 +93,11 @@
             <version>1.0</version>
         </dependency>
 
-        <!-- JSON HTTP client testing -->
+        <!-- JSON HTTP client -->
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-client</artifactId>
             <version>1.4</version>
-            <scope>test</scope>
         </dependency>
 
         <!-- Embedded web server -->
@@ -153,6 +167,7 @@
                         </component>
                     </components>
                     <componentProperties>
+                        <propertyfile>src/main/conf/hbm2ddl.properties</propertyfile>
                         <persistenceunit>smd</persistenceunit>
                         <outputfilename>schema.sql</outputfilename>
                         <drop>true</drop>

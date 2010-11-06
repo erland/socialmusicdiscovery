@@ -1,5 +1,6 @@
 package org.socialmusicdiscovery.server.business.model.core;
 
+import org.hibernate.annotations.Index;
 import org.socialmusicdiscovery.server.business.model.SMDEntity;
 
 import javax.persistence.*;
@@ -13,6 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "persons")
 public class Person extends SMDEntity<Person> {
     @Column(nullable = false)
+    @Index(name ="nameIndex")
     private String name;
 
     public String getName() {

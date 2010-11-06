@@ -1,7 +1,5 @@
 package org.socialmusicdiscovery.server.business.model;
 
-import org.dbunit.DatabaseUnitException;
-import org.dbunit.operation.DatabaseOperation;
 import org.socialmusicdiscovery.server.business.logic.SMDApplication;
 import org.socialmusicdiscovery.server.business.model.core.*;
 import org.socialmusicdiscovery.test.BaseTestCase;
@@ -10,9 +8,6 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import javax.persistence.Query;
-import java.net.MalformedURLException;
-import java.sql.SQLException;
-import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Iterator;
 
@@ -50,7 +45,7 @@ public class CoreTest extends BaseTestCase {
             contributorDollyParton.setArtist(artistDollyParton);
             contributorRepository.create(contributorDollyParton);
 
-            work.setContributors(Arrays.asList(contributorDollyParton));
+            work.getContributors().add(contributorDollyParton);
             workRepository.create(work);
 
             Recording recording = new Recording();
@@ -73,7 +68,7 @@ public class CoreTest extends BaseTestCase {
             contributorRickyMinor.setArtist(artistRickyMinor);
             contributorRepository.create(contributorRickyMinor);
 
-            recording.setContributors(Arrays.asList(contributorWhitneyHouston,contributorRickyMinor));
+            recording.getContributors().addAll(Arrays.asList(contributorWhitneyHouston,contributorRickyMinor));
             recordingRepository.create(recording);
 
             Track track = new Track();

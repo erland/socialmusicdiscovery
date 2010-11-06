@@ -8,4 +8,5 @@ public interface EntityRepository<K, E> {
     E merge(E entity);
     E findById(K id);
     Collection<E> findAll();
+    Collection<E> findAllWithRelations(Collection<String> mandatoryRelations, Collection<String> optionalRelations);
 }

@@ -1,14 +1,13 @@
 package org.socialmusicdiscovery.server.business.model.core;
 
+import org.hibernate.annotations.Index;
 import org.socialmusicdiscovery.server.business.model.SMDEntity;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
+import java.util.*;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "release")
@@ -17,24 +16,27 @@ import java.util.Date;
 public class Release extends SMDEntity<Release> {
     private Date date;
     @Column(nullable = false)
+    @Index(name ="nameIndex")
     private String name;
     @ManyToOne
     @JoinColumn(name="label_id")
     private Label label;
     @OneToMany
+    @OrderBy("number, name")
     @JoinColumn(name = "release_id", nullable = false)
-    private Collection<Medium> mediums;
+    private List<Medium> mediums = new ArrayList<Medium>();
     @OneToMany
     @JoinColumn(name = "release_id")
-    private Collection<Track> tracks;
+    @OrderBy("number")
+    private List<Track> tracks = new ArrayList<Track>();
     @ManyToMany
     @JoinTable(name="release_recording_sessions",
           joinColumns=@JoinColumn(name="release_id"),
           inverseJoinColumns=@JoinColumn(name="session_id"))
-    private Collection<RecordingSession> recordingSessions;
+    private Set<RecordingSession> recordingSessions;
     @OneToMany
     @JoinColumn(name = "release_id")
-    private Collection<Contributor> contributors = new ArrayList<Contributor>();
+    private Set<Contributor> contributors = new HashSet<Contributor>();
 
     public Date getDate() {
         return date;
@@ -60,34 +62,34 @@ public class Release extends SMDEntity<Release> {
         this.label = label;
     }
 
-    public Collection<Medium> getMediums() {
+    public List<Medium> getMediums() {
         return mediums;
     }
 
-    public void setMediums(Collection<Medium> mediums) {
+    public void setMediums(List<Medium> mediums) {
         this.mediums = mediums;
     }
 
-    public Collection<Track> getTracks() {
+    public List<Track> getTracks() {
         return tracks;
     }
 
-    public void setTracks(Collection<Track> tracks) {
+    public void setTracks(List<Track> tracks) {
         this.tracks = tracks;
     }
-    public Collection<RecordingSession> getRecordingSessions() {
+    public Set<RecordingSession> getRecordingSessions() {
         return recordingSessions;
     }
 
-    public void setRecordingSessions(Collection<RecordingSession> recordingSessions) {
+    public void setRecordingSessions(Set<RecordingSession> recordingSessions) {
         this.recordingSessions = recordingSessions;
     }
 
-    public Collection<Contributor> getContributors() {
+    public Set<Contributor> getContributors() {
         return contributors;
     }
 
-    public void setContributors(Collection<Contributor> contributors) {
+    public void setContributors(Set<Contributor> contributors) {
         this.contributors = contributors;
     }
 }

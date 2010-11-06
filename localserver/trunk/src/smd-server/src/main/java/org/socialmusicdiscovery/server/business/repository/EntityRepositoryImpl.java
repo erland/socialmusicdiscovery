@@ -45,4 +45,29 @@ public abstract class EntityRepositoryImpl<K, E> implements EntityRepository<K, 
         Query query = entityManager.createQuery("from "+entityClass.getSimpleName());
         return query.getResultList();
     }
+
+    protected String queryStringFor(String entityName, Collection<String> mandatoryRelations, Collection<String> optionalRelations) {
+        StringBuffer queryString = new StringBuffer(200);
+        String distinct = "";
+        if(optionalRelations != null && optionalRelations.size()>0) {
+            distinct = "distinct ";
+        }
+        queryString.append("select ").append(distinct).append(entityName).append(" from ").append(entityClass.getSimpleName()).append(" as e");
+        if(mandatoryRelations != null) {
+            for (String relation : mandatoryRelations) {
+                queryString.append(" JOIN FETCH ").append(entityName).append(".").append(relation);
+            }
+        }
+        if(optionalRelations != null) {
+            for (String relation : optionalRelations) {
+                queryString.append(" LEFT JOIN FETCH ").append(entityName).append(".").append(relation);
+            }
+        }
+        return queryString.toString();
+    }
+    
+    public Collection<E> findAllWithRelations(Collection<String> mandatoryRelations, Collection<String> optionalRelations) {
+        Query query = entityManager.createQuery(queryStringFor("e",mandatoryRelations,optionalRelations));
+        return query.getResultList();
+    }
 }

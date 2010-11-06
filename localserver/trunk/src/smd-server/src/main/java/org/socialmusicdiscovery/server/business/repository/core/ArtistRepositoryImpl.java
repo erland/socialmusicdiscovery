@@ -1,9 +1,9 @@
 package org.socialmusicdiscovery.server.business.repository.core;
 
 import com.google.inject.Inject;
+import org.socialmusicdiscovery.server.business.model.core.Artist;
 import org.socialmusicdiscovery.server.business.model.core.Person;
 import org.socialmusicdiscovery.server.business.repository.SMDEntityRepositoryImpl;
-import org.socialmusicdiscovery.server.business.model.core.Artist;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -22,7 +22,11 @@ public class ArtistRepositoryImpl extends SMDEntityRepositoryImpl<Artist> implem
     }
 
     public Collection<Artist> findByName(String name) {
-        Query query = entityManager.createQuery("from Artist where name=:name");
+        return findByNameWithRelations(name, null, null);
+    }
+
+    public Collection<Artist> findByNameWithRelations(String name, Collection<String> mandatoryRelations, Collection<String> optionalRelations) {
+        Query query = entityManager.createQuery(queryStringFor("e",mandatoryRelations, optionalRelations)+" where e.name=:name");
         query.setParameter("name",name);
         return query.getResultList();
     }

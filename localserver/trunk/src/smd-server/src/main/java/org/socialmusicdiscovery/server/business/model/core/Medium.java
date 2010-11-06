@@ -4,11 +4,12 @@ import org.socialmusicdiscovery.server.business.model.SMDEntity;
 
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.Collection;
+import java.util.*;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "medium")
@@ -19,7 +20,8 @@ public class Medium extends SMDEntity<Medium> {
     private String name;
     @OneToMany
     @JoinColumn(name="medium_id")
-    private Collection<Track> tracks;
+    @OrderBy("number")
+    private List<Track> tracks = new ArrayList<Track>();
 
     public Integer getNumber() {
         return number;
@@ -37,11 +39,11 @@ public class Medium extends SMDEntity<Medium> {
         this.name = name;
     }
 
-    public Collection<Track> getTracks() {
+    public List<Track> getTracks() {
         return tracks;
     }
 
-    public void setTracks(Collection<Track> tracks) {
+    public void setTracks(List<Track> tracks) {
         this.tracks = tracks;
     }
 }

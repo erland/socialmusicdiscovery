@@ -8,6 +8,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "recording")
@@ -16,12 +18,12 @@ import java.util.Date;
 public class Recording extends SMDEntity<Recording> {
     private String name;
     private Date date;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="mixof_id")
     private Recording mixOf;
     @OneToMany
     @JoinColumn(name="recording_id")
-    private Collection<Contributor> contributors;
+    private Set<Contributor> contributors = new HashSet<Contributor>();
     @ManyToOne(optional = false)
     @JoinColumn(name="work_id")
     private Work work;
@@ -50,11 +52,11 @@ public class Recording extends SMDEntity<Recording> {
         this.mixOf = mixOf;
     }
 
-    public Collection<Contributor> getContributors() {
+    public Set<Contributor> getContributors() {
         return contributors;
     }
 
-    public void setContributors(Collection<Contributor> contributors) {
+    public void setContributors(Set<Contributor> contributors) {
         this.contributors = contributors;
     }
 
