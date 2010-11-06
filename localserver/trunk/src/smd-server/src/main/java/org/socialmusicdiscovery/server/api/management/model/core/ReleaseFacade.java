@@ -1,6 +1,6 @@
-package org.socialmusicdiscovery.server.api.management.core;
+package org.socialmusicdiscovery.server.api.management.model.core;
 
-import org.socialmusicdiscovery.server.api.management.BaseCRUDFacade;
+import org.socialmusicdiscovery.server.api.management.model.BaseCRUDFacade;
 import org.socialmusicdiscovery.server.business.model.core.Release;
 import org.socialmusicdiscovery.server.business.repository.core.ReleaseRepository;
 

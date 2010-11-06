@@ -1,19 +1,19 @@
-package org.socialmusicdiscovery.server.api.management.core;
+package org.socialmusicdiscovery.server.api.management.model.core;
 
-import org.socialmusicdiscovery.server.api.management.BaseCRUDFacade;
-import org.socialmusicdiscovery.server.business.model.core.Work;
-import org.socialmusicdiscovery.server.business.repository.core.WorkRepository;
+import org.socialmusicdiscovery.server.api.management.model.BaseCRUDFacade;
+import org.socialmusicdiscovery.server.business.model.core.Recording;
+import org.socialmusicdiscovery.server.business.repository.core.RecordingRepository;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.Arrays;
 import java.util.Collection;
 
-@Path("/works")
-public class WorkFacade extends BaseCRUDFacade<Work, WorkRepository> {
+@Path("/recordings")
+public class RecordingFacade extends BaseCRUDFacade<Recording, RecordingRepository> {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Collection<Work> search(@QueryParam("name") String name) {
+    public Collection<Recording> search(@QueryParam("name") String name) {
         if(name != null) {
             return repository.findByNameWithRelations(name,Arrays.asList("reference"), null);
         }else {
@@ -25,7 +25,7 @@ public class WorkFacade extends BaseCRUDFacade<Work, WorkRepository> {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
     @Override
-    public Work get(@PathParam("id") String id) {
+    public Recording get(@PathParam("id") String id) {
         return super.get(id);
     }
 
@@ -33,8 +33,8 @@ public class WorkFacade extends BaseCRUDFacade<Work, WorkRepository> {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Override
-    public Work create(Work work) {
-        return super.create(work);
+    public Recording create(Recording recording) {
+        return super.create(recording);
     }
 
     @PUT
@@ -42,8 +42,8 @@ public class WorkFacade extends BaseCRUDFacade<Work, WorkRepository> {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
     @Override
-    public Work update(@PathParam("id") String id, Work work) {
-        return super.update(id,work);
+    public Recording update(@PathParam("id") String id, Recording recording) {
+        return super.update(id,recording);
     }
 
     @DELETE

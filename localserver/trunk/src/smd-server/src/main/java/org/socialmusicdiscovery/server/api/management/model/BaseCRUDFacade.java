@@ -1,4 +1,4 @@
-package org.socialmusicdiscovery.server.api.management;
+package org.socialmusicdiscovery.server.api.management.model;
 
 import com.google.inject.Inject;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;

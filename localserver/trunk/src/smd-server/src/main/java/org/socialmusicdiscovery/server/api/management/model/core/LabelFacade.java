@@ -1,21 +1,21 @@
-package org.socialmusicdiscovery.server.api.management.core;
+package org.socialmusicdiscovery.server.api.management.model.core;
 
-import org.socialmusicdiscovery.server.api.management.BaseCRUDFacade;
-import org.socialmusicdiscovery.server.business.model.core.Person;
-import org.socialmusicdiscovery.server.business.repository.core.PersonRepository;
+import org.socialmusicdiscovery.server.api.management.model.BaseCRUDFacade;
+import org.socialmusicdiscovery.server.business.model.core.Label;
+import org.socialmusicdiscovery.server.business.repository.core.LabelRepository;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.Arrays;
 import java.util.Collection;
 
-@Path("/persons")
-public class PersonFacade extends BaseCRUDFacade<Person,PersonRepository> {
+@Path("/labels")
+public class LabelFacade extends BaseCRUDFacade<Label,LabelRepository> {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Collection<Person> search(@QueryParam("name") String name) {
+    public Collection<Label> search(@QueryParam("name") String name) {
         if(name != null) {
-            return repository.findByNameWithRelations(name,Arrays.asList("reference"), null);
+            return repository.findByNameWithRelations(name, Arrays.asList("reference"), null);
         }else {
             return repository.findAllWithRelations(Arrays.asList("reference"), null);
         }
@@ -25,7 +25,7 @@ public class PersonFacade extends BaseCRUDFacade<Person,PersonRepository> {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
     @Override
-    public Person get(@PathParam("id") String id) {
+    public Label get(@PathParam("id") String id) {
         return super.get(id);
     }
 
@@ -33,8 +33,8 @@ public class PersonFacade extends BaseCRUDFacade<Person,PersonRepository> {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Override
-    public Person create(Person person) {
-        return super.create(person);
+    public Label create(Label label) {
+        return super.create(label);
     }
 
     @PUT
@@ -42,8 +42,8 @@ public class PersonFacade extends BaseCRUDFacade<Person,PersonRepository> {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
     @Override
-    public Person update(@PathParam("id") String id, Person person) {
-        return super.update(id,person);
+    public Label update(@PathParam("id") String id, Label label) {
+        return super.update(id,label);
     }
 
     @DELETE
