@@ -1,0 +1,148 @@
+#summary Description of SMD Server management API
+
+= Overview =
+The management API is based on a RESTful web service using JSON. The sections below describes the available reqests. 
+
+The general principle is that what do is specified through the HTTP actions, the guidelines should be:
+
+  * *GET* - Gets a specific entity or perform a search
+    * When getting a specific entity, you  specify the identity in the path of the url
+    * When doing a search you typically specify the search criterias as request parameters
+    * The response returns a single entity (if specifying the identity in the path) or a list of entities (if doing a search)
+  * *POST* - Create a new instance
+    * The data for the new object is posted in the body of the request
+    * The response contains the newly created object
+  * *PUT* - Updates an existing instance
+    * The identity is specified on the path
+    * The updated object is posted in the body of the request
+    * The response contains the updated object'
+  * *DELETE* - Deletes an existing instance
+    * The identity is specified on the path
+
+For testing the API, you need a HTTP client that can issue POST, PUT, GET and DELETE HTTP actions. On example of this is the Firefox add-on called *"Poster"* which is freely available and makes it possible to send all these request without doing any development.
+
+= Managing model objects =
+The paths when managing model objects looks like this:
+  * *Get a specific artist using GET*
+    {{{
+http://localhost:9998/artists/f92e43a4-5ddf-420a-a9ef-77204358bcf5
+    }}}
+  Where the result looks something like this:
+    {{{
+{
+  "id":"f92e43a4-5ddf-420a-a9ef-77204358bcf5",
+  "reference":{
+    "id":"f92e43a4-5ddf-420a-a9ef-77204358bcf5",
+    "type":"org.socialmusicdiscovery.server.business.model.core.Artist"
+  },
+  "name":"Joe Satriani"
+}
+    }}}
+  * *Get all available artists using GET*
+    {{{
+http://localhost:9998/artists
+    }}}
+  Where the result looks something like this:
+    {{{
+{
+"artist":[
+  {
+    "id":"f92e43a4-5ddf-420a-a9ef-77204358bcf5",
+    "reference":{
+      "id":"f92e43a4-5ddf-420a-a9ef-77204358bcf5",
+      "type":"org.socialmusicdiscovery.server.business.model.core.Artist"
+    },
+    "name":"Joe Satriani"
+  },
+  {
+    "id":"a04574ee-8ce8-469e-8353-cb777d7c65cf",
+    "reference":{
+      "id":"a04574ee-8ce8-469e-8353-cb777d7c65cf",
+      "type":"org.socialmusicdiscovery.server.business.model.core.Artist"
+    },
+    "name":"The Corrs"
+  }
+]
+}
+    }}}
+  * *Get all artists with the name XXX using GET*
+    {{{
+http://localhost:9998/artists?name=XXX
+    }}}
+  Where the result looks the same as the above query which returns all artists, it's just that it's limited to the artists matching the search criteria.
+  * *Adding a new artist using POST*
+    {{{
+http://localhost:9998/artists
+    }}}
+  Where the body looks something like this:
+    {{{
+{"name":"Joe Satriani"}
+    }}}
+  * *Updating an existing artist using PUT*
+    {{{
+http://localhost:9998/artists/f92e43a4-5ddf-420a-a9ef-77204358bcf5
+    }}}
+  Where the body looks something like this where the artist name has been corrected:
+    {{{
+{"name":"Joe Satriani"}
+    }}}
+  * *Deleting an existing artist using DELETE*
+    {{{
+http://localhost:9998/artists/f92e43a4-5ddf-420a-a9ef-77204358bcf5
+    }}}
+
+The above examples illustrates how it looks like for artists, the complete list of model objects supported in the management interface are:
+  * artists
+  * releases
+  * labels
+  * recordings
+  * persons
+  * works
+
+More objects will be added, but this is what we have at the moment.
+
+= Managing media importers =
+The paths when managing media importers are as follows:
+  * *List all importers in progress using GET*
+    {{{
+http://localhost:9998/mediaimportermodules
+    }}}
+  Where the result looks something like this:
+    {{{
+{
+  "mediaimporter":{
+    "module":"squeezeboxserver",
+    "currentDescription":"/mnt/flacmusic/Absolute Love 2 - Disc 2/16 SO HELP ME GIRL.flac",
+    "currentNumber":"33",
+    "totalNumber":"3454"
+  }
+}
+    }}}
+
+  * *Check current status of a specific module using GET*
+    {{{
+http://localhost:9998/mediaimportermodules/squeezeboxserver
+    }}}
+  Where the result looks something like this:
+    {{{
+{
+  "module":"squeezeboxserver",
+  "currentDescription":"/mnt/flacmusic/Absolute Love 2 - Disc 2/16 SO HELP ME GIRL.flac",
+  "currentNumber":"33",
+  "totalNumber":"3454"
+}
+    }}}
+  * *Start a new import using a specific module using POST*
+    {{{
+http://localhost:9998/mediaimportermodules/squeezeboxserver
+    }}}
+  Where the result looks something like this:
+    {{{
+{"success":"true"}
+    }}}
+  * *Abort an executing import module using DELETE*
+    {{{
+http://localhost:9998/mediaimportermodules/squeezeboxserver
+    }}}
+
+As you can see, most paths looks more or less exactly the same, it's the HTTP action that controls what type of operation that will be executed.
