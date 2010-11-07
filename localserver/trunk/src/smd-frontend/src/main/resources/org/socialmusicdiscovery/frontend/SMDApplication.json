@@ -1,0 +1,7 @@
+{
+    SMDApplicationWindow: {
+        windowTitle: "Social Music Discovery",
+        importButton: "Import",
+        abortButton: "Abort"
+    }
+}
