@@ -1,0 +1,106 @@
+<smdfrontend:SMDApplicationWindow title="%SMDApplicationWindow.windowTitle" maximized="true"
+    xmlns:wtkx="http://pivot.apache.org/wtkx"
+    xmlns:content="org.apache.pivot.wtk.content"
+    xmlns:smdfrontend="org.socialmusicdiscovery.frontend"
+    xmlns="org.apache.pivot.wtk">
+
+    <content>
+        <Border styles="{color:10}">
+            <content>
+                <TablePane styles="{padding:6, verticalSpacing:6}">
+                    <columns>
+                        <TablePane.Column width="1*"/>
+                    </columns>
+
+                    <rows>
+                        <!-- Import row -->
+                        <TablePane.Row height="-1">
+                            <TablePane>
+                                <columns>
+                                    <!-- Import button -->
+                                    <TablePane.Column width="-1"/>
+                                    <!-- Progress bar -->
+                                    <TablePane.Column width="1*"/>
+                                </columns>
+                                <rows>
+                                    <TablePane.Row height="-1">
+                                        <BoxPane styles="{verticalAlignment:'center'}">
+                                            <PushButton wtkx:id="importButton" enabled="true"
+                                                styles="{padding:4}" buttonData="%SMDApplicationWindow.importButton"/>
+                                        </BoxPane>
+                                        <BoxPane orientation="vertical" styles="{padding:6, spacing:6, fill:true}">
+                                            <Meter wtkx:id="importProgressMeter" preferredHeight="16"/>
+                                            <Label wtkx:id="importProgressDescription" text=""/>
+                                        </BoxPane>
+                                    </TablePane.Row>
+                                </rows>
+                            </TablePane>
+                        </TablePane.Row>
+
+                        <!-- Search box row-->
+                        <TablePane.Row height="-1">
+                            <BoxPane styles="{verticalAlignment:'center', horizontalAlignment:'left'}">
+                                <TextInput wtkx:id="searchTextInput"/>
+                                <PushButton wtkx:id="searchButton" enabled="true" styles="{padding:4}">
+                                    <buttonData>
+                                        <content:ButtonData icon="@magnifier.png"/>
+                                    </buttonData>
+                                </PushButton>
+                                <ActivityIndicator wtkx:id="searchActivity"
+                                    preferredWidth="24" preferredHeight="24"/>
+                            </BoxPane>
+                        </TablePane.Row>
+
+                        <!-- Artists Search result row-->
+                        <TablePane.Row height="1*">
+                            <ScrollPane horizontalScrollBarPolicy="fill" verticalScrollBarPolicy="fill_to_capacity">
+                                <view>
+                                    <TableView wtkx:id="artistResultsTableView">
+                                        <columns>
+                                            <TableView.Column name="name" width="1*" headerData="Artists"/>
+                                        </columns>
+                                    </TableView>
+                                </view>
+                                <columnHeader>
+                                    <TableViewHeader tableView="$artistResultsTableView" sortMode="single_column"/>
+                                </columnHeader>
+                            </ScrollPane>
+                        </TablePane.Row>
+
+                        <!-- Releases Search result row-->
+                        <TablePane.Row height="1*">
+                            <ScrollPane horizontalScrollBarPolicy="fill" verticalScrollBarPolicy="fill_to_capacity">
+                                <view>
+                                    <TableView wtkx:id="releaseResultsTableView">
+                                        <columns>
+                                            <TableView.Column name="name" width="1*" headerData="Releases"/>
+                                        </columns>
+                                    </TableView>
+                                </view>
+                                <columnHeader>
+                                    <TableViewHeader tableView="$releaseResultsTableView" sortMode="single_column"/>
+                                </columnHeader>
+                            </ScrollPane>
+                        </TablePane.Row>
+
+                        <!-- Work Search result row-->
+                        <TablePane.Row height="2*">
+                            <ScrollPane horizontalScrollBarPolicy="fill" verticalScrollBarPolicy="fill_to_capacity">
+                                <view>
+                                    <TableView wtkx:id="workResultsTableView">
+                                        <columns>
+                                            <TableView.Column name="name" width="3*" headerData="Work"/>
+                                        </columns>
+                                    </TableView>
+                                </view>
+                                <columnHeader>
+                                    <TableViewHeader tableView="$workResultsTableView" sortMode="single_column"/>
+                                </columnHeader>
+                            </ScrollPane>
+                        </TablePane.Row>
+                    </rows>
+                </TablePane>
+            </content>
+        </Border>
+    </content>
+</smdfrontend:SMDApplicationWindow>
