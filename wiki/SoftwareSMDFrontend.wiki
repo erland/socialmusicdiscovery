@@ -1,0 +1,39 @@
+#summary Description of SMD Frontend
+
+= General =
+
+The project consists of:
+  * A simple user interface layout made with Apache Pivot and its support for wtkx
+  * Some Java logic that handles all communication with the SMD server and also refreshes the user interface when needed, basically the controller in the MVC pattern.
+
+The project  builds a smd-frontend-1.0-SNAPSHOT.jar which can be executed as: 
+{{{
+java -jar smd-frontend-1.0-SNAPSHOT.jar
+}}}
+
+This jar file bundles all necessary classes and it connects towards the SMD Server at http://localhost:9998
+
+The current functionality is:
+  * Import button starts a new import of data from SBS through SMD Server
+    * Progress bar shows the progress during the import process
+    * Abort button can be used to abort the import
+  * Search field issues three search requests towards SMD Server to find entries of releases, artists and works that contains the search string in their name
+    * If you continue typing when searching it issues a new search request when the first one is finished
+    * There is a progress indicator that indicates when a searching is active to the right of the search button
+    * The field editing detection only issues a new search if there are at least 3 characters in the search field
+  * Selecting an item in one of the search result tables updates the other tables so they show all items related to the selected one. For example, selecting an artist shows all releases and all works for that artists in the other search result tables.
+
+
+= Design Choices =
+
+  * Apache Pivot is used for the user interface. A Pivot application is possible to run standalone but it can also be executed as an applet. A possibility in the future is to run it in SBS web interface.
+
+  * The search logic usage the model objects from SMD Server. The actual transmission is over JSON but we are converting the result to Java objects to make it easier to handle. We might want to change this to DTO's or something similar in the future if we like to separate the interface structure from the domain model structure implemented in SMD server.
+  
+  * The communication with SMD server is handled through the Jersey Client JSON library.
+
+  * The controller logic is separated in one Java class per main window, currently we only have one window which is handled in [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-frontend/src/main/java/org/socialmusicdiscovery/frontend/SMDApplicationWindow.java SMDApplicationWindow.java].
+
+  * The view logic is implemented using the WTKX language used by Apache Pivot, the current main Window is implemented in [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-frontend/src/main/resources/org/socialmusicdiscovery/frontend/SMDApplicationWindow.wtkx SMDApplicationWindow.wtkx].
+
+  * The localized text strings to make it possible to provide multiple user interface languages are provided in JSON files, one per language. Currently with only have one and that's the [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-frontend/src/main/resources/org/socialmusicdiscovery/frontend/SMDApplication.json SMDAPplication.json] file.
