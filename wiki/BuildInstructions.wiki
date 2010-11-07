@@ -57,7 +57,16 @@ The svn path is:
   * https://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/
 
 To run, you build with maven as described above and then run:
-  * java -jar smd-sserver-1.0-SNAPSHOT.jar
+  * java -jar smd-server-1.0-SNAPSHOT.jar
+
+= SMD frontend =
+
+The svn path is:
+  * https://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-frontend/
+
+To run, you build with maven as described above and then run:
+  * java -jar smd-frontend-1.0-SNAPSHOT.jar
+
 
 = SMD plugin =
 The svn path is:
