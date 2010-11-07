@@ -10,4 +10,7 @@ import java.util.Collection;
 public interface ReleaseRepository extends SMDEntityRepository<Release> {
     Collection<Release> findByName(String name);
     Collection<Release> findByNameWithRelations(String name, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
+    Collection<Release> findByPartialNameWithRelations(String name, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
+    Collection<Release> findByArtistWithRelations(String artistId, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
+    Collection<Release> findByWorkWithRelations(String workId, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
 }

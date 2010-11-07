@@ -13,9 +13,15 @@ import java.util.Collection;
 public class WorkFacade extends BaseCRUDFacade<Work, WorkRepository> {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Collection<Work> search(@QueryParam("name") String name) {
+    public Collection<Work> search(@QueryParam("name") String name, @QueryParam("nameContains") String nameContains, @QueryParam("release") String release, @QueryParam("artist") String artist) {
         if(name != null) {
             return repository.findByNameWithRelations(name,Arrays.asList("reference"), null);
+        }else if(nameContains != null) {
+            return repository.findByPartialNameWithRelations(nameContains, Arrays.asList("reference"), null);
+        }else if(release != null) {
+            return repository.findByReleaseWithRelations(release,Arrays.asList("reference"), null);
+        }else if(artist != null) {
+            return repository.findByArtistWithRelations(artist,Arrays.asList("reference"), null);
         }else {
             return repository.findAllWithRelations(Arrays.asList("reference"), null);
         }

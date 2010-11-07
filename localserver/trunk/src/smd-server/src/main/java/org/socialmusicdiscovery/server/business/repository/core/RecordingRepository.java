@@ -9,4 +9,5 @@ import java.util.Collection;
 @ImplementedBy(RecordingRepositoryImpl.class)public interface RecordingRepository extends SMDEntityRepository<Recording> {
     Collection<Recording> findByName(String name);
     Collection<Recording> findByNameWithRelations(String name, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
+    Collection<Recording> findByPartialNameWithRelations(String name, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
 }

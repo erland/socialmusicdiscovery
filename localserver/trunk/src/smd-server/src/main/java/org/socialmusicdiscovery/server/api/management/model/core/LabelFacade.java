@@ -13,9 +13,11 @@ import java.util.Collection;
 public class LabelFacade extends BaseCRUDFacade<Label,LabelRepository> {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Collection<Label> search(@QueryParam("name") String name) {
+    public Collection<Label> search(@QueryParam("name") String name, @QueryParam("nameContains") String nameContains) {
         if(name != null) {
             return repository.findByNameWithRelations(name, Arrays.asList("reference"), null);
+        }else if(nameContains != null) {
+            return repository.findByPartialNameWithRelations(nameContains, Arrays.asList("reference"), null);
         }else {
             return repository.findAllWithRelations(Arrays.asList("reference"), null);
         }

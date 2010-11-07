@@ -47,9 +47,12 @@ public abstract class EntityRepositoryImpl<K, E> implements EntityRepository<K, 
     }
 
     protected String queryStringFor(String entityName, Collection<String> mandatoryRelations, Collection<String> optionalRelations) {
+        return queryStringFor(entityName, mandatoryRelations, optionalRelations, null);
+    }
+    protected String queryStringFor(String entityName, Collection<String> mandatoryRelations, Collection<String> optionalRelations, Boolean distinctResult) {
         StringBuffer queryString = new StringBuffer(200);
         String distinct = "";
-        if(optionalRelations != null && optionalRelations.size()>0) {
+        if((optionalRelations != null && optionalRelations.size()>0) || (distinctResult != null && distinctResult)) {
             distinct = "distinct ";
         }
         queryString.append("select ").append(distinct).append(entityName).append(" from ").append(entityClass.getSimpleName()).append(" as e");

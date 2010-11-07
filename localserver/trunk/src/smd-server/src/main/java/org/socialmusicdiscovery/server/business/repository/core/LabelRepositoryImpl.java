@@ -18,8 +18,14 @@ public class LabelRepositoryImpl extends SMDEntityRepositoryImpl<Label> implemen
     }
 
     public Collection<Label> findByNameWithRelations(String name, Collection<String> mandatoryRelations, Collection<String> optionalRelations) {
-        Query query = entityManager.createQuery(queryStringFor("e",mandatoryRelations, optionalRelations)+" where e.name=:name");
-        query.setParameter("name",name);
+        Query query = entityManager.createQuery(queryStringFor("e",mandatoryRelations, optionalRelations)+" where lower(e.name)=:name");
+        query.setParameter("name",name.toLowerCase());
+        return query.getResultList();
+    }
+
+    public Collection<Label> findByPartialNameWithRelations(String name, Collection<String> mandatoryRelations, Collection<String> optionalRelations) {
+        Query query = entityManager.createQuery(queryStringFor("e",mandatoryRelations, optionalRelations)+" where lower(e.name) like :name");
+        query.setParameter("name","%"+name.toLowerCase()+"%");
         return query.getResultList();
     }
 }

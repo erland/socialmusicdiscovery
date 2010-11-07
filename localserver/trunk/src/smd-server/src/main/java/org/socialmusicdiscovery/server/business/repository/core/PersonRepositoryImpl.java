@@ -18,8 +18,14 @@ public class PersonRepositoryImpl extends SMDEntityRepositoryImpl<Person> implem
     }
 
     public Collection<Person> findByNameWithRelations(String name, Collection<String> mandatoryRelations, Collection<String> optionalRelations) {
-        Query query = entityManager.createQuery(queryStringFor("e",mandatoryRelations, optionalRelations)+" where e.name=:name");
-        query.setParameter("name",name);
+        Query query = entityManager.createQuery(queryStringFor("e",mandatoryRelations, optionalRelations)+" where lower(e.name)=:name");
+        query.setParameter("name",name.toLowerCase());
+        return query.getResultList();
+    }
+
+    public Collection<Person> findByPartialNameWithRelations(String name, Collection<String> mandatoryRelations, Collection<String> optionalRelations) {
+        Query query = entityManager.createQuery(queryStringFor("e",mandatoryRelations, optionalRelations)+" where lower(e.name) like :name");
+        query.setParameter("name","%"+name.toLowerCase()+"%");
         return query.getResultList();
     }
 }
