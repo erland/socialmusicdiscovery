@@ -63,13 +63,14 @@ public class SMDApplication {
 
             Collection<Release> releases = releaseRepository.findAll();
             if (releases.size() > 0) {
-                System.out.println("\nPrinting all available releases in database, please wait...\n");
+                System.out.println("\nFound "+releases.size()+" releases in database");
+                //System.out.println("\nPrinting all available releases in database, please wait...\n");
             } else {
                 System.out.println("\nNo releases available in database!");
             }
-            for (Release release : releases) {
-                printRelease(release);
-            }
+            //for (Release release : releases) {
+            //    printRelease(release);
+            //}
 
             Map<String, String> initParams = new HashMap<String, String>();
             initParams.put("com.sun.jersey.config.property.packages", "org.socialmusicdiscovery.server.api");

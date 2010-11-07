@@ -10,4 +10,7 @@ import java.util.Collection;
 public interface WorkRepository extends SMDEntityRepository<Work> {
     Collection<Work> findByName(String name);
     Collection<Work> findByNameWithRelations(String name, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
+    Collection<Work> findByPartialNameWithRelations(String name, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
+    Collection<Work> findByReleaseWithRelations(String releaseId, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
+    Collection<Work> findByArtistWithRelations(String artistId, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
 }

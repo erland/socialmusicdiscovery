@@ -10,4 +10,5 @@ import java.util.Collection;
 public interface LabelRepository extends SMDEntityRepository<Label> {
     Collection<Label> findByName(String name);
     Collection<Label> findByNameWithRelations(String name, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
+    Collection<Label> findByPartialNameWithRelations(String name, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
 }
