@@ -5,6 +5,7 @@ import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import org.apache.pivot.collections.List;
 import org.apache.pivot.collections.Sequence;
+import org.apache.pivot.serialization.SerializationException;
 import org.apache.pivot.util.Resources;
 import org.apache.pivot.util.concurrent.Task;
 import org.apache.pivot.util.concurrent.TaskExecutionException;
@@ -12,6 +13,7 @@ import org.apache.pivot.util.concurrent.TaskListener;
 import org.apache.pivot.wtk.*;
 import org.apache.pivot.wtkx.Bindable;
 import org.apache.pivot.wtkx.WTKX;
+import org.apache.pivot.wtkx.WTKXSerializer;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.socialmusicdiscovery.server.api.management.mediaimport.MediaImportStatus;
@@ -20,6 +22,7 @@ import org.socialmusicdiscovery.server.business.model.core.Release;
 import org.socialmusicdiscovery.server.business.model.core.Work;
 
 import javax.ws.rs.core.MediaType;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Collection;
@@ -110,15 +113,7 @@ public class SMDApplicationWindow extends Window implements Bindable {
         });
 
         // Selection changes in release results should trigger refresh of artists and works
-        releaseResultsTableView.getTableViewSelectionListeners().add(new TableViewSelectionListener() {
-            @Override
-            public void selectedRangeAdded(TableView tableView, int start, int stop) {
-            }
-
-            @Override
-            public void selectedRangeRemoved(TableView tableView, int start, int stop) {
-            }
-
+        releaseResultsTableView.getTableViewSelectionListeners().add(new TableViewSelectionListener.Adapter() {
             @Override
             public void selectedRangesChanged(TableView tableView, Sequence<Span> spanSequence) {
                 Release release = (Release)tableView.getSelectedRow();
@@ -129,15 +124,7 @@ public class SMDApplicationWindow extends Window implements Bindable {
         });
 
         // Selection changes in artist results should trigger refresh of releases and works
-        artistResultsTableView.getTableViewSelectionListeners().add(new TableViewSelectionListener() {
-            @Override
-            public void selectedRangeAdded(TableView tableView, int start, int stop) {
-            }
-
-            @Override
-            public void selectedRangeRemoved(TableView tableView, int start, int stop) {
-            }
-
+        artistResultsTableView.getTableViewSelectionListeners().add(new TableViewSelectionListener.Adapter() {
             @Override
             public void selectedRangesChanged(TableView tableView, Sequence<Span> spanSequence) {
                 Artist artist = (Artist)tableView.getSelectedRow();
@@ -148,21 +135,34 @@ public class SMDApplicationWindow extends Window implements Bindable {
         });
 
         // Selection changes in work results should trigger refresh of artists and releases
-        workResultsTableView.getTableViewSelectionListeners().add(new TableViewSelectionListener() {
-            @Override
-            public void selectedRangeAdded(TableView tableView, int start, int stop) {
-            }
-
-            @Override
-            public void selectedRangeRemoved(TableView tableView, int start, int stop) {
-            }
-
+        workResultsTableView.getTableViewSelectionListeners().add(new TableViewSelectionListener.Adapter() {
             @Override
             public void selectedRangesChanged(TableView tableView, Sequence<Span> spanSequence) {
                 Work work = (Work)tableView.getSelectedRow();
                 searchTextInput.setText("");
                 searchReleases(null, null, work.getId());
                 searchArtists(null, work.getId(), null);
+            }
+        });
+
+        // Double click handler for releases
+        releaseResultsTableView.getComponentMouseButtonListeners().add(new ComponentMouseButtonListener.Adapter() {
+            @Override
+            public boolean mouseClick(Component component, Mouse.Button button, int x, int y, int count) {
+                try {
+                    if(count==2) {
+                        Release release = (Release) releaseResultsTableView.getSelectedRow();
+                        WTKXSerializer wtkxSerializer = new WTKXSerializer(resources);
+                        EditReleaseWindow window = (EditReleaseWindow) wtkxSerializer.readObject(this, "EditReleaseWindow.wtkx");
+                        window.open(getDisplay(),getWindow(),release);
+                        return true;
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                } catch (SerializationException e) {
+                    throw new RuntimeException(e);
+                }
+                return false;
             }
         });
     }

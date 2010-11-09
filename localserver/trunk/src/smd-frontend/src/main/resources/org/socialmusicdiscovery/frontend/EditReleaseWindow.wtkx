@@ -1,0 +1,87 @@
+<smdfrontend:EditReleaseWindow title="%EditReleaseWindow.windowTitle" maximized="true"
+    xmlns:wtkx="http://pivot.apache.org/wtkx"
+    xmlns:content="org.apache.pivot.wtk.content"
+    xmlns:smdfrontend="org.socialmusicdiscovery.frontend"
+    xmlns="org.apache.pivot.wtk">
+
+    <content>
+        <Border styles="{color:10}">
+            <content>
+                <TablePane styles="{padding:6, verticalSpacing:6}">
+                    <columns>
+                        <TablePane.Column width="1*"/>
+                    </columns>
+
+                    <rows>
+                        <TablePane.Row height="-1">
+                            <BoxPane orientation="horizontal">
+                                <Label text="%EditReleaseWindow.releaseName"/>
+                                <TextInput wtkx:id="releaseNameTextInput"/>
+                            </BoxPane>
+                        </TablePane.Row>
+                        <TablePane.Row height="-1">
+                            <BoxPane orientation="horizontal">
+                                <Label text="%EditReleaseWindow.year"/>
+                                <TextInput wtkx:id="yearTextInput"/>
+                            </BoxPane>
+                        </TablePane.Row>
+                        <TablePane.Row height="-1">
+                            <BoxPane orientation="horizontal">
+                                <Label text="%EditReleaseWindow.composers"/>
+                                <TextInput wtkx:id="composersTextInput" enabled="false"/>
+                                <PushButton wtkx:id="searchComposersButton" enabled="true" styles="{padding:4}">
+                                    <buttonData>
+                                        <content:ButtonData icon="@magnifier.png"/>
+                                    </buttonData>
+                                </PushButton>
+                            </BoxPane>
+                        </TablePane.Row>
+                        <TablePane.Row height="-1">
+                            <BoxPane orientation="horizontal">
+                                <Label text="%EditReleaseWindow.conductors"/>
+                                <TextInput wtkx:id="conductorsTextInput" enabled="false"/>
+                                <PushButton wtkx:id="searchConductorsButton" enabled="true" styles="{padding:4}">
+                                    <buttonData>
+                                        <content:ButtonData icon="@magnifier.png"/>
+                                    </buttonData>
+                                </PushButton>
+                            </BoxPane>
+                        </TablePane.Row>
+                        <TablePane.Row height="-1">
+                            <BoxPane orientation="horizontal">
+                                <Label text="%EditReleaseWindow.performers"/>
+                                <TextInput wtkx:id="performersTextInput" enabled="false"/>
+                                <PushButton wtkx:id="searchPerformersButton" enabled="true" styles="{padding:4}">
+                                    <buttonData>
+                                        <content:ButtonData icon="@magnifier.png"/>
+                                    </buttonData>
+                                </PushButton>
+                            </BoxPane>
+                        </TablePane.Row>
+                        <TablePane.Row height="1*">
+                            <ScrollPane horizontalScrollBarPolicy="fill" verticalScrollBarPolicy="fill_to_capacity">
+                                <view>
+                                    <TableView wtkx:id="tracksTableView">
+                                        <columns>
+                                            <TableView.Column name="number" width="1*" headerData="%EditReleaseWindow.trackNumber"/>
+                                            <TableView.Column name="title" width="1*" headerData="%EditReleaseWindow.trackTitle"/>
+                                            <TableView.Column name="composers" width="1*" headerData="%EditReleaseWindow.composers"/>
+                                            <TableView.Column name="conductors" width="1*" headerData="%EditReleaseWindow.conductors"/>
+                                            <TableView.Column name="performers" width="1*" headerData="%EditReleaseWindow.performers"/>
+                                        </columns>
+                                    </TableView>
+                                </view>
+                                <columnHeader>
+                                    <TableViewHeader tableView="$tracksTableView" sortMode="single_column"/>
+                                </columnHeader>
+                            </ScrollPane>
+                        </TablePane.Row>
+                        <TablePane.Row height="-1">
+                            <PushButton wtkx:id="cancelButton" enabled="true" styles="{padding:4}" buttonData="%EditReleaseWindow.cancelButton"/>
+                        </TablePane.Row>
+                    </rows>
+                </TablePane>
+            </content>
+        </Border>
+    </content>
+</smdfrontend:EditReleaseWindow>

@@ -3,5 +3,26 @@
         windowTitle: "Social Music Discovery",
         importButton: "Import",
         abortButton: "Abort"
+    },
+    EditReleaseWindow: {
+        releaseName: "Release name",
+        year: "Year",
+        composers: "Composers",
+        conductors: "Conductors",
+        performers: "Performers",
+        trackNumber: "No",
+        trackTitle: "Title",
+        cancelButton: "Cancel"
+    },
+    EditTrackWindow: {
+        trackNumber: "Number",
+        recordingName: "Recording name",
+        recordingYear: "Recording year",
+        workName: "Work name",
+        contributorName: "Name",
+        contributorType: "Role",
+        mainArtist: "Main",
+        cancelButton: "Cancel"
     }
+
 }
