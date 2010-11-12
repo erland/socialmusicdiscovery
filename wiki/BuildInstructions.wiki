@@ -70,7 +70,20 @@ To run, you build with maven as described above and then run:
 
 = SMD plugin =
 The svn path is:
-  * https://socialmusicdiscovery.googlecode.com/svn/plugin/trunk/src/SocialMusicDiscovery/
+  * https://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-plugin/
 
-The latest official build is available in this repository which you can configure in SBS Settings/Plugins:
+To build the perl only version of the plugin with maven:
+  * mvn install
+
+To build the plugin with bundled server (but not frontend) with maven:
+  * mvn install -Pserver
+
+To build the plugin with bundled server and frontend with maven:
+  * mvn install -Dsmdsignpasswd=XXX
+  (Where XXX is a secret password, contact Erland if you need it)
+
+The latest official build (with server/frontend bundled with plugin) is available in this repository which you can configure in SBS Settings/Plugins:
   * http://socialmusicdiscovery.googlecode.com/svn/repository/alpha.xml
+
+The latest official build (without server/frontend) is available in this repository which you can configure in SBS Settings/Plugins:
+  * http://socialmusicdiscovery.googlecode.com/svn/repository/development.xml
