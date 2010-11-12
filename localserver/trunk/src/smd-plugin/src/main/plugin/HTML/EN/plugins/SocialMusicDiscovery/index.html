@@ -2,20 +2,37 @@
 
 [%- pwd_list = BLOCK -%]/
 	<a href="[% webroot %]plugins/SocialMusicDiscovery/index.html?player=[% player | uri %]">[% "PLUGIN_SOCIALMUSICDISCOVERY" | string %]</a>
+[% IF pluginSocialMusicDiscoverySmdFrontendJar %]
+	(<a href="[% webroot %]plugins/SocialMusicDiscovery/fullwindow.html?player=[% player | uri %]" target="_blank">[% "PLUGIN_SOCIALMUSICDISCOVERY_SEPARATE_WINDOW" | string %]</a>)
+[% END %]
 [% END -%]
 [% PROCESS pageheader.html %]
-		[% IF pluginSocialMusicDiscoveryScanning %]
-			[% "PLUGIN_SOCIALMUSICDISCOVERY_SCANNING" | string %] [% pluginSocialMusicDiscoveryCurrent %] [% "OUT_OF" | string %] [% pluginSocialMusicDiscoveryTotal %]<br/>
-			[% "PLUGIN_SOCIALMUSICDISCOVERY_CURRENT" | string %] [% pluginSocialMusicDiscoveryCurrentFile | utf8decode %]<br/>
-		[% ELSE %]
-			[% "PLUGIN_SOCIALMUSICDISCOVERY_SCANNED" | string %] [% pluginSocialMusicDiscoveryTotal %]<br/>
-		[% END %]
-			<br/><br/>
-			<a href="[% webroot %]plugins/SocialMusicDiscovery/index.html">[% "PLUGIN_SOCIALMUSICDISCOVERY_REFRESH" | string %]</a>
-			[% IF pluginSocialMusicDiscoveryScanning %]
-			<a href="[% webroot %]plugins/SocialMusicDiscovery/index.html?stop=1">[% "PLUGIN_SOCIALMUSICDISCOVERY_STOP" | string %]</a>
-			[% ELSE %]
-			<a href="[% webroot %]plugins/SocialMusicDiscovery/index.html?start=1">[% "PLUGIN_SOCIALMUSICDISCOVERY_START" | string %]</a>
-			[% END %]
-			</td>
+[% IF pluginSocialMusicDiscoverySmdFrontendJar %]
+<script type="text/javascript" src="http://java.com/js/deployJava.js"></script>
+<script type="text/javascript">
+    var attributes = {
+        code:"org.apache.pivot.wtk.BrowserApplicationContext$HostApplet",
+        width:"100%",
+        height:"400"
+    };
+    var libraries = [];
+    libraries.push("html/[% pluginSocialMusicDiscoverySmdFrontendJar %]");
+
+    attributes.archive = libraries.join(",");
+
+    var parameters = {
+        codebase_lookup:false,
+        startup_properties:"smd-server.host=[% host.match('([^:]*)').0 %]",
+        application_class_name:'org.socialmusicdiscovery.frontend.SMDApplication'
+    };
+    var javaArguments = ["-Dsun.awt.noerasebackground=true",
+        "-Dsun.awt.erasebackgroundonresize=true" ];
+
+    parameters.java_arguments = javaArguments.join(" ");
+
+    deployJava.runApplet(attributes, parameters, "1.6");
+</script>
+[% ELSE %]
+[% "PLUGIN_SOCIALMUSICDISCOVERY_FRONTEND_MISSING" | string %]
+[% END %]
 [% PROCESS pagefooter.html %]

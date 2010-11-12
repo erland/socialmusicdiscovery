@@ -15,7 +15,7 @@
 #   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 #   ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 #   WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-#   DISCLAIMED. IN NO EVENT SHALL LOGITECH, INC BE LIABLE FOR ANY
+#   DISCLAIMED. IN NO EVENT SHALL SOCIAL MUSIC DISCOVERY PROJECT BE LIABLE FOR ANY
 #   DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
 #   (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
 #   LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -33,6 +33,9 @@ use base qw(Slim::Plugin::Base);
 use Slim::Utils::Misc;
 use Slim::Utils::Strings qw(string);
 use DBI qw(:sql_types);
+use File::Spec::Functions qw(:ALL);
+use Proc::Background;
+use Slim::Utils::OSDetect;
 
 use Data::Dumper;
 
@@ -56,6 +59,7 @@ my $currentlyScannedTrackNo;
 my $currentlyScannedTrackFile;
 my $totalNumberOfTracks;
 
+my $smdServer;
 =head1 NAME
 
 Plugins::SocialMusicDiscovery::Plugin
@@ -87,23 +91,70 @@ sub initPlugin
 
 	# Initialize scanner module so it's JSON commands are registered
 	Plugins::SocialMusicDiscovery::Scanner::init();
+
+    # Find location of smd-server binary in plugin directory
+    my $smdServerPath = undef;
+    for my $plugindir (Slim::Utils::OSDetect::dirsFor('Plugins')) {
+        opendir(DIR, catdir($plugindir,"SocialMusicDiscovery")) || next;
+        my @dircontents = Slim::Utils::Misc::readDirectory(catdir($plugindir,"SocialMusicDiscovery"),"jar");
+        for my $file (@dircontents) {
+            if($file =~ /^smd-server/) {
+                $smdServerPath = catfile($plugindir,"SocialMusicDiscovery", $file);
+            }
+        }
+    }
+
+	if(defined($smdServerPath)) {
+	    my $database = "-Dorg.socialmusicdiscovery.server.database=mysql-sbs";
+	    my ($driver,$source,$username,$password) = Slim::Schema->sourceInformation;
+	    if($driver ne 'mysql') {
+	        $log->info("Using derby database for smd-server because it isn't supporting SQLite");
+	        $database = "-Dorg.socialmusicdiscovery.server.database=derby -Dorg.socialmusicdiscovery.server.database.directory=".catdir(Slim::Utils::OSDetect::dirsFor('cache'));
+	    }elsif($source !~ /port=9092/) {
+	        $log->info("Using derby database for smd-server because an external MySQL server is used and we can't ensure we have permission to create a database");
+	        $database = "-Dorg.socialmusicdiscovery.server.database=derby -Dorg.socialmusicdiscovery.server.database.directory=".catdir(Slim::Utils::OSDetect::dirsFor('cache'));
+	    }else {
+	        $log->info("Using the bundled MySQL database for smd-server, a separate smd schema is configured");
+	    }
+
+	    # Launch smd-server
+        $log->info("Starting smd-server (".$smdServerPath.")");
+        $smdServer = Proc::Background->new({'die_upon_destroy' => 1}, "java ".$database." -Dorg.socialmusicdiscovery.server.stdout=".catdir(Slim::Utils::OSDetect::dirsFor('log'),"smd-server.log")." -Dorg.socialmusicdiscovery.server.stderr=".catdir(Slim::Utils::OSDetect::dirsFor('log'),"smd-server.log")." -jar ".$smdServerPath);
+        if(!$smdServer->alive) {
+            $log->error("Unable to launch smd-server");
+        }
+    }else {
+        $log->info("smd-server not started since binary isn't available");
+    }
+}
+
+# Shutdown plugin, will be called by plugin framework
+sub shutdownPlugin
+{
+    if($smdServer && $smdServer->alive) {
+        $log->info("Stopping smd-server");
+        $smdServer->die;
+    }
 }
 
 # Register web interface pages, will be called by plugin framework
 sub webPages {
 
 	my %pages = (
+		"SocialMusicDiscovery/scanner\.(?:htm|xml)"     => \&webScanner,
 		"SocialMusicDiscovery/index\.(?:htm|xml)"     => \&webIndex,
+		"SocialMusicDiscovery/fullwindow\.(?:htm|xml)"     => \&webFullWindow,
 	);
 
 	for my $page (keys %pages) {
 		Slim::Web::Pages->addPageFunction($page, $pages{$page});
 	}
 	Slim::Web::Pages->addPageLinks("plugins", { 'PLUGIN_SOCIALMUSICDISCOVERY' => 'plugins/SocialMusicDiscovery/index.html' });
+	Slim::Web::Pages->addPageLinks("plugins", { 'PLUGIN_SOCIALMUSICDISCOVERY_SCANNER' => 'plugins/SocialMusicDiscovery/scanner.html' });
 }
 
-# Page handler for the main page of the plugin
-sub webIndex {
+# Page handler for the scanner status page of the plugin
+sub webScanner {
 	my ($client, $params) = @_;
 
 	if($params->{'start'}) {
@@ -118,8 +169,48 @@ sub webIndex {
 	$params->{'pluginSocialMusicDiscoveryCurrent'} = $currentlyScannedTrackNo;
 	$params->{'pluginSocialMusicDiscoveryCurrentFile'} = $currentlyScannedTrackFile;
 	$params->{'pluginSocialMusicDiscoveryTotal'} = $totalNumberOfTracks;
-	return Slim::Web::HTTP::filltemplatefile('plugins/SocialMusicDiscovery/index.html', $params);
+	return Slim::Web::HTTP::filltemplatefile('plugins/SocialMusicDiscovery/scanner.html', $params);
 }
+
+# Page handler for the main main plugin user interface
+sub webIndex
+{
+    my ($client, $params) = @_;
+
+	# Find name of smd-frontend jar file (if it exists)
+    for my $plugindir (Slim::Utils::OSDetect::dirsFor('Plugins')) {
+        opendir(DIR, catdir($plugindir,"SocialMusicDiscovery")) || next;
+        my @dircontents = Slim::Utils::Misc::readDirectory(catdir($plugindir,"SocialMusicDiscovery","HTML","EN","plugins","SocialMusicDiscovery","html"),"jar");
+        for my $file (@dircontents) {
+            if($file =~ /^smd-frontend/) {
+				$params->{'pluginSocialMusicDiscoverySmdFrontendJar'} = $file;
+				last;
+            }
+        }
+    }
+
+    return Slim::Web::HTTP::filltemplatefile('plugins/SocialMusicDiscovery/index.html', $params);
+}
+
+sub webFullWindow
+{
+    my ($client, $params) = @_;
+
+    # Find name of smd-frontend jar file (if it exists)
+    for my $plugindir (Slim::Utils::OSDetect::dirsFor('Plugins')) {
+        opendir(DIR, catdir($plugindir,"SocialMusicDiscovery")) || next;
+        my @dircontents = Slim::Utils::Misc::readDirectory(catdir($plugindir,"SocialMusicDiscovery","HTML","EN","plugins","SocialMusicDiscovery","html"),"jar");
+        for my $file (@dircontents) {
+            if($file =~ /^smd-frontend/) {
+                $params->{'pluginSocialMusicDiscoverySmdFrontendJar'} = $file;
+                last;
+            }
+        }
+    }
+
+    return Slim::Web::HTTP::filltemplatefile('plugins/SocialMusicDiscovery/fullwindow.html', $params);
+}
+
 
 1;
 
