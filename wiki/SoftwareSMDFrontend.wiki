@@ -23,7 +23,29 @@ The current functionality is:
     * The field editing detection only issues a new search if there are at least 3 characters in the search field
   * Selecting an item in one of the search result tables updates the other tables so they show all items related to the selected one. For example, selecting an artist shows all releases and all works for that artists in the other search result tables.
 
+= Configuration =
+The SMD Frontend can be configured in two different ways:
+  * With command line parameters
+    * For example: 
+    {{{
+    java -jar smd-frontend-1.0-SNAPSHOT.jar --smd-server.host=192.168.0.13
+    }}}
 
+  * With a socialmusicdiscovery.properties file in the current directory when launched manually
+    * For example with the contents:
+    {{{
+    smd-server.host=192.168.0.13
+    }}}
+
+The currently available configuration parameters are:
+  * *smd-server.host* - The hostname/IP address where smd-server executes
+  * *smd-server.port* - The port which the smd-server uses
+
+= Signing =
+The idea is that SMD Frontend should be possible to use both as an appple and launched with Java WebStart through a jnlp file. Theoretically it could work within the applet/webstart sandboxes and only talk to the smd-server host where it's loaded from. However, in practice, this limits the possibilities which libraries that can be used since they are not allowed to use some function available in Java reflections and can't use threading in all libraries to accomplish a good user experience. 
+
+Due to this, SMD Frontend currently uses operations which are prohibited by the applet/webstart sandbox, at the moment it's needed for threading in the Jersey Client library which is used for the JSON communication. See [BuildInstructions the build instructions] for more information about how to sign the jar file.
+  
 = Design Choices =
 
   * Apache Pivot is used for the user interface. A Pivot application is possible to run standalone but it can also be executed as an applet. A possibility in the future is to run it in SBS web interface.
