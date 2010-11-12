@@ -1,0 +1,14 @@
+<component>
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>SocialMusicDiscovery</outputDirectory>
+            <useProjectArtifact>false</useProjectArtifact>
+            <unpack>false</unpack>
+            <scope>runtime</scope>
+            <useTransitiveDependencies>false</useTransitiveDependencies>
+            <includes>
+                <include>org.socialmusicdiscovery:smd-server</include>
+            </includes>
+        </dependencySet>
+    </dependencySets>
+</component>
