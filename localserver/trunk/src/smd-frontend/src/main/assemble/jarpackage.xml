@@ -7,12 +7,27 @@
     <format>jar</format>
   </formats>
   <includeBaseDirectory>false</includeBaseDirectory>
+    <fileSets>
+        <fileSet>
+            <directory>${project.build.directory}/classes</directory>
+            <outputDirectory>/</outputDirectory>
+        </fileSet>
+    </fileSets>
   <dependencySets>
-    <dependencySet>
-      <outputDirectory>/</outputDirectory>
-      <useProjectArtifact>true</useProjectArtifact>
-      <unpack>true</unpack>
-      <scope>runtime</scope>
-    </dependencySet>
+      <dependencySet>
+        <outputDirectory>/</outputDirectory>
+        <useProjectArtifact>false</useProjectArtifact>
+        <unpack>true</unpack>
+        <scope>provided</scope>
+          <includes>
+              <include>org.socialmusicdiscovery:smd-server</include>
+          </includes>
+      </dependencySet>
+      <dependencySet>
+        <outputDirectory>/</outputDirectory>
+        <useProjectArtifact>false</useProjectArtifact>
+        <unpack>true</unpack>
+        <scope>runtime</scope>
+      </dependencySet>
   </dependencySets>
 </assembly>
