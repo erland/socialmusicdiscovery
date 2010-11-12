@@ -4,14 +4,33 @@
 This is a very preliminary helper plugin for getting tag information from SBS. We don't have anything to import it into the SMD database yet, so you can't do much with it besides calling the JSON commands it offers.
 
 The source code is available here:
-  * http://socialmusicdiscovery.googlecode.com/svn/plugin/trunk/src/SocialMusicDiscovery/
+  * http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-plugin
 
 To install the plugin, you need to setup the following repository file in SBS Settings/Plugins:
-  * http://socialmusicdiscovery.googlecode.com/svn/repository/alpha.xml
+  * For the perl only version:
+    * http://socialmusicdiscovery.googlecode.com/svn/repository/development.xml
+  * For the version with bundled smd-server and smd-frontend:
+    * http://socialmusicdiscovery.googlecode.com/svn/repository/development.xml
+
 
 After that you should be able to install the "Social Music Discovery" plugin through SBS Settings/Plugins
 
-Currently it support two JSON commands:
+= Bundling of SMD Server =
+The SMD Server is bundled with the plugin and launched at Squeezebox Server startup and shutdown at Squeezebox Server shutdown. The SMD Server database is configured to:
+  * Use SBS MySQL instance on port 9092 if available
+  * Else use an Apache Derby database stored in the SBS cache directory
+
+It is also configured to put a _smd-server.log_ file in the SBS log directory.
+
+The plugin will very if the smd-server jar file is included at startup and if there isn't, it will just start the perl plugin part.
+
+= Bundling of SMD Frontend =
+The SMD Frontend is bundled with the plugin in the "full" distribution, it's started through the "Social Music Discovery" link under the "Extras" menu in SBS web interface. You can also select to open it as a new window to get a bit larger window.
+
+The SMD Frontend bundled with the plugin is signed, so the user will have to approve that it isn't restricted to the web start sandbox the first time it's launched. It will take some time to launch the frontend the first time, this is caused by web start and Apache Pivot and the SMD Frontend jar file size.
+
+= JSON interface =
+Currently the plugin support two JSON commands:
 {{{
 socialmusicdiscovery tracks start:0 size:20
 socialmusicdiscovery scannedtracks start:0 size:20
@@ -52,5 +71,5 @@ If you like to look at the result of the scanned data it's stored in two tables 
   # The current solution have no configuration what so ever, the tags supported are hard coded in the code and the mapping between MP3 ID3 tags are also hard coded, for example TPE2 is hard to BAND. My thoughts is that we shouldn't need to have a very configurable plugins since additional metadata probably will be added through the SMD user interface or SMD online metadata import modules. SBS import is only used initially to get the initial library up and running. We can still have options in SMD interface during import where it's possible to adjust that you want a BAND to be represented as an ALBUMARTIST Contributor relation in SMD. Do you think we need a more flexible configuration in the plugin part ?
   # It would be great if someone with a bit larger library to try the scanning operation, install the plugin and go to Extras/Social Music Discovery and initiate a scanning and report back how long time it takes. Also look in the server log and see if you get any constraints error which would be an indication that the temporary smdID calculation isn't good enough.
   # Review the SORT_TAGS and MAPPED_TAGS arrays in the following file and let me know if there is some obvious tag which I've mapped incorrectly or missed to include. I suspect we need to adjust the YEAR related tags a bit since they are currently all mapped to YEAR which is probably a bad idea since we have year in multiple places in the SMD domain model.
-     * http://socialmusicdiscovery.googlecode.com/svn/plugin/trunk/src/SocialMusicDiscovery/Scanner.pm
+     * http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/plugin/Scanner.pm
   # Thoughts regarding how we want the user interaction to work during import from SBS is also welcome. We could just have a background operation that imports and writes directly to the SMD database but my personal feeling is that it feels a bit dangerous, especially for incremental import where I don't want the limitations of SBS database to be spread to the data in the SMD database. My thoughts so far has been to do the import to some temporary area and then allow the user to do adjustments before it's written to the final SMD database. Anyway, does anyone have any thoughts/ideas how we might want this to work from a user perspective ?
