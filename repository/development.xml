@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<extensions>
+	<details>
+		<title lang="EN">Social Music Discovery (Development versions)</title>
+	</details>
+	<plugins>
+		<plugin name="SocialMusicDiscovery" version="0.1.273" minTarget="7.5.0" maxTarget="7.6+">
+			<title lang="EN">Social Music Discovery (perl only) *Alpha*</title>
+			<desc lang="EN">Support plugin for the Social Music Discovery application</desc>
+			<creator>Social Music Discovery project</creator>
+			<url>http://socialmusicdiscovery.googlecode.com/files/smd-plugin-perl-0.1.273.zip</url>
+			<sha>8d4dd806a9fcf5a93dd20a56db1765492e9b90ba</sha>
+			<link>http://socialmusicdiscovery.googlecode.com</link>
+		</plugin>
+	</plugins>
+</extensions>
+
