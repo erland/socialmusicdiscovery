@@ -1,3 +1,0 @@
-TRUNCATE socialmusicdiscovery_tracks;
-TRUNCATE socialmusicdiscovery_tags;
-
