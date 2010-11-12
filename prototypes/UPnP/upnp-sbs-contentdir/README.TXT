@@ -11,3 +11,8 @@ org.medee.playground.sbs.DatabaseConnector). Beware, some params are also
 hardcoded and designed to be run from eclipse like the path to the device
 description xml file (descriptionFileName in TestApi).
 
+Beware, because of a conflict between jaxb 2.1 shipped with jdk6 and jaxb 2.2 
+used through maven dependencies, I had to hardcode (once again) the path to 
+jaxb-impl jar in maven-compiler-plugin configuration. You have to change this
+to run the project (see compilerArguments/endorseddirs in pom.xml).
+ 
