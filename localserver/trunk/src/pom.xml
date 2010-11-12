@@ -14,5 +14,6 @@
     <modules>
         <module>smd-server</module>
         <module>smd-frontend</module>
+	<module>smd-plugin</module>
     </modules>
 </project>
