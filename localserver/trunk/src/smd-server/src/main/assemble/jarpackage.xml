@@ -7,10 +7,16 @@
     <format>jar</format>
   </formats>
   <includeBaseDirectory>false</includeBaseDirectory>
+    <fileSets>
+        <fileSet>
+            <outputDirectory>/</outputDirectory>
+            <directory>${project.build.outputDirectory}</directory>
+        </fileSet>
+    </fileSets>
   <dependencySets>
     <dependencySet>
       <outputDirectory>/</outputDirectory>
-      <useProjectArtifact>true</useProjectArtifact>
+      <useProjectArtifact>false</useProjectArtifact>
       <unpack>true</unpack>
       <scope>runtime</scope>
     </dependencySet>
