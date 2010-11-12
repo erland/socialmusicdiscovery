@@ -4,6 +4,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.name.Named;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,7 +52,7 @@ public class HSQLProviderModule extends AbstractModule {
     };
 
     DatabaseProvider hsqlMemory = new HSQLProvider("jdbc:hsqldb:mem:smd-database");
-    DatabaseProvider hsqlDisk = new HSQLProvider("jdbc:hsqldb:smd-database");
+    DatabaseProvider hsqlDisk = null;
 
     @Override
     protected void configure() {
@@ -60,6 +61,16 @@ public class HSQLProviderModule extends AbstractModule {
     @Provides
     @Named("hsql")
     public DatabaseProvider getDiskProvider() {
+        if(hsqlDisk == null) {
+            String dir = "";
+            if(System.getProperty("org.socialmusicdiscovery.server.database.directory") != null) {
+                dir = System.getProperty("org.socialmusicdiscovery.server.database.directory");
+                if(!dir.endsWith(File.pathSeparator)) {
+                    dir+=File.pathSeparator;
+                }
+            }
+            hsqlDisk = new HSQLProvider("jdbc:hsqldb:"+dir+"smd-database");
+        }
         return hsqlDisk;
     }
 

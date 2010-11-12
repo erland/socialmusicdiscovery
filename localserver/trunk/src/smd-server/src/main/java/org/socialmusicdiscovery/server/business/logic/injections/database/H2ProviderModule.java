@@ -4,6 +4,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.name.Named;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,8 +51,8 @@ public class H2ProviderModule extends AbstractModule {
     };
 
     DatabaseProvider h2Memory = new H2Provider("jdbc:h2:mem:smd-database");
-    DatabaseProvider h2Disk = new H2Provider("jdbc:h2:file:smd-database");
-    DatabaseProvider h2Trace = new H2Provider("jdbc:h2:file:smd-database;TRACE_LEVEL_FILE=2");
+    DatabaseProvider h2Disk = null;
+    DatabaseProvider h2Trace = null;
     @Override
     protected void configure() {
     }
@@ -59,12 +60,18 @@ public class H2ProviderModule extends AbstractModule {
     @Provides
     @Named("h2")
     public DatabaseProvider getDiskProvider() {
+        if(h2Disk == null) {
+            h2Disk = new H2Provider("jdbc:h2:file:"+getDatabaseFile());
+        }
         return h2Disk;
     }
 
     @Provides
     @Named("h2-trace")
     public DatabaseProvider getTraceProvider() {
+        if(h2Trace == null) {
+            h2Trace = new H2Provider("jdbc:h2:file:"+getDatabaseFile()+";TRACE_LEVEL_FILE=2");
+        }
         return h2Trace;
     }
 
@@ -72,5 +79,16 @@ public class H2ProviderModule extends AbstractModule {
     @Named("h2-memory")
     public DatabaseProvider getMemoryProvider() {
         return h2Memory;
+    }
+
+    private String getDatabaseFile() {
+        String dir = "";
+        if(System.getProperty("org.socialmusicdiscovery.server.database.directory") != null) {
+            dir = System.getProperty("org.socialmusicdiscovery.server.database.directory");
+            if(!dir.endsWith(File.pathSeparator)) {
+                dir+=File.pathSeparator;
+            }
+        }
+        return dir+"smd-database";
     }
 }

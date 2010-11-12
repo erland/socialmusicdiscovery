@@ -4,6 +4,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.name.Named;
 
+import java.io.File;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.SQLNonTransientConnectionException;
@@ -60,7 +61,7 @@ public class DerbyProviderModule extends AbstractModule {
         }
     };
 
-    private DerbyProvider derbyDisk = new DerbyProvider("jdbc:derby:smd-database");
+    private DerbyProvider derbyDisk = null;
     private DerbyProvider derbyMemory = new DerbyProvider("jdbc:derby:memory:smd-database");
     @Override
     protected void configure() {
@@ -69,6 +70,16 @@ public class DerbyProviderModule extends AbstractModule {
     @Provides
     @Named("derby")
     public DatabaseProvider getDiskProvider() {
+        if(derbyDisk == null) {
+            String dir = "";
+            if(System.getProperty("org.socialmusicdiscovery.server.database.directory") != null) {
+                dir = System.getProperty("org.socialmusicdiscovery.server.database.directory");
+                if(!dir.endsWith(File.pathSeparator)) {
+                    dir+=File.pathSeparator;
+                }
+            }
+            derbyDisk = new DerbyProvider("jdbc:derby:smd-database");
+        }
         return derbyDisk;
     }
 
