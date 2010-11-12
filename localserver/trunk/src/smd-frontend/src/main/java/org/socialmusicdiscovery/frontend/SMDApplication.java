@@ -4,6 +4,7 @@ import org.apache.pivot.collections.Map;
 import org.apache.pivot.util.Resources;
 import org.apache.pivot.wtk.*;
 import org.apache.pivot.wtkx.WTKXSerializer;
+import org.socialmusicdiscovery.frontend.injections.PropertiesModule;
 
 import java.util.Locale;
 
@@ -21,7 +22,7 @@ public class SMDApplication implements Application {
         if (language != null) {
             Locale.setDefault(new Locale(language));
         }
-
+        PropertiesModule.init(properties);
         Resources resources = new Resources(SMDApplication.class.getName());
         WTKXSerializer wtkxSerializer = new WTKXSerializer(resources);
         window = (SMDApplicationWindow) wtkxSerializer.readObject(this, "SMDApplicationWindow.wtkx");

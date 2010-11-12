@@ -1,5 +1,7 @@
 package org.socialmusicdiscovery.frontend;
 
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.UniformInterfaceException;
@@ -30,8 +32,18 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class SMDApplicationWindow extends Window implements Bindable {
+    /** SMD Server host */
+    @Inject
+    @Named("smd-server.host")
+    private String SMDSERVER;
+
+    @Inject
+    @Named("smd-server.port")
+    private String SMDSERVERPORT;
+
     /** URL to SMD Server application */
-    private final String HOSTURL = "http://localhost:9998";
+    private String HOSTURL = null;
+
     /** Import module to use */
     private final String IMPORT_MODULE = "squeezeboxserver";
     /** Background task for updating progress bar duing media imports */
@@ -41,27 +53,32 @@ public class SMDApplicationWindow extends Window implements Bindable {
     /** Indicates the that import operation has been aborted */
     private boolean importAborted = false;
 
-    @WTKX private Meter importProgressMeter;
-    @WTKX private Label importProgressDescription;
-    @WTKX private PushButton importButton;
+    @WTKX Meter importProgressMeter;
+    @WTKX Label importProgressDescription;
+    @WTKX PushButton importButton;
 
-    @WTKX private TextInput searchTextInput;
-    @WTKX private PushButton searchButton;
-    @WTKX private ActivityIndicator searchActivity;
+    @WTKX TextInput searchTextInput;
+    @WTKX PushButton searchButton;
+    @WTKX ActivityIndicator searchActivity;
 
-    @WTKX private TableView artistResultsTableView;
-    @WTKX private TableView releaseResultsTableView;
-    @WTKX private TableView workResultsTableView;
+    @WTKX TableView artistResultsTableView;
+    @WTKX TableView releaseResultsTableView;
+    @WTKX TableView workResultsTableView;
 
     private Resources resources;
     @Override
     public void initialize(Resources resources) {
         this.resources = resources;
+        InjectHelper.injectMembers(this);
+        HOSTURL = "http://"+SMDSERVER+":"+SMDSERVERPORT;
     }
 
     @Override
     public void open(Display display, Window owner) {
         super.open(display, owner);
+
+        // Set focus to window
+        display.requestFocus();
 
         // Set focus to search field
         searchTextInput.requestFocus();
