@@ -12,6 +12,10 @@ import org.socialmusicdiscovery.server.business.repository.core.ReleaseRepositor
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.core.UriBuilder;
+import java.io.BufferedOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.net.URI;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -42,6 +46,26 @@ public class SMDApplication {
     ExecutorService mediaImportService;
 
     public static void main(String[] args) {
+        String customStdOut = System.getProperty("org.socialmusicdiscovery.server.stdout");
+        String customStdErr = System.getProperty("org.socialmusicdiscovery.server.stderr");
+        if(customStdOut != null) {
+            try {
+                System.setOut(new PrintStream(new BufferedOutputStream(new FileOutputStream(customStdOut,true))));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        if(customStdErr != null) {
+            try {
+                if(customStdOut!=null && customStdErr.equals(customStdOut)) {
+                    System.setErr(System.out);
+                }else {
+                    System.setErr(new PrintStream(new BufferedOutputStream(new FileOutputStream(customStdErr,true))));
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
         new SMDApplication();
     }
 
