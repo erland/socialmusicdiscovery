@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dl:DIDL-Lite xmlns:av="urn:schemas-upnp-org:av:av"
+	xmlns:dl="urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/"
+	xmlns:p="http://purl.org/dc/elements/1.1/"
+	xmlns:upnp="urn:schemas-upnp-org:metadata-1-0/upnp/"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/ ../xsd/didl-lite-v2.xsd "
+	xml:lang="EN">
+	<dl:item id="123" neverPlayable="true" parentID="" restricted="true"
+		refID="">
+		<p:title xml:lang="EN">p:title</p:title>
+		<upnp:searchClass includeDerived="true" name="">
+			object.item
+		</upnp:searchClass>
+		<upnp:class name="" xsi:type="upnp:class.type">
+			object.item
+		</upnp:class>
+		<upnp:searchClass includeDerived="true" name="">
+			object.item
+		</upnp:searchClass>
+		<p:creator>p:creator</p:creator>
+		<p:publisher>p:publisher</p:publisher>
+		<upnp:genre>upnp:genre</upnp:genre>
+		<p:date>p:date</p:date>
+		<dl:desc nameSpace="http://tempuri.org" id="">
+			<a/>
+		</dl:desc>
+		<dl:desc nameSpace="http://tempuri.org" id="">
+			<b/>
+		</dl:desc>
+	</dl:item>
+	<dl:container restricted="true" parentID="" id=""
+		searchable="true">
+		<p:title>p:title</p:title>
+		<upnp:searchClass includeDerived="true">
+			object.item
+		</upnp:searchClass>
+		<upnp:class>object.item</upnp:class>
+		<upnp:searchClass includeDerived="true">
+			object.item
+		</upnp:searchClass>
+		<dl:res protocolInfo="" daylightSaving="DAYLIGHTSAVING">
+			http://tempuri.org
+		</dl:res>
+		<upnp:writeStatus>WRITABLE</upnp:writeStatus>
+	</dl:container>
+</dl:DIDL-Lite>
