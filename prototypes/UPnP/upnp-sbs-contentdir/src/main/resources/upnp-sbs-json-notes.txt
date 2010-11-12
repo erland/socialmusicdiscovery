@@ -1,0 +1,196 @@
+Browse:
+
+DC0:
+<DIDL-Lite xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:upnp="urn:schemas-upnp-org:metadata-1-0/upnp/"
+xmlns="urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/">
+<container id="1" restricted="1" parentID="0">
+	<dc:title>Musique</dc:title>
+	<upnp:class>object.container</upnp:class>
+</container>
+<container id="2" restricted="1" parentID="0"><dc:title>Vid�os</dc:title><upnp:class>object.container</upnp:class></container>
+<container id="3" restricted="1" parentID="0"><dc:title>Photos</dc:title><upnp:class>object.container</upnp:class></container>
+<container id="12" restricted="1" parentID="0"><dc:title>S�lections</dc:title><upnp:class>object.container</upnp:class></container>
+</DIDL-Lite>
+
+<DIDL-Lite xmlns="urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:upnp="urn:schemas-upnp-org:metadata-1-0/upnp/">
+    <container id="1" parentID="0" restricted="true">
+        <dc:title>Fake container</dc:title>
+        <upnp:class>object.container</upnp:class>
+    </container>
+</DIDL-Lite>
+
+
+  {
+    channel => "/meta/connect",
+    clientId => "f00cb82b",
+    connectionType => "streaming",
+  },
+  {
+    channel      => "/meta/subscribe",
+    clientId     => "f00cb82b",
+    subscription => "/f00cb82b/**",
+  },
+
+  [10-09-27 00:47:06.3769] Slim::Web::Cometd::handler (143) Cometd request: [
+  {
+    channel => "/meta/connect",
+    clientId => "\"f16f7672\"",
+    connectionType => "long-polling",
+  },
+  {
+    channel      => "/meta/subscribe",
+    clientId     => "\"f16f7672\"",
+    subscription => "/\"f16f7672\"/**",
+  },
+]
+
+
+DC0*:
+<DIDL-Lite xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:upnp="urn:schemas-upnp-org:metadata-1-0/upnp/"
+xmlns="urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/">
+<container id="1" restricted="1" parentID="0" childCount="10" searchable="1"><dc:title>Musique</dc:title><upnp:class>object.container</upnp:class><upnp:writeStatus>NOT_WRITABLE</upnp:writeStatus><upnp:searchClass includeDerived="1">object.item.audioItem</upnp:searchClass><upnp:searchClass includeDerived="0">object.container.playlistContainer</upnp:searchClass><upnp:searchClass includeDerived="0">object.container</upnp:searchClass><upnp:searchClass includeDerived="1">object.container.genre</upnp:searchClass><upnp:searchClass includeDerived="0">object.container.storageFolder</upnp:searchClass><upnp:searchClass includeDerived="0">object.container.genre.musicGenre</upnp:searchClass><upnp:searchClass includeDerived="0">object.item.audioItem.musicTrack</upnp:searchClass><upnp:searchClass includeDerived="0">object.container.album.musicAlbum</upnp:searchClass><upnp:searchClass includeDerived="1">object.container.album</upnp:searchClass><upnp:searchClass includeDerived="0">object.container.person.musicArtist</upnp:searchClass></container>
+<container id="2" restricted="1" parentID="0" childCount="8" searchable="1"><dc:title>Vid�os</dc:title><upnp:class>object.container</upnp:class><upnp:writeStatus>NOT_WRITABLE</upnp:writeStatus><upnp:searchClass includeDerived="0">object.container.playlistContainer</upnp:searchClass><upnp:searchClass includeDerived="0">object.container.person.movieActor</upnp:searchClass><upnp:searchClass includeDerived="0">object.container</upnp:searchClass><upnp:searchClass includeDerived="1">object.item.videoItem</upnp:searchClass><upnp:searchClass includeDerived="1">object.container.genre</upnp:searchClass><upnp:searchClass includeDerived="0">object.container.storageFolder</upnp:searchClass><upnp:searchClass includeDerived="0">object.item.videoItem.videoBroadcast</upnp:searchClass><upnp:searchClass includeDerived="0">object.container.album.videoAlbum</upnp:searchClass><upnp:searchClass includeDerived="0">object.container.genre.movieGenre</upnp:searchClass><upnp:searchClass includeDerived="1">object.container.album</upnp:searchClass></container>
+<container id="3" restricted="1" parentID="0" childCount="7" searchable="1"><dc:title>Photos</dc:title><upnp:class>object.container</upnp:class><upnp:writeStatus>NOT_WRITABLE</upnp:writeStatus><upnp:searchClass includeDerived="0">object.container.playlistContainer</upnp:searchClass><upnp:searchClass includeDerived="0">object.item.imageItem.photo</upnp:searchClass><upnp:searchClass includeDerived="0">object.container.album.photoAlbum</upnp:searchClass><upnp:searchClass includeDerived="0">object.container</upnp:searchClass><upnp:searchClass includeDerived="0">object.container.storageFolder</upnp:searchClass><upnp:searchClass includeDerived="0">object.container.album.photoAlbum.dateTaken</upnp:searchClass><upnp:searchClass includeDerived="1">object.container.album</upnp:searchClass><upnp:searchClass includeDerived="1">object.item.imageItem</upnp:searchClass></container>
+<container id="12" restricted="1" parentID="0" childCount="2" searchable="0"><dc:title>S�lections</dc:title><upnp:class>object.container</upnp:class><upnp:writeStatus>NOT_WRITABLE</upnp:writeStatus></container>
+</DIDL-Lite>
+
+
+
+MD0:
+<DIDL-Lite xmlns="urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:upnp="urn:schemas-upnp-org:metadata-1-0/upnp/">
+  <container id="0" searchable="1" parentID="-1" restricted="1">
+    <dc:title>Root</dc:title>
+    <upnp:class>object.container</upnp:class>
+  </container>
+</DIDL-Lite>
+
+<DIDL-Lite xmlns="urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/"
+ xmlns:dc="http://purl.org/dc/elements/1.1/" 
+ xmlns:upnp="urn:schemas-upnp-org:metadata-1-0/upnp/">
+ <container id="0" parentID="-1" restricted="false">
+ <dc:title>Root</dc:title>
+ <upnp:class>object.container</upnp:class>
+ </container>
+ </DIDL-Lite>
+
+MD0*:
+<DIDL-Lite xmlns="urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:upnp="urn:schemas-upnp-org:metadata-1-0/upnp/">
+  <container id="0" searchable="1" parentID="-1" restricted="1" childCount="4">
+    <dc:title>Root</dc:title>
+    <upnp:class>object.container</upnp:class>
+    <upnp:writeStatus>UNKNOWN</upnp:writeStatus>
+  </container>
+</DIDL-Lite>
+
+
+
+Windows Media
+MD0*:
+<DIDL-Lite xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:upnp="urn:schemas-upnp-org:metadata-1-0/upnp/"
+xmlns="urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/">
+<container id="0" restricted="1" parentID="-1" childCount="4" searchable="1">
+<dc:title>Racine</dc:title>
+<upnp:class>object.container</upnp:class>
+<upnp:writeStatus>NOT_WRITABLE</upnp:writeStatus>
+<upnp:searchClass includeDerived="0">object.container.album.videoAlbum</upnp:searchClass>
+<upnp:searchClass includeDerived="0">object.container.album.photoAlbum</upnp:searchClass>
+<upnp:searchClass includeDerived="0">object.item.audioItem.musicTrack</upnp:searchClass>
+<upnp:searchClass includeDerived="0">object.container.album.musicAlbum</upnp:searchClass>
+<upnp:searchClass includeDerived="0">object.container</upnp:searchClass>
+<upnp:searchClass includeDerived="0">object.item.imageItem.photo</upnp:searchClass>
+<upnp:searchClass includeDerived="0">object.item.videoItem.videoBroadcast</upnp:searchClass>
+<upnp:searchClass includeDerived="0">object.container.person.movieActor</upnp:searchClass>
+<upnp:searchClass includeDerived="0">object.container.person.musicArtist</upnp:searchClass>
+<upnp:searchClass includeDerived="0">object.container.genre.musicGenre</upnp:searchClass>
+<upnp:searchClass includeDerived="1">object.item.videoItem</upnp:searchClass>
+<upnp:searchClass includeDerived="0">object.container.playlistContainer</upnp:searchClass>
+<upnp:searchClass includeDerived="0">object.container.genre.movieGenre</upnp:searchClass>
+<upnp:searchClass includeDerived="0">object.container.storageFolder</upnp:searchClass>
+<upnp:searchClass includeDerived="1">object.item.imageItem</upnp:searchClass>
+<upnp:searchClass includeDerived="0">object.container.album.photoAlbum.dateTaken</upnp:searchClass>
+<upnp:searchClass includeDerived="1">object.item.audioItem</upnp:searchClass></container>
+</DIDL-Lite>
+
+
+DC0*:
+<DIDL-Lite xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:upnp="urn:schemas-upnp-org:metadata-1-0/upnp/"
+xmlns="urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/">
+<container id="1" restricted="1" parentID="0" childCount="10" searchable="1">
+<dc:title>Musique</dc:title>
+<upnp:class>object.container</upnp:class>
+<upnp:writeStatus>NOT_WRITABLE</upnp:writeStatus>
+<upnp:searchClass includeDerived="1">object.item.audioItem</upnp:searchClass>
+<upnp:searchClass includeDerived="0">object.container.playlistContainer</upnp:searchClass>
+<upnp:searchClass includeDerived="0">object.container</upnp:searchClass>
+<upnp:searchClass includeDerived="1">object.container.genre</upnp:searchClass>
+<upnp:searchClass includeDerived="0">object.container.storageFolder</upnp:searchClass>
+<upnp:searchClass includeDerived="0">object.container.genre.musicGenre</upnp:searchClass>
+<upnp:searchClass includeDerived="0">object.item.audioItem.musicTrack</upnp:searchClass>
+<upnp:searchClass includeDerived="0">object.container.album.musicAlbum</upnp:searchClass>
+<upnp:searchClass includeDerived="1">object.container.album</upnp:searchClass>
+<upnp:searchClass includeDerived="0">object.container.person.musicArtist</upnp:searchClass>
+</container>
+
+<container id="2" restricted="1" parentID="0" childCount="8" searchable="1"><dc:title>Vidéos</dc:title><upnp:class>object.container</upnp:class><upnp:writeStatus>NOT_WRITABLE</upnp:writeStatus><upnp:searchClass includeDerived="0">object.container.playlistContainer</upnp:searchClass><upnp:searchClass includeDerived="0">object.container.person.movieActor</upnp:searchClass><upnp:searchClass includeDerived="0">object.container</upnp:searchClass><upnp:searchClass includeDerived="1">object.item.videoItem</upnp:searchClass><upnp:searchClass includeDerived="1">object.container.genre</upnp:searchClass><upnp:searchClass includeDerived="0">object.container.storageFolder</upnp:searchClass><upnp:searchClass includeDerived="0">object.item.videoItem.videoBroadcast</upnp:searchClass><upnp:searchClass includeDerived="0">object.container.album.videoAlbum</upnp:searchClass><upnp:searchClass includeDerived="0">object.container.genre.movieGenre</upnp:searchClass><upnp:searchClass includeDerived="1">object.container.album</upnp:searchClass></container>
+<container id="3" restricted="1" parentID="0" childCount="7" searchable="1"><dc:title>Photos</dc:title><upnp:class>object.container</upnp:class><upnp:writeStatus>NOT_WRITABLE</upnp:writeStatus><upnp:searchClass includeDerived="0">object.container.playlistContainer</upnp:searchClass><upnp:searchClass includeDerived="0">object.item.imageItem.photo</upnp:searchClass><upnp:searchClass includeDerived="0">object.container.album.photoAlbum</upnp:searchClass><upnp:searchClass includeDerived="0">object.container</upnp:searchClass><upnp:searchClass includeDerived="0">object.container.storageFolder</upnp:searchClass><upnp:searchClass includeDerived="0">object.container.album.photoAlbum.dateTaken</upnp:searchClass><upnp:searchClass includeDerived="1">object.container.album</upnp:searchClass><upnp:searchClass includeDerived="1">object.item.imageItem</upnp:searchClass></container>
+<container id="12" restricted="1" parentID="0" childCount="2" searchable="0"><dc:title>Sélections</dc:title><upnp:class>object.container</upnp:class><upnp:writeStatus>NOT_WRITABLE</upnp:writeStatus></container>
+</DIDL-Lite>
+
+MD<song>*:
+<DIDL-Lite xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:upnp="urn:schemas-upnp-org:metadata-1-0/upnp/"
+xmlns="urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/">
+<item id="{9F5DED38-2A46-426B-AA78-2B9E242C4E2A}.0.E7FDFD32" refID="{9F5DED38-2A46-426B-AA78-2B9E242C4E2A}.0.4" restricted="1" parentID="E7FDFD32">
+<dc:title>Test the Sound</dc:title>
+<dc:creator>Mr. Scruff</dc:creator>
+<res size="8414449" duration="0:05:48.000" bitrate="24000" protocolInfo="http-get:*:audio/mpeg:DLNA.ORG_PN=MP3;DLNA.ORG_OP=01;DLNA.ORG_FLAGS=01500000000000000000000000000000" sampleFrequency="44100" bitsPerSample="16" nrAudioChannels="2" microsoft:codec="{00000055-0000-0010-8000-00AA00389B71}" xmlns:microsoft="urn:schemas-microsoft-com:WMPNSS-1-0/">http://127.0.0.1:10243/WMPNSSv4/1919693327/1_ezlGNURFRDM4LTJBNDYtNDI2Qi1BQTc4LTJCOUUyNDJDNEUyQX0uMC5FN0ZERkQzMg.mp3</res>
+<res duration="0:05:48.000" bitrate="176400" protocolInfo="http-get:*:audio/L16;rate=44100;channels=2:DLNA.ORG_PN=LPCM;DLNA.ORG_OP=10;DLNA.ORG_CI=1;DLNA.ORG_FLAGS=01500000000000000000000000000000" sampleFrequency="44100" bitsPerSample="16" nrAudioChannels="2" microsoft:codec="{00000001-0000-0010-8000-00AA00389B71}" xmlns:microsoft="urn:schemas-microsoft-com:WMPNSS-1-0/">http://127.0.0.1:10243/WMPNSSv4/1919693327/ezlGNURFRDM4LTJBNDYtNDI2Qi1BQTc4LTJCOUUyNDJDNEUyQX0uMC5FN0ZERkQzMg.mp3?formatID=20</res>
+<res duration="0:05:48.000" bitrate="88200" protocolInfo="http-get:*:audio/L16;rate=44100;channels=1:DLNA.ORG_PN=LPCM;DLNA.ORG_OP=10;DLNA.ORG_CI=1;DLNA.ORG_FLAGS=01500000000000000000000000000000" sampleFrequency="44100" bitsPerSample="16" nrAudioChannels="1" microsoft:codec="{00000001-0000-0010-8000-00AA00389B71}" xmlns:microsoft="urn:schemas-microsoft-com:WMPNSS-1-0/">http://127.0.0.1:10243/WMPNSSv4/1919693327/ezlGNURFRDM4LTJBNDYtNDI2Qi1BQTc4LTJCOUUyNDJDNEUyQX0uMC5FN0ZERkQzMg.mp3?formatID=18</res>
+<res duration="0:05:48.000" bitrate="16000" protocolInfo="http-get:*:audio/mpeg:DLNA.ORG_PN=MP3;DLNA.ORG_OP=10;DLNA.ORG_CI=1;DLNA.ORG_FLAGS=01500000000000000000000000000000" sampleFrequency="44100" nrAudioChannels="1" microsoft:codec="{00000055-0000-0010-8000-00AA00389B71}" xmlns:microsoft="urn:schemas-microsoft-com:WMPNSS-1-0/">http://127.0.0.1:10243/WMPNSSv4/1919693327/ezlGNURFRDM4LTJBNDYtNDI2Qi1BQTc4LTJCOUUyNDJDNEUyQX0uMC5FN0ZERkQzMg.mp3?formatID=24</res>
+<res duration="0:05:48.000" bitrate="16000" protocolInfo="http-get:*:audio/x-ms-wma:DLNA.ORG_PN=WMABASE;DLNA.ORG_OP=10;DLNA.ORG_CI=1;DLNA.ORG_FLAGS=01500000000000000000000000000000" sampleFrequency="44100" nrAudioChannels="2" microsoft:codec="{00000161-0000-0010-8000-00AA00389B71}" xmlns:microsoft="urn:schemas-microsoft-com:WMPNSS-1-0/">http://127.0.0.1:10243/WMPNSSv4/1919693327/ezlGNURFRDM4LTJBNDYtNDI2Qi1BQTc4LTJCOUUyNDJDNEUyQX0uMC5FN0ZERkQzMg.wma?formatID=42</res>
+<res duration="0:05:48.000" bitrate="6000" protocolInfo="http-get:*:audio/x-ms-wma:DLNA.ORG_PN=WMABASE;DLNA.ORG_OP=10;DLNA.ORG_CI=1;DLNA.ORG_FLAGS=01500000000000000000000000000000" sampleFrequency="44100" nrAudioChannels="1" microsoft:codec="{00000161-0000-0010-8000-00AA00389B71}" xmlns:microsoft="urn:schemas-microsoft-com:WMPNSS-1-0/">http://127.0.0.1:10243/WMPNSSv4/1919693327/ezlGNURFRDM4LTJBNDYtNDI2Qi1BQTc4LTJCOUUyNDJDNEUyQX0uMC5FN0ZERkQzMg.wma?formatID=50</res>
+<res duration="0:05:48.000" bitrate="8000" protocolInfo="http-get:*:audio/x-ms-wma:DLNA.ORG_PN=WMABASE;DLNA.ORG_OP=10;DLNA.ORG_CI=1;DLNA.ORG_FLAGS=01500000000000000000000000000000" sampleFrequency="44100" nrAudioChannels="2" microsoft:codec="{00000161-0000-0010-8000-00AA00389B71}" xmlns:microsoft="urn:schemas-microsoft-com:WMPNSS-1-0/">http://127.0.0.1:10243/WMPNSSv4/1919693327/ezlGNURFRDM4LTJBNDYtNDI2Qi1BQTc4LTJCOUUyNDJDNEUyQX0uMC5FN0ZERkQzMg.wma?formatID=54</res>
+<upnp:class>object.item.audioItem.musicTrack</upnp:class>
+<upnp:genre>Electronica</upnp:genre>
+<dc:publisher>Ingrooves</dc:publisher>
+<upnp:artist role="AlbumArtist">Mr. Scruff</upnp:artist
+<upnp:artist role="Performer">Mr. Scruff</upnp:artist>
+<upnp:author role="Composer">Andy Carthy</upnp:author>
+<upnp:album>Bonus Bait Disc 1</upnp:album>
+<upnp:originalTrackNumber>1</upnp:originalTrackNumber>
+<dc:date>2008-01-02</dc:date><upnp:actor>Mr. Scruff</upnp:actor>
+<upnp:albumArtURI dlna:profileID="JPEG_SM" xmlns:dlna="urn:schemas-dlna-org:metadata-1-0/">http://127.0.0.1:10243/WMPNSSv4/1919693327/0_ezlGNURFRDM4LTJBNDYtNDI2Qi1BQTc4LTJCOUUyNDJDNEUyQX0uMC5FN0ZERkQzMg.jpg?albumArt=true</upnp:albumArtURI>
+<upnp:albumArtURI dlna:profileID="JPEG_TN" xmlns:dlna="urn:schemas-dlna-org:metadata-1-0/">http://127.0.0.1:10243/WMPNSSv4/1919693327/ezlGNURFRDM4LTJBNDYtNDI2Qi1BQTc4LTJCOUUyNDJDNEUyQX0uMC5FN0ZERkQzMg.jpg?albumArt=true,formatID=13</upnp:albumArtURI>
+<desc id="artist" nameSpace="urn:schemas-microsoft-com:WMPNSS-1-0/" xmlns:microsoft="urn:schemas-microsoft-com:WMPNSS-1-0/">&lt;microsoft:artistAlbumArtist&gt;Mr. Scruff&lt;/microsoft:artistAlbumArtist&gt;&lt;microsoft:artistPerformer&gt;Mr. Scruff&lt;/microsoft:artistPerformer&gt;</desc>
+<desc id="author" nameSpace="urn:schemas-microsoft-com:WMPNSS-1-0/" xmlns:microsoft="urn:schemas-microsoft-com:WMPNSS-1-0/">&lt;microsoft:authorComposer&gt;Andy Carthy&lt;/microsoft:authorComposer&gt;</desc>
+<desc id="Year" nameSpace="urn:schemas-microsoft-com:WMPNSS-1-0/" xmlns:microsoft="urn:schemas-microsoft-com:WMPNSS-1-0/">&lt;microsoft:year&gt;2008&lt;/microsoft:year&gt;</desc>
+<desc id="UserRating" nameSpace="urn:schemas-microsoft-com:WMPNSS-1-0/" xmlns:microsoft="urn:schemas-microsoft-com:WMPNSS-1-0/">&lt;microsoft:userEffectiveRatingInStars&gt;3&lt;/microsoft:userEffectiveRatingInStars&gt;&lt;microsoft:userEffectiveRating&gt;50&lt;/microsoft:userEffectiveRating&gt;</desc>
+<desc id="folderPath" nameSpace="urn:schemas-microsoft-com:WMPNSS-1-0/" xmlns:microsoft="urn:schemas-microsoft-com:WMPNSS-1-0/">&lt;microsoft:folderPath&gt;Musique partagée\Sample Music&lt;/microsoft:folderPath&gt;</desc>
+</item>
+</DIDL-Lite>
+
+
+MD<album>*:
+<DIDL-Lite xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:upnp="urn:schemas-upnp-org:metadata-1-0/upnp/"
+xmlns="urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/">
+<container id="E7FDFD32" restricted="1" parentID="00625FB1" childCount="1" searchable="1">
+<dc:title>Bonus Bait Disc 1</dc:title>
+<dc:creator>Mr. Scruff</dc:creator
+><upnp:class>object.container.album.musicAlbum</upnp:class>
+<upnp:writeStatus>NOT_WRITABLE</upnp:writeStatus>
+<upnp:genre>Electronica</upnp:genre>
+<upnp:artist role="AlbumArtist">Mr. Scruff</upnp:artist>
+<upnp:artist role="Performer">Mr. Scruff</upnp:artist>
+<upnp:author role="Composer">Andy Carthy</upnp:author>
+<upnp:actor>Mr. Scruff</upnp:actor>
+<upnp:searchClass includeDerived="0">object.item.audioItem.musicTrack</upnp:searchClass>
+<upnp:searchClass includeDerived="0">object.container.album.musicAlbum</upnp:searchClass>
+<desc id="artist" nameSpace="urn:schemas-microsoft-com:WMPNSS-1-0/" xmlns:microsoft="urn:schemas-microsoft-com:WMPNSS-1-0/">&lt;microsoft:artistAlbumArtist&gt;Mr. Scruff&lt;/microsoft:artistAlbumArtist&gt;&lt;microsoft:artistPerformer&gt;Mr. Scruff&lt;/microsoft:artistPerformer&gt;</desc>
+<desc id="author" nameSpace="urn:schemas-microsoft-com:WMPNSS-1-0/" xmlns:microsoft="urn:schemas-microsoft-com:WMPNSS-1-0/">&lt;microsoft:authorComposer&gt;Andy Carthy&lt;/microsoft:authorComposer&gt;</desc>
+</container>
+</DIDL-Lite>

@@ -1,0 +1,4 @@
+import java.util.UUID;
+6bb0f15e-4217-315f-8a58-0e17d83c57656bb0f15e-4217-315f-8a58-0e17d83c5765
+6bb0f15e-4217-315f-8a58-0e17d83c576562ec599c-8699-3eeb-89d8-b34d9ba9c9a962ec599c-8699-3eeb-89d8-b34d9ba9c9a92c165398-767c-3ae4-b1c6-75cc7cddfd8cjava.util.UUID.nameUUIDFromBytes("AZEzAZE".getBytes() );System.getenv("COMPUTERNAME");System.getenv("USERNAME");
+java.util.UUID.nameUUIDFromBytes(		(System.getenv("COMPUTERNAME") +			 System.getenv("USERNAME") ).getBytes() );FakeDidlObjects fdo = new FakeDidlObjects();Class.forName("com.mysql.jdbc.Driver").newInstance();DatabaseConnector dc = new DatabaseConnector();dc.getContributorsVector();org.medee.playground.sbs.CometConnector cc = new org.medee.playground.sbs.CometConnector();cc.doHandshake();cc.doConnect();System.out.println("\nAZE: "+cc.SampleRequest()+"\n");
