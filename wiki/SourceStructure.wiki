@@ -8,8 +8,9 @@ However, only use this if you like to add a new main module that doesn't fit in 
 The svn source code tree is divided in the following structure to be able to contain the various parts
    * *localserver/trunk* (https://socialmusicdiscovery.googlecode.com/svn/localserver/trunk)
      * *src* (Sub directory that contains the source code)
-   * *plugin/trunk* (https://socialmusicdiscovery.googlecode.com/svn/plugin/trunk) 
-     * *src* (Sub directory that contains the source code)
+       * *smd-server* - [SoftwareSMDServer SMD Server] (https://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server)
+       * *smd-frontend* - [SoftwareSMDFrontend SMD Frontend] (https://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-frontend)
+       * *smd-plugin* - [SoftwarePlugin SMD Plugin] (https://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-plugin)
    * *prototypes* (https://socialmusicdiscovery.googlecode.com/svn/prototypes) 
      * Create your a sub directory under the "prototypes" directory if you like to commit some prototyping project which we haven't decided if it should be part of the official release yet. We shouldn't need to have any "trunk", "tags", "branches" structure under each prototype directory but we can decide for each prototype what's needed.
    * *tools* (https://socialmusicdiscovery.googlecode.com/svn/tools)
@@ -19,3 +20,5 @@ The svn source code tree is divided in the following structure to be able to con
           * *src* (this is where all the source code for the tool is)
         * *tags*
         * *branches*
+
+For instruction about how to build the various module, see [BuildInstructions the build instructions]
