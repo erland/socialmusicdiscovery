@@ -8,6 +8,7 @@ import java.io.File;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.SQLNonTransientConnectionException;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,21 +16,28 @@ public class DerbyProviderModule extends AbstractModule {
     class DerbyProvider implements DatabaseProvider {
         HashMap<String, String> properties = null;
         String url;
+
         public DerbyProvider(String url) {
             this.url = url;
         }
+
         public Map<String, String> getProperties() {
-            if(properties == null) {
-                properties = new HashMap<String,String>();
-                properties.put("hibernate.connection.url",getUrl());
-                properties.put("hibernate.connection.driver_class",getDriver());
-                properties.put("hibernate.dialect","org.hibernate.dialect.DerbyDialect");
-                if(System.getProperty("hibernate.show_sql") != null) {
-                    properties.put("hibernate.show_sql",System.getProperty("hibernate.show_sql"));
+            if (properties == null) {
+                properties = new HashMap<String, String>();
+                properties.put("hibernate.connection.url", getUrl());
+                properties.put("hibernate.connection.driver_class", getDriver());
+                properties.put("hibernate.dialect", "org.hibernate.dialect.DerbyDialect");
+                Enumeration systemProperties = System.getProperties().propertyNames();
+                while (systemProperties.hasMoreElements()) {
+                    Object property = systemProperties.nextElement();
+                    if (property.toString().startsWith("hibernate.") && System.getProperty(property.toString()) != null) {
+                        properties.put(property.toString(), System.getProperty(property.toString()));
+                    }
                 }
             }
             return properties;
         }
+
         public String getUrl() {
             return url;
         }
@@ -37,19 +45,21 @@ public class DerbyProviderModule extends AbstractModule {
         public String getDriver() {
             return "org.apache.derby.jdbc.EmbeddedDriver";
         }
+
         public void start() {
             try {
                 Class.forName(getDriver());
-                DriverManager.getConnection(getUrl()+";create=true").close();
+                DriverManager.getConnection(getUrl() + ";create=true").close();
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException(e);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
         }
+
         public void stop() {
             try {
-                DriverManager.getConnection(getUrl()+";shutdown=true").close();
+                DriverManager.getConnection(getUrl() + ";shutdown=true").close();
             } catch (SQLNonTransientConnectionException ex) {
                 if (ex.getErrorCode() != 45000) {
                     throw new RuntimeException(ex);
@@ -59,23 +69,26 @@ public class DerbyProviderModule extends AbstractModule {
                 throw new RuntimeException(e);
             }
         }
-    };
+    }
+
+    ;
 
     private DerbyProvider derbyDisk = null;
     private DerbyProvider derbyMemory = new DerbyProvider("jdbc:derby:memory:smd-database");
+
     @Override
     protected void configure() {
     }
-    
+
     @Provides
     @Named("derby")
     public DatabaseProvider getDiskProvider() {
-        if(derbyDisk == null) {
+        if (derbyDisk == null) {
             String dir = "";
-            if(System.getProperty("org.socialmusicdiscovery.server.database.directory") != null) {
+            if (System.getProperty("org.socialmusicdiscovery.server.database.directory") != null) {
                 dir = System.getProperty("org.socialmusicdiscovery.server.database.directory");
-                if(!dir.endsWith(File.pathSeparator)) {
-                    dir+=File.pathSeparator;
+                if (!dir.endsWith(File.pathSeparator)) {
+                    dir += File.pathSeparator;
                 }
             }
             derbyDisk = new DerbyProvider("jdbc:derby:smd-database");
