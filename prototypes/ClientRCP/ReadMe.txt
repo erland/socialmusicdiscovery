@@ -1,9 +1,22 @@
 Some VERY brief notes on how to setup and run the RCP prototype client.
- 
-1. Install Eclipse 3.6 for RCP developers: http://www.eclipse.org/downloads/moreinfo/rcp.php 
+
+To Build and Run: 
+1. Install Eclipse 3.6 for RCP developers: http://www.eclipse.org/downloads/moreinfo/rcp.php
 2. Check out and build SMD code as described elsewhere
 3. Launch client: right-click 'smd-rcp.product.launch' - 'Run As ...' - 'smd-rcp.product'
+
+To work on UI: 
+- Install SWT Designer (part of WindowBuilder PRO): http://code.google.com/javadevtools/wbpro/installation/updatesite_3.6.html
+  (update site: http://dl.google.com/eclipse/inst/d2wbpro/latest/3.6) - you probably need to ignore one security warning.
 
 Optional:
 - Install Eclipse Integration for Apache Maven (IAM) from http://www.eclipse.org/iam 
   Update site: http://q4e.googlecode.com/svn/trunk/updatesite-iam
+
+=== NOTE === 
+
+These instructions are preliminary and temporary for the prototype.
+ 
+If/when we decide to build something more lasting, we will need to download and check in a "target platform" with the RCP base framework and all desired plug-ins. But for now, everyone needs to run the the same version of the Eclipse IDE, and install all the required features into the IDE.      
+
+  
