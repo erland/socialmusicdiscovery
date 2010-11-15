@@ -48,19 +48,19 @@ public class SMDApplication {
     public static void main(String[] args) {
         String customStdOut = System.getProperty("org.socialmusicdiscovery.server.stdout");
         String customStdErr = System.getProperty("org.socialmusicdiscovery.server.stderr");
-        if(customStdOut != null) {
+        if (customStdOut != null) {
             try {
-                System.setOut(new PrintStream(new BufferedOutputStream(new FileOutputStream(customStdOut,true))));
+                System.setOut(new PrintStream(new BufferedOutputStream(new FileOutputStream(customStdOut, true))));
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
         }
-        if(customStdErr != null) {
+        if (customStdErr != null) {
             try {
-                if(customStdOut!=null && customStdErr.equals(customStdOut)) {
+                if (customStdOut != null && customStdErr.equals(customStdOut)) {
                     System.setErr(System.out);
-                }else {
-                    System.setErr(new PrintStream(new BufferedOutputStream(new FileOutputStream(customStdErr,true))));
+                } else {
+                    System.setErr(new PrintStream(new BufferedOutputStream(new FileOutputStream(customStdErr, true))));
                 }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -73,13 +73,13 @@ public class SMDApplication {
         try {
             DatabaseProvider provider = null;
             String database = System.getProperty("org.socialmusicdiscovery.server.database");
-            if(database!=null) {
-                provider = InjectHelper.instanceWithName(DatabaseProvider.class,database);
-                if(provider == null) {
-                    throw new RuntimeException("No database provider exists for: "+database);
+            if (database != null) {
+                provider = InjectHelper.instanceWithName(DatabaseProvider.class, database);
+                if (provider == null) {
+                    throw new RuntimeException("No database provider exists for: " + database);
                 }
-            }else {
-                provider = InjectHelper.instanceWithName(DatabaseProvider.class,"derby");
+            } else {
+                provider = InjectHelper.instanceWithName(DatabaseProvider.class, "derby");
             }
             provider.start();
 
@@ -87,7 +87,7 @@ public class SMDApplication {
 
             Collection<Release> releases = releaseRepository.findAll();
             if (releases.size() > 0) {
-                System.out.println("\nFound "+releases.size()+" releases in database");
+                System.out.println("\nFound " + releases.size() + " releases in database");
                 //System.out.println("\nPrinting all available releases in database, please wait...\n");
             } else {
                 System.out.println("\nNo releases available in database!");
@@ -102,20 +102,22 @@ public class SMDApplication {
             System.out.println("Starting grizzly...");
             URI uri = UriBuilder.fromUri("http://localhost/").port(9998).build();
             SelectorThread threadSelector = GrizzlyWebContainerFactory.create(uri, initParams);
-            System.out.println(String.format("Try out %spersons\nHit enter to stop it...", uri));
-            System.in.read();
+            System.out.println(String.format("Try out %spersons\nHit q+enter to stop it...", uri));
+            while (System.in.read() != 'q') {
+            }
+            ;
             threadSelector.stopEndpoint();
 
             System.out.println("\n\nExiting...\n");
 
-            for(MediaImportStatus module: mediaImportManager.getRunningModules()) {
+            for (MediaImportStatus module : mediaImportManager.getRunningModules()) {
                 mediaImportManager.abortImport(module.getModule());
             }
             mediaImportService.shutdown();
-            if(!mediaImportService.awaitTermination(10, TimeUnit.SECONDS)) {
+            if (!mediaImportService.awaitTermination(10, TimeUnit.SECONDS)) {
                 mediaImportService.shutdownNow();
             }
-            
+
             if (em != null && em.isOpen()) {
                 em.close();
             }
@@ -150,22 +152,23 @@ public class SMDApplication {
             if (release.getContributors().size() > 0) {
                 System.out.println();
             }
-            if(release.getMediums().size()>0) {
+            if (release.getMediums().size() > 0) {
                 for (Medium medium : release.getMediums()) {
-                    printTracks(medium.getTracks(),(medium.getName()!=null?medium.getName():""+medium.getNumber())+" - ");
+                    printTracks(medium.getTracks(), (medium.getName() != null ? medium.getName() : "" + medium.getNumber()) + " - ");
                 }
-            }else {
-                printTracks(release.getTracks(),"");
+            } else {
+                printTracks(release.getTracks(), "");
             }
             System.out.println();
         }
     }
+
     private static void printTracks(List<Track> tracks, String prefix) {
         for (Track track : tracks) {
             Recording recording = track.getRecording();
             Work work = recording.getWork();
 
-            System.out.println(prefix+track.getNumber() + ". " + work.getName());
+            System.out.println(prefix + track.getNumber() + ". " + work.getName());
             for (Contributor contributor : recording.getContributors()) {
                 if (contributor.getArtist().getPerson() != null) {
                     System.out.println("- " + contributor.getType() + ": " + contributor.getArtist().getName() + " (" + contributor.getArtist().getPerson().getName() + ")");
