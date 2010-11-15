@@ -1,6 +1,7 @@
 package org.socialmusicdiscovery.server.api.management.model.core;
 
 import org.socialmusicdiscovery.server.api.management.model.BaseCRUDFacade;
+import org.socialmusicdiscovery.server.business.logic.DetachHelper;
 import org.socialmusicdiscovery.server.business.model.core.Recording;
 import org.socialmusicdiscovery.server.business.repository.core.RecordingRepository;
 
@@ -14,12 +15,12 @@ public class RecordingFacade extends BaseCRUDFacade<Recording, RecordingReposito
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Collection<Recording> search(@QueryParam("name") String name, @QueryParam("nameContains") String nameContains) {
-        if(name != null) {
-            return repository.findByNameWithRelations(name,Arrays.asList("reference"), null);
-        }else if(nameContains != null) {
-            return repository.findByPartialNameWithRelations(nameContains, Arrays.asList("reference"), null);
-        }else {
-            return repository.findAllWithRelations(Arrays.asList("reference"), null);
+        if (name != null) {
+            return DetachHelper.createDetachedCopy(repository.findByNameWithRelations(name, Arrays.asList("reference"), null));
+        } else if (nameContains != null) {
+            return DetachHelper.createDetachedCopy(repository.findByPartialNameWithRelations(nameContains, Arrays.asList("reference"), null));
+        } else {
+            return DetachHelper.createDetachedCopy(repository.findAllWithRelations(Arrays.asList("reference"), null));
         }
     }
 
@@ -45,7 +46,7 @@ public class RecordingFacade extends BaseCRUDFacade<Recording, RecordingReposito
     @Path("/{id}")
     @Override
     public Recording update(@PathParam("id") String id, Recording recording) {
-        return super.update(id,recording);
+        return super.update(id, recording);
     }
 
     @DELETE

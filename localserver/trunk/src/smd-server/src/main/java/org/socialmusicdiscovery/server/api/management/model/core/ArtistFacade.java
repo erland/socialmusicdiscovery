@@ -1,6 +1,7 @@
 package org.socialmusicdiscovery.server.api.management.model.core;
 
 import org.socialmusicdiscovery.server.api.management.model.BaseCRUDFacade;
+import org.socialmusicdiscovery.server.business.logic.DetachHelper;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
 import org.socialmusicdiscovery.server.business.repository.core.ArtistRepository;
 
@@ -14,16 +15,16 @@ public class ArtistFacade extends BaseCRUDFacade<Artist, ArtistRepository> {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Collection<Artist> search(@QueryParam("name") String name, @QueryParam("nameContains") String nameContains, @QueryParam("release") String release, @QueryParam("work") String work) {
-        if(name != null) {
-            return repository.findByNameWithRelations(name, Arrays.asList("reference"), null);
-        }else if(nameContains != null) {
-            return repository.findByPartialNameWithRelations(nameContains, Arrays.asList("reference"), null);
-        }else if(release != null) {
-            return repository.findByReleaseWithRelations(release, Arrays.asList("reference"), null);
-        }else if(work != null) {
-            return repository.findByWorkWithRelations(work, Arrays.asList("reference"), null);
-        }else {
-            return repository.findAllWithRelations(Arrays.asList("reference"), null);
+        if (name != null) {
+            return DetachHelper.createDetachedCopy(repository.findByNameWithRelations(name, Arrays.asList("reference"), null));
+        } else if (nameContains != null) {
+            return DetachHelper.createDetachedCopy(repository.findByPartialNameWithRelations(nameContains, Arrays.asList("reference"), null));
+        } else if (release != null) {
+            return DetachHelper.createDetachedCopy(repository.findByReleaseWithRelations(release, Arrays.asList("reference"), null));
+        } else if (work != null) {
+            return DetachHelper.createDetachedCopy(repository.findByWorkWithRelations(work, Arrays.asList("reference"), null));
+        } else {
+            return DetachHelper.createDetachedCopy(repository.findAllWithRelations(Arrays.asList("reference"), null));
         }
     }
 
