@@ -32,7 +32,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class SMDApplicationWindow extends Window implements Bindable {
-    /** SMD Server host */
     @Inject
     @Named("smd-server.host")
     private String SMDSERVER;
@@ -41,36 +40,56 @@ public class SMDApplicationWindow extends Window implements Bindable {
     @Named("smd-server.port")
     private String SMDSERVERPORT;
 
-    /** URL to SMD Server application */
+    /**
+     * URL to SMD Server application
+     */
     private String HOSTURL = null;
 
-    /** Import module to use */
+    /**
+     * Import module to use
+     */
     private final String IMPORT_MODULE = "squeezeboxserver";
-    /** Background task for updating progress bar duing media imports */
+    /**
+     * Background task for updating progress bar duing media imports
+     */
     private Task<Void> importTask = null;
-    /** Map with background search tasks currently executing */
-    private Map<String, Task<Void>> searchTasks = new ConcurrentHashMap<String,Task<Void>>();
-    /** Indicates the that import operation has been aborted */
+    /**
+     * Map with background search tasks currently executing
+     */
+    private Map<String, Task<Void>> searchTasks = new ConcurrentHashMap<String, Task<Void>>();
+    /**
+     * Indicates the that import operation has been aborted
+     */
     private boolean importAborted = false;
 
-    @WTKX Meter importProgressMeter;
-    @WTKX Label importProgressDescription;
-    @WTKX PushButton importButton;
+    @WTKX
+    Meter importProgressMeter;
+    @WTKX
+    Label importProgressDescription;
+    @WTKX
+    PushButton importButton;
 
-    @WTKX TextInput searchTextInput;
-    @WTKX PushButton searchButton;
-    @WTKX ActivityIndicator searchActivity;
+    @WTKX
+    TextInput searchTextInput;
+    @WTKX
+    PushButton searchButton;
+    @WTKX
+    ActivityIndicator searchActivity;
 
-    @WTKX TableView artistResultsTableView;
-    @WTKX TableView releaseResultsTableView;
-    @WTKX TableView workResultsTableView;
+    @WTKX
+    TableView artistResultsTableView;
+    @WTKX
+    TableView releaseResultsTableView;
+    @WTKX
+    TableView workResultsTableView;
 
     private Resources resources;
+
     @Override
     public void initialize(Resources resources) {
         this.resources = resources;
         InjectHelper.injectMembers(this);
-        HOSTURL = "http://"+SMDSERVER+":"+SMDSERVERPORT;
+        HOSTURL = "http://" + SMDSERVER + ":" + SMDSERVERPORT;
     }
 
     @Override
@@ -85,12 +104,12 @@ public class SMDApplicationWindow extends Window implements Bindable {
 
         // Check if an import is in progress and refresh the progress bar if it is
         try {
-            MediaImportStatus status = Client.create().resource(HOSTURL+"/mediaimportmodules/"+IMPORT_MODULE).accept(MediaType.APPLICATION_JSON).get(MediaImportStatus.class);
-            if(status != null) {
+            MediaImportStatus status = Client.create().resource(HOSTURL + "/mediaimportmodules/" + IMPORT_MODULE).accept(MediaType.APPLICATION_JSON).get(MediaImportStatus.class);
+            if (status != null) {
                 startImportProgressBar(IMPORT_MODULE);
             }
-        }catch(UniformInterfaceException e) {
-            if(e.getResponse().getStatus() != 204) {
+        } catch (UniformInterfaceException e) {
+            if (e.getResponse().getStatus() != 204) {
                 throw e;
             }
         }
@@ -99,9 +118,9 @@ public class SMDApplicationWindow extends Window implements Bindable {
         importButton.getButtonPressListeners().add(new ButtonPressListener() {
             @Override
             public void buttonPressed(Button button) {
-                if(importTask != null) {
+                if (importTask != null) {
                     abortImport(IMPORT_MODULE);
-                }else {
+                } else {
                     startImport(IMPORT_MODULE);
                 }
             }
@@ -121,10 +140,10 @@ public class SMDApplicationWindow extends Window implements Bindable {
         searchTextInput.getTextInputTextListeners().add(new TextInputTextListener() {
             @Override
             public void textChanged(TextInput textInput) {
-                if(textInput.getText() != null && textInput.getText().length()>2) {
-                        searchArtists(searchTextInput.getText(), null, null);
-                        searchReleases(searchTextInput.getText(), null, null);
-                        searchWorks(searchTextInput.getText(), null, null);
+                if (textInput.getText() != null && textInput.getText().length() > 2) {
+                    searchArtists(searchTextInput.getText(), null, null);
+                    searchReleases(searchTextInput.getText(), null, null);
+                    searchWorks(searchTextInput.getText(), null, null);
                 }
             }
         });
@@ -133,7 +152,7 @@ public class SMDApplicationWindow extends Window implements Bindable {
         releaseResultsTableView.getTableViewSelectionListeners().add(new TableViewSelectionListener.Adapter() {
             @Override
             public void selectedRangesChanged(TableView tableView, Sequence<Span> spanSequence) {
-                Release release = (Release)tableView.getSelectedRow();
+                Release release = (Release) tableView.getSelectedRow();
                 searchTextInput.setText("");
                 searchArtists(null, null, release.getId());
                 searchWorks(null, null, release.getId());
@@ -144,7 +163,7 @@ public class SMDApplicationWindow extends Window implements Bindable {
         artistResultsTableView.getTableViewSelectionListeners().add(new TableViewSelectionListener.Adapter() {
             @Override
             public void selectedRangesChanged(TableView tableView, Sequence<Span> spanSequence) {
-                Artist artist = (Artist)tableView.getSelectedRow();
+                Artist artist = (Artist) tableView.getSelectedRow();
                 searchTextInput.setText("");
                 searchReleases(null, artist.getId(), null);
                 searchWorks(null, artist.getId(), null);
@@ -155,7 +174,7 @@ public class SMDApplicationWindow extends Window implements Bindable {
         workResultsTableView.getTableViewSelectionListeners().add(new TableViewSelectionListener.Adapter() {
             @Override
             public void selectedRangesChanged(TableView tableView, Sequence<Span> spanSequence) {
-                Work work = (Work)tableView.getSelectedRow();
+                Work work = (Work) tableView.getSelectedRow();
                 searchTextInput.setText("");
                 searchReleases(null, null, work.getId());
                 searchArtists(null, work.getId(), null);
@@ -167,11 +186,11 @@ public class SMDApplicationWindow extends Window implements Bindable {
             @Override
             public boolean mouseClick(Component component, Mouse.Button button, int x, int y, int count) {
                 try {
-                    if(count==2) {
+                    if (count == 2) {
                         Release release = (Release) releaseResultsTableView.getSelectedRow();
                         WTKXSerializer wtkxSerializer = new WTKXSerializer(resources);
                         EditReleaseWindow window = (EditReleaseWindow) wtkxSerializer.readObject(this, "EditReleaseWindow.wtkx");
-                        window.open(getDisplay(),getWindow(),release);
+                        window.open(getDisplay(), getWindow(), release);
                         return true;
                     }
                 } catch (IOException e) {
@@ -187,30 +206,31 @@ public class SMDApplicationWindow extends Window implements Bindable {
 
     /**
      * Trigger a background search for artists
-     * @param name Partial artist name
-     * @param workId Identity of work
+     *
+     * @param name      Partial artist name
+     * @param workId    Identity of work
      * @param releaseId Identity of release
      */
     private void searchArtists(String name, String workId, String releaseId) {
-        if(searchTasks.containsKey("artist")) {
+        if (searchTasks.containsKey("artist")) {
             return;
         }
         String parameters = "";
-        if(name != null && name.length()>0) {
+        if (name != null && name.length() > 0) {
             try {
-                parameters = "?nameContains="+URLEncoder.encode(name,"UTF8");
+                parameters = "?nameContains=" + URLEncoder.encode(name, "UTF8");
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException(e);
             }
-        }else if(workId != null && workId.length()>0) {
+        } else if (workId != null && workId.length() > 0) {
             try {
-                parameters = "?work="+URLEncoder.encode(workId,"UTF8");
+                parameters = "?work=" + URLEncoder.encode(workId, "UTF8");
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException(e);
             }
-        }else if(releaseId != null && releaseId.length()>0) {
+        } else if (releaseId != null && releaseId.length() > 0) {
             try {
-                parameters = "?release="+URLEncoder.encode(releaseId,"UTF8");
+                parameters = "?release=" + URLEncoder.encode(releaseId, "UTF8");
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException(e);
             }
@@ -219,13 +239,14 @@ public class SMDApplicationWindow extends Window implements Bindable {
         searchActivity.setActive(true);
 
         final String searchParameters = parameters;
-        searchTasks.put("artist",new Task<Void>() {
+        searchTasks.put("artist", new Task<Void>() {
             @Override
             public Void execute() throws TaskExecutionException {
-                Collection<Artist> artists = Client.create().resource(HOSTURL+"/artists"+searchParameters).accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<Artist>>() {});
+                Collection<Artist> artists = Client.create().resource(HOSTURL + "/artists" + searchParameters).accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<Artist>>() {
+                });
                 artistResultsTableView.getTableData().clear();
                 for (Artist artist : artists) {
-                    ((List<Artist>)artistResultsTableView.getTableData()).add(artist);
+                    ((List<Artist>) artistResultsTableView.getTableData()).add(artist);
                 }
                 return null;
             }
@@ -236,30 +257,31 @@ public class SMDApplicationWindow extends Window implements Bindable {
 
     /**
      * Trigger a background search for releases
-     * @param name Partial release name
+     *
+     * @param name     Partial release name
      * @param artistId Identity of artist
-     * @param workId Identity of work
+     * @param workId   Identity of work
      */
     private void searchReleases(String name, String artistId, String workId) {
-        if(searchTasks.containsKey("release")) {
+        if (searchTasks.containsKey("release")) {
             return;
         }
         String parameters = "";
-        if(name != null && name.length()>0) {
+        if (name != null && name.length() > 0) {
             try {
-                parameters = "?nameContains="+URLEncoder.encode(name,"UTF8");
+                parameters = "?nameContains=" + URLEncoder.encode(name, "UTF8");
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException(e);
             }
-        }else if(artistId != null && artistId.length()>0) {
+        } else if (artistId != null && artistId.length() > 0) {
             try {
-                parameters = "?artist="+URLEncoder.encode(artistId,"UTF8");
+                parameters = "?artist=" + URLEncoder.encode(artistId, "UTF8");
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException(e);
             }
-        }else if(workId != null && workId.length()>0) {
+        } else if (workId != null && workId.length() > 0) {
             try {
-                parameters = "?work="+URLEncoder.encode(workId,"UTF8");
+                parameters = "?work=" + URLEncoder.encode(workId, "UTF8");
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException(e);
             }
@@ -269,13 +291,14 @@ public class SMDApplicationWindow extends Window implements Bindable {
         searchActivity.setActive(true);
 
         final String searchParameters = parameters;
-        searchTasks.put("release",new Task<Void>() {
+        searchTasks.put("release", new Task<Void>() {
             @Override
             public Void execute() throws TaskExecutionException {
-                Collection<Release> releases = Client.create().resource(HOSTURL+"/releases"+searchParameters).accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<Release>>() {});
+                Collection<Release> releases = Client.create().resource(HOSTURL + "/releases" + searchParameters).accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<Release>>() {
+                });
                 releaseResultsTableView.getTableData().clear();
                 for (Release release : releases) {
-                    ((List<Release>)releaseResultsTableView.getTableData()).add(release);
+                    ((List<Release>) releaseResultsTableView.getTableData()).add(release);
                 }
                 return null;
             }
@@ -285,30 +308,31 @@ public class SMDApplicationWindow extends Window implements Bindable {
 
     /**
      * Trigger a background search for works
-     * @param name Partial work name
-     * @param artistId Identity of artist
+     *
+     * @param name      Partial work name
+     * @param artistId  Identity of artist
      * @param releaseId Identity of release
      */
     private void searchWorks(String name, String artistId, String releaseId) {
-        if(searchTasks.containsKey("work")) {
+        if (searchTasks.containsKey("work")) {
             return;
         }
         String parameters = "";
-        if(name != null && name.length()>0) {
+        if (name != null && name.length() > 0) {
             try {
-                parameters = "?nameContains="+URLEncoder.encode(name,"UTF8");
+                parameters = "?nameContains=" + URLEncoder.encode(name, "UTF8");
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException(e);
             }
-        }else if(artistId != null && artistId.length()>0) {
+        } else if (artistId != null && artistId.length() > 0) {
             try {
-                parameters = "?artist="+URLEncoder.encode(artistId,"UTF8");
+                parameters = "?artist=" + URLEncoder.encode(artistId, "UTF8");
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException(e);
             }
-        }else if(releaseId != null && releaseId.length()>0) {
+        } else if (releaseId != null && releaseId.length() > 0) {
             try {
-                parameters = "?release="+URLEncoder.encode(releaseId,"UTF8");
+                parameters = "?release=" + URLEncoder.encode(releaseId, "UTF8");
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException(e);
             }
@@ -318,13 +342,14 @@ public class SMDApplicationWindow extends Window implements Bindable {
         searchActivity.setActive(true);
 
         final String searchParameters = parameters;
-        searchTasks.put("work",new Task<Void>() {
+        searchTasks.put("work", new Task<Void>() {
             @Override
             public Void execute() throws TaskExecutionException {
-                Collection<Work> works = Client.create().resource(HOSTURL+"/works"+searchParameters).accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<Work>>() {});
+                Collection<Work> works = Client.create().resource(HOSTURL + "/works" + searchParameters).accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<Work>>() {
+                });
                 workResultsTableView.getTableData().clear();
                 for (Work work : works) {
-                    ((List<Work>)workResultsTableView.getTableData()).add(work);
+                    ((List<Work>) workResultsTableView.getTableData()).add(work);
                 }
                 return null;
             }
@@ -334,7 +359,8 @@ public class SMDApplicationWindow extends Window implements Bindable {
 
     /**
      * Execute specified search operation as a background thread
-     * @param name The search text used, this is required to make it possible to automatically re-search if user has changed search field during operation
+     *
+     * @param name       The search text used, this is required to make it possible to automatically re-search if user has changed search field during operation
      * @param objectType The type of object to search for
      */
     private void executeAndCleanupSearch(final String name, final String objectType) {
@@ -342,16 +368,16 @@ public class SMDApplicationWindow extends Window implements Bindable {
             @Override
             public void taskExecuted(Task<Void> voidTask) {
                 searchTasks.remove(objectType);
-                if(name!=null && !name.equals(searchTextInput.getText()) && searchTextInput.getText().length()>2) {
-                    if(objectType.equals("artist")) {
+                if (name != null && !name.equals(searchTextInput.getText()) && searchTextInput.getText().length() > 2) {
+                    if (objectType.equals("artist")) {
                         searchArtists(searchTextInput.getText(), null, null);
-                    }else if(objectType.equals("release")) {
+                    } else if (objectType.equals("release")) {
                         searchReleases(searchTextInput.getText(), null, null);
-                    }else if(objectType.equals("work")) {
+                    } else if (objectType.equals("work")) {
                         searchWorks(searchTextInput.getText(), null, null);
                     }
                 }
-                if(searchTasks.isEmpty()) {
+                if (searchTasks.isEmpty()) {
                     searchActivity.setVisible(false);
                     searchActivity.setActive(false);
                 }
@@ -360,7 +386,7 @@ public class SMDApplicationWindow extends Window implements Bindable {
             @Override
             public void executeFailed(Task<Void> voidTask) {
                 searchTasks.remove(objectType);
-                if(searchTasks.isEmpty()) {
+                if (searchTasks.isEmpty()) {
                     searchActivity.setVisible(false);
                     searchActivity.setActive(false);
                 }
@@ -370,15 +396,16 @@ public class SMDApplicationWindow extends Window implements Bindable {
 
     /**
      * Start a media import
+     *
      * @param module The import module to use
      */
     private void startImport(String module) {
-        if(importTask == null) {
+        if (importTask == null) {
             importAborted = false;
-            JSONObject jsonStatus = Client.create().resource(HOSTURL+"/mediaimportmodules/"+module).post(JSONObject.class);
+            JSONObject jsonStatus = Client.create().resource(HOSTURL + "/mediaimportmodules/" + module).post(JSONObject.class);
             try {
                 Boolean status = jsonStatus.getBoolean("success");
-                if(status != null && status) {
+                if (status != null && status) {
                     startImportProgressBar(module);
                 }
             } catch (JSONException e) {
@@ -389,40 +416,41 @@ public class SMDApplicationWindow extends Window implements Bindable {
 
     /**
      * Start a background thread responsible to update the progress bar for an import operation in progress
+     *
      * @param module Import module to show in the progress bar
      */
     private void startImportProgressBar(final String module) {
-        if(importTask == null) {
+        if (importTask == null) {
             importTask = new Task<Void>() {
-                    @Override
-                    public Void execute() throws TaskExecutionException {
-                        try {
-                            importButton.setButtonData(resources.getString("SMDApplicationWindow.abortButton"));
-                            importProgressMeter.setPercentage(0);
-                            importProgressMeter.setText("");
-                            importProgressMeter.setVisible(true);
-                            MediaImportStatus status = Client.create().resource(HOSTURL+"/mediaimportmodules/"+module).accept(MediaType.APPLICATION_JSON).get(MediaImportStatus.class);
-                            while(status != null) {
-                                if(status.getTotalNumber()>0) {
-                                    importProgressMeter.setPercentage((double)status.getCurrentNumber()/status.getTotalNumber());
-                                    importProgressMeter.setText(status.getCurrentNumber()+" of "+status.getTotalNumber());
-                                }
-                                importProgressDescription.setText(status.getCurrentDescription());
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException e) {
-                                    throw new TaskExecutionException(e);
-                                }
-                                status = Client.create().resource(HOSTURL+"/mediaimportmodules/"+module).accept(MediaType.APPLICATION_JSON).get(MediaImportStatus.class);
+                @Override
+                public Void execute() throws TaskExecutionException {
+                    try {
+                        importButton.setButtonData(resources.getString("SMDApplicationWindow.abortButton"));
+                        importProgressMeter.setPercentage(0);
+                        importProgressMeter.setText("");
+                        importProgressMeter.setVisible(true);
+                        MediaImportStatus status = Client.create().resource(HOSTURL + "/mediaimportmodules/" + module).accept(MediaType.APPLICATION_JSON).get(MediaImportStatus.class);
+                        while (status != null) {
+                            if (status.getTotalNumber() > 0) {
+                                importProgressMeter.setPercentage((double) status.getCurrentNumber() / status.getTotalNumber());
+                                importProgressMeter.setText(status.getCurrentNumber() + " of " + status.getTotalNumber());
                             }
-                        }catch(UniformInterfaceException e) {
-                            if(e.getResponse().getStatus() != 204) {
-                                throw e;
+                            importProgressDescription.setText(status.getCurrentDescription());
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e) {
+                                throw new TaskExecutionException(e);
                             }
+                            status = Client.create().resource(HOSTURL + "/mediaimportmodules/" + module).accept(MediaType.APPLICATION_JSON).get(MediaImportStatus.class);
                         }
-                        return null;
+                    } catch (UniformInterfaceException e) {
+                        if (e.getResponse().getStatus() != 204) {
+                            throw e;
+                        }
                     }
-                };
+                    return null;
+                }
+            };
             importTask.execute(new TaskAdapter<Void>(new TaskListener<Void>() {
                 @Override
                 public void taskExecuted(Task<Void> task) {
@@ -430,9 +458,9 @@ public class SMDApplicationWindow extends Window implements Bindable {
                     importProgressMeter.setText("");
                     importProgressMeter.setVisible(false);
                     importButton.setButtonData(resources.getString("SMDApplicationWindow.importButton"));
-                    if(importAborted) {
+                    if (importAborted) {
                         importProgressDescription.setText("Import aborted");
-                    }else {
+                    } else {
                         importProgressDescription.setText("Import finished");
                     }
                     importTask = null;
@@ -453,12 +481,13 @@ public class SMDApplicationWindow extends Window implements Bindable {
 
     /**
      * Abort an import operation in progress
+     *
      * @param module Import module to abort
      */
     public void abortImport(String module) {
-        if(importTask != null) {
+        if (importTask != null) {
             importAborted = true;
-            Client.create().resource(HOSTURL+"/mediaimportmodules/"+module).delete();
+            Client.create().resource(HOSTURL + "/mediaimportmodules/" + module).delete();
         }
     }
 }
