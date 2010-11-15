@@ -3,6 +3,8 @@ package org.socialmusicdiscovery.server.plugins.mediaimport.squeezeboxserver;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import com.sun.jersey.api.client.Client;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -29,6 +31,30 @@ import java.util.*;
 public class SqueezeboxServer implements MediaImporter {
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy");
     private static final DateFormat DATE_FORMAT_WITH_DATE = new SimpleDateFormat("yyyy-MM-dd");
+
+    class TypeIdentity {
+        String type;
+        String id;
+
+        TypeIdentity(String type, String id) {
+            this.type = type;
+            this.id = id;
+        }
+
+        @Override
+        public int hashCode() {
+            return HashCodeBuilder.reflectionHashCode(this);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            return EqualsBuilder.reflectionEquals(this, o);
+        }
+    }
+
+    private HashMap<TypeIdentity, Collection<Classification>> classificationCache = new HashMap<TypeIdentity, Collection<Classification>>();
+    private HashMap<String, Collection<Artist>> artistCache = new HashMap<String, Collection<Artist>>();
+    private HashMap<String, Collection<Release>> releaseCache = new HashMap<String, Collection<Release>>();
 
     private boolean abort = false;
 
@@ -88,9 +114,12 @@ public class SqueezeboxServer implements MediaImporter {
         abort = false;
         TrackListData trackList = null;
         final long CHUNK_SIZE = 20;
-        final String SERVICE_URL = "http://"+squeezeboxServerHost+":"+squeezeboxServerPort+"/jsonrpc.js";
+        final String SERVICE_URL = "http://" + squeezeboxServerHost + ":" + squeezeboxServerPort + "/jsonrpc.js";
         long offset = 0;
 
+        artistCache.clear();
+        releaseCache.clear();
+        classificationCache.clear();
         try {
             JSONObject request = createRequest(offset, CHUNK_SIZE);
             JSONObject response = Client.create().resource(SERVICE_URL).accept("application/json").post(JSONObject.class, request);
@@ -117,9 +146,9 @@ public class SqueezeboxServer implements MediaImporter {
                     }
                 }
 
-                if(abort) {
+                if (abort) {
                     progressHandler.aborted(getId());
-                }else {
+                } else {
                     progressHandler.finished(getId());
                 }
             } else {
@@ -132,6 +161,9 @@ public class SqueezeboxServer implements MediaImporter {
             e.printStackTrace();
             progressHandler.failed(getId(), e.getLocalizedMessage());
         }
+        artistCache.clear();
+        classificationCache.clear();
+        releaseCache.clear();
     }
 
     /**
@@ -143,7 +175,8 @@ public class SqueezeboxServer implements MediaImporter {
 
     /**
      * Creates a JSON object representing the JSON request needed to request tracks from the Social Music Discovery SBS plugin
-     * @param offset Offset to use when starting to retrieve tracks
+     *
+     * @param offset    Offset to use when starting to retrieve tracks
      * @param chunkSize Number of tracks to retrieve data for
      * @return A JSON object
      * @throws JSONException
@@ -166,6 +199,7 @@ public class SqueezeboxServer implements MediaImporter {
 
     /**
      * Import a new playable element with related meta data
+     *
      * @param data Data about the playable element to create
      */
     private void importNewPlayableElement(TrackData data) {
@@ -173,7 +207,7 @@ public class SqueezeboxServer implements MediaImporter {
         if (playableElements.size() > 0) {
             // Update URI for previously imported playable elements of same format
             for (PlayableElement playableElement : playableElements) {
-                if(playableElement.getFormat().equals(data.getFormat()) &&
+                if (playableElement.getFormat().equals(data.getFormat()) &&
                         !playableElement.getUri().equals(data.getUrl())) {
                     playableElement.setUri(data.getUrl());
                 }
@@ -224,11 +258,11 @@ public class SqueezeboxServer implements MediaImporter {
                 Set<Contributor> recordingContributors = new HashSet<Contributor>();
 
                 // Don't use ARTIST contributors on Recording if they are exactly the same as those on Release level
-                if(!equalContributors(albumArtistContributors, artistContributors)) {
+                if (!equalContributors(albumArtistContributors, artistContributors)) {
                     recordingContributors.addAll(artistContributors);
                 }
                 // Don't use TRACKARTIST contributors if they are exactly the same as those on Release level
-                if(!equalContributors(albumArtistContributors, trackArtistContributors)) {
+                if (!equalContributors(albumArtistContributors, trackArtistContributors)) {
                     recordingContributors.addAll(trackArtistContributors);
                 }
                 recordingContributors.addAll(conductorContributors);
@@ -263,7 +297,13 @@ public class SqueezeboxServer implements MediaImporter {
 
                     // Create a new Release entity if it isn't already available
                     //TODO: We need to implement handling of greatest hits album here which might have exactly the same name
-                    Collection<Release> releases = releaseRepository.findByName(albumName);
+                    Collection<Release> releases = this.releaseCache.get(albumName.toLowerCase());
+                    if (releases == null) {
+                        releases = releaseRepository.findByName(albumName);
+                        if (releases.size() > 0) {
+                            this.releaseCache.put(albumName.toLowerCase(), releases);
+                        }
+                    }
                     Release release = null;
                     if (releases.size() == 0) {
                         release = new Release();
@@ -284,6 +324,7 @@ public class SqueezeboxServer implements MediaImporter {
                             release.setContributors(albumArtistContributors);
                         }
                         releaseRepository.create(release);
+                        this.releaseCache.put(albumName.toLowerCase(), Arrays.asList(release));
                     } else {
                         // We use the first Release entity found if it already existsted
                         release = releases.iterator().next();
@@ -317,20 +358,20 @@ public class SqueezeboxServer implements MediaImporter {
                             List<Medium> mediums = release.getMediums();
                             Medium medium = null;
                             for (Medium m : mediums) {
-                                if(m.getNumber().equals(Integer.parseInt(discNo))) {
+                                if (m.getNumber().equals(Integer.parseInt(discNo))) {
                                     medium = m;
                                 }
                             }
 
                             // Create a new Media entity if we don't already have one
-                            if(medium == null) {
+                            if (medium == null) {
                                 medium = new Medium();
                                 medium.setNumber(Integer.parseInt(discNo));
                                 release.getMediums().add(medium);
                                 mediumRepository.create(medium);
                             }
                             medium.getTracks().add(track);
-                        }else {
+                        } else {
                             release.getTracks().add(track);
                         }
                     } else {
@@ -343,22 +384,23 @@ public class SqueezeboxServer implements MediaImporter {
 
     /**
      * Checks if two sets of Contributor contains the same artists/role combinations
+     *
      * @param contributors1 The first set of contributors
      * @param contributors2 The second set of contributors
      * @return true if the sets are equal, false if they aren't
      */
     private Boolean equalContributors(Set<Contributor> contributors1, Set<Contributor> contributors2) {
-        if(contributors1.size() == contributors2.size()) {
+        if (contributors1.size() == contributors2.size()) {
             for (Contributor contributor1 : contributors1) {
                 boolean found = false;
                 for (Contributor contributor2 : contributors2) {
-                    if(contributor1.getArtist().getId().equals(contributor2.getArtist().getId()) &&
+                    if (contributor1.getArtist().getId().equals(contributor2.getArtist().getId()) &&
                             contributor1.getType().equals(contributor2.getType())) {
                         found = true;
                         break;
                     }
                 }
-                if(!found) {
+                if (!found) {
                     return false;
                 }
             }
@@ -371,7 +413,8 @@ public class SqueezeboxServer implements MediaImporter {
      * Get contributors represented by the list of artist names
      * The Artist entities will be created if they don't already exists, the Contributor entities returned will just be prepared so you will have to
      * store them manually after this call
-     * @param artistNames The list of artist names to search contributors for
+     *
+     * @param artistNames     The list of artist names to search contributors for
      * @param contributorType The type of contributors to create
      * @return A list of contributors representing the specified artist names and contributor type, empty list if no contributors are returned
      */
@@ -380,12 +423,19 @@ public class SqueezeboxServer implements MediaImporter {
         if (artistNames != null) {
             Collection<Artist> artists = new ArrayList<Artist>();
             for (String artistName : artistNames) {
-                Collection<Artist> existingArtists = artistRepository.findByName(artistName);
+                Collection<Artist> existingArtists = this.artistCache.get(artistName.toLowerCase());
+                if (existingArtists == null) {
+                    existingArtists = artistRepository.findByName(artistName);
+                    if (existingArtists.size() > 0) {
+                        this.artistCache.put(artistName.toLowerCase(), existingArtists);
+                    }
+                }
                 if (existingArtists.size() == 0) {
                     Artist artist = new Artist();
                     artist.setName(artistName);
                     artistRepository.create(artist);
                     artists.add(artist);
+                    this.artistCache.put(artistName.toLowerCase(), Arrays.asList(artist));
                 } else {
                     artists.addAll(existingArtists);
                 }
@@ -402,6 +452,7 @@ public class SqueezeboxServer implements MediaImporter {
 
     /**
      * Store Contributor entities for the set of contributors specified
+     *
      * @param contributors The list of contributors to create
      */
     private void saveContributors(Set<Contributor> contributors) {
@@ -414,20 +465,29 @@ public class SqueezeboxServer implements MediaImporter {
      * Create and save Classification entities for the specified list of classification names and classification type
      * The created Classification entities is also related to the provided SMDEntity reference.
      * If a Classification entity of the same name and type already exists, it is reused.
+     *
      * @param classificationNames The list of classification names to create entities for
-     * @param classificationType Type of classification to create
-     * @param reference The reference to relate the created Classification entities to
+     * @param classificationType  Type of classification to create
+     * @param reference           The reference to relate the created Classification entities to
      */
     private void createClassificationsForTag(Collection<String> classificationNames, String classificationType, SMDEntityReference reference) {
         if (classificationNames != null) {
             for (String classificationName : classificationNames) {
-                Collection<Classification> existingClassifications = classificationRepository.findByNameAndType(classificationName, classificationType);
+                TypeIdentity classificationId = new TypeIdentity(classificationType.toLowerCase(), classificationName.toLowerCase());
+                Collection<Classification> existingClassifications = this.classificationCache.get(classificationId);
+                if (existingClassifications == null) {
+                    existingClassifications = classificationRepository.findByNameAndType(classificationName, classificationType);
+                    if (existingClassifications.size() > 0) {
+                        this.classificationCache.put(classificationId, existingClassifications);
+                    }
+                }
                 if (existingClassifications.size() == 0) {
                     Classification classification = new Classification();
                     classification.setName(classificationName);
                     classification.setType(classificationType);
                     classification.getReferences().add(reference);
                     classificationRepository.create(classification);
+                    this.classificationCache.put(classificationId, Arrays.asList(classification));
                 } else {
                     for (Classification classification : existingClassifications) {
                         classification.getReferences().add(reference);

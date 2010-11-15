@@ -7,7 +7,8 @@
 
     <scm>
         <connection>scm:svn:http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server</connection>
-        <developerConnection>scm:svn:https://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server</developerConnection>
+        <developerConnection>scm:svn:https://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server
+        </developerConnection>
     </scm>
 
     <dependencies>
@@ -72,6 +73,11 @@
             <artifactId>slf4j-log4j12</artifactId>
             <version>1.5.2</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.5</version>
         </dependency>
 
         <!-- @Inject support -->
