@@ -14,6 +14,10 @@ public abstract class BaseCRUDFacade<T extends SMDEntity, R extends EntityReposi
     @Inject
     private EntityManager em;
 
+    protected EntityManager getEntityManager() {
+        return em;
+    }
+
     public BaseCRUDFacade() {
         InjectHelper.injectMembers(this);
     }
@@ -31,22 +35,22 @@ public abstract class BaseCRUDFacade<T extends SMDEntity, R extends EntityReposi
 
     public T update(String id, T entity) {
         em.getTransaction().begin();
-        if(id!=null && !entity.getId().equals(id)) {
+        if (id != null && !entity.getId().equals(id)) {
             entity.setId(id);
         }
         entity = repository.merge(entity);
         em.getTransaction().commit();
         return entity;
     }
-    
+
     public void delete(String id) {
-        if(id!=null) {
+        if (id != null) {
             em.getTransaction().begin();
             T artist = repository.findById(id);
-            if(artist != null) {
+            if (artist != null) {
                 repository.remove(artist);
                 em.getTransaction().commit();
-            }else {
+            } else {
                 em.getTransaction().rollback();
             }
         }

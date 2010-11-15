@@ -1,6 +1,7 @@
 package org.socialmusicdiscovery.server.api.management.model.core;
 
 import org.socialmusicdiscovery.server.api.management.model.BaseCRUDFacade;
+import org.socialmusicdiscovery.server.business.logic.DetachHelper;
 import org.socialmusicdiscovery.server.business.model.core.Label;
 import org.socialmusicdiscovery.server.business.repository.core.LabelRepository;
 
@@ -10,16 +11,16 @@ import java.util.Arrays;
 import java.util.Collection;
 
 @Path("/labels")
-public class LabelFacade extends BaseCRUDFacade<Label,LabelRepository> {
+public class LabelFacade extends BaseCRUDFacade<Label, LabelRepository> {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Collection<Label> search(@QueryParam("name") String name, @QueryParam("nameContains") String nameContains) {
-        if(name != null) {
-            return repository.findByNameWithRelations(name, Arrays.asList("reference"), null);
-        }else if(nameContains != null) {
-            return repository.findByPartialNameWithRelations(nameContains, Arrays.asList("reference"), null);
-        }else {
-            return repository.findAllWithRelations(Arrays.asList("reference"), null);
+        if (name != null) {
+            return DetachHelper.createDetachedCopy(repository.findByNameWithRelations(name, Arrays.asList("reference"), null));
+        } else if (nameContains != null) {
+            return DetachHelper.createDetachedCopy(repository.findByPartialNameWithRelations(nameContains, Arrays.asList("reference"), null));
+        } else {
+            return DetachHelper.createDetachedCopy(repository.findAllWithRelations(Arrays.asList("reference"), null));
         }
     }
 
@@ -45,7 +46,7 @@ public class LabelFacade extends BaseCRUDFacade<Label,LabelRepository> {
     @Path("/{id}")
     @Override
     public Label update(@PathParam("id") String id, Label label) {
-        return super.update(id,label);
+        return super.update(id, label);
     }
 
     @DELETE
