@@ -16,6 +16,7 @@ public class ArtistRepositoryImpl extends SMDEntityRepositoryImpl<Artist> implem
     public ArtistRepositoryImpl() {
         personRepository = new PersonRepositoryImpl();
     }
+
     @Inject
     public ArtistRepositoryImpl(EntityManager em) {
         super(em);
@@ -27,20 +28,20 @@ public class ArtistRepositoryImpl extends SMDEntityRepositoryImpl<Artist> implem
     }
 
     public Collection<Artist> findByNameWithRelations(String name, Collection<String> mandatoryRelations, Collection<String> optionalRelations) {
-        Query query = entityManager.createQuery(queryStringFor("e",mandatoryRelations, optionalRelations)+" where lower(e.name)=:name");
-        query.setParameter("name",name.toLowerCase());
+        Query query = entityManager.createQuery(queryStringFor("e", mandatoryRelations, optionalRelations) + " where lower(e.name)=:name order by e.name");
+        query.setParameter("name", name.toLowerCase());
         return query.getResultList();
     }
 
     public Collection<Artist> findByPartialNameWithRelations(String name, Collection<String> mandatoryRelations, Collection<String> optionalRelations) {
-        Query query = entityManager.createQuery(queryStringFor("e",mandatoryRelations, optionalRelations)+" where lower(e.name) like :name");
-        query.setParameter("name","%"+name.toLowerCase()+"%");
+        Query query = entityManager.createQuery(queryStringFor("e", mandatoryRelations, optionalRelations) + " where lower(e.name) like :name order by e.name");
+        query.setParameter("name", "%" + name.toLowerCase() + "%");
         return query.getResultList();
     }
 
     @Override
     public Artist merge(Artist entity) {
-        if(entity.getPerson() != null && entity.getPerson().getId() != null) {
+        if (entity.getPerson() != null && entity.getPerson().getId() != null) {
             Person person = personRepository.findById(entity.getPerson().getId());
             entity.setPerson(person);
         }
@@ -48,22 +49,23 @@ public class ArtistRepositoryImpl extends SMDEntityRepositoryImpl<Artist> implem
     }
 
     public Collection<Artist> findByWorkWithRelations(String workId, Collection<String> mandatoryRelations, Collection<String> optionalRelations) {
-        Query query = entityManager.createQuery(queryStringFor("e",mandatoryRelations, optionalRelations, true)+
-                " WHERE EXISTS (select w from Work as w JOIN w.contributors as c where w.id=:workId and c.artist=e.id) "+
-                " OR EXISTS (select r from Recording as r JOIN r.contributors as c where r.work=:work and c.artist=e.id)");
+        Query query = entityManager.createQuery(queryStringFor("e", mandatoryRelations, optionalRelations, true) +
+                " WHERE EXISTS (select w from Work as w JOIN w.contributors as c where w.id=:workId and c.artist=e.id) " +
+                " OR EXISTS (select r from Recording as r JOIN r.contributors as c where r.work=:work and c.artist=e.id) order by e.name");
         Work work = new Work();
         work.setId(workId);
-        query.setParameter("work",work);
-        query.setParameter("workId",workId);
+        query.setParameter("work", work);
+        query.setParameter("workId", workId);
         return query.getResultList();
     }
+
     public Collection<Artist> findByReleaseWithRelations(String releaseId, Collection<String> mandatoryRelations, Collection<String> optionalRelations) {
-        Query query = entityManager.createQuery(queryStringFor("e",mandatoryRelations, optionalRelations, true)+
+        Query query = entityManager.createQuery(queryStringFor("e", mandatoryRelations, optionalRelations, true) +
                 " WHERE" +
                 " EXISTS (select rel from Release as rel JOIN rel.contributors as c1 where c1.artist=e.id and rel.id=:releaseId)" +
                 " OR EXISTS (select rel from Release as rel JOIN rel.tracks as t JOIN t.recording as r JOIN r.contributors as c2 WHERE c2.artist=e.id and rel.id=:releaseId)" +
-                " OR EXISTS (select rel from Release as rel JOIN rel.tracks as t JOIN t.recording as r JOIN r.work as w JOIN w.contributors as c3 WHERE c3.artist=e.id and rel.id=:releaseId)");
-        query.setParameter("releaseId",releaseId);
+                " OR EXISTS (select rel from Release as rel JOIN rel.tracks as t JOIN t.recording as r JOIN r.work as w JOIN w.contributors as c3 WHERE c3.artist=e.id and rel.id=:releaseId) order by e.name");
+        query.setParameter("releaseId", releaseId);
         return query.getResultList();
     }
 
