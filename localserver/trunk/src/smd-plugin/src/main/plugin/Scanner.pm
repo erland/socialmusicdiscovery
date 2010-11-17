@@ -195,8 +195,7 @@ my $MAPPED_TAGS = {
 	'PART' => 'PART',
 	'MOVEMENT' => 'PART',
 
-	'MUSICBRAINZ_TRM_ID' => 'MUSICBRAINZ_TRM_ID',
-	'MUSICBRAINZ_ID' => 'MUSICBRAINZ_ID',
+	'MUSICBRAINZ_ID' => 'MUSICBRAINZ_TRACK_ID',
 	'MUSICBRAINZ_ALBUM_ID' => 'MUSICBRAINZ_ALBUM_ID',
 	'MUSICBRAINZ_ARTIST_ID' => 'MUSICBRAINZ_ARTIST_ID',
 	'MUSICBRAINZ_ALBUMARTIST_ID' => 'MUSICBRAINZ_ALBUMARTIST_ID',
@@ -222,7 +221,7 @@ my $MAPPED_TAGS = {
         'TPOS' => 'PART',
         'TRCK' => 'TRACKNUM',
         'YRVA' => 'RVAD',
-        'UFID' => 'MUSICBRAINZ_ID',
+        'UFID' => 'MUSICBRAINZ_TRACK_ID',
         'USLT' => 'LYRICS',
 };
 
@@ -430,7 +429,7 @@ sub readTags {
 				}
 
 				my $item = {
-					'name' => $MAPPED_TAGS->{$tag},
+					'name' => $tag,
 					'value' => $value,
 					'sortvalue' => $sortValue,
 				};
