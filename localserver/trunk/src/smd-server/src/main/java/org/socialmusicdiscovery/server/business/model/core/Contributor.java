@@ -15,10 +15,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 @javax.persistence.Entity
 @Table(name = "contributors")
 public class Contributor extends SMDEntity<Contributor> {
+    public static final String PERFORMER = "performer";
+    public static final String COMPOSER = "composer";
+    public static final String CONDUCTOR = "conductor";
     @Column(nullable = false)
     private String type;
     @ManyToOne(optional = false)
-    @JoinColumn(name="artist_id")
+    @JoinColumn(name = "artist_id")
     private Artist artist;
 
     public String getType() {
