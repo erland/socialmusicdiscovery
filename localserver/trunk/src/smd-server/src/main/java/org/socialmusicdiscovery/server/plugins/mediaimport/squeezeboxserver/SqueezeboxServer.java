@@ -12,9 +12,11 @@ import org.codehaus.jettison.json.JSONObject;
 import org.socialmusicdiscovery.server.api.mediaimport.MediaImporter;
 import org.socialmusicdiscovery.server.api.mediaimport.MediaImporterCallback;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
+import org.socialmusicdiscovery.server.business.model.GlobalIdentity;
 import org.socialmusicdiscovery.server.business.model.SMDEntityReference;
 import org.socialmusicdiscovery.server.business.model.classification.Classification;
 import org.socialmusicdiscovery.server.business.model.core.*;
+import org.socialmusicdiscovery.server.business.repository.GlobalIdentityRepository;
 import org.socialmusicdiscovery.server.business.repository.classification.ClassificationRepository;
 import org.socialmusicdiscovery.server.business.repository.core.*;
 
@@ -52,9 +54,11 @@ public class SqueezeboxServer implements MediaImporter {
         }
     }
 
-    private HashMap<TypeIdentity, Collection<Classification>> classificationCache = new HashMap<TypeIdentity, Collection<Classification>>();
-    private HashMap<String, Collection<Artist>> artistCache = new HashMap<String, Collection<Artist>>();
-    private HashMap<String, Collection<Release>> releaseCache = new HashMap<String, Collection<Release>>();
+    private Map<TypeIdentity, Collection<Classification>> classificationCache = new HashMap<TypeIdentity, Collection<Classification>>();
+    private Map<String, Collection<Artist>> artistCache = new HashMap<String, Collection<Artist>>();
+    private Set<String> artistMusicbrainzCache = new HashSet<String>();
+    private Map<String, Collection<Release>> releaseCache = new HashMap<String, Collection<Release>>();
+    private Set<String> releaseMusicbrainzCache = new HashSet<String>();
 
     private boolean abort = false;
 
@@ -89,6 +93,9 @@ public class SqueezeboxServer implements MediaImporter {
     private WorkRepository workRepository;
 
     @Inject
+    private GlobalIdentityRepository globalIdentityRepository;
+
+    @Inject
     @Named("squeezeboxserver.host")
     private String squeezeboxServerHost;
 
@@ -118,7 +125,9 @@ public class SqueezeboxServer implements MediaImporter {
         long offset = 0;
 
         artistCache.clear();
+        artistMusicbrainzCache.clear();
         releaseCache.clear();
+        releaseMusicbrainzCache.clear();
         classificationCache.clear();
         try {
             JSONObject request = createRequest(offset, CHUNK_SIZE);
@@ -162,8 +171,10 @@ public class SqueezeboxServer implements MediaImporter {
             progressHandler.failed(getId(), e.getLocalizedMessage());
         }
         artistCache.clear();
+        artistMusicbrainzCache.clear();
         classificationCache.clear();
         releaseCache.clear();
+        releaseMusicbrainzCache.clear();
     }
 
     /**
@@ -202,7 +213,7 @@ public class SqueezeboxServer implements MediaImporter {
      *
      * @param data Data about the playable element to create
      */
-    private void importNewPlayableElement(TrackData data) {
+    void importNewPlayableElement(TrackData data) {
         Collection<PlayableElement> playableElements = playableElementRepository.findBySmdID(data.getSmdID());
         if (playableElements.size() > 0) {
             // Update URI for previously imported playable elements of same format
@@ -231,31 +242,81 @@ public class SqueezeboxServer implements MediaImporter {
                 }
             }
             // We need a TITLE tag, tracks without titles isn't currenlty imported
-            if (tags.containsKey(("TITLE"))) {
-                String title = tags.get("TITLE").iterator().next();
+            if (tags.containsKey(TagData.TITLE)) {
+                String title = tags.get(TagData.TITLE).iterator().next();
 
-                // Create a Work entity based on the TITLE tag
-                //TODO: Implement WORK tag support instead of just using TITLE
-                Work work = new Work();
-                work.setName(title);
-                Set<Contributor> workContributors = getContributorsForTag(tags.get("COMPOSER"), "composer");
-                if (workContributors.size() > 0) {
-                    saveContributors(workContributors);
-                    work.setContributors(workContributors);
+                Work work = null;
+                Collection<Work> existingWorks = new ArrayList<Work>();
+                if (tags.containsKey((TagData.WORK))) {
+                    String workName = tags.get(TagData.WORK).iterator().next();
+                    existingWorks = workRepository.findByName(workName);
+                    if (existingWorks.size() == 0) {
+                        // Create a Work entity based on the WORK tag
+                        work = new Work();
+                        work.setName(workName);
+                    }
+                } else {
+                    // Create a Work entity based on the TITLE tag
+                    work = new Work();
+                    work.setName(title);
                 }
-                workRepository.create(work);
+
+                // Create Work entity and add composers to it if it didn't already exist
+                if (existingWorks.size() == 0) {
+                    Set<Contributor> workContributors = getContributorsForTag(tags.get(TagData.COMPOSER), Contributor.COMPOSER);
+                    if (workContributors.size() > 0) {
+                        saveContributors(workContributors);
+                        work.setContributors(workContributors);
+                    }
+                    workRepository.create(work);
+                }
 
 
                 // Create a Recording entity represented by the Work and various Contributors
                 Recording recording = new Recording();
                 recording.setWork(work);
 
-                Set<Contributor> albumArtistContributors = getContributorsForTag(tags.get("ALBUMARTIST"), "performer");
-                Set<Contributor> artistContributors = getContributorsForTag(tags.get("ARTIST"), "performer");
-                Set<Contributor> trackArtistContributors = getContributorsForTag(tags.get("TRACKARTIST"), "performer");
-                Set<Contributor> performerContributors = getContributorsForTag(tags.get("PERFORMER"), "performer");
-                Set<Contributor> conductorContributors = getContributorsForTag(tags.get("CONDUCTOR"), "conductor");
+                Set<Contributor> albumArtistContributors = getContributorsForTag(tags.get(TagData.ALBUMARTIST), Contributor.PERFORMER);
+                Set<Contributor> artistContributors = getContributorsForTag(tags.get(TagData.ARTIST), Contributor.PERFORMER);
+                Set<Contributor> trackArtistContributors = getContributorsForTag(tags.get(TagData.TRACKARTIST), Contributor.PERFORMER);
+                Set<Contributor> performerContributors = getContributorsForTag(tags.get(TagData.PERFORMER), Contributor.PERFORMER);
+                Set<Contributor> conductorContributors = getContributorsForTag(tags.get(TagData.CONDUCTOR), Contributor.CONDUCTOR);
                 Set<Contributor> recordingContributors = new HashSet<Contributor>();
+
+                if (artistContributors.size() == 1) {
+                    if (tags.containsKey(TagData.MUSICBRAINZ_ARTIST_ID)) {
+                        String artistId = tags.get(TagData.MUSICBRAINZ_ARTIST_ID).iterator().next();
+                        if (!artistMusicbrainzCache.contains(artistId)) {
+                            Artist artist = artistCache.get(tags.get(TagData.ARTIST).iterator().next().toLowerCase()).iterator().next();
+                            GlobalIdentity identity = globalIdentityRepository.findBySourceAndEntity(GlobalIdentity.SOURCE_MUSICBRAINZ, artist);
+                            if (identity == null) {
+                                identity = new GlobalIdentity();
+                                identity.setSource(GlobalIdentity.SOURCE_MUSICBRAINZ);
+                                identity.setEntityId(artist.getId());
+                                identity.setUri(artistId);
+                                globalIdentityRepository.create(identity);
+                            }
+                            artistMusicbrainzCache.add(artistId);
+                        }
+                    }
+                }
+                if (albumArtistContributors.size() == 1) {
+                    if (tags.containsKey(TagData.MUSICBRAINZ_ALBUMARTIST_ID)) {
+                        String artistId = tags.get(TagData.MUSICBRAINZ_ALBUMARTIST_ID).iterator().next();
+                        if (!artistMusicbrainzCache.contains(artistId)) {
+                            Artist artist = artistCache.get(tags.get(TagData.ALBUMARTIST).iterator().next().toLowerCase()).iterator().next();
+                            GlobalIdentity identity = globalIdentityRepository.findBySourceAndEntity(GlobalIdentity.SOURCE_MUSICBRAINZ, artist);
+                            if (identity == null) {
+                                identity = new GlobalIdentity();
+                                identity.setSource(GlobalIdentity.SOURCE_MUSICBRAINZ);
+                                identity.setEntityId(artist.getId());
+                                identity.setUri(artistId);
+                                globalIdentityRepository.create(identity);
+                            }
+                            artistMusicbrainzCache.add(artistId);
+                        }
+                    }
+                }
 
                 // Don't use ARTIST contributors on Recording if they are exactly the same as those on Release level
                 if (!equalContributors(albumArtistContributors, artistContributors)) {
@@ -275,24 +336,24 @@ public class SqueezeboxServer implements MediaImporter {
                 recordingRepository.create(recording);
 
                 // Add GENRE, STYLE and MOOD Classification entities and related them to the created Recording entity
-                if (tags.containsKey("GENRE")) {
-                    createClassificationsForTag(tags.get("GENRE"), "genre", recording.getReference());
+                if (tags.containsKey(TagData.GENRE)) {
+                    createClassificationsForTag(tags.get(TagData.GENRE), Classification.GENRE, recording.getReference());
                 }
-                if (tags.containsKey("STYLE")) {
-                    createClassificationsForTag(tags.get("STYLE"), "style", recording.getReference());
+                if (tags.containsKey(TagData.STYLE)) {
+                    createClassificationsForTag(tags.get(TagData.STYLE), Classification.STYLE, recording.getReference());
                 }
-                if (tags.containsKey("MOOD")) {
-                    createClassificationsForTag(tags.get("MOOD"), "mood", recording.getReference());
+                if (tags.containsKey(TagData.MOOD)) {
+                    createClassificationsForTag(tags.get(TagData.MOOD), Classification.MOOD, recording.getReference());
                 }
 
                 // Create a Release entity based on the ALBUM tag
-                if (tags.containsKey("ALBUM")) {
-                    String albumName = tags.get("ALBUM").iterator().next();
+                if (tags.containsKey(TagData.ALBUM)) {
+                    String albumName = tags.get(TagData.ALBUM).iterator().next();
 
                     // YEAR tag is optional but we use it if it exists
                     String year = null;
-                    if (tags.containsKey("YEAR")) {
-                        year = tags.get("YEAR").iterator().next();
+                    if (tags.containsKey(TagData.YEAR)) {
+                        year = tags.get(TagData.YEAR).iterator().next();
                     }
 
                     // Create a new Release entity if it isn't already available
@@ -330,11 +391,26 @@ public class SqueezeboxServer implements MediaImporter {
                         release = releases.iterator().next();
                     }
 
+                    if (tags.containsKey(TagData.MUSICBRAINZ_ALBUM_ID)) {
+                        String releaseId = tags.get(TagData.MUSICBRAINZ_ALBUM_ID).iterator().next();
+                        if (!releaseMusicbrainzCache.contains(releaseId)) {
+                            GlobalIdentity identity = globalIdentityRepository.findBySourceAndEntity(GlobalIdentity.SOURCE_MUSICBRAINZ, release);
+                            if (identity == null) {
+                                identity = new GlobalIdentity();
+                                identity.setSource(GlobalIdentity.SOURCE_MUSICBRAINZ);
+                                identity.setEntityId(release.getId());
+                                identity.setUri(releaseId);
+                                globalIdentityRepository.create(identity);
+                            }
+                            releaseMusicbrainzCache.add(releaseId);
+                        }
+                    }
+
                     // Create a Track entity if there is a TRACKNUM tag
                     Track track = null;
-                    if (tags.containsKey("TRACKNUM")) {
+                    if (tags.containsKey(TagData.TRACKNUM)) {
                         track = new Track();
-                        String trackNum = tags.get("TRACKNUM").iterator().next();
+                        String trackNum = tags.get(TagData.TRACKNUM).iterator().next();
 
                         // Sometimes TRACKNUM is represented as 1/10
                         if (trackNum.contains("/")) {
@@ -345,9 +421,17 @@ public class SqueezeboxServer implements MediaImporter {
                         track.setRecording(recording);
                         trackRepository.create(track);
 
+                        if (tags.containsKey(TagData.MUSICBRAINZ_TRACK_ID)) {
+                            GlobalIdentity identity = new GlobalIdentity();
+                            identity.setSource(GlobalIdentity.SOURCE_MUSICBRAINZ);
+                            identity.setEntityId(track.getId());
+                            identity.setUri(tags.get(TagData.MUSICBRAINZ_TRACK_ID).iterator().next());
+                            globalIdentityRepository.create(identity);
+                        }
+
                         // Create a Media entity if there is a DISC tag
-                        if (tags.containsKey("DISC")) {
-                            String discNo = tags.get("DISC").iterator().next();
+                        if (tags.containsKey(TagData.DISC)) {
+                            String discNo = tags.get(TagData.DISC).iterator().next();
 
                             // DISC tags can sometimes have the syntax 1/3
                             if (discNo.contains("/")) {
