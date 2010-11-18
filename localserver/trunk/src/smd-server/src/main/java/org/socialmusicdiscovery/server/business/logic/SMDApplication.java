@@ -45,6 +45,10 @@ public class SMDApplication {
     @Named("mediaimport")
     ExecutorService mediaImportService;
 
+    @Inject
+    @Named("org.socialmusicdiscovery.server.port")
+    String serverPort;
+
     public static void main(String[] args) {
         String customStdOut = System.getProperty("org.socialmusicdiscovery.server.stdout");
         String customStdErr = System.getProperty("org.socialmusicdiscovery.server.stderr");
@@ -100,7 +104,7 @@ public class SMDApplication {
             initParams.put("com.sun.jersey.config.property.packages", "org.socialmusicdiscovery.server.api");
 
             System.out.println("Starting grizzly...");
-            URI uri = UriBuilder.fromUri("http://localhost/").port(9998).build();
+            URI uri = UriBuilder.fromUri("http://localhost/").port(Integer.parseInt(serverPort)).build();
             SelectorThread threadSelector = GrizzlyWebContainerFactory.create(uri, initParams);
             System.out.println(String.format("Try out %spersons\nHit q+enter to stop it...", uri));
             while (System.in.read() != 'q') {
