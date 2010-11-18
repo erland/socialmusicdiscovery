@@ -23,6 +23,8 @@
 
         <class>org.socialmusicdiscovery.server.business.model.classification.Classification</class>
 
+        <class>org.socialmusicdiscovery.server.business.model.GlobalIdentity</class>
+
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <!-- Database provider properties are configured in the code -->
