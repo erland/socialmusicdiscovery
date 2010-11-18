@@ -36,7 +36,7 @@ public class EditTrackWindow extends Window implements Bindable {
     private String SMDSERVER;
 
     @Inject
-    @Named("smd-server.port")
+    @Named("org.socialmusicdiscovery.server.port")
     private String SMDSERVERPORT;
 
     @WTKX
