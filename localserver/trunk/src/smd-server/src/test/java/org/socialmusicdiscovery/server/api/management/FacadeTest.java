@@ -21,7 +21,7 @@ import java.util.Map;
 
 public class FacadeTest extends BaseTestCase {
     private static final String HOST = "http://localhost";
-    private static final int PORT = 9998;
+    private static final int PORT = 9997;
     private static final String HOSTURL = HOST+":"+PORT;
 
     @BeforeTest
