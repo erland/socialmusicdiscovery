@@ -1,14 +1,42 @@
 package org.socialmusicdiscovery.server.business.model;
 
+import org.hibernate.annotations.Index;
+
+import javax.persistence.Column;
+import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+import java.util.UUID;
 
 @javax.persistence.Entity
-@Table(name="global_entities")
-public class GlobalIdentity extends SMDEntity {
+@Table(name = "global_identities", uniqueConstraints = @UniqueConstraint(columnNames = {"source", "entityId"}))
+@org.hibernate.annotations.Table(appliesTo = "global_identities", indexes = {
+        @Index(name = "sourceAndEntityIndex", columnNames = {"source", "entityId"})
+})
+public class GlobalIdentity {
+    public static final String SOURCE_MUSICBRAINZ = "musicbrainz";
+    @Id
+    @Column(length = 36)
+    private String id;
+
+    @Column(name = "source", nullable = false)
     private String source;
-    private String identity;
-    //TODO: How do with annotate this to make it generic enough ?
-    private SMDEntity entity;
+    @Column(nullable = false)
+    private String uri;
+    @Column(name = "entityId", nullable = false)
+    private String entityId;
+
+    public GlobalIdentity() {
+        id = UUID.randomUUID().toString();
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getSource() {
         return source;
@@ -18,19 +46,19 @@ public class GlobalIdentity extends SMDEntity {
         this.source = source;
     }
 
-    public String getIdentity() {
-        return identity;
+    public String getUri() {
+        return uri;
     }
 
-    public void setIdentity(String identity) {
-        this.identity = identity;
+    public void setUri(String uri) {
+        this.uri = uri;
     }
 
-    public SMDEntity getEntity() {
-        return entity;
+    public String getEntityId() {
+        return entityId;
     }
 
-    public void setEntity(SMDEntity entity) {
-        this.entity = entity;
+    public void setEntityId(String entityId) {
+        this.entityId = entityId;
     }
 }
