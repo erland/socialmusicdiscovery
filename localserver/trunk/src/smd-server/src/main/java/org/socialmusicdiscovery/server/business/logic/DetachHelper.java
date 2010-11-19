@@ -3,6 +3,7 @@ package org.socialmusicdiscovery.server.business.logic;
 import org.hibernate.collection.PersistentCollection;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.*;
 
 public class DetachHelper {
@@ -50,7 +51,7 @@ public class DetachHelper {
             for (Field field : fields) {
                 try {
                     field.setAccessible(true);
-                    if (field.isAccessible()) {
+                    if (!Modifier.isFinal(field.getModifiers())) {
                         if (field.getType().isPrimitive() ||
                                 field.getType().equals(String.class) ||
                                 field.getType().equals(Integer.class) ||
