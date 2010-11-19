@@ -50,20 +50,22 @@ public class DetachHelper {
             for (Field field : fields) {
                 try {
                     field.setAccessible(true);
-                    if (field.getType().isPrimitive() ||
-                            field.getType().equals(String.class) ||
-                            field.getType().equals(Integer.class) ||
-                            field.getType().equals(Long.class) ||
-                            field.getType().equals(Date.class) ||
-                            field.getType().equals(Double.class) ||
-                            field.getType().equals(Float.class)) {
-                        field.set(copy, field.get(object));
-                    } else if (Collection.class.isAssignableFrom(field.getType())) {
-                        if (field.get(object) != null) {
-                            field.set(copy, createDetachedCollectionCopy((Collection) field.get(object), cache));
+                    if (field.isAccessible()) {
+                        if (field.getType().isPrimitive() ||
+                                field.getType().equals(String.class) ||
+                                field.getType().equals(Integer.class) ||
+                                field.getType().equals(Long.class) ||
+                                field.getType().equals(Date.class) ||
+                                field.getType().equals(Double.class) ||
+                                field.getType().equals(Float.class)) {
+                            field.set(copy, field.get(object));
+                        } else if (Collection.class.isAssignableFrom(field.getType())) {
+                            if (field.get(object) != null) {
+                                field.set(copy, createDetachedCollectionCopy((Collection) field.get(object), cache));
+                            }
+                        } else if (field.get(object) != null) {
+                            field.set(copy, createDetachedCopy(field.get(object), cache));
                         }
-                    } else if (field.get(object) != null) {
-                        field.set(copy, createDetachedCopy(field.get(object), cache));
                     }
                 } catch (IllegalAccessException e) {
                     throw new RuntimeException(e);
