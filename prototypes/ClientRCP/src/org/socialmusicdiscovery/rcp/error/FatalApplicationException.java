@@ -13,21 +13,21 @@ import org.eclipse.ui.statushandlers.WorkbenchErrorHandler;
  * @author Peer Törngren
  * 
  */
-public class ApplicationRuntimeException extends RuntimeException {
+public class FatalApplicationException extends RuntimeException {
 	private static final long serialVersionUID = 31961810319470519L;
 
-	public ApplicationRuntimeException() {
+	public FatalApplicationException() {
 	}
 
-	public ApplicationRuntimeException(String arg0, Throwable arg1) {
+	public FatalApplicationException(String arg0, Throwable arg1) {
 		super(arg0, arg1);
 	}
 
-	public ApplicationRuntimeException(String arg0) {
+	public FatalApplicationException(String arg0) {
 		super(arg0);
 	}
 
-	public ApplicationRuntimeException(Throwable arg0) {
+	public FatalApplicationException(Throwable arg0) {
 		super(arg0);
 	}
 
