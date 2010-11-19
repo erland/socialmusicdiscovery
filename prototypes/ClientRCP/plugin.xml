@@ -7,16 +7,16 @@
          point="org.eclipse.core.runtime.applications">
       <application>
          <run
-               class="org.socialmusicdiscovery.rcp.intro.Application">
+               class="org.socialmusicdiscovery.rcp.Application">
          </run>
       </application>
    </extension>
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            name="RCP Perspective"
-            class="org.socialmusicdiscovery.rcp.intro.Perspective"
-            id="smd-rcp.perspective">
+            name="RCP Main Perspective"
+            class="org.socialmusicdiscovery.rcp.Perspective"
+            id="org.socialmusicdiscovery.rcp.Perspective">
       </perspective>
    </extension>
    <extension
@@ -63,6 +63,29 @@
             content="ext.xml"
             configId="smd-rcp.configId">
       </configExtension>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="org.socialmusicdiscovery.rcp.views.navigator.NavigatorView"
+            id="org.socialmusicdiscovery.rcp.views.NavigatorView"
+            name="Navigator">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.socialmusicdiscovery.rcp.editors.artist.ArtistEditor"
+            default="false"
+            id="org.socialmusicdiscovery.rcp.editors.artist.ArtistEditor"
+            name="Artist Editor">
+      </editor>
+      <editor
+            class="org.socialmusicdiscovery.rcp.editors.release.ReleaseEditor"
+            default="false"
+            id="org.socialmusicdiscovery.rcp.editors.release.ReleaseEditor"
+            name="Release Editor">
+      </editor>
    </extension>
 
 </plugin>
