@@ -87,5 +87,19 @@
             name="Release Editor">
       </editor>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="org.socialmusicdiscovery.rcp.prefs.PreferencePage"
+            id="org.socialmusicdiscovery.rcp.prefs.PreferencePage"
+            name="SMD Preferences">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.socialmusicdiscovery.rcp.prefs.PreferenceInitializer">
+      </initializer>
+   </extension>
 
 </plugin>

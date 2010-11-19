@@ -6,7 +6,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.socialmusicdiscovery.rcp.error.ApplicationRuntimeException;
+import org.socialmusicdiscovery.rcp.error.FatalApplicationException;
 import org.socialmusicdiscovery.rcp.views.util.SMDEditorInput;
 import org.socialmusicdiscovery.server.business.model.SMDEntity;
 
@@ -20,9 +20,8 @@ public final class WorkbenchUtil {
 			IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
 			IWorkbenchPage page = window.getActivePage();
 			page.showView(viewId, secondaryId, IWorkbenchPage.VIEW_ACTIVATE);
-			throw new ApplicationRuntimeException("Failed to open view: "+viewId+"/"+secondaryId);
 		} catch (PartInitException e) {
-			throw new ApplicationRuntimeException(e);
+			throw new FatalApplicationException("Failed to open view: "+viewId+"/"+secondaryId);
 		}
 	}
 
@@ -34,7 +33,7 @@ public final class WorkbenchUtil {
 			IWorkbenchPage page = window.getActivePage();
 			return page.openEditor(input, editorId, true);
 		} catch (PartInitException e) {
-			throw new ApplicationRuntimeException(e);
+			throw new FatalApplicationException("Failed to open editor: "+editorId+"/"+entity);
 		}
 	}
 

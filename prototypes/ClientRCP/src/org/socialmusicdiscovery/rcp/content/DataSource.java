@@ -4,20 +4,20 @@ import java.util.Collection;
 
 import javax.ws.rs.core.MediaType;
 
+import org.socialmusicdiscovery.rcp.error.RecoverableApplicationException;
+import org.socialmusicdiscovery.rcp.prefs.PreferenceConstants;
+import org.socialmusicdiscovery.rcp.prefs.PreferencePage;
 import org.socialmusicdiscovery.server.business.model.SMDEntity;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
 import org.socialmusicdiscovery.server.business.model.core.Release;
 
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientHandlerException;
 import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.WebResource.Builder;
 
 public class DataSource {
 
-	private static final String SMDSERVER = "localhost";
-	private static final String SMDSERVERPORT = "9998";
-	private static final String BASE_URI = "http://"+SMDSERVER+":"+SMDSERVERPORT;
-	
 	public abstract class Root<T extends SMDEntity<?>> {
 
 		private final String name;
@@ -31,10 +31,6 @@ public class DataSource {
 		// see org.socialmusicdiscovery.frontend.SMDApplicationWindow.searchReleases(String, String, String)
 		public abstract Collection<T> findAll();
 
-		protected Builder builder() {
-			return Client.create().resource(BASE_URI+path).accept(MediaType.APPLICATION_JSON);
-		}
-
 		public String getName() {
 			return name;
 		}
@@ -42,6 +38,14 @@ public class DataSource {
 		@Override
 		public String toString() {
 			return getName();
+		}
+
+		protected String getPath() {
+			return getServerURI()+path;
+		}
+
+		protected Builder root() {
+			return connect(getPath());
 		}
 
 	}
@@ -54,7 +58,7 @@ public class DataSource {
 
 		@Override
 		synchronized public Collection<Release> findAll() {
-	        return builder().get(new GenericType<Collection<Release>>() {});
+	        return root().get(new GenericType<Collection<Release>>() {});
 		}
 	}
 
@@ -67,8 +71,18 @@ public class DataSource {
 		@Override
 		synchronized public Collection<Artist> findAll() {
 	        GenericType<Collection<Artist>> genericType = new GenericType<Collection<Artist>>() {};
-			Collection<Artist> collection = builder().get(genericType);
+			Collection<Artist> collection = get(genericType);
 			return collection;
+		}
+
+		protected Collection<Artist> get(GenericType<Collection<Artist>> genericType) {
+			try {
+				return root().get(genericType);
+			} catch (ClientHandlerException e) {
+				String msg = "Cannot access server: "+getPath();
+				String hint = "Please check configuration settings and make sure the server is running.";
+				throw new RecoverableApplicationException(msg, hint, e);
+			}
 		}
 	}
 
@@ -79,6 +93,16 @@ public class DataSource {
 				new ArtistRoot(),
 		};
 		return roots; 
+	}
+
+	private String getServerURI() {
+		String hostName = PreferencePage.getString(PreferenceConstants.P_HOSTNAME);
+		String port = PreferencePage.getString(PreferenceConstants.P_PORT);
+		return "http://"+hostName+":"+port;
+	}
+
+	protected Builder connect(String p) {
+		return Client.create().resource(p).accept(MediaType.APPLICATION_JSON);
 	}
 	
 
