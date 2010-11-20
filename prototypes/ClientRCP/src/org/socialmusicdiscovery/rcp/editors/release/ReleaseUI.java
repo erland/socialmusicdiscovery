@@ -4,12 +4,27 @@ import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.beans.PojoObservables;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
+import org.eclipse.nebula.jface.gridviewer.GridTreeViewer;
+import org.eclipse.nebula.jface.gridviewer.GridViewerColumn;
+import org.eclipse.nebula.widgets.cdatetime.CDT;
+import org.eclipse.nebula.widgets.cdatetime.CDateTime;
+import org.eclipse.nebula.widgets.grid.Grid;
+import org.eclipse.nebula.widgets.grid.GridColumn;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.ScrolledForm;
+import org.eclipse.ui.forms.widgets.Section;
 import org.socialmusicdiscovery.rcp.views.util.AbstractComposite;
 import org.socialmusicdiscovery.server.business.model.core.Release;
 
@@ -17,6 +32,34 @@ public class ReleaseUI extends AbstractComposite<Release> {
 	private DataBindingContext m_bindingContext;
 	private Text textName;
 	private Release release;
+	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
+	protected ScrolledForm scrldfrmRelease;
+	protected Text text;
+	protected Section metaData;
+	protected Composite composite;
+	protected Label labelLabel;
+	protected Label labelDate;
+	protected Combo comboLabel;
+	private ComboViewer comboViewer;
+	protected CDateTime dateTime;
+	protected CTabFolder tabFolder;
+	protected CTabItem tbtmMedia;
+	protected CTabItem tbtmContributors;
+	protected Grid grid;
+	private GridTreeViewer gridTreeViewer;
+	protected GridColumn gridColumn;
+	private GridViewerColumn gridViewerColumn;
+	protected GridColumn gridColumn_1;
+	private GridViewerColumn gridViewerColumn_1;
+	protected GridColumn gridColumn_2;
+	private GridViewerColumn gridViewerColumn_2;
+	protected CTabItem tbtmRecordingSessions;
+	protected Composite composite_1;
+	protected Grid grid_1;
+	private GridTableViewer gridTableViewer;
+	protected GridColumn gridColumn_3;
+	private GridViewerColumn gridViewerColumn_3;
+	protected Label lblTracks;
 
 	/**
 	 * Create the composite.
@@ -25,14 +68,107 @@ public class ReleaseUI extends AbstractComposite<Release> {
 	 */
 	public ReleaseUI(Composite parent, int style) {
 		super(parent, style);
-		setLayout(new GridLayout(1, false));
+		GridLayout gridLayout = new GridLayout(1, false);
+		gridLayout.marginHeight = 0;
+		gridLayout.marginWidth = 0;
+		setLayout(gridLayout);
 		
-		Label lblName = new Label(this, SWT.NONE);
-		lblName.setText("Name");
+		scrldfrmRelease = formToolkit.createScrolledForm(this);
+		scrldfrmRelease.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		formToolkit.paintBordersFor(scrldfrmRelease);
+		scrldfrmRelease.setText("Release");
+		scrldfrmRelease.getBody().setLayout(new GridLayout(1, false));
 		
-		textName = new Text(this, SWT.BORDER);
+		Label lblName = formToolkit.createLabel(scrldfrmRelease.getBody(), "Name", SWT.NONE);
+		lblName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		
+		textName = formToolkit.createText(scrldfrmRelease.getBody(), "text", SWT.BORDER);
 		textName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-	}
+		textName.setText("");
+		
+		lblTracks = formToolkit.createLabel(scrldfrmRelease.getBody(), "Tracks", SWT.NONE);
+		
+		gridTreeViewer = new GridTreeViewer(scrldfrmRelease.getBody(), SWT.BORDER);
+		grid = gridTreeViewer.getGrid();
+		GridData gd_grid = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+		gd_grid.minimumHeight = 100;
+		grid.setLayoutData(gd_grid);
+		grid.setHeaderVisible(true);
+		formToolkit.paintBordersFor(grid);
+		
+		gridViewerColumn = new GridViewerColumn(gridTreeViewer, SWT.NONE);
+		gridColumn = gridViewerColumn.getColumn();
+		gridColumn.setWidth(100);
+		gridColumn.setText("Number");
+		
+		gridViewerColumn_1 = new GridViewerColumn(gridTreeViewer, SWT.NONE);
+		gridColumn_1 = gridViewerColumn_1.getColumn();
+		gridColumn_1.setWidth(100);
+		gridColumn_1.setText("Title");
+		
+		gridViewerColumn_2 = new GridViewerColumn(gridTreeViewer, SWT.NONE);
+		gridColumn_2 = gridViewerColumn_2.getColumn();
+		gridColumn_2.setWidth(100);
+		gridColumn_2.setText("Artist(s)");
+		
+		metaData = formToolkit.createSection(scrldfrmRelease.getBody(), Section.TWISTIE | Section.TITLE_BAR);
+		metaData.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
+		formToolkit.paintBordersFor(metaData);
+		metaData.setText("Meta Data");
+		metaData.setExpanded(true);
+		
+		composite = formToolkit.createComposite(metaData, SWT.NONE);
+		formToolkit.paintBordersFor(composite);
+		metaData.setClient(composite);
+		composite.setLayout(new GridLayout(2, false));
+		
+		labelLabel = formToolkit.createLabel(composite, "Label", SWT.NONE);
+		
+		labelDate = formToolkit.createLabel(composite, "Date", SWT.NONE);
+		
+		comboViewer = new ComboViewer(composite, SWT.NONE);
+		comboLabel = comboViewer.getCombo();
+		comboLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		formToolkit.paintBordersFor(comboLabel);
+		
+		dateTime = new CDateTime(composite, CDT.BORDER | CDT.CLOCK_24_HOUR);
+		dateTime.setNullText("<no date>");
+		formToolkit.adapt(dateTime);
+		formToolkit.paintBordersFor(dateTime);
+		tabFolder = new CTabFolder(composite, SWT.BORDER | SWT.BOTTOM);
+		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+		
+		formToolkit.adapt(tabFolder);
+		formToolkit.paintBordersFor(tabFolder);
+		
+		tbtmRecordingSessions = new CTabItem(tabFolder, SWT.NONE);
+		tbtmRecordingSessions.setText("Recording Sessions");
+		
+		composite_1 = formToolkit.createComposite(tabFolder, SWT.NONE);
+		tbtmRecordingSessions.setControl(composite_1);
+		formToolkit.paintBordersFor(composite_1);
+		composite_1.setLayout(new GridLayout(1, false));
+		
+		gridTableViewer = new GridTableViewer(composite_1, SWT.BORDER);
+		grid_1 = gridTableViewer.getGrid();
+		GridData gd_grid_1 = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+		gd_grid_1.minimumHeight = 100;
+		grid_1.setLayoutData(gd_grid_1);
+		grid_1.setHeaderVisible(true);
+		formToolkit.paintBordersFor(grid_1);
+		
+		gridViewerColumn_3 = new GridViewerColumn(gridTableViewer, SWT.NONE);
+		gridColumn_3 = gridViewerColumn_3.getColumn();
+		gridColumn_3.setWidth(200);
+		gridColumn_3.setText("(stub - watch this space :-)");
+		
+		tbtmMedia = new CTabItem(tabFolder, SWT.NONE);
+		tbtmMedia.setText("Media");
+		
+		tbtmContributors = new CTabItem(tabFolder, SWT.NONE);
+		tbtmContributors.setText("Contributors");
+		
+		}
 
 	@Override
 	protected void checkSubclass() {
