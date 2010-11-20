@@ -39,7 +39,7 @@ The SMD Frontend can be configured in two different ways:
 
 The currently available configuration parameters are:
   * *smd-server.host* - The hostname/IP address where smd-server executes
-  * *smd-server.port* - The port which the smd-server uses
+  * *org.socialmusicdiscovery.server.port* - The port which the smd-server uses
 
 = Signing =
 The idea is that SMD Frontend should be possible to use both as an appple and launched with Java WebStart through a jnlp file. Theoretically it could work within the applet/webstart sandboxes and only talk to the smd-server host where it's loaded from. However, in practice, this limits the possibilities which libraries that can be used since they are not allowed to use some function available in Java reflections and can't use threading in all libraries to accomplish a good user experience. 
@@ -58,4 +58,4 @@ Due to this, SMD Frontend currently uses operations which are prohibited by the 
 
   * The view logic is implemented using the WTKX language used by Apache Pivot, the current main Window is implemented in [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-frontend/src/main/resources/org/socialmusicdiscovery/frontend/SMDApplicationWindow.wtkx SMDApplicationWindow.wtkx].
 
-  * The localized text strings to make it possible to provide multiple user interface languages are provided in JSON files, one per language. Currently with only have one and that's the [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-frontend/src/main/resources/org/socialmusicdiscovery/frontend/SMDApplication.json SMDAPplication.json] file.
+  * The localized text strings to make it possible to provide multiple user interface languages are provided in JSON files, one per language. Currently with only have one and that's the [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-frontend/src/main/resources/org/socialmusicdiscovery/frontend/SMDApplication.json SMDApplication.json] file.
