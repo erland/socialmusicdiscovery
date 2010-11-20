@@ -3,6 +3,8 @@ package org.socialmusicdiscovery.rcp;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+import org.socialmusicdiscovery.rcp.content.DataSource;
+import org.socialmusicdiscovery.rcp.prefs.PreferenceConstants;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -14,6 +16,8 @@ public class Activator extends AbstractUIPlugin {
 
 	// The shared instance
 	private static Activator plugin;
+
+	private DataSource dataSource;
 	
 	/**
 	 * The constructor
@@ -28,6 +32,7 @@ public class Activator extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
+		dataSource = new DataSource(getPreferenceStore().getBoolean(PreferenceConstants.P_AUTOCONNECT));
 	}
 
 	/*
@@ -37,6 +42,10 @@ public class Activator extends AbstractUIPlugin {
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
 		super.stop(context);
+	}
+
+	public DataSource getDataSource() {
+		return dataSource;
 	}
 
 	/**

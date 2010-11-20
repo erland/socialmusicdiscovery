@@ -13,25 +13,45 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 
     private IWorkbenchAction introAction;
 	private IWorkbenchAction preferenceAction;
+	private IWorkbenchAction reloadAction;
+	private IWorkbenchAction aboutAction;
     
 	public ApplicationActionBarAdvisor(IActionBarConfigurer configurer) {
 		super(configurer);
 	}
 
 	protected void makeActions(IWorkbenchWindow window) {
+		reloadAction = new DataSourceLoadAction();
+		register(reloadAction);
+		
 		preferenceAction = ActionFactory.PREFERENCES.create(window);
 		register(preferenceAction);
 
 		introAction = ActionFactory.INTRO.create(window);
 		register(introAction);
+		
+		aboutAction = ActionFactory.ABOUT.create(window);
+		register(aboutAction);
+
 	}
 
 	protected void fillMenuBar(IMenuManager menuBar) {
-        // Help
-		MenuManager helpMenu = new MenuManager("&Help", IWorkbenchActionConstants.M_HELP);
-		menuBar.add(helpMenu);
-		helpMenu.add(preferenceAction);
-		helpMenu.add(introAction);
+		{ // Server 
+			MenuManager menu = new MenuManager("&Server", "Server");
+			menuBar.add(menu);
+			menu.add(reloadAction);
+		}
+		{ // Tools 
+			MenuManager menu = new MenuManager("&Tools", "Tools");
+			menuBar.add(menu);
+			menu.add(preferenceAction);
+			}
+		{ // Help
+			MenuManager menu = new MenuManager("&Help", IWorkbenchActionConstants.M_HELP);
+			menuBar.add(menu);
+			menu.add(introAction);
+			menu.add(aboutAction);
+		}
 	}
 
 }
