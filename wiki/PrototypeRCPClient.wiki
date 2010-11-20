@@ -1,0 +1,8 @@
+#summary Description or RCP Client
+
+= Introduction =
+A first RCP client is available in the prototype directory.
+
+Brief instructions on what you need to do to get it running is available in the Readme-file:
+  * http://socialmusicdiscovery.googlecode.com/svn/prototypes/ClientRCP/ReadMe.txt
+ 
