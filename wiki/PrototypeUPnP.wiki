@@ -1,0 +1,10 @@
+#summary Description UPnP prototype
+= Introduction =
+
+A first UPnP prototyp is available in the prototype directory, see Readme.txt file for more information:
+  * http://socialmusicdiscovery.googlecode.com/svn/prototypes/UPnP/upnp-sbs-contentdir/README.TXT
+
+The source code is available here:
+  * http://socialmusicdiscovery.googlecode.com/svn/prototypes/UPnP/upnp-sbs-contentdir
+
+More information about UPnP and its possibilities can be found [UPnPNotes on a separate page]
