@@ -18,4 +18,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Activator: org.socialmusicdiscovery.rcp.Activator
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/smd-server-1.0-SNAPSHOT.jar,
- .
+ .,
+ lib/compositetable-1.0.0.jar,
+ lib/grid-1.0.0.jar
