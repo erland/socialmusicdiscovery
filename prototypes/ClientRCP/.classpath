@@ -5,5 +5,18 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="lib/grid-1.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/calendarcombo-1.0.0-src.zip"/>
+	<classpathentry kind="lib" path="lib/cdatetime-0.14.0-src.zip"/>
+	<classpathentry kind="lib" path="lib/cwt-0.9.0-src.zip"/>
+	<classpathentry kind="lib" path="lib/cwt-0.9.0.jar"/>
+	<classpathentry kind="lib" path="lib/formattedtext-1.0.0-src.zip"/>
+	<classpathentry kind="lib" path="lib/grid-1.0.0-src.zip"/>
+	<classpathentry kind="lib" path="lib/swt-grouplayout.jar"/>
+	<classpathentry kind="lib" path="lib/calendarcombo-1.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/cdatetime-0.14.0.jar"/>
+	<classpathentry kind="lib" path="lib/datechooser-1.0.0-src.zip"/>
+	<classpathentry kind="lib" path="lib/datechooser-1.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/formattedtext-1.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/swt-grouplayout.zip"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
