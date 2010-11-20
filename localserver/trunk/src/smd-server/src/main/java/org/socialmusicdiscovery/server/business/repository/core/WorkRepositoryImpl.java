@@ -36,7 +36,10 @@ public class WorkRepositoryImpl extends SMDEntityRepositoryImpl<Work> implements
     }
 
     public Collection<Work> findByReleaseWithRelations(String releaseId, Collection<String> mandatoryRelations, Collection<String> optionalRelations) {
-        Query query = entityManager.createQuery(queryStringFor("e", mandatoryRelations, optionalRelations, true) + " WHERE EXISTS (select r from Release as r JOIN r.tracks as t JOIN t.recording as rec WHERE r=:release and rec.work=e.id) order by e.name");
+        Query query = entityManager.createQuery(queryStringFor("e", mandatoryRelations, optionalRelations, true) + " WHERE " +
+                " EXISTS (select r from Release as r JOIN r.tracks as t JOIN t.recording as rec WHERE r=:release and rec.work=e.id)" +
+                " OR EXISTS (select r from Release as r JOIN r.recordingSessions as rs JOIN rs.recordings as rec WHERE r=:release and rec.work=e.id)" +
+                " order by e.name");
         Release release = new Release();
         release.setId(releaseId);
         query.setParameter("release", release);
@@ -46,12 +49,15 @@ public class WorkRepositoryImpl extends SMDEntityRepositoryImpl<Work> implements
     public Collection<Work> findByArtistWithRelations(String artistId, Collection<String> mandatoryRelations, Collection<String> optionalRelations) {
         Query query = entityManager.createQuery(queryStringFor("e", mandatoryRelations, optionalRelations, true) + " LEFT JOIN e.contributors as c1 WHERE " +
                 "EXISTS (select r from Recording as r JOIN r.contributors as c WHERE c.artist=:recordingArtist and r.work=e.id) " +
-                "or EXISTS (select r from Release as r JOIN r.contributors as c JOIN r.tracks as t JOIN t.recording as r JOIN r.work WHERE c.artist=:releaseArtist and r.work=e.id) " +
+                "or EXISTS (select r from Release as r JOIN r.contributors as c JOIN r.tracks as t JOIN t.recording as rec JOIN rec.work as w WHERE c.artist=:releaseArtist and rec.work=e.id) " +
+                "or EXISTS (select rs from RecordingSession as rs JOIN rs.contributors as c JOIN rs.recordings as rec JOIN rec.work as w WHERE c.artist=:recordingSessionArtist and rec.work=e.id and not exists (select pw from Work as pw JOIN pw.parts as parts WHERE parts.id=rec.work)) " +
+                "or EXISTS (select rs from RecordingSession as rs JOIN rs.contributors as c JOIN rs.recordings as rec JOIN rec.work as w WHERE c.artist=:recordingSessionArtist and EXISTS (select pw from Work as pw JOIN pw.parts as parts WHERE parts.id=w.id and pw.id=e.id)) " +
                 "or c1.artist=:workArtist order by e.name");
         Artist artist = new Artist();
         artist.setId(artistId);
         query.setParameter("releaseArtist", artist);
         query.setParameter("recordingArtist", artist);
+        query.setParameter("recordingSessionArtist", artist);
         query.setParameter("workArtist", artist);
         return query.getResultList();
     }

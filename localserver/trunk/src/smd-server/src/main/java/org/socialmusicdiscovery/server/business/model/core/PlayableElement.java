@@ -1,6 +1,5 @@
 package org.socialmusicdiscovery.server.business.model.core;
 
-import org.hibernate.annotations.Index;
 import org.socialmusicdiscovery.server.business.model.SMDEntity;
 
 import javax.persistence.Column;
@@ -17,7 +16,6 @@ public class PlayableElement extends SMDEntity<PlayableElement> {
     @Column(nullable = false, length = 1024)
     private String uri;
     @Column(nullable = false)
-    @Index(name ="smdIDIndex")
     private String smdID;
     @Column(nullable = false)
     private String format;

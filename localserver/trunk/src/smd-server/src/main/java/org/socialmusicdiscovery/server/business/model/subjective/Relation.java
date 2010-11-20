@@ -1,12 +1,11 @@
 package org.socialmusicdiscovery.server.business.model.subjective;
 
-import org.socialmusicdiscovery.server.business.model.SMDEntity;
-import org.socialmusicdiscovery.server.business.model.SMDEntityReference;
-
-import javax.persistence.*;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
+import javax.persistence.Table;
 
 @javax.persistence.Entity
-@Table(name="relations")
+@Table(name = "relations")
 @IdClass(RelationPK.class)
 public class Relation {
     @Id

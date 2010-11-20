@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+    <changeSet id="sample_alanparson_theturnofafriendlycard" author="erland">
+        <loadData tableName="smdentity_references"
+                  file="org/socialmusicdiscovery/server/database/sampledata/alanparson_theturnofafriendlycard/smdentity_references.csv">
+            <column header="id" type="STRING"/>
+            <column header="type" type="STRING"/>
+        </loadData>
+        <loadData tableName="releases"
+                  file="org/socialmusicdiscovery/server/database/sampledata/alanparson_theturnofafriendlycard/releases.csv">
+            <column header="id" type="STRING"/>
+            <column header="name" type="STRING"/>
+        </loadData>
+        <loadData tableName="persons"
+                  file="org/socialmusicdiscovery/server/database/sampledata/alanparson_theturnofafriendlycard/persons.csv">
+            <column header="id" type="STRING"/>
+            <column header="name" type="STRING"/>
+        </loadData>
+        <loadData tableName="artists"
+                  file="org/socialmusicdiscovery/server/database/sampledata/alanparson_theturnofafriendlycard/artists.csv">
+            <column header="id" type="STRING"/>
+            <column header="name" type="STRING"/>
+            <column header="person_id" type="STRING"/>
+        </loadData>
+        <loadData tableName="works"
+                  file="org/socialmusicdiscovery/server/database/sampledata/alanparson_theturnofafriendlycard/works.csv">
+            <column header="id" type="STRING"/>
+            <column header="name" type="STRING"/>
+            <column header="parent_id" type="STRING"/>
+        </loadData>
+        <loadData tableName="recording_sessions"
+                  file="org/socialmusicdiscovery/server/database/sampledata/alanparson_theturnofafriendlycard/recording_sessions.csv">
+            <column header="id" type="STRING"/>
+            <column header="recording_id" type="STRING"/>
+            <column header="work_id" type="STRING"/>
+        </loadData>
+        <loadData tableName="release_recording_sessions"
+                  file="org/socialmusicdiscovery/server/database/sampledata/alanparson_theturnofafriendlycard/release_recording_sessions.csv">
+            <column header="release_id" type="STRING"/>
+            <column header="session_id" type="STRING"/>
+        </loadData>
+        <loadData tableName="recordings"
+                  file="org/socialmusicdiscovery/server/database/sampledata/alanparson_theturnofafriendlycard/recordings.csv">
+            <column header="id" type="STRING"/>
+            <column header="name" type="STRING"/>
+            <column header="work_id" type="STRING"/>
+        </loadData>
+        <loadData tableName="tracks"
+                  file="org/socialmusicdiscovery/server/database/sampledata/alanparson_theturnofafriendlycard/tracks.csv">
+            <column header="id" type="STRING"/>
+            <column header="release_id" type="STRING"/>
+            <column header="recording_id" type="STRING"/>
+            <column header="medium_id" type="STRING"/>
+            <column header="number" type="NUMERIC"/>
+        </loadData>
+        <loadData tableName="contributors"
+                  file="org/socialmusicdiscovery/server/database/sampledata/alanparson_theturnofafriendlycard/contributors.csv">
+            <column header="id" type="STRING"/>
+            <column header="artist_id" type="STRING"/>
+            <column header="release_id" type="STRING"/>
+            <column header="recording_id" type="STRING"/>
+            <column header="work_id" type="STRING"/>
+            <column header="type" type="STRING"/>
+        </loadData>
+    </changeSet>
+</databaseChangeLog>

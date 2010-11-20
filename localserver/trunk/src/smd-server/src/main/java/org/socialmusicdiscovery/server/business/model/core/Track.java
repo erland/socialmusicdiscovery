@@ -1,13 +1,11 @@
 package org.socialmusicdiscovery.server.business.model.core;
 
-import org.hibernate.annotations.Index;
 import org.socialmusicdiscovery.server.business.model.SMDEntity;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,14 +14,13 @@ import java.util.Set;
 @javax.persistence.Entity
 @Table(name = "tracks")
 public class Track extends SMDEntity<Track> {
-    @Index(name ="numberIndex")
     private Integer number;
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="recording_id")
+    @JoinColumn(name = "recording_id")
     private Recording recording;
 
     @OneToMany
-    @JoinColumn(name="track_id")
+    @JoinColumn(name = "track_id")
     private Set<PlayableElement> playableElements = new HashSet<PlayableElement>();
 
     public Integer getNumber() {

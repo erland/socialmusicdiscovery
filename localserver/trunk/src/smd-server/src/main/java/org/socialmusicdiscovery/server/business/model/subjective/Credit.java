@@ -1,13 +1,11 @@
 package org.socialmusicdiscovery.server.business.model.subjective;
 
-import org.socialmusicdiscovery.server.business.model.SMDEntity;
-import org.socialmusicdiscovery.server.business.model.SMDEntityReference;
-import org.socialmusicdiscovery.server.business.model.core.Person;
-
-import javax.persistence.*;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
+import javax.persistence.Table;
 
 @javax.persistence.Entity
-@Table(name="credits")
+@Table(name = "credits")
 @IdClass(CreditPK.class)
 public class Credit {
     @Id

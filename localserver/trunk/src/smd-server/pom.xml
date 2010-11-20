@@ -5,9 +5,9 @@
     <artifactId>smd-server</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-      <properties>
+    <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-      </properties>
+    </properties>
 
     <scm>
         <connection>scm:svn:http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server</connection>
@@ -128,6 +128,14 @@
             <artifactId>commons-collections</artifactId>
             <version>3.2.1</version>
         </dependency>
+
+        <!-- Database upgrading -->
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <version>1.9.5</version>
+        </dependency>
+
     </dependencies>
 
     <repositories>

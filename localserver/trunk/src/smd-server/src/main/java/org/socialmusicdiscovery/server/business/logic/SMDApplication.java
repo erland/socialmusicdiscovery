@@ -4,6 +4,8 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import com.sun.grizzly.http.SelectorThread;
 import com.sun.jersey.api.container.grizzly.GrizzlyWebContainerFactory;
+import liquibase.ClassLoaderFileOpener;
+import liquibase.Liquibase;
 import org.socialmusicdiscovery.server.api.management.mediaimport.MediaImportStatus;
 import org.socialmusicdiscovery.server.business.logic.injections.database.DatabaseProvider;
 import org.socialmusicdiscovery.server.business.model.core.*;
@@ -17,6 +19,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.net.URI;
+import java.sql.Connection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -86,6 +89,19 @@ public class SMDApplication {
                 provider = InjectHelper.instanceWithName(DatabaseProvider.class, "derby");
             }
             provider.start();
+            Connection connection = provider.getConnection();
+            Liquibase liquibase = new Liquibase("org/socialmusicdiscovery/server/database/smd-database.changelog.xml", new
+                    ClassLoaderFileOpener(),
+                    connection);
+            if (System.getProperty("liquibase") == null || !System.getProperty("liquibase").equals("false")) {
+                liquibase.update("");
+            }
+            if (database != null && (database.endsWith("-test"))) {
+                liquibase = new Liquibase("org/socialmusicdiscovery/server/database/sampledata/smd-database.sampledata.xml", new
+                        ClassLoaderFileOpener(),
+                        connection);
+                liquibase.update("");
+            }
 
             InjectHelper.injectMembers(this);
 

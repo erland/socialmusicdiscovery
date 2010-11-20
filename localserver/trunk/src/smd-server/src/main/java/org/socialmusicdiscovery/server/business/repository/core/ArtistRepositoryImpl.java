@@ -64,7 +64,11 @@ public class ArtistRepositoryImpl extends SMDEntityRepositoryImpl<Artist> implem
                 " WHERE" +
                 " EXISTS (select rel from Release as rel JOIN rel.contributors as c1 where c1.artist=e.id and rel.id=:releaseId)" +
                 " OR EXISTS (select rel from Release as rel JOIN rel.tracks as t JOIN t.recording as r JOIN r.contributors as c2 WHERE c2.artist=e.id and rel.id=:releaseId)" +
-                " OR EXISTS (select rel from Release as rel JOIN rel.tracks as t JOIN t.recording as r JOIN r.work as w JOIN w.contributors as c3 WHERE c3.artist=e.id and rel.id=:releaseId) order by e.name");
+                " OR EXISTS (select rel from Release as rel JOIN rel.tracks as t JOIN t.recording as r JOIN r.work as w JOIN w.contributors as c3 WHERE c3.artist=e.id and rel.id=:releaseId)" +
+                " OR EXISTS (select rel from Release as rel JOIN rel.recordingSessions as rs JOIN rs.recordings as r JOIN r.work as w JOIN w.contributors as c3 WHERE c3.artist=e.id and rel.id=:releaseId)" +
+                " OR EXISTS (select rel from Release as rel JOIN rel.recordingSessions as rs JOIN rs.recordings as r JOIN r.contributors as c3 WHERE c3.artist=e.id and rel.id=:releaseId)" +
+                " OR EXISTS (select rel from Release as rel JOIN rel.recordingSessions as rs JOIN rs.contributors as c3 WHERE c3.artist=e.id and rel.id=:releaseId)" +
+                " order by e.name");
         query.setParameter("releaseId", releaseId);
         return query.getResultList();
     }

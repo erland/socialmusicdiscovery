@@ -1,13 +1,14 @@
 package org.socialmusicdiscovery.server.business.model.core;
 
-import org.hibernate.annotations.Index;
 import org.socialmusicdiscovery.server.business.model.SMDEntity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,14 +19,13 @@ import java.util.Set;
 @Table(name = "works")
 public class Work extends SMDEntity<Work> {
     @Column(nullable = false)
-    @Index(name ="nameIndex")
     private String name;
     private Date date;
     @OneToMany
-    @JoinColumn(name="parent_id")
+    @JoinColumn(name = "parent_id")
     private Set<Work> parts = new HashSet<Work>();
     @OneToMany
-    @JoinColumn(name="work_id")
+    @JoinColumn(name = "work_id")
     private Set<Contributor> contributors = new HashSet<Contributor>();
 
     public String getName() {

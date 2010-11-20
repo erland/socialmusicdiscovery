@@ -29,7 +29,7 @@
         <properties>
             <!-- Database provider properties are configured in the code -->
 
-            <property name="hibernate.hbm2ddl.auto" value="update"/>
+            <property name="hibernate.hbm2ddl.auto" value="validate"/>
             <property name="hibernate.connection.username" value=""/>
             <property name="hibernate.connection.password" value=""/>
             <!-- <property name="hibernate.show_sql" value="true"/> -->

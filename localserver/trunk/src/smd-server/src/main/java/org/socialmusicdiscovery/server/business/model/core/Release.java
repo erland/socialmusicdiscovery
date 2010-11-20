@@ -1,6 +1,5 @@
 package org.socialmusicdiscovery.server.business.model.core;
 
-import org.hibernate.annotations.Index;
 import org.socialmusicdiscovery.server.business.model.SMDEntity;
 
 import javax.persistence.*;
@@ -16,10 +15,9 @@ import java.util.*;
 public class Release extends SMDEntity<Release> {
     private Date date;
     @Column(nullable = false)
-    @Index(name ="nameIndex")
     private String name;
     @ManyToOne
-    @JoinColumn(name="label_id")
+    @JoinColumn(name = "label_id")
     private Label label;
     @OneToMany
     @OrderBy("number, name")
@@ -30,9 +28,9 @@ public class Release extends SMDEntity<Release> {
     @OrderBy("number")
     private List<Track> tracks = new ArrayList<Track>();
     @ManyToMany
-    @JoinTable(name="release_recording_sessions",
-          joinColumns=@JoinColumn(name="release_id"),
-          inverseJoinColumns=@JoinColumn(name="session_id"))
+    @JoinTable(name = "release_recording_sessions",
+            joinColumns = @JoinColumn(name = "release_id"),
+            inverseJoinColumns = @JoinColumn(name = "session_id"))
     private Set<RecordingSession> recordingSessions;
     @OneToMany
     @JoinColumn(name = "release_id")
@@ -77,6 +75,7 @@ public class Release extends SMDEntity<Release> {
     public void setTracks(List<Track> tracks) {
         this.tracks = tracks;
     }
+
     public Set<RecordingSession> getRecordingSessions() {
         return recordingSessions;
     }
