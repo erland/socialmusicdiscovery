@@ -1,0 +1,81 @@
+#summary SMD database and management
+= Introduction =
+
+= Database model =
+There are no graphical model of the exact database at the moment, but the [DatabaseModel domain model] documented [DatabaseModel on a separate page] is pretty close to the real thing.
+
+= Database engine =
+Currently the goal is to avoid restricting ourselves to a single database engine, but the default engines used are:
+  * MySQL - For the SMD Server bundled with the SMD Plugin when used inside Squeezebox Server 
+  * Apache Derby - For the standalone SMD Server
+
+It's possible to specify database engine through the *org.socialmusicdiscovery.server.database* property, at the moment we support the following:
+  * *h2* - H2 database stored persistent on disk
+  * *derby* - Apache Derby database stored persistent on disk
+  * *hsql* - HyperSQL database stored persistent on disk
+  * *mysql-sbs* - The bundled MySQL database in Squeezebox Server accessible on port 9092 (Not that it's only accessible from the same machine as SBS by default)
+  * *mysql-standalone* - A standalone MySQL database accessible on port 3306 
+
+There are also a number of debug/analysis related database options
+
+  * *derby-memory* - Apache Derby in-memory database, contents cleared at exit
+  * *h2-memory* - H2 in-memory database, contents cleared at exit
+  * *hsql-memory* - HyperSQL in-memory database, contents cleared at exit
+  * *h2-trace* - H2 database with trace level 2 enabled which makes it possible to get some query performance statistics 
+
+And for client developers, we also have a number of memory based databases which is preloaded with sample data:
+  * *derby-memory-test* - Apache Derby in-memory database, contents cleared at exit
+  * *h2-memory-test* - H2 in-memory database, contents cleared at exit
+  * *hsql-memory-test* - HyperSQL in-memory database, contents cleared at exit
+
+For more information about the sample data, see the separate section later on this page.
+
+= Database upgrades =
+We are using the [http://www.liquibase.org Liquibase] library to manage the database. This library handles database upgrades by applying changesets at SMD Server startup. There is a table *DATABASECHANGELOG* which contains a lit of all changesets that have been applied.
+
+When adding a change, create a new changeset file in the directory:
+  * [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/resources/org/socialmusicdiscovery/server/database/changesets/ src/main/resources/org/socialmusicdiscovery/server/database/changesets/]
+And add a link to it in the global changelog file:
+  * [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/resources/org/socialmusicdiscovery/server/database/smd-database.changelog.xml src/main/resources/org/socialmusicdiscovery/server/database/smd-database.changelog.xml]
+
+When creating a new table, this has to be in a separate changeset file to make sure you can apply the MySQL specific `InnoDB` setting with a modifySql directive. Look at the bottom of [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/resources/org/socialmusicdiscovery/server/database/changesets/changeset-1.xml changeset-1.xml] for an example of this.
+
+= Sample data =
+During development, the SMD Server comes bundled with some sample data. To use this you need to select one of the database backends ending with -test:
+  * h2-memory-test
+  * derby-memory-test
+  * hsql-memory-test
+
+All the supported databases which can be used with the sample data is memory based none persistent databases, so all changes will be lost when you restart SMD Server.
+
+The sample data is loaded using [http://www.liquibase.org Liquibase] in similar fashion as the database is upgrades. The main changelog for the sample data can be found here:
+  * [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/resources/org/socialmusicdiscovery/server/database/sampledata/smd-database.sampledata.xml src/main/resources/org/socialmusicdiscovery/server/database/sampledata/smd-database.sampledata.xml]
+
+In the same directory there is a sub directory for each provided sample album, for each album there are:
+  * A changeset file, for example: [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/resources/org/socialmusicdiscovery/server/database/sampledata/beethoven_bernstein/beethoven_bernstein.xml beethoven_bernstein.xml]
+  * A list of csv files referred from the changeset file, for example: 
+    * [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/resources/org/socialmusicdiscovery/server/database/sampledata/beethoven_bernstein/releases.csv releases.csv]
+
+The first line in the csv file contains the column names and these has to match the column headings specified in the changeset xml file. In the changeset xml file there is also a data type specification for each column.
+
+== Creating new sample data ==
+To create new sample album which you like to bundle you need to:
+  * Create a sub directory under:
+    * [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/resources/org/socialmusicdiscovery/server/database/sampledata/ src/main/resources/org/socialmusicdiscovery/server/database/sampledata/]
+  * Add a changeset xml file in the newly created sub directory
+  * Add a number of csv files in the newly created sub directory, one for each table you want to insert data in
+  * Add a reference to the change set at the end of the global change log for sample data:
+    * [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/resources/org/socialmusicdiscovery/server/database/sampledata/smd-database.sampledata.xml src/main/resources/org/socialmusicdiscovery/server/database/sampledata/smd-database.sampledata.xml]
+
+After this, the sample data will be loaded at next server restart if a database backend that supports sample data has been selected. Try to load it, it's easy to miss some UUID which is required due to foreign keys.
+
+== Tool to help creating sample data based on online sites ==
+There are two unit test cases which is useful when creating new sample data:
+  * [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/test/java/org/socialmusicdiscovery/server/database/sampledata/DiscogsSampleCreator.java src/test/java/org/socialmusicdiscovery/server/database/sampledata/DiscogsSampleCreator.java]
+    * Contains a few test cases which you can modify to retrieve all information about a release from discogs.com and print csv data in correct format to the screen.
+  * [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/test/java/org/socialmusicdiscovery/server/database/sampledata/MusicbrainzSampleCreator.java src/test/java/org/socialmusicdiscovery/server/database/sampledata/MusicbrainzSampleCreator.java]
+    * Contains a few test cases which you can modify to retrieve all information about a release from musicbrainz.org and print csv data in correct format to the screen.
+
+Both test cases will automatically generate new UUID's every time they are executed, so if you run it a second time, you are going to get completely new identities. Due to this, you will have to manually merge and adjust the data if you like to combine multiple test case executions.
+
+To use the data, you need to copy the information printed to the screen to the appropriate csv tables as described above.
