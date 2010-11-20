@@ -24,16 +24,7 @@ The smd-server module can be configured through a configuration file called _soc
 
 Some sample properties are:
   * *org.socialmusicdiscovery.server.database* (default: derby)
-    * Specifies which database backend that should be used, sample of possible values:
-      * *h2* - H2 database stored persistent on disk
-      * *derby* - Apache Derby database stored persistent on disk
-      * *hsql* - HyperSQL database stored persistent on disk
-      * *mysql-sbs* - The bundled MySQL database in Squeezebox Server accessible on port 9092 (Not that it's only accessible from the same machine as SBS by default)
-      * *mysql-standalone* - A standalone MySQL database accessible on port 3306
-    * There are also a number of debug/analysis related database options
-      * *derby-memory* - Apache Derby in-memory database, contents cleared at exit
-      * *h2-memory* - H2 in-memory database, contents cleared at exit
-      * *h2-trace* - H2 database with trace level 2 enabled which makes it possible to get some query performance statistics
+    * For more information about supported database providers, see the separate [SoftwareSMDServerDatabase documentation about the database]
 
   * *squeezeboxserver.host* (default: localhost)
     * Hostname where SBS is installed, this is used by the import module when retrieving data from SBS and also by the mysql-sbs database provider option.
@@ -41,12 +32,18 @@ Some sample properties are:
   * *squeezeboxserver.port* (default: 9000)
     * Port which SBS web interface is using
 
+  * *org.socialmusicdiscovery.server.port* (default: 9998)
+    * Port which SMD Server uses to offer interfaces to its clients
+
 You only need to specify the properties you like to override, so if you for example are running SBS on a separate machine (mynas) you can have a socialmusicdiscovery.properties file that looks like:
 {{{
 squeezeboxserver.host=mynas
 }}}
 
 The properties can also be overriden by specifying them as a -D JVM parameter when launching the application.
+
+= SMD Server Database =
+The SMD Server database is documented [SMDSoftwareServerDatabase on a separate page (follow this link)]
 
 = Management API =
 The documentation of the management API to manage the data and module in SMD can be found [SoftwareSMDServerManagementAPI]
