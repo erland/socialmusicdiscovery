@@ -5,6 +5,7 @@ import com.google.inject.Provides;
 import com.google.inject.name.Named;
 
 import java.io.File;
+import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.SQLNonTransientConnectionException;
@@ -69,6 +70,10 @@ public class DerbyProviderModule extends AbstractModule {
                 throw new RuntimeException(e);
             }
         }
+
+        public Connection getConnection() throws SQLException {
+            return DriverManager.getConnection(getUrl());
+        }
     }
 
     ;
@@ -99,6 +104,12 @@ public class DerbyProviderModule extends AbstractModule {
     @Provides
     @Named("derby-memory")
     public DatabaseProvider getMemoryProvider() {
+        return derbyMemory;
+    }
+
+    @Provides
+    @Named("derby-memory-test")
+    public DatabaseProvider getMemoryTestProvider() {
         return derbyMemory;
     }
 }

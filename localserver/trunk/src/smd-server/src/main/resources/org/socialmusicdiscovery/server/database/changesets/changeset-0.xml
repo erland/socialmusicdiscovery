@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+
+    <changeSet author="erland" id="0-global_identities">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_identities"/>
+        </preConditions>
+        <dropTable tableName="global_identities"/>
+    </changeSet>
+
+    <changeSet author="erland" id="0-0.1.273">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="smdentity_references"/>
+        </preConditions>
+        <dropTable tableName="release_series"/>
+        <dropTable tableName="series"/>
+        <dropTable tableName="release_recording_sessions"/>
+        <dropTable tableName="playable_elements"/>
+        <dropTable tableName="classification_references"/>
+        <dropTable tableName="classifications"/>
+        <dropTable tableName="contributors"/>
+        <dropTable tableName="artists"/>
+        <dropTable tableName="credits"/>
+        <dropTable tableName="tracks"/>
+        <dropTable tableName="mediums"/>
+        <dropTable tableName="persons"/>
+        <dropTable tableName="recordings"/>
+        <dropTable tableName="recording_sessions"/>
+        <dropTable tableName="works"/>
+        <dropTable tableName="relations"/>
+        <dropTable tableName="releases"/>
+        <dropTable tableName="labels"/>
+        <dropTable tableName="smdentity_references"/>
+    </changeSet>
+</databaseChangeLog>

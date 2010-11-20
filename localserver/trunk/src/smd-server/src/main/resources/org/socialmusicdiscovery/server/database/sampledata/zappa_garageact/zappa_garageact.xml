@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+    <changeSet id="sample_zappa_garageact" author="erland">
+        <loadData tableName="smdentity_references"
+                  file="org/socialmusicdiscovery/server/database/sampledata/zappa_garageact/smdentity_references.csv">
+            <column header="id" type="STRING"/>
+            <column header="type" type="STRING"/>
+        </loadData>
+        <loadData tableName="releases"
+                  file="org/socialmusicdiscovery/server/database/sampledata/zappa_garageact/releases.csv">
+            <column header="id" type="STRING"/>
+            <column header="name" type="STRING"/>
+        </loadData>
+        <loadData tableName="persons"
+                  file="org/socialmusicdiscovery/server/database/sampledata/zappa_garageact/persons.csv">
+            <column header="id" type="STRING"/>
+            <column header="name" type="STRING"/>
+        </loadData>
+        <loadData tableName="artists"
+                  file="org/socialmusicdiscovery/server/database/sampledata/zappa_garageact/artists.csv">
+            <column header="id" type="STRING"/>
+            <column header="name" type="STRING"/>
+            <column header="person_id" type="STRING"/>
+        </loadData>
+        <loadData tableName="works"
+                  file="org/socialmusicdiscovery/server/database/sampledata/zappa_garageact/works.csv">
+            <column header="id" type="STRING"/>
+            <column header="name" type="STRING"/>
+        </loadData>
+        <loadData tableName="recordings"
+                  file="org/socialmusicdiscovery/server/database/sampledata/zappa_garageact/recordings.csv">
+            <column header="id" type="STRING"/>
+            <column header="name" type="STRING"/>
+            <column header="work_id" type="STRING"/>
+        </loadData>
+        <loadData tableName="mediums"
+                  file="org/socialmusicdiscovery/server/database/sampledata/zappa_garageact/mediums.csv">
+            <column header="id" type="STRING"/>
+            <column header="release_id" type="STRING"/>
+            <column header="number" type="NUMERIC"/>
+            <column header="name" type="STRING"/>
+        </loadData>
+        <loadData tableName="tracks"
+                  file="org/socialmusicdiscovery/server/database/sampledata/zappa_garageact/tracks.csv">
+            <column header="id" type="STRING"/>
+            <column header="release_id" type="STRING"/>
+            <column header="recording_id" type="STRING"/>
+            <column header="medium_id" type="STRING"/>
+            <column header="number" type="NUMERIC"/>
+        </loadData>
+        <loadData tableName="contributors"
+                  file="org/socialmusicdiscovery/server/database/sampledata/zappa_garageact/contributors.csv">
+            <column header="id" type="STRING"/>
+            <column header="artist_id" type="STRING"/>
+            <column header="release_id" type="STRING"/>
+            <column header="recording_id" type="STRING"/>
+            <column header="work_id" type="STRING"/>
+            <column header="type" type="STRING"/>
+        </loadData>
+    </changeSet>
+</databaseChangeLog>

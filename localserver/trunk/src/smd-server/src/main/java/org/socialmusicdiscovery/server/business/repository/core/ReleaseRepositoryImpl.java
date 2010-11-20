@@ -38,7 +38,11 @@ public class ReleaseRepositoryImpl extends SMDEntityRepositoryImpl<Release> impl
     public Collection<Release> findByArtistWithRelations(String artistId, Collection<String> mandatoryRelations, Collection<String> optionalRelations) {
         Query query = entityManager.createQuery(queryStringFor("e", mandatoryRelations, optionalRelations, true) + " LEFT JOIN e.contributors c WHERE c.artist=:releaseArtist" +
                 " OR EXISTS (select rel from Release as rel JOIN rel.tracks as t JOIN t.recording as r JOIN r.contributors as c WHERE c.artist=:recordingArtist and rel.id=e.id)" +
-                " OR EXISTS (select rel from Release as rel JOIN rel.tracks as t JOIN t.recording as r JOIN r.work as w JOIN w.contributors WHERE c.artist=:workArtist and rel.id=e.id) order by e.name");
+                " OR EXISTS (select rel from Release as rel JOIN rel.tracks as t JOIN t.recording as r JOIN r.work as w JOIN w.contributors as c WHERE c.artist=:workArtist and rel.id=e.id)" +
+                " OR EXISTS (select rel from Release as rel JOIN rel.recordingSessions as rs JOIN rs.contributors as c WHERE c.artist=:recordingArtist and rel.id=e.id)" +
+                " OR EXISTS (select rel from Release as rel JOIN rel.recordingSessions as rs JOIN rs.recordings as r JOIN r.contributors as c WHERE c.artist=:recordingArtist and rel.id=e.id)" +
+                " OR EXISTS (select rel from Release as rel JOIN rel.recordingSessions as rs JOIN rs.recordings as r JOIN r.work as w JOIN w.contributors as c WHERE c.artist=:workArtist and rel.id=e.id)" +
+                " order by e.name");
         Artist artist = new Artist();
         artist.setId(artistId);
         query.setParameter("releaseArtist", artist);

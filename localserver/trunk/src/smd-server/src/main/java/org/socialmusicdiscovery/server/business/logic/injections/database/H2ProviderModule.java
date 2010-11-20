@@ -5,6 +5,9 @@ import com.google.inject.Provides;
 import com.google.inject.name.Named;
 
 import java.io.File;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,6 +57,10 @@ public class H2ProviderModule extends AbstractModule {
         public void stop() {
             // Do nothing
         }
+
+        public Connection getConnection() throws SQLException {
+            return DriverManager.getConnection(getUrl());
+        }
     }
 
     ;
@@ -87,6 +94,12 @@ public class H2ProviderModule extends AbstractModule {
     @Provides
     @Named("h2-memory")
     public DatabaseProvider getMemoryProvider() {
+        return h2Memory;
+    }
+
+    @Provides
+    @Named("h2-memory-test")
+    public DatabaseProvider getMemoryTestProvider() {
         return h2Memory;
     }
 

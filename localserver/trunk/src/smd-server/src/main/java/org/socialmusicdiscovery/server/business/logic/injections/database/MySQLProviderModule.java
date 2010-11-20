@@ -4,6 +4,9 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.name.Named;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -60,6 +63,10 @@ public class MySQLProviderModule extends AbstractModule {
 
         public void stop() {
             // Do nothing
+        }
+
+        public Connection getConnection() throws SQLException {
+            return DriverManager.getConnection(getUrl(), System.getProperty("mysql.username"), System.getProperty("mysql.password"));
         }
     }
 

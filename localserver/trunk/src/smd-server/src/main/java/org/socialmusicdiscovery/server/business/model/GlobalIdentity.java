@@ -1,7 +1,5 @@
 package org.socialmusicdiscovery.server.business.model;
 
-import org.hibernate.annotations.Index;
-
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -9,10 +7,7 @@ import javax.persistence.UniqueConstraint;
 import java.util.UUID;
 
 @javax.persistence.Entity
-@Table(name = "global_identities", uniqueConstraints = @UniqueConstraint(columnNames = {"source", "entityId"}))
-@org.hibernate.annotations.Table(appliesTo = "global_identities", indexes = {
-        @Index(name = "sourceAndEntityIndex", columnNames = {"source", "entityId"})
-})
+@Table(name = "global_identities", uniqueConstraints = @UniqueConstraint(columnNames = {"source", "entityid"}))
 public class GlobalIdentity {
     public static final String SOURCE_MUSICBRAINZ = "musicbrainz";
     @Id
@@ -23,7 +18,7 @@ public class GlobalIdentity {
     private String source;
     @Column(nullable = false)
     private String uri;
-    @Column(name = "entityId", nullable = false)
+    @Column(name = "entityid", nullable = false)
     private String entityId;
 
     public GlobalIdentity() {

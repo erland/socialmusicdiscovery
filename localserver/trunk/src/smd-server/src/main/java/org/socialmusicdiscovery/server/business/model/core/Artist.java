@@ -1,32 +1,29 @@
 package org.socialmusicdiscovery.server.business.model.core;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.hibernate.annotations.Index;
 import org.socialmusicdiscovery.server.business.model.SMDEntity;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.Collection;
 import java.util.Set;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "artist")
-@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 @javax.persistence.Entity
 @Table(name = "artists")
 public class Artist extends SMDEntity<Artist> {
     @Column(nullable = false)
-    @Index(name ="nameIndex")
     private String name;
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name="alias_artist_id")
+    @JoinColumn(name = "alias_artist_id")
     private Set<Artist> aliases;
 
     @ManyToOne
-    @JoinColumn(name="person_id")
+    @JoinColumn(name = "person_id")
     private Person person;
 
     public String getName() {
