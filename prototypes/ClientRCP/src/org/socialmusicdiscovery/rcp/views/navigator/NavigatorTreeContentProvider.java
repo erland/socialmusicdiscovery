@@ -12,6 +12,7 @@ import org.socialmusicdiscovery.server.business.model.core.Track;
 
 class NavigatorTreeContentProvider implements ITreeContentProvider {
 	private static final Object[] NONE = {};
+	
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 	}
 	public void dispose() {
@@ -41,6 +42,8 @@ class NavigatorTreeContentProvider implements ITreeContentProvider {
 		return null;
 	}
 	public boolean hasChildren(Object element) {
-		return getChildren(element).length > 0;
+		// if not loaded, we're lying thru our teeth
+		// would like to answer "maybe" :-)
+		return element instanceof Root ? ((Root<?>)element).hasChildren() : getChildren(element).length > 0;
 	}
 }

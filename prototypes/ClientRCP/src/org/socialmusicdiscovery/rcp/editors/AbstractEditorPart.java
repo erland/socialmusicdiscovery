@@ -8,6 +8,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
+import org.socialmusicdiscovery.rcp.util.TextUtil;
 import org.socialmusicdiscovery.rcp.views.util.AbstractComposite;
 import org.socialmusicdiscovery.rcp.views.util.EntityLabelProvider;
 import org.socialmusicdiscovery.rcp.views.util.SMDEditorInput;
@@ -22,9 +23,13 @@ public abstract class AbstractEditorPart<T extends SMDEntity<?>> extends EditorP
 	}
 
 	public void createPartControl(Composite parent, AbstractComposite<T> ui) {
-		setPartName(EntityLabelProvider.getText(entity));
+		setPartName(getShortName(entity));
 		this.ui = ui;
 		ui.setEntity(getEntity());
+	}
+
+	protected String getShortName(T entity) {
+		return TextUtil.getShortText(EntityLabelProvider.getText(entity));
 	}
 
 	@Override
