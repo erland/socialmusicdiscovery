@@ -49,6 +49,13 @@
             <column header="work_id" type="STRING"/>
             <column header="name" type="STRING"/>
         </loadData>
+        <loadData tableName="tracks"
+                  file="org/socialmusicdiscovery/server/database/sampledata/beethoven_bernstein/tracks.csv">
+            <column header="id" type="STRING"/>
+            <column header="release_id" type="STRING"/>
+            <column header="recording_id" type="STRING"/>
+            <column header="number" type="NUMERIC"/>
+        </loadData>
         <loadData tableName="contributors"
                   file="org/socialmusicdiscovery/server/database/sampledata/beethoven_bernstein/contributors.csv">
             <column header="id" type="STRING"/>
