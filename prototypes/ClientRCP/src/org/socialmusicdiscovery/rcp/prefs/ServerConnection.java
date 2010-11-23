@@ -20,11 +20,11 @@ import org.eclipse.swt.widgets.Composite;
  * be accessed directly via the preference store.
  */
 
-public class PreferencePage
+public class ServerConnection
 	extends FieldEditorPreferencePage
 	implements IWorkbenchPreferencePage {
 
-	public PreferencePage() {
+	public ServerConnection() {
 		super(GRID);
 		setMessage("SMD Server Configuration");
 		setTitle("SMD (Social Music Discovery)");
