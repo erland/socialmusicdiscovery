@@ -144,6 +144,13 @@ public class SqueezeboxServer implements MediaImporter {
                         importNewPlayableElement(track);
                         i++;
                     }
+                    entityManager.flush();
+                    entityManager.clear();
+                    artistCache.clear();
+                    artistMusicbrainzCache.clear();
+                    classificationCache.clear();
+                    releaseCache.clear();
+                    releaseMusicbrainzCache.clear();
                     entityManager.getTransaction().commit();
                     if (offset + trackList.getTracks().size() < trackList.getCount()) {
                         offset = offset + trackList.getTracks().size();
@@ -407,60 +414,76 @@ public class SqueezeboxServer implements MediaImporter {
                     }
 
                     // Create a Track entity if there is a TRACKNUM tag
-                    Track track = null;
+                    Track track = new Track();
                     if (tags.containsKey(TagData.TRACKNUM)) {
-                        track = new Track();
                         String trackNum = tags.get(TagData.TRACKNUM).iterator().next();
 
                         // Sometimes TRACKNUM is represented as 1/10
                         if (trackNum.contains("/")) {
                             trackNum = trackNum.substring(0, trackNum.indexOf("/"));
                         }
-                        track.setNumber(Integer.parseInt(trackNum));
-                        track.getPlayableElements().addAll(playableElements);
-                        track.setRecording(recording);
-                        trackRepository.create(track);
+                        try {
+                            track.setNumber(Integer.parseInt(trackNum));
+                        } catch (NumberFormatException e) {
+                            // Ignore the track number if we can't parse it
+                            System.err.println("Unable to parse track number: "+tags.get(TagData.TRACKNUM).iterator().next());
+                        }
+                    }
+                    track.getPlayableElements().addAll(playableElements);
+                    track.setRecording(recording);
+                    trackRepository.create(track);
 
-                        if (tags.containsKey(TagData.MUSICBRAINZ_TRACK_ID)) {
-                            GlobalIdentity identity = new GlobalIdentity();
-                            identity.setSource(GlobalIdentity.SOURCE_MUSICBRAINZ);
-                            identity.setEntityId(track.getId());
-                            identity.setUri(tags.get(TagData.MUSICBRAINZ_TRACK_ID).iterator().next());
-                            globalIdentityRepository.create(identity);
+                    if (tags.containsKey(TagData.MUSICBRAINZ_TRACK_ID)) {
+                        GlobalIdentity identity = new GlobalIdentity();
+                        identity.setSource(GlobalIdentity.SOURCE_MUSICBRAINZ);
+                        identity.setEntityId(track.getId());
+                        identity.setUri(tags.get(TagData.MUSICBRAINZ_TRACK_ID).iterator().next());
+                        globalIdentityRepository.create(identity);
+                    }
+
+                    // Create a Media entity if there is a DISC tag
+                    if (tags.containsKey(TagData.DISC)) {
+                        String discNo = tags.get(TagData.DISC).iterator().next();
+
+                        // DISC tags can sometimes have the syntax 1/3
+                        if (discNo.contains("/")) {
+                            discNo = discNo.substring(0, discNo.indexOf("/"));
                         }
 
-                        // Create a Media entity if there is a DISC tag
-                        if (tags.containsKey(TagData.DISC)) {
-                            String discNo = tags.get(TagData.DISC).iterator().next();
-
-                            // DISC tags can sometimes have the syntax 1/3
-                            if (discNo.contains("/")) {
-                                discNo = discNo.substring(0, discNo.indexOf("/"));
+                        // Use existing Media entity if there is one already for this disc number
+                        List<Medium> mediums = release.getMediums();
+                        Medium medium = null;
+                        for (Medium m : mediums) {
+                            if(m.getNumber()!=null) {
+                                try {
+                                    if (m.getNumber().equals(Integer.parseInt(discNo))) {
+                                        medium = m;
+                                    }
+                                } catch (NumberFormatException e) {
+                                    // Ignore this and try with name instead
+                                }
                             }
-
-                            // Use existing Media entity if there is one already for this disc number
-                            List<Medium> mediums = release.getMediums();
-                            Medium medium = null;
-                            for (Medium m : mediums) {
-                                if (m.getNumber().equals(Integer.parseInt(discNo))) {
+                            if(m.getName() != null) {
+                                if(m.getName().equals(discNo)) {
                                     medium = m;
                                 }
                             }
-
-                            // Create a new Media entity if we don't already have one
-                            if (medium == null) {
-                                medium = new Medium();
-                                medium.setNumber(Integer.parseInt(discNo));
-                                release.getMediums().add(medium);
-                                mediumRepository.create(medium);
-                            }
-                            medium.getTracks().add(track);
-                        } else {
-                            release.getTracks().add(track);
                         }
-                    } else {
-                        // TODO: We need to handle recordings without a track number
+
+                        // Create a new Media entity if we don't already have one
+                        if (medium == null) {
+                            medium = new Medium();
+                            try {
+                                medium.setNumber(Integer.parseInt(discNo));
+                            } catch (NumberFormatException e) {
+                                medium.setName(discNo);
+                            }
+                            release.getMediums().add(medium);
+                            mediumRepository.create(medium);
+                        }
+                        medium.getTracks().add(track);
                     }
+                    release.getTracks().add(track);
                 }
             }
         }
