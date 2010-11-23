@@ -23,6 +23,7 @@ public class DetachHelper {
         } else {
             throw new RuntimeException("Unsupported collection type: " + objects.getClass());
         }
+        cache.put(objects, result);
         for (T object : objects) {
             result.add(createDetachedCopy(object, cache));
         }
@@ -35,13 +36,14 @@ public class DetachHelper {
         }
         T copy = (T) cache.get(object);
         if (copy != null) {
-            return null;
+            return copy;
         }
         if (Collection.class.isAssignableFrom(object.getClass())) {
             return (T) createDetachedCollectionCopy((Collection) object, cache);
         }
         try {
             copy = (T) object.getClass().newInstance();
+            cache.put(object, copy);
             ArrayList<Field> fields = new ArrayList(Arrays.asList(object.getClass().getDeclaredFields()));
             Class cls = object.getClass().getSuperclass();
             while (!cls.equals(Object.class)) {
@@ -81,6 +83,9 @@ public class DetachHelper {
     }
 
     public static <T> T createDetachedCopy(T object) {
-        return createDetachedCopy(object, new HashMap<Object, Object>());
+        Map<Object, Object> cache = new HashMap<Object, Object>();
+        T result = createDetachedCopy(object, cache);
+        cache.clear();
+        return result;
     }
 }
