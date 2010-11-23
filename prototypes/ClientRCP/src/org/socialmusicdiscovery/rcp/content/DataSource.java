@@ -8,7 +8,7 @@ import javax.ws.rs.core.MediaType;
 import org.socialmusicdiscovery.rcp.error.RecoverableApplicationException;
 import org.socialmusicdiscovery.rcp.event.ObservableImpl;
 import org.socialmusicdiscovery.rcp.prefs.PreferenceConstants;
-import org.socialmusicdiscovery.rcp.prefs.PreferencePage;
+import org.socialmusicdiscovery.rcp.prefs.ServerConnection;
 import org.socialmusicdiscovery.server.business.model.SMDEntity;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
 import org.socialmusicdiscovery.server.business.model.core.Release;
@@ -120,8 +120,8 @@ public class DataSource extends ObservableImpl {
 	}
 
 	private String getServerURI() {
-		String hostName = PreferencePage.getString(PreferenceConstants.P_HOSTNAME);
-		String port = PreferencePage.getString(PreferenceConstants.P_PORT);
+		String hostName = ServerConnection.getString(PreferenceConstants.P_HOSTNAME);
+		String port = ServerConnection.getString(PreferenceConstants.P_PORT);
 		return "http://"+hostName+":"+port;
 	}
 	

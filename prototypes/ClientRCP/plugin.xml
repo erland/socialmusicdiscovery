@@ -88,11 +88,25 @@
       </editor>
    </extension>
    <extension
+         id="org.socialmusicdiscovery.rcp.prefs"
+         name="SMD Preferences"
          point="org.eclipse.ui.preferencePages">
       <page
-            class="org.socialmusicdiscovery.rcp.prefs.PreferencePage"
-            id="org.socialmusicdiscovery.rcp.prefs.PreferencePage"
-            name="SMD Preferences">
+            category="org.socialmusicdiscovery.rcp.prefs.Main"
+            class="org.socialmusicdiscovery.rcp.prefs.ServerConnection"
+            id="org.socialmusicdiscovery.rcp.prefs.ServerConnection"
+            name="Server Connection">
+      </page>
+      <page
+            category="org.socialmusicdiscovery.rcp.prefs.Main"
+            class="org.socialmusicdiscovery.rcp.prefs.LocalServer"
+            id="org.socialmusicdiscovery.rcp.prefs.LocalServer"
+            name="Local Server">
+      </page>
+      <page
+            class="org.socialmusicdiscovery.rcp.prefs.Main"
+            id="org.socialmusicdiscovery.rcp.prefs.Main"
+            name="SMD (Social Music Discovery)">
       </page>
    </extension>
    <extension

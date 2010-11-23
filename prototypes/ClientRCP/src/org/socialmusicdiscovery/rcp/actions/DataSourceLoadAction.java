@@ -1,7 +1,8 @@
-package org.socialmusicdiscovery.rcp;
+package org.socialmusicdiscovery.rcp.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
+import org.socialmusicdiscovery.rcp.Activator;
 
 public class DataSourceLoadAction extends Action implements IWorkbenchAction  {
 	public DataSourceLoadAction() {
@@ -18,5 +19,4 @@ public class DataSourceLoadAction extends Action implements IWorkbenchAction  {
 	public void run() {
 		Activator.getDefault().getDataSource().reset();
 	}
-
 }

@@ -8,6 +8,8 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
+import org.socialmusicdiscovery.rcp.actions.DataSourceLoadAction;
+import org.socialmusicdiscovery.rcp.actions.LaunchLocalServerAction;
 
 public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 
@@ -15,6 +17,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	private IWorkbenchAction preferenceAction;
 	private IWorkbenchAction reloadAction;
 	private IWorkbenchAction aboutAction;
+	private LaunchLocalServerAction launchAction;
     
 	public ApplicationActionBarAdvisor(IActionBarConfigurer configurer) {
 		super(configurer);
@@ -23,6 +26,9 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	protected void makeActions(IWorkbenchWindow window) {
 		reloadAction = new DataSourceLoadAction();
 		register(reloadAction);
+
+		launchAction = new LaunchLocalServerAction();
+		register(launchAction);
 		
 		preferenceAction = ActionFactory.PREFERENCES.create(window);
 		register(preferenceAction);
@@ -40,6 +46,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 			MenuManager menu = new MenuManager("&Server", "Server");
 			menuBar.add(menu);
 			menu.add(reloadAction);
+			menu.add(launchAction);
 		}
 		{ // Tools 
 			MenuManager menu = new MenuManager("&Tools", "Tools");

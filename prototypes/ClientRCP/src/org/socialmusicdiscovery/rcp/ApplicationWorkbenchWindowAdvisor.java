@@ -21,6 +21,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
         configurer.setInitialSize(new Point(700, 550));
         configurer.setShowCoolBar(false);
         configurer.setShowStatusLine(false);
-        configurer.setTitle("SMD Rich Client");
+        configurer.setTitle("SMD Rich Client PROTOTYPE");
+        configurer.setShowProgressIndicator(true); // show User jobs in progress bar 
     }
 }
