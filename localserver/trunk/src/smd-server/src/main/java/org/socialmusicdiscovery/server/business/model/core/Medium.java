@@ -9,7 +9,9 @@ import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.*;
+import javax.xml.bind.annotation.XmlTransient;
+import java.util.ArrayList;
+import java.util.List;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "medium")
@@ -19,8 +21,10 @@ public class Medium extends SMDEntity<Medium> {
     private Integer number;
     private String name;
     @OneToMany
-    @JoinColumn(name="medium_id")
+    @JoinColumn(name = "medium_id")
     @OrderBy("number")
+    @XmlTransient
+    // XmlTransient required to avoid circular dependencies during JSON/XML encoding
     private List<Track> tracks = new ArrayList<Track>();
 
     public Integer getNumber() {
