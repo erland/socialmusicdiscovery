@@ -20,7 +20,7 @@ public class TrackFacade extends BaseCRUDFacade<Track, TrackRepository> {
         } else if (nameContains != null) {
             return DetachHelper.createDetachedCopy(repository.findByPartialNameWithRelations(nameContains, Arrays.asList("reference"), null));
         } else if (release != null) {
-            return DetachHelper.createDetachedCopy(repository.findByReleaseWithRelations(release, Arrays.asList("reference"), null));
+            return DetachHelper.createDetachedCopy(repository.findByReleaseWithRelations(release, Arrays.asList("reference", "medium"), null));
         } else if (artist != null) {
             return DetachHelper.createDetachedCopy(repository.findByArtistWithRelations(artist, Arrays.asList("reference"), null));
         } else if (work != null) {

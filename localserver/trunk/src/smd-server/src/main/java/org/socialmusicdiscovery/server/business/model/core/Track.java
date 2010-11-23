@@ -23,12 +23,24 @@ public class Track extends SMDEntity<Track> {
     @JoinColumn(name = "track_id")
     private Set<PlayableElement> playableElements = new HashSet<PlayableElement>();
 
+    @ManyToOne
+    @JoinColumn(name = "medium_id")
+    private Medium medium;
+
     public Integer getNumber() {
         return number;
     }
 
     public void setNumber(Integer number) {
         this.number = number;
+    }
+
+    public Medium getMedium() {
+        return medium;
+    }
+
+    public void setMedium(Medium medium) {
+        this.medium = medium;
     }
 
     public Recording getRecording() {
