@@ -56,4 +56,17 @@ public class GlobalIdentity {
     public void setEntityId(String entityId) {
         this.entityId = entityId;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof GlobalIdentity)) return false;
+
+        return id.equals(((GlobalIdentity) o).id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
 }
