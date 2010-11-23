@@ -15,6 +15,7 @@ import org.eclipse.nebula.widgets.grid.GridColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -36,7 +37,7 @@ public class ReleaseUI extends AbstractComposite<Release> {
 	protected ScrolledForm scrldfrmRelease;
 	protected Text text;
 	protected Section metaData;
-	protected Composite composite;
+	protected Composite metadataContainer;
 	protected Label labelLabel;
 	protected Label labelDate;
 	protected Combo comboLabel;
@@ -45,21 +46,22 @@ public class ReleaseUI extends AbstractComposite<Release> {
 	protected CTabFolder tabFolder;
 	protected CTabItem tbtmMedia;
 	protected CTabItem tbtmContributors;
-	protected Grid grid;
-	private GridTreeViewer gridTreeViewer;
-	protected GridColumn gridColumn;
-	private GridViewerColumn gridViewerColumn;
-	protected GridColumn gridColumn_1;
-	private GridViewerColumn gridViewerColumn_1;
-	protected GridColumn gridColumn_2;
-	private GridViewerColumn gridViewerColumn_2;
+	protected Grid gridTracks;
+	private GridTreeViewer gridViewerTracks;
+	protected GridColumn colTrackNumber;
+	private GridViewerColumn gvclTrackNumber;
+	protected GridColumn colTitle;
+	private GridViewerColumn gvcTitle;
+	protected GridColumn colArtists;
+	private GridViewerColumn gvcArtists;
 	protected CTabItem tbtmRecordingSessions;
 	protected Composite composite_1;
 	protected Grid grid_1;
 	private GridTableViewer gridTableViewer;
 	protected GridColumn gridColumn_3;
 	private GridViewerColumn gridViewerColumn_3;
-	protected Label lblTracks;
+	private Section sctnTracks;
+	private Composite gridContainer;
 
 	/**
 	 * Create the composite.
@@ -86,56 +88,60 @@ public class ReleaseUI extends AbstractComposite<Release> {
 		textName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		textName.setText("");
 		
-		lblTracks = formToolkit.createLabel(scrldfrmRelease.getBody(), "Tracks", SWT.NONE);
+		sctnTracks = formToolkit.createSection(scrldfrmRelease.getBody(), Section.EXPANDED | Section.TITLE_BAR);
+		sctnTracks.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		formToolkit.paintBordersFor(sctnTracks);
+		sctnTracks.setText("Tracks");
 		
-		gridTreeViewer = new GridTreeViewer(scrldfrmRelease.getBody(), SWT.BORDER);
-		grid = gridTreeViewer.getGrid();
-		GridData gd_grid = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
-		gd_grid.minimumHeight = 100;
-		grid.setLayoutData(gd_grid);
-		grid.setHeaderVisible(true);
-		formToolkit.paintBordersFor(grid);
+		gridContainer = formToolkit.createComposite(sctnTracks, SWT.NONE);
+		formToolkit.paintBordersFor(gridContainer);
+		sctnTracks.setClient(gridContainer);
+		gridContainer.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		gridViewerColumn = new GridViewerColumn(gridTreeViewer, SWT.NONE);
-		gridColumn = gridViewerColumn.getColumn();
-		gridColumn.setWidth(100);
-		gridColumn.setText("Number");
+		gridViewerTracks = new GridTreeViewer(gridContainer, SWT.BORDER);
+		gridTracks = gridViewerTracks.getGrid();
+		gridTracks.setHeaderVisible(true);
+		formToolkit.paintBordersFor(gridTracks);
 		
-		gridViewerColumn_1 = new GridViewerColumn(gridTreeViewer, SWT.NONE);
-		gridColumn_1 = gridViewerColumn_1.getColumn();
-		gridColumn_1.setWidth(100);
-		gridColumn_1.setText("Title");
+		gvclTrackNumber = new GridViewerColumn(gridViewerTracks, SWT.NONE);
+		colTrackNumber = gvclTrackNumber.getColumn();
+		colTrackNumber.setWidth(100);
+		colTrackNumber.setText("Number");
 		
-		gridViewerColumn_2 = new GridViewerColumn(gridTreeViewer, SWT.NONE);
-		gridColumn_2 = gridViewerColumn_2.getColumn();
-		gridColumn_2.setWidth(100);
-		gridColumn_2.setText("Artist(s)");
+		gvcTitle = new GridViewerColumn(gridViewerTracks, SWT.NONE);
+		colTitle = gvcTitle.getColumn();
+		colTitle.setWidth(100);
+		colTitle.setText("Title");
+		
+		gvcArtists = new GridViewerColumn(gridViewerTracks, SWT.NONE);
+		colArtists = gvcArtists.getColumn();
+		colArtists.setWidth(100);
+		colArtists.setText("Artist(s)");
 		
 		metaData = formToolkit.createSection(scrldfrmRelease.getBody(), Section.TWISTIE | Section.TITLE_BAR);
 		metaData.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 		formToolkit.paintBordersFor(metaData);
 		metaData.setText("Meta Data");
-		metaData.setExpanded(true);
 		
-		composite = formToolkit.createComposite(metaData, SWT.NONE);
-		formToolkit.paintBordersFor(composite);
-		metaData.setClient(composite);
-		composite.setLayout(new GridLayout(2, false));
+		metadataContainer = formToolkit.createComposite(metaData, SWT.NONE);
+		formToolkit.paintBordersFor(metadataContainer);
+		metaData.setClient(metadataContainer);
+		metadataContainer.setLayout(new GridLayout(2, false));
 		
-		labelLabel = formToolkit.createLabel(composite, "Label", SWT.NONE);
+		labelLabel = formToolkit.createLabel(metadataContainer, "Label", SWT.NONE);
 		
-		labelDate = formToolkit.createLabel(composite, "Date", SWT.NONE);
+		labelDate = formToolkit.createLabel(metadataContainer, "Date", SWT.NONE);
 		
-		comboViewer = new ComboViewer(composite, SWT.NONE);
+		comboViewer = new ComboViewer(metadataContainer, SWT.NONE);
 		comboLabel = comboViewer.getCombo();
 		comboLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		formToolkit.paintBordersFor(comboLabel);
 		
-		dateTime = new CDateTime(composite, CDT.BORDER | CDT.CLOCK_24_HOUR);
+		dateTime = new CDateTime(metadataContainer, CDT.BORDER | CDT.CLOCK_24_HOUR);
 		dateTime.setNullText("<no date>");
 		formToolkit.adapt(dateTime);
 		formToolkit.paintBordersFor(dateTime);
-		tabFolder = new CTabFolder(composite, SWT.BORDER | SWT.BOTTOM);
+		tabFolder = new CTabFolder(metadataContainer, SWT.BORDER | SWT.BOTTOM);
 		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		
 		formToolkit.adapt(tabFolder);
