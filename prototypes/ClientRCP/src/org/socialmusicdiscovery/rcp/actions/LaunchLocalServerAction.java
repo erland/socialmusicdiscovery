@@ -7,8 +7,8 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
-import org.hibernate.cfg.NotYetImplementedException;
 import org.socialmusicdiscovery.rcp.Activator;
+import org.socialmusicdiscovery.rcp.error.NotYetImplementedException;
 import org.socialmusicdiscovery.rcp.prefs.PreferenceConstants;
 
 public class LaunchLocalServerAction extends Action implements IWorkbenchAction  {

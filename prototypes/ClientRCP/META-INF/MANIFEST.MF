@@ -17,12 +17,12 @@ Require-Bundle: org.eclipse.ui,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Activator: org.socialmusicdiscovery.rcp.Activator
 Bundle-ActivationPolicy: lazy
-Bundle-ClassPath: lib/smd-server-1.0-SNAPSHOT.jar,
- .,
+Bundle-ClassPath: .,
  lib/grid-1.0.0.jar,
  lib/calendarcombo-1.0.0.jar,
  lib/cdatetime-0.14.0.jar,
  lib/cwt-0.9.0.jar,
  lib/datechooser-1.0.0.jar,
  lib/formattedtext-1.0.0.jar,
- lib/swt-grouplayout.jar
+ lib/swt-grouplayout.jar,
+ lib/smd-server-1.0-SNAPSHOT.jar
