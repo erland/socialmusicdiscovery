@@ -65,13 +65,13 @@
                                         <columns>
                                             <TableView.Column name="number" width="1*"
                                                               headerData="%EditReleaseWindow.trackNumber"/>
-                                            <TableView.Column name="title" width="1*"
+                                            <TableView.Column name="title" width="5*"
                                                               headerData="%EditReleaseWindow.trackTitle"/>
-                                            <TableView.Column name="composers" width="1*"
+                                            <TableView.Column name="composers" width="3*"
                                                               headerData="%EditReleaseWindow.composers"/>
-                                            <TableView.Column name="conductors" width="1*"
+                                            <TableView.Column name="conductors" width="3*"
                                                               headerData="%EditReleaseWindow.conductors"/>
-                                            <TableView.Column name="performers" width="1*"
+                                            <TableView.Column name="performers" width="4*"
                                                               headerData="%EditReleaseWindow.performers"/>
                                         </columns>
                                     </TableView>
