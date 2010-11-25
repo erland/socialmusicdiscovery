@@ -80,14 +80,14 @@ public class SMDApplication {
     public SMDApplication() {
         try {
             DatabaseProvider provider = null;
-            String database = System.getProperty("org.socialmusicdiscovery.server.database");
+            String database = InjectHelper.instanceWithName(String.class, "org.socialmusicdiscovery.server.database");
             if (database != null) {
                 provider = InjectHelper.instanceWithName(DatabaseProvider.class, database);
                 if (provider == null) {
                     throw new RuntimeException("No database provider exists for: " + database);
                 }
             } else {
-                provider = InjectHelper.instanceWithName(DatabaseProvider.class, "derby");
+                throw new RuntimeException("No database provider configured");
             }
             provider.start();
             Connection connection = provider.getConnection();
