@@ -92,12 +92,55 @@ public class BaseTestCase {
         }
     }
 
+    public static String getParentDirectory(String path) {
+        String parentDir = "/";
+        int lastIndex;
+
+        if (path != null && path.trim().length() > 0) {
+            path = path.trim();
+
+            if (path.endsWith("/") && path.length() > 1) {
+                path = path.substring(0, path.length() - 1);
+            }
+
+            if (path.length() > 1) {
+                lastIndex = path.lastIndexOf("/");
+
+                if (lastIndex > 0) {
+                    parentDir = path.substring(0, lastIndex);
+                }
+            }
+        }
+
+        return parentDir;
+    }
+
+    public String getTestDataDiretory() {
+        String path = getClass().getResource("/META-INF/persistence.xml").getPath();
+        if(path != null) {
+            path = getParentDirectory(path);
+            if(path != null) {
+                path = getParentDirectory(path);
+            }
+            if(path != null) {
+                path = getParentDirectory(path);
+            }
+            if(path != null) {
+                path = getParentDirectory(path);
+            }
+        }
+        if(path != null) {
+            return path+"/"+"src/test/test-data/";
+        }else {
+            return "src/test/test-data/";
+        }
+    }
     public void loadTestData(String pkg, String file) throws Exception {
-        loadTestData(DatabaseOperation.CLEAN_INSERT, "src/test/test-data/" + pkg.replaceAll("\\.", "/") + "/" + file);
+        loadTestData(DatabaseOperation.CLEAN_INSERT, getTestDataDiretory() + pkg.replaceAll("\\.", "/") + "/" + file);
     }
 
     public void addTestData(String pkg, String file) throws Exception {
-        loadTestData(DatabaseOperation.INSERT, "src/test/test-data/" + pkg.replaceAll("\\.", "/") + "/" + file);
+        loadTestData(DatabaseOperation.INSERT, getTestDataDiretory() + pkg.replaceAll("\\.", "/") + "/" + file);
     }
 
     protected void loadTestData(DatabaseOperation dboperation, String file) throws Exception {

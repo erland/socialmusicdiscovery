@@ -22,7 +22,7 @@ public class RecordingSession extends SMDEntity<RecordingSession> {
     @JoinColumn(name = "session_id")
     private Set<Contributor> contributors = new HashSet<Contributor>();
 
-    @OneToMany
+    @OneToMany(orphanRemoval = true)
     @JoinColumn(name = "session_id")
     private Set<Recording> recordings = new HashSet<Recording>();
 

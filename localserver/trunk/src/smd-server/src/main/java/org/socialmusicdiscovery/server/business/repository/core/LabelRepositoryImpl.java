@@ -9,7 +9,6 @@ import javax.persistence.Query;
 import java.util.Collection;
 
 public class LabelRepositoryImpl extends SMDEntityRepositoryImpl<Label> implements LabelRepository {
-    public LabelRepositoryImpl() {}
     @Inject
     public LabelRepositoryImpl(EntityManager em) {super(em);}
 

@@ -1,14 +1,13 @@
 package org.socialmusicdiscovery.server.business.model.core;
 
 import org.socialmusicdiscovery.server.business.model.SMDEntity;
+import org.socialmusicdiscovery.server.business.model.search.WorkSearchRelation;
 
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,10 +22,19 @@ public class Work extends SMDEntity<Work> {
     private Date date;
     @OneToMany
     @JoinColumn(name = "parent_id")
+    @XmlTransient  // XmlTransient required to avoid circular dependencies during JSON/XML encoding
     private Set<Work> parts = new HashSet<Work>();
+    @ManyToOne
+    @JoinColumn(name = "parent_id")
+    private Work parent;
+
     @OneToMany
     @JoinColumn(name = "work_id")
     private Set<Contributor> contributors = new HashSet<Contributor>();
+
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "id")
+    @XmlTransient
+    private Set<WorkSearchRelation> searchRelations;
 
     public String getName() {
         return name;
@@ -52,11 +60,27 @@ public class Work extends SMDEntity<Work> {
         this.parts = parts;
     }
 
+    public Work getParent() {
+        return parent;
+    }
+
+    public void setParent(Work parent) {
+        this.parent = parent;
+    }
+
     public Set<Contributor> getContributors() {
         return contributors;
     }
 
     public void setContributors(Set<Contributor> contributors) {
         this.contributors = contributors;
+    }
+
+    public Set<WorkSearchRelation> getSearchRelations() {
+        return searchRelations;
+    }
+
+    public void setSearchRelations(Set<WorkSearchRelation> searchRelations) {
+        this.searchRelations = searchRelations;
     }
 }

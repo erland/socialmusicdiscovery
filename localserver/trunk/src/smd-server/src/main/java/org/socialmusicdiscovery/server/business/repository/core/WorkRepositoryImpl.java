@@ -1,8 +1,7 @@
 package org.socialmusicdiscovery.server.business.repository.core;
 
 import com.google.inject.Inject;
-import org.socialmusicdiscovery.server.business.model.core.Artist;
-import org.socialmusicdiscovery.server.business.model.core.Release;
+import org.socialmusicdiscovery.server.business.model.core.Contributor;
 import org.socialmusicdiscovery.server.business.model.core.Work;
 import org.socialmusicdiscovery.server.business.repository.SMDEntityRepositoryImpl;
 
@@ -11,12 +10,12 @@ import javax.persistence.Query;
 import java.util.Collection;
 
 public class WorkRepositoryImpl extends SMDEntityRepositoryImpl<Work> implements WorkRepository {
-    public WorkRepositoryImpl() {
-    }
+    ContributorRepository contributorRepository;
 
     @Inject
-    public WorkRepositoryImpl(EntityManager em) {
+    public WorkRepositoryImpl(EntityManager em, ContributorRepository contributorRepository) {
         super(em);
+        this.contributorRepository = contributorRepository;
     }
 
     public Collection<Work> findByName(String name) {
@@ -36,29 +35,25 @@ public class WorkRepositoryImpl extends SMDEntityRepositoryImpl<Work> implements
     }
 
     public Collection<Work> findByReleaseWithRelations(String releaseId, Collection<String> mandatoryRelations, Collection<String> optionalRelations) {
-        Query query = entityManager.createQuery(queryStringFor("e", mandatoryRelations, optionalRelations, true) + " WHERE " +
-                " EXISTS (select r from Release as r JOIN r.tracks as t JOIN t.recording as rec WHERE r=:release and rec.work=e.id)" +
-                " OR EXISTS (select r from Release as r JOIN r.recordingSessions as rs JOIN rs.recordings as rec WHERE r=:release and rec.work=e.id)" +
-                " order by e.name");
-        Release release = new Release();
-        release.setId(releaseId);
-        query.setParameter("release", release);
+        Query query = entityManager.createQuery(queryStringFor("e", mandatoryRelations, optionalRelations, true) + " JOIN e.searchRelations as r WHERE r.reference=:release order by e.name");
+        query.setParameter("release", releaseId);
         return query.getResultList();
     }
 
     public Collection<Work> findByArtistWithRelations(String artistId, Collection<String> mandatoryRelations, Collection<String> optionalRelations) {
-        Query query = entityManager.createQuery(queryStringFor("e", mandatoryRelations, optionalRelations, true) + " LEFT JOIN e.contributors as c1 WHERE " +
-                "EXISTS (select r from Recording as r JOIN r.contributors as c WHERE c.artist=:recordingArtist and r.work=e.id) " +
-                "or EXISTS (select r from Release as r JOIN r.contributors as c JOIN r.tracks as t JOIN t.recording as rec JOIN rec.work as w WHERE c.artist=:releaseArtist and rec.work=e.id) " +
-                "or EXISTS (select rs from RecordingSession as rs JOIN rs.contributors as c JOIN rs.recordings as rec JOIN rec.work as w WHERE c.artist=:recordingSessionArtist and rec.work=e.id and not exists (select pw from Work as pw JOIN pw.parts as parts WHERE parts.id=rec.work)) " +
-                "or EXISTS (select rs from RecordingSession as rs JOIN rs.contributors as c JOIN rs.recordings as rec JOIN rec.work as w WHERE c.artist=:recordingSessionArtist and EXISTS (select pw from Work as pw JOIN pw.parts as parts WHERE parts.id=w.id and pw.id=e.id)) " +
-                "or c1.artist=:workArtist order by e.name");
-        Artist artist = new Artist();
-        artist.setId(artistId);
-        query.setParameter("releaseArtist", artist);
-        query.setParameter("recordingArtist", artist);
-        query.setParameter("recordingSessionArtist", artist);
-        query.setParameter("workArtist", artist);
+        Query query = entityManager.createQuery(queryStringFor("e", mandatoryRelations, optionalRelations, true) + " JOIN e.searchRelations as r WHERE r.reference=:artist order by e.name");
+        query.setParameter("artist", artistId);
         return query.getResultList();
+    }
+    public void remove(Work entity) {
+        for (Contributor contributor : entity.getContributors()) {
+            contributorRepository.remove(contributor);
+        }
+        entity.getSearchRelations().clear();
+        entityManager.createQuery("DELETE from ArtistSearchRelation where reference=:id").setParameter("id",entity.getId()).executeUpdate();
+        entityManager.createQuery("DELETE from PersonSearchRelation where reference=:id").setParameter("id",entity.getId()).executeUpdate();
+        entityManager.createQuery("DELETE from RecordingSearchRelation where reference=:id").setParameter("id",entity.getId()).executeUpdate();
+        entityManager.createQuery("DELETE from ReleaseSearchRelation where reference=:id").setParameter("id",entity.getId()).executeUpdate();
+        super.remove(entity);
     }
 }

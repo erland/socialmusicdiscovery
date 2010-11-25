@@ -13,4 +13,5 @@ public interface ArtistRepository extends SMDEntityRepository<Artist> {
     Collection<Artist> findByPartialNameWithRelations(String name, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
     Collection<Artist> findByWorkWithRelations(String workId, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
     Collection<Artist> findByReleaseWithRelations(String releaseId, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
+    Collection<Artist> findByPersonWithRelations(String personId, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
 }

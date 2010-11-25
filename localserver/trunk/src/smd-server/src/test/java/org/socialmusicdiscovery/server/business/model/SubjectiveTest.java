@@ -1,6 +1,5 @@
 package org.socialmusicdiscovery.server.business.model;
 
-import org.dbunit.DatabaseUnitException;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
 import org.socialmusicdiscovery.server.business.model.core.Person;
 import org.socialmusicdiscovery.server.business.model.core.Release;
@@ -8,11 +7,11 @@ import org.socialmusicdiscovery.server.business.model.subjective.Credit;
 import org.socialmusicdiscovery.server.business.model.subjective.Relation;
 import org.socialmusicdiscovery.test.BaseTestCase;
 import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-import java.net.MalformedURLException;
-import java.sql.SQLException;
+import java.lang.reflect.Method;
 import java.util.Collection;
 
 public class SubjectiveTest extends BaseTestCase {
@@ -25,6 +24,13 @@ public class SubjectiveTest extends BaseTestCase {
     public void tearDown() {
         super.tearDown();
     }
+
+    @BeforeMethod
+    public void setUpMethod(Method m) {
+        System.out.println("Executing "+getClass().getSimpleName()+"."+m.getName()+"...");
+        em.clear();
+    }
+
     @Test
     public void testModelCredit() throws Exception {
         loadTestData(getClass().getPackage().getName(),"The Bodyguard.xml");

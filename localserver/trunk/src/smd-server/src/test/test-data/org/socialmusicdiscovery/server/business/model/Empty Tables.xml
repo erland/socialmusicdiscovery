@@ -20,4 +20,10 @@
     <classification_references/>
     <smdentity_references/>
     <global_identities/>
+    <releases_search_relations/>
+    <recordings_search_relations/>
+    <works_search_relations/>
+    <artists_search_relations/>
+    <persons_search_relations/>
+    <playable_elements/>
 </dataset>

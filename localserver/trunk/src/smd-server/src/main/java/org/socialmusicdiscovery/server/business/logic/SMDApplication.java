@@ -7,6 +7,7 @@ import com.sun.jersey.api.container.grizzly.GrizzlyWebContainerFactory;
 import liquibase.ClassLoaderFileOpener;
 import liquibase.Liquibase;
 import org.socialmusicdiscovery.server.api.management.mediaimport.MediaImportStatus;
+import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
 import org.socialmusicdiscovery.server.business.logic.injections.database.DatabaseProvider;
 import org.socialmusicdiscovery.server.business.model.core.*;
 import org.socialmusicdiscovery.server.business.repository.core.ReleaseRepository;
@@ -104,6 +105,26 @@ public class SMDApplication {
             }
 
             InjectHelper.injectMembers(this);
+
+            String forcedUpdateOfSearchRelations = System.getProperty("org.socialmusicdiscovery.server.searchrelations");
+            if ((database != null && (database.endsWith("-test"))) || (forcedUpdateOfSearchRelations !=null && forcedUpdateOfSearchRelations.equalsIgnoreCase("true"))) {
+                System.out.println("Starting to update search relations...");
+                new SearchRelationPostProcessor().execute(new ProcessingStatusCallback() {
+                    public void progress(String module, String currentDescription, Long currentNo, Long totalNo) {
+                        System.out.println(currentNo+" of "+totalNo+": "+currentDescription);
+                    }
+
+                    public void failed(String module, String error) {
+                        System.err.println("Failed with error: "+error);
+                    }
+
+                    public void finished(String module) {
+                        System.out.println("Finish updating search relations");
+                    }
+
+                    public void aborted(String module) {}
+                });
+            }
 
             Collection<Release> releases = releaseRepository.findAll();
             if (releases.size() > 0) {

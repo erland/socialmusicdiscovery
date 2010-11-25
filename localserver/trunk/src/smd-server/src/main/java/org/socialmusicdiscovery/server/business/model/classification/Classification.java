@@ -17,7 +17,7 @@ public class Classification extends SMDEntity {
     private String type;
     @Column(nullable = false)
     private String name;
-    @OneToMany
+    @OneToMany(orphanRemoval = true)
     @JoinColumn(name = "parent_id")
     private Set<Classification> childs = new HashSet<Classification>();
 

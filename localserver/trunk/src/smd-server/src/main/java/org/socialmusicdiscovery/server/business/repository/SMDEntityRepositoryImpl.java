@@ -6,8 +6,6 @@ import org.socialmusicdiscovery.server.business.model.SMDEntityReference;
 import javax.persistence.EntityManager;
 
 public abstract class SMDEntityRepositoryImpl<E extends SMDEntity> extends EntityRepositoryImpl<String, E> implements SMDEntityRepository<E> {
-
-	public SMDEntityRepositoryImpl() {}
     public SMDEntityRepositoryImpl(EntityManager em) {
         super(em);
     }

@@ -1,12 +1,13 @@
 package org.socialmusicdiscovery.server.business.model.core;
 
 import org.socialmusicdiscovery.server.business.model.SMDEntity;
+import org.socialmusicdiscovery.server.business.model.search.RecordingSearchRelation;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.Collection;
+import javax.xml.bind.annotation.XmlTransient;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,6 +28,10 @@ public class Recording extends SMDEntity<Recording> {
     @ManyToOne(optional = false)
     @JoinColumn(name="work_id")
     private Work work;
+
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "id")
+    @XmlTransient
+    private Set<RecordingSearchRelation> searchRelations;
 
     public String getName() {
         return name;
@@ -66,5 +71,13 @@ public class Recording extends SMDEntity<Recording> {
 
     public void setWork(Work work) {
         this.work = work;
+    }
+
+    public Set<RecordingSearchRelation> getSearchRelations() {
+        return searchRelations;
+    }
+
+    public void setSearchRelations(Set<RecordingSearchRelation> searchRelations) {
+        this.searchRelations = searchRelations;
     }
 }

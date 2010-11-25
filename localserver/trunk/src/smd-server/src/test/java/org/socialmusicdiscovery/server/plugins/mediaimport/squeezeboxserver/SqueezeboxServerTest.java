@@ -12,11 +12,12 @@ import java.util.Arrays;
 import java.util.Collection;
 
 public class SqueezeboxServerTest extends BaseTestCase {
-    SqueezeboxServer squeezeboxServer = new SqueezeboxServer();
+    SqueezeboxServer squeezeboxServer;
 
     @BeforeTest
     public void setUp() {
         super.setUp();
+        squeezeboxServer = new SqueezeboxServer();
     }
 
     @AfterTest
