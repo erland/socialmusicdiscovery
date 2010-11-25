@@ -1,6 +1,7 @@
 package org.socialmusicdiscovery.test;
 
 import com.google.inject.Inject;
+import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.DatabaseSequenceFilter;
 import org.dbunit.database.IDatabaseConnection;
@@ -8,6 +9,8 @@ import org.dbunit.dataset.FilteredDataSet;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.filter.ITableFilter;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
+import org.dbunit.ext.h2.H2DataTypeFactory;
+import org.dbunit.ext.hsqldb.HsqldbDataTypeFactory;
 import org.dbunit.operation.DatabaseOperation;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
 import org.socialmusicdiscovery.server.business.logic.injections.database.DatabaseProvider;
@@ -62,7 +65,7 @@ public class BaseTestCase {
 
     public DatabaseProvider getProvider() {
         if (System.getProperty("org.socialmusicdiscovery.server.database") == null) {
-            System.setProperty("org.socialmusicdiscovery.server.database", "derby-memory");
+            System.setProperty("org.socialmusicdiscovery.server.database", "h2-memory");
         }
         if (provider == null) {
             provider = InjectHelper.instanceWithName(DatabaseProvider.class, System.getProperty("org.socialmusicdiscovery.server.database"));
@@ -146,7 +149,12 @@ public class BaseTestCase {
     protected void loadTestData(DatabaseOperation dboperation, String file) throws Exception {
         Class.forName(getProvider().getDriver());
         IDatabaseConnection connection = new DatabaseConnection(DriverManager.getConnection(provider.getUrl(), "", ""));
-        //IDatabaseConnection connection = new DatabaseConnection(DriverManager.getConnection("jdbc:derby:target/unit-test","",""));
+        DatabaseConfig config = connection.getConfig();
+        if(provider.getUrl().startsWith("jdbc:h2")) {
+            config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new H2DataTypeFactory());
+        }else if(provider.getUrl().startsWith("jdbc:hsql")) {
+            config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new HsqldbDataTypeFactory());
+        }
 
         FlatXmlDataSetBuilder builder = new FlatXmlDataSetBuilder();
         builder.setColumnSensing(true);
