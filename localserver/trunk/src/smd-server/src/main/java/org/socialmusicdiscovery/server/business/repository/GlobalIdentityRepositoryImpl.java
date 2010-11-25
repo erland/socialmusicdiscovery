@@ -9,9 +9,6 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 public class GlobalIdentityRepositoryImpl extends EntityRepositoryImpl<GlobalIdentity, GlobalIdentity> implements GlobalIdentityRepository {
-    public GlobalIdentityRepositoryImpl() {
-    }
-
     @Inject
     public GlobalIdentityRepositoryImpl(EntityManager em) {
         super(em);

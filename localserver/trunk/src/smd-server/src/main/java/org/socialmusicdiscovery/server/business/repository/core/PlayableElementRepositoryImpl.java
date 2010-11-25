@@ -9,7 +9,6 @@ import javax.persistence.Query;
 import java.util.Collection;
 
 public class PlayableElementRepositoryImpl extends SMDEntityRepositoryImpl<PlayableElement> implements PlayableElementRepository {
-    public PlayableElementRepositoryImpl() {}
     @Inject
     public PlayableElementRepositoryImpl(EntityManager em) {super(em);}
 

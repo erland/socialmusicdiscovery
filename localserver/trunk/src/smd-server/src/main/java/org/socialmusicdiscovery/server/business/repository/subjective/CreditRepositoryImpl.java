@@ -1,17 +1,15 @@
 package org.socialmusicdiscovery.server.business.repository.subjective;
 
 import com.google.inject.Inject;
-import org.socialmusicdiscovery.server.business.repository.EntityRepositoryImpl;
 import org.socialmusicdiscovery.server.business.model.SMDEntity;
 import org.socialmusicdiscovery.server.business.model.subjective.Credit;
-import org.socialmusicdiscovery.server.business.model.subjective.CreditPK;
+import org.socialmusicdiscovery.server.business.repository.EntityRepositoryImpl;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.util.Collection;
 
-public class CreditRepositoryImpl extends EntityRepositoryImpl<CreditPK, Credit> implements CreditRepository {
-    public CreditRepositoryImpl() {}
+public class CreditRepositoryImpl extends EntityRepositoryImpl<Credit, Credit> implements CreditRepository {
     @Inject
     public CreditRepositoryImpl(EntityManager em) {super(em);}
 

@@ -1,17 +1,15 @@
 package org.socialmusicdiscovery.server.business.repository.subjective;
 
 import com.google.inject.Inject;
-import org.socialmusicdiscovery.server.business.repository.EntityRepositoryImpl;
 import org.socialmusicdiscovery.server.business.model.SMDEntityReference;
 import org.socialmusicdiscovery.server.business.model.subjective.Relation;
-import org.socialmusicdiscovery.server.business.model.subjective.RelationPK;
+import org.socialmusicdiscovery.server.business.repository.EntityRepositoryImpl;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.util.Collection;
 
-public class RelationRepositoryImpl extends EntityRepositoryImpl<RelationPK, Relation> implements RelationRepository {
-    public RelationRepositoryImpl() {}
+public class RelationRepositoryImpl extends EntityRepositoryImpl<Relation, Relation> implements RelationRepository {
     @Inject
     public RelationRepositoryImpl(EntityManager em) {super(em);}
 

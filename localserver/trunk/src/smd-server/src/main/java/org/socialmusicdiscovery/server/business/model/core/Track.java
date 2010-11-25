@@ -6,6 +6,7 @@ import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,6 +27,11 @@ public class Track extends SMDEntity<Track> {
     @ManyToOne
     @JoinColumn(name = "medium_id")
     private Medium medium;
+
+    @ManyToOne
+    @JoinColumn(name = "release_id")
+    @XmlTransient
+    private Release release;
 
     public Integer getNumber() {
         return number;
@@ -57,5 +63,13 @@ public class Track extends SMDEntity<Track> {
 
     public void setPlayableElements(Set<PlayableElement> playableElements) {
         this.playableElements = playableElements;
+    }
+
+    public Release getRelease() {
+        return release;
+    }
+
+    public void setRelease(Release release) {
+        this.release = release;
     }
 }

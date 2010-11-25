@@ -25,6 +25,12 @@
 
         <class>org.socialmusicdiscovery.server.business.model.GlobalIdentity</class>
 
+        <class>org.socialmusicdiscovery.server.business.model.search.ReleaseSearchRelation</class>
+        <class>org.socialmusicdiscovery.server.business.model.search.RecordingSearchRelation</class>
+        <class>org.socialmusicdiscovery.server.business.model.search.WorkSearchRelation</class>
+        <class>org.socialmusicdiscovery.server.business.model.search.ArtistSearchRelation</class>
+        <class>org.socialmusicdiscovery.server.business.model.search.PersonSearchRelation</class>
+
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <!-- Database provider properties are configured in the code -->

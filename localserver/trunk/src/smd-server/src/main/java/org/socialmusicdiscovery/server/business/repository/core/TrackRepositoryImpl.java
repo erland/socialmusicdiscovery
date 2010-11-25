@@ -1,7 +1,6 @@
 package org.socialmusicdiscovery.server.business.repository.core;
 
 import com.google.inject.Inject;
-import org.socialmusicdiscovery.server.business.model.core.Artist;
 import org.socialmusicdiscovery.server.business.model.core.Track;
 import org.socialmusicdiscovery.server.business.model.core.Work;
 import org.socialmusicdiscovery.server.business.repository.SMDEntityRepositoryImpl;
@@ -11,9 +10,6 @@ import javax.persistence.Query;
 import java.util.Collection;
 
 public class TrackRepositoryImpl extends SMDEntityRepositoryImpl<Track> implements TrackRepository {
-    public TrackRepositoryImpl() {
-    }
-
     @Inject
     public TrackRepositoryImpl(EntityManager em) {
         super(em);
@@ -42,13 +38,8 @@ public class TrackRepositoryImpl extends SMDEntityRepositoryImpl<Track> implemen
     }
 
     public Collection<Track> findByArtistWithRelations(String artistId, Collection<String> mandatoryRelations, Collection<String> optionalRelations) {
-        Query query = entityManager.createQuery(queryStringFor("e", mandatoryRelations, optionalRelations, true) + " JOIN e.recording as r LEFT JOIN r.contributors as c1 LEFT JOIN r.work as w LEFT JOIN w.contributors as c2 WHERE " +
-                " c1.artist=:recordingArtist " +
-                " or c2.artist=:workArtist");
-        Artist artist = new Artist();
-        artist.setId(artistId);
-        query.setParameter("recordingArtist", artist);
-        query.setParameter("workArtist", artist);
+        Query query = entityManager.createQuery(queryStringFor("e", mandatoryRelations, optionalRelations, true) + " JOIN e.recording as r JOIN r.searchRelations as sr WHERE sr.reference=:artist order by e.number,e.name");
+        query.setParameter("artist", artistId);
         return query.getResultList();
     }
 
@@ -58,5 +49,16 @@ public class TrackRepositoryImpl extends SMDEntityRepositoryImpl<Track> implemen
         work.setId(workId);
         query.setParameter("release", work);
         return query.getResultList();
+    }
+
+    @Override
+    public void remove(Track entity) {
+        if(entity.getMedium() != null) {
+            entity.getMedium().getTracks().remove(entity);
+        }
+        if(entity.getRelease() != null) {
+            entity.getRelease().getTracks().remove(entity);
+        }
+        super.remove(entity);
     }
 }

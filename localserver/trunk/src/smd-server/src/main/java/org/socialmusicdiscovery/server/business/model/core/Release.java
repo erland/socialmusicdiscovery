@@ -1,11 +1,13 @@
 package org.socialmusicdiscovery.server.business.model.core;
 
 import org.socialmusicdiscovery.server.business.model.SMDEntity;
+import org.socialmusicdiscovery.server.business.model.search.ReleaseSearchRelation;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import java.util.*;
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -31,10 +33,14 @@ public class Release extends SMDEntity<Release> {
     @JoinTable(name = "release_recording_sessions",
             joinColumns = @JoinColumn(name = "release_id"),
             inverseJoinColumns = @JoinColumn(name = "session_id"))
-    private Set<RecordingSession> recordingSessions;
+    private Set<RecordingSession> recordingSessions = new HashSet<RecordingSession>();
     @OneToMany
     @JoinColumn(name = "release_id")
     private Set<Contributor> contributors = new HashSet<Contributor>();
+
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "id")
+    @XmlTransient
+    private Set<ReleaseSearchRelation> searchRelations;
 
     public Date getDate() {
         return date;
@@ -90,5 +96,13 @@ public class Release extends SMDEntity<Release> {
 
     public void setContributors(Set<Contributor> contributors) {
         this.contributors = contributors;
+    }
+
+    public Set<ReleaseSearchRelation> getSearchRelations() {
+        return searchRelations;
+    }
+
+    public void setSearchRelations(Set<ReleaseSearchRelation> searchRelations) {
+        this.searchRelations = searchRelations;
     }
 }

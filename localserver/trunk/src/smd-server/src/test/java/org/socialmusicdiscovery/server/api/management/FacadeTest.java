@@ -9,11 +9,13 @@ import org.socialmusicdiscovery.server.business.model.core.Artist;
 import org.socialmusicdiscovery.server.business.model.core.Person;
 import org.socialmusicdiscovery.test.BaseTestCase;
 import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
+import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.Collection;
 import java.util.HashMap;
@@ -34,6 +36,11 @@ public class FacadeTest extends BaseTestCase {
         super.tearDown();
     }
 
+    @BeforeMethod
+    public void setUpMethod(Method m) {
+        System.out.println("Executing "+getClass().getSimpleName()+"."+m.getName()+"...");
+    }
+
     @Test
     public void testFacades() throws Exception {
         loadTestData("org.socialmusicdiscovery.server.business.model","The Bodyguard.xml");
@@ -43,7 +50,6 @@ public class FacadeTest extends BaseTestCase {
         Map<String, String> initParams = new HashMap<String, String>();
         initParams.put("com.sun.jersey.config.property.packages", "org.socialmusicdiscovery.server.api.management");
 
-        System.out.println("Starting grizzly...");
         URI uri = UriBuilder.fromUri(HOST+"/").port(PORT).build();
         SelectorThread threadSelector = GrizzlyWebContainerFactory.create(uri, initParams);
 

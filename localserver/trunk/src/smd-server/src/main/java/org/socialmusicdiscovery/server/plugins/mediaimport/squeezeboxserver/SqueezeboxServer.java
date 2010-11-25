@@ -10,7 +10,7 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.socialmusicdiscovery.server.api.mediaimport.MediaImporter;
-import org.socialmusicdiscovery.server.api.mediaimport.MediaImporterCallback;
+import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
 import org.socialmusicdiscovery.server.business.model.GlobalIdentity;
 import org.socialmusicdiscovery.server.business.model.SMDEntityReference;
@@ -117,7 +117,7 @@ public class SqueezeboxServer implements MediaImporter {
     /**
      * @inherit
      */
-    public void execute(MediaImporterCallback progressHandler) {
+    public void execute(ProcessingStatusCallback progressHandler) {
         abort = false;
         TrackListData trackList = null;
         final long CHUNK_SIZE = 20;

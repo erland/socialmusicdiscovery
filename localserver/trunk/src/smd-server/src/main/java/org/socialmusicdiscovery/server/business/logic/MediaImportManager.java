@@ -4,7 +4,9 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import org.socialmusicdiscovery.server.api.management.mediaimport.MediaImportStatus;
 import org.socialmusicdiscovery.server.api.mediaimport.MediaImporter;
-import org.socialmusicdiscovery.server.api.mediaimport.MediaImporterCallback;
+import org.socialmusicdiscovery.server.api.mediaimport.PostProcessor;
+import org.socialmusicdiscovery.server.api.mediaimport.ProcessingModule;
+import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
 
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -18,8 +20,11 @@ public class MediaImportManager {
     /** Available media importer modules */
     private Map<String,MediaImporter> mediaImporters;
 
+    /** Available post processing modules */
+    private Map<String, PostProcessor> postProcessors;
+
     /** Currently executing media importer modules */
-    private Map<String, MediaImporterState> runningModules = new HashMap<String,MediaImporterState>();
+    private Map<String, ProcessState> runningModules = new HashMap<String, ProcessState>();
 
     /** Synchronization object to ensure thread safety */
     private final Object RUNNING_MODULES = new Object();
@@ -27,22 +32,30 @@ public class MediaImportManager {
     /**
      * Representation of the current state of an executing media importer module
      */
-    class MediaImporterState {
-        MediaImporter importer;
+    static class ProcessState {
+        ProcessingModule module;
+        public enum Phase {
+            EXECUTING,
+            POSTPROCESSING,
+        };
+        Phase phase;
+        String currentPostProcessingModule;
         Long started = System.currentTimeMillis();
         String currentDescription;
         Long currentNo;
         Long totalNo;
-        public MediaImporterState(MediaImporter importer) {
-            this.importer = importer;
+        public ProcessState(ProcessingModule module, Phase phase) {
+            this.module = module;
+            this.phase = phase;
             currentDescription = "";
             currentNo = 0L;
             totalNo = 0L;
         }
     }
 
-    public MediaImportManager(Map<String,MediaImporter> mediaImporters) {
+    public MediaImportManager(Map<String,MediaImporter> mediaImporters, Map<String,PostProcessor> postProcessors) {
         this.mediaImporters = mediaImporters;
+        this.postProcessors = postProcessors;
         InjectHelper.injectMembers(this);
     }
 
@@ -53,9 +66,14 @@ public class MediaImportManager {
      */
     public MediaImportStatus getModuleStatus(String module) {
         synchronized (RUNNING_MODULES) {
-            MediaImporterState state = runningModules.get(module);
+            ProcessState state = runningModules.get(module);
             if(state != null) {
-                return new MediaImportStatus(state.importer.getId(),state.currentDescription,state.currentNo,state.totalNo);
+                if(state.phase == ProcessState.Phase.EXECUTING) {
+                    return new MediaImportStatus(state.module.getId(),state.currentDescription,state.currentNo,state.totalNo);
+                }else if(state.phase == ProcessState.Phase.POSTPROCESSING) {
+                    state = runningModules.get(state.currentPostProcessingModule);
+                    return new MediaImportStatus(state.module.getId(),state.currentDescription,state.currentNo,state.totalNo);
+                }
             }
         }
         return null;
@@ -68,8 +86,8 @@ public class MediaImportManager {
     public Collection<MediaImportStatus> getRunningModules() {
         List<MediaImportStatus> status = new ArrayList<MediaImportStatus>();
         synchronized (RUNNING_MODULES) {
-            for (MediaImporterState mediaImporterState : runningModules.values()) {
-                status.add(getModuleStatus(mediaImporterState.importer.getId()));
+            for (ProcessState processState : runningModules.values()) {
+                status.add(getModuleStatus(processState.module.getId()));
             }
         }
         return status;
@@ -85,12 +103,12 @@ public class MediaImportManager {
             return false;
         }
         synchronized (RUNNING_MODULES) {
-            runningModules.put(module, new MediaImporterState(mediaImporters.get(module)));
+            runningModules.put(module, new ProcessState(mediaImporters.get(module), ProcessState.Phase.EXECUTING));
         }
         Future future = executorService.submit(new Runnable() {
             public void run() {
                 try {
-                    mediaImporters.get(module).execute(new MediaImporterCallback() {
+                    mediaImporters.get(module).execute(new ProcessingStatusCallback() {
                         public void progress(String module, String currentDescription, Long currentNo, Long totalNo) {
                             System.out.println(module+" ("+currentNo+" of "+totalNo+"): "+currentDescription);
                             synchronized (RUNNING_MODULES) {
@@ -108,15 +126,60 @@ public class MediaImportManager {
                         }
 
                         public void aborted(String module) {
+                            boolean postProcessing = false;
+                            ProcessState state = null;
                             synchronized (RUNNING_MODULES) {
+                                state = runningModules.get(module);
+                                if(!(state.module instanceof PostProcessor) && postProcessors.size()>0) {
+                                    System.out.println(module+" aborted, started to execute post processors after "+((System.currentTimeMillis()-runningModules.get(module).started)/1000)+" seconds...");
+                                    state.phase = ProcessState.Phase.POSTPROCESSING;
+                                    postProcessing = true;
+                                }else if(postProcessors.size()==0) {
+                                    System.out.println(module+" aborted after "+((System.currentTimeMillis()-runningModules.get(module).started)/1000)+" seconds");
+                                }
+                            }
+                            if(postProcessing) {
+                                for (PostProcessor postProcessor : postProcessors.values()) {
+                                    synchronized (RUNNING_MODULES) {
+                                        state.currentPostProcessingModule = postProcessor.getId();
+                                        runningModules.put(postProcessor.getId(), new ProcessState(postProcessor,ProcessState.Phase.EXECUTING));
+                                    }
+                                    postProcessor.execute(this);
+                                }
                                 System.out.println(module+" aborted after "+((System.currentTimeMillis()-runningModules.get(module).started)/1000)+" seconds");
+                            }
+
+                            synchronized (RUNNING_MODULES) {
                                 runningModules.remove(module);
                             }
                         }
 
                         public void finished(String module) {
+                            boolean postProcessing = false;
+                            ProcessState state = null;
                             synchronized (RUNNING_MODULES) {
-                                System.out.println(module+" finished after "+((System.currentTimeMillis()-runningModules.get(module).started)/1000)+" seconds");
+                                state = runningModules.get(module);
+                                if(!(state.module instanceof PostProcessor) && postProcessors.size()>0) {
+                                    System.out.println(module+" finished, started to execute post processors after "+((System.currentTimeMillis()-state.started)/1000)+" seconds...");
+                                    state.phase = ProcessState.Phase.POSTPROCESSING;
+                                    postProcessing = true;
+                                }else if(postProcessors.size()==0) {
+                                    System.out.println(module+" finished after "+((System.currentTimeMillis()-state.started)/1000)+" seconds");
+                                }
+                            }
+
+                            if(postProcessing) {
+                                for (PostProcessor postProcessor : postProcessors.values()) {
+                                    synchronized (RUNNING_MODULES) {
+                                        state.currentPostProcessingModule = postProcessor.getId();
+                                        runningModules.put(postProcessor.getId(), new ProcessState(postProcessor,ProcessState.Phase.EXECUTING));
+                                    }
+                                    postProcessor.execute(this);
+                                }
+                                System.out.println(module+" finished after "+((System.currentTimeMillis()-state.started)/1000)+" seconds");
+                            }
+
+                            synchronized (RUNNING_MODULES) {
                                 runningModules.remove(module);
                             }
                         }
@@ -140,7 +203,11 @@ public class MediaImportManager {
         }
         synchronized (RUNNING_MODULES) {
             if(runningModules.containsKey(module)) {
-                runningModules.get(module).importer.abort();
+                if(runningModules.get(module).phase == ProcessState.Phase.EXECUTING) {
+                    runningModules.get(module).module.abort();
+                }else if(runningModules.get(module).phase == ProcessState.Phase.POSTPROCESSING) {
+                    runningModules.get(runningModules.get(module).currentPostProcessingModule).module.abort();
+                }
             }
         }
         return true;
