@@ -68,7 +68,7 @@ public class ReleaseUI extends AbstractComposite<Release> {
 			return track.getNumber();
 		}
 	}
-	private class MyMediumNumberLabelProvider extends MyAbstractTrackLabelProvider  {
+	private class MyTrackMediumNumberLabelProvider extends MyAbstractTrackLabelProvider  {
 		@Override
 		protected Object getCellValue(Track track) {
 			List<Medium> media = release.getMediums();
@@ -96,7 +96,7 @@ public class ReleaseUI extends AbstractComposite<Release> {
 	}
 
 
-	private final class MyTitleLabelProvider extends MyAbstractTrackLabelProvider {
+	private final class MyTrackTitleLabelProvider extends MyAbstractTrackLabelProvider {
 		@Override
 		protected Object getCellValue(Track track) {
 			String name = null;
@@ -112,9 +112,9 @@ public class ReleaseUI extends AbstractComposite<Release> {
 
 	}
 
-	private class MyContributorLabelProvider extends MyAbstractTrackLabelProvider {
+	private class MyTrackContributorLabelProvider extends MyAbstractTrackLabelProvider {
 		private final String contributionType;
-		private MyContributorLabelProvider(String contributionType) {
+		private MyTrackContributorLabelProvider(String contributionType) {
 			super();
 			this.contributionType = contributionType;
 		}
@@ -230,7 +230,7 @@ public class ReleaseUI extends AbstractComposite<Release> {
 		colMediumNbr.setWidth(100);
 		colMediumNbr.setText("Medium#");
 		gvcMediumNbr = new GridViewerColumn(gridViewerTracks, colMediumNbr);
-		gvcMediumNbr.setLabelProvider(new MyMediumNumberLabelProvider());
+		gvcMediumNbr.setLabelProvider(new MyTrackMediumNumberLabelProvider());
 		
 		colTrackNumber = new GridColumn(groupNumbers, SWT.RIGHT);
 		colTrackNumber.setMoveable(true);
@@ -240,7 +240,7 @@ public class ReleaseUI extends AbstractComposite<Release> {
 		gvcTrackNumber.setLabelProvider(new MyTrackNumberLabelProvider());
 		
 		gvcTitle = new GridViewerColumn(gridViewerTracks, SWT.NONE);
-		gvcTitle.setLabelProvider(new MyTitleLabelProvider());
+		gvcTitle.setLabelProvider(new MyTrackTitleLabelProvider());
 		colTitle = gvcTitle.getColumn();
 		colTitle.setMoveable(true);
 		colTitle.setWidth(300);
@@ -250,7 +250,7 @@ public class ReleaseUI extends AbstractComposite<Release> {
 		groupContributors.setText("Contributors");
 		colPerformer = new GridColumn(groupContributors, SWT.NONE);
 		gvcPerformer = new GridViewerColumn(gridViewerTracks, colPerformer);
-		gvcPerformer.setLabelProvider(new MyContributorLabelProvider(CONTRIBUTOR_TYPE_PERFORMER));
+		gvcPerformer.setLabelProvider(new MyTrackContributorLabelProvider(CONTRIBUTOR_TYPE_PERFORMER));
 		colPerformer = gvcPerformer.getColumn();
 		colPerformer.setMoveable(true);
 		colPerformer.setWidth(100);
@@ -261,14 +261,14 @@ public class ReleaseUI extends AbstractComposite<Release> {
 		colComposer.setMoveable(true);
 		colComposer.setWidth(100);
 		colComposer.setText("Composer(s)");
-		gvcComposer.setLabelProvider(new MyContributorLabelProvider(CONTRIBUTOR_TYPE_COMPOSER));
+		gvcComposer.setLabelProvider(new MyTrackContributorLabelProvider(CONTRIBUTOR_TYPE_COMPOSER));
 		
 		colConductor = new GridColumn(groupContributors, SWT.NONE);
 		gvcConductor = new GridViewerColumn(gridViewerTracks, colConductor);
 		colConductor.setMoveable(true);
 		colConductor.setWidth(100);
 		colConductor.setText("Conductor");
-		gvcConductor.setLabelProvider(new MyContributorLabelProvider(CONTRIBUTOR_TYPE_CONDUCTOR));
+		gvcConductor.setLabelProvider(new MyTrackContributorLabelProvider(CONTRIBUTOR_TYPE_CONDUCTOR));
 		
 		
 		sectionAlbumData = formToolkit.createSection(scrldfrmRelease.getBody(), Section.TWISTIE | Section.TITLE_BAR);
