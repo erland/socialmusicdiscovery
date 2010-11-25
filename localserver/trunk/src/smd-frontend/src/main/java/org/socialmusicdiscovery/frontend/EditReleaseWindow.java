@@ -63,11 +63,11 @@ public class EditReleaseWindow extends Window implements Bindable {
     PushButton searchPerformersButton;
 
     public class TrackData {
-        public Integer getNumber() {
+        public String getNumber() {
             return number;
         }
 
-        public void setNumber(Integer number) {
+        public void setNumber(String number) {
             this.number = number;
         }
 
@@ -111,7 +111,7 @@ public class EditReleaseWindow extends Window implements Bindable {
             this.track = track;
         }
 
-        private Integer number;
+        private String number;
         private String title;
         private String composers;
         private String conductors;
@@ -292,12 +292,29 @@ public class EditReleaseWindow extends Window implements Bindable {
         trackData.clear();
         for (Track track : tracks) {
             TrackData trackData = new TrackData();
+            if(track.getMedium() != null) {
+                if(track.getMedium().getName() != null) {
+                    trackData.number = track.getMedium().getName();
+                }else if(track.getMedium().getNumber() != null) {
+                    trackData.number = track.getMedium().getNumber().toString();
+                }
+            }
             trackData.setTrack(track);
-            trackData.number = track.getNumber();
+            if(track.getNumber() != null) {
+                if(trackData.number != null) {
+                    trackData.number = trackData.number+"-"+track.getNumber();
+                }else {
+                    trackData.number = track.getNumber().toString();
+                }
+            }
             if (track.getRecording().getName() != null) {
                 trackData.title = track.getRecording().getName();
             } else if (track.getRecording().getWork() != null) {
-                trackData.title = track.getRecording().getWork().getName();
+                if(track.getRecording().getWork().getParent() != null) {
+                    trackData.title = track.getRecording().getWork().getParent().getName()+": "+track.getRecording().getWork().getName();
+                }else {
+                    trackData.title = track.getRecording().getWork().getName();
+                }
             }
             Set<Contributor> contributorSet = new HashSet<Contributor>(track.getRecording().getContributors());
             if (track.getRecording().getWork() != null) {
