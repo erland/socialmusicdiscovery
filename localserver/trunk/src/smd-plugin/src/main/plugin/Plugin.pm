@@ -108,11 +108,11 @@ sub initPlugin
 	    my $database = "-Dorg.socialmusicdiscovery.server.database=mysql-sbs";
 	    my ($driver,$source,$username,$password) = Slim::Schema->sourceInformation;
 	    if($driver ne 'mysql') {
-	        $log->info("Using derby database for smd-server because it isn't supporting SQLite");
-	        $database = "-Dorg.socialmusicdiscovery.server.database=derby -Dorg.socialmusicdiscovery.server.database.directory=".catdir(Slim::Utils::OSDetect::dirsFor('cache'));
+	        $log->info("Using default database for smd-server because it isn't supporting SQLite");
+	        $database = "-Dorg.socialmusicdiscovery.server.database.directory=".catdir(Slim::Utils::OSDetect::dirsFor('cache'));
 	    }elsif($source !~ /port=9092/) {
-	        $log->info("Using derby database for smd-server because an external MySQL server is used and we can't ensure we have permission to create a database");
-	        $database = "-Dorg.socialmusicdiscovery.server.database=derby -Dorg.socialmusicdiscovery.server.database.directory=".catdir(Slim::Utils::OSDetect::dirsFor('cache'));
+	        $log->info("Using default database for smd-server because an external MySQL server is used and we can't ensure we have permission to create a database");
+	        $database = "-Dorg.socialmusicdiscovery.server.database.directory=".catdir(Slim::Utils::OSDetect::dirsFor('cache'));
 	    }else {
 	        $log->info("Using the bundled MySQL database for smd-server, a separate smd schema is configured");
 	    }
