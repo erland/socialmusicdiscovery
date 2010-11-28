@@ -26,6 +26,8 @@ Optional:
 
 These instructions are preliminary and temporary for the prototype.
  
-If/when we decide to build something more lasting, we will need to download and check in a "target platform" with the RCP base framework and all desired plug-ins. But for now, everyone needs to run the the same version of the Eclipse IDE, and install all the required features into the IDE. I will also compile some better instructions on the wiki if/when we get seriously going with this.      
+Since we don't have a checked-in "target platform", everyone needs to run the the same version of the Eclipse IDE, and install all the required features directly into the IDE. 
+Some general notes and design guidelines are available on the wiki: 
+http://code.google.com/p/socialmusicdiscovery/wiki/PrototypeRCPClient      
 
   
