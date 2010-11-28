@@ -36,9 +36,9 @@ Some brief and preliminary thoughts on the design principles for the RCP client.
   
 
 = External Links =
- * SWT Designer (part of WindowBuilder PRO)
+ * SWT Designer (part of !WindowBuilder PRO)
   * http://code.google.com/javadevtools/wbpro/installation/updatesite_3.6.html
-  * (update site: http://dl.google.com/eclipse/inst/d2wbpro/latest/3.6) - you probably need to ignore one security warning.
+  * update site: http://dl.google.com/eclipse/inst/d2wbpro/latest/3.6 - you probably need to ignore one security warning.
 
  * Eclipse snippets, examples and tutorials:
   * RCP:
