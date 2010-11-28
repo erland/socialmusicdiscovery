@@ -3,7 +3,7 @@ Some VERY brief notes on how to setup and run the RCP prototype client.
 To Build and Run: 
 1. Install Eclipse 3.6 for RCP developers: http://www.eclipse.org/downloads/packages/eclipse-rcp-and-rap-developers/heliossr1
 2. Check out and build SMD code as described elsewhere
-3. Launch client: right-click 'smd-rcp.product.launch' - 'Run As ...' - 'smd-rcp.product'
+3. Launch client: right-click 'smd-rcp.product.launch (<your OS>)' - 'Run As ...' - 'smd-rcp.product'
 
 To work on UI: 
 - Install SWT Designer (part of WindowBuilder PRO): http://code.google.com/javadevtools/wbpro/installation/updatesite_3.6.html
