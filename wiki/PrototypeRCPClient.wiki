@@ -7,6 +7,19 @@ A first RCP client is available in the prototype directory, the source can be fo
 Brief instructions on what you need to do to get it running is available in the Readme-file:
   * http://socialmusicdiscovery.googlecode.com/svn/prototypes/ClientRCP/ReadMe.txt
 
+= "Roadmap" =
+Well, not really, but a few words on what I think needs to be done to bring this thing out of the prototype folder and let us start widening scope and honing details:
+  # Basic menu, toolbar and popup menus declared thru extension points (not in code)
+  # A wrapping layer to make SMD entities observable and "self-inflating"
+  # A decent navigator (probably PShelf)
+  # Restructured plug-ins (as outlined below)
+  # A head-less builder (e.g. Maven or Buckminster)
+  # A bootstrap to deploy the basic client (e.g. JWS)
+  # An update site where we can upload new versions of the plug-ins
+  # Enrich the core editors (Release and Artist)
+
+Effective time, this would all take a couple of weeks or so. Working odd hours around midnight ... I'm not so sure :-(
+
 = Design Guidelines =
 Some brief and preliminary thoughts on the design principles for the RCP client. Comments expected and welcome!
 
