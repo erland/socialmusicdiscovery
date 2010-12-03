@@ -107,8 +107,8 @@ public class H2ProviderModule extends AbstractModule {
         String dir = "";
         if (System.getProperty("org.socialmusicdiscovery.server.database.directory") != null) {
             dir = System.getProperty("org.socialmusicdiscovery.server.database.directory");
-            if (!dir.endsWith(File.pathSeparator)) {
-                dir += File.pathSeparator;
+            if (!dir.endsWith(File.separator)) {
+                dir += File.separator;
             }
         }
         return dir + "smd-database";
