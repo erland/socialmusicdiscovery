@@ -261,6 +261,8 @@ public class SqueezeboxServer implements MediaImporter {
                         // Create a Work entity based on the WORK tag
                         work = new Work();
                         work.setName(workName);
+                    } else {
+                        work = existingWorks.iterator().next();
                     }
                 } else {
                     // Create a Work entity based on the TITLE tag
@@ -426,7 +428,7 @@ public class SqueezeboxServer implements MediaImporter {
                             track.setNumber(Integer.parseInt(trackNum));
                         } catch (NumberFormatException e) {
                             // Ignore the track number if we can't parse it
-                            System.err.println("Unable to parse track number: "+tags.get(TagData.TRACKNUM).iterator().next());
+                            System.err.println("Unable to parse track number: " + tags.get(TagData.TRACKNUM).iterator().next());
                         }
                     }
                     track.getPlayableElements().addAll(playableElements);
@@ -454,7 +456,7 @@ public class SqueezeboxServer implements MediaImporter {
                         List<Medium> mediums = release.getMediums();
                         Medium medium = null;
                         for (Medium m : mediums) {
-                            if(m.getNumber()!=null) {
+                            if (m.getNumber() != null) {
                                 try {
                                     if (m.getNumber().equals(Integer.parseInt(discNo))) {
                                         medium = m;
@@ -463,8 +465,8 @@ public class SqueezeboxServer implements MediaImporter {
                                     // Ignore this and try with name instead
                                 }
                             }
-                            if(m.getName() != null) {
-                                if(m.getName().equals(discNo)) {
+                            if (m.getName() != null) {
+                                if (m.getName().equals(discNo)) {
                                     medium = m;
                                 }
                             }
