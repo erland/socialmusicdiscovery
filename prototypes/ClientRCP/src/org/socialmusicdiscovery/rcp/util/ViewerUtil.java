@@ -1,15 +1,22 @@
-package org.socialmusicdiscovery.rcp.editors.release;
+package org.socialmusicdiscovery.rcp.util;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.action.GroupMarker;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchPartSite;
 import org.socialmusicdiscovery.server.business.model.SMDEntity;
 
 public class ViewerUtil {
@@ -77,4 +84,19 @@ public class ViewerUtil {
 		}
 		return (SMDEntity<?>[]) result.toArray(new SMDEntity<?>[result.size()]);
 	}
+	
+	public static void hookContextMenu(IWorkbenchPart part, Viewer viewer) {
+		IWorkbenchPartSite site = part.getSite();
+		Control control = viewer.getControl();
+		
+		MenuManager menuManager = new MenuManager();
+		menuManager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+		
+		Menu popup = menuManager.createContextMenu(control);
+		site.registerContextMenu(menuManager, viewer);	// let other plug-ins contribute
+		site.setSelectionProvider(viewer); 				// let manifest define selection-based expressions
+		control.setMenu(popup);
+	}
+
+	
 }

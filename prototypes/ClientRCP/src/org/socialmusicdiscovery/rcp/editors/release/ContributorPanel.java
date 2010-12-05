@@ -17,6 +17,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.socialmusicdiscovery.rcp.error.NotYetImplementedException;
+import org.socialmusicdiscovery.rcp.util.ViewerUtil;
 import org.socialmusicdiscovery.rcp.util.WorkbenchUtil;
 import org.socialmusicdiscovery.rcp.views.util.OpenListener;
 import org.socialmusicdiscovery.server.business.model.SMDEntity;
@@ -78,6 +79,11 @@ public class ContributorPanel extends Composite {
 		gridColumn.setWidth(400);
 		gridColumn.setText("Artist");
 		
+		hookMenu(grid);
+		hookListeners();
+	}
+	public void hookMenu(Grid grid) {
+//		ViewerUtil.hookContextMenu(part, gridTableViewer);
 		Menu menu = new Menu(grid);
 		grid.setMenu(menu);
 		
@@ -90,8 +96,6 @@ public class ContributorPanel extends Composite {
 		itemDelete = new MenuItem(menu, SWT.NONE);
 		itemDelete.setSelection(true);
 		itemDelete.setText("Delete");
-
-		hookListeners();
 	}
 	private void hookListeners() {
 		// default edit
