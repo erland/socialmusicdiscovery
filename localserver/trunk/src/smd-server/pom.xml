@@ -248,4 +248,36 @@
             </plugin>
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <!--
+                Usage:
+                1. Download and unpack a releases dump from http://www.discogs.com/data/
+                2. To create a database and fill it with 30000 tracks run:
+                   mvn test -Pdiscogsdata -Dorg.socialmusicdiscovery.server.sampledata.nooftracks=30000 -Dorg.socialmusicdiscovery.server.sampledata.discogsfile=/tmp/discogs_20101004_releases.xml -Dorg.socialmusicdiscovery.server.database=h2
+            -->
+            <id>discogsdata</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-surefire-plugin</artifactId>
+                            <version>2.6</version>
+                            <configuration>
+                                <!-- We need to put something here to make it override the manual group exclusion -->
+                                <excludedGroups>none</excludedGroups>
+                                <includes>
+                                    <include>**/DiscogsLargeDatabaseSampleCreator.java</include>
+                                </includes>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+    </profiles>
 </project>
