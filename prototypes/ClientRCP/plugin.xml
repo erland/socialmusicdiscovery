@@ -155,11 +155,7 @@
                   name="sep1"
                   visible="true">
             </separator>
-            <dynamic
-                  class="org.eclipse.ui.examples.contributions.editor.DynamicEditorList"
-                  id="org.eclipse.ui.tutorials.commands.dynamicEditorList">
-            </dynamic>
-         </menu>
+          </menu>
          <menu
                id="help"
                label="%menu.help.label"
