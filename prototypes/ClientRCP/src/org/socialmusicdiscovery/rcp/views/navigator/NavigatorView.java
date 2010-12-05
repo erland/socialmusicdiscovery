@@ -3,8 +3,6 @@ package org.socialmusicdiscovery.rcp.views.navigator;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
@@ -41,8 +39,6 @@ public class NavigatorView extends ViewPart {
 		ui = new NavigatorUI(parent, SWT.NONE);
 		hook(ui);
 		createActions();
-		initializeToolBar();
-		initializeMenu();
 		ui.setInput(Activator.getDefault().getDataSource());
 	}
 
@@ -55,20 +51,6 @@ public class NavigatorView extends ViewPart {
 	 */
 	private void createActions() {
 		// Create the actions
-	}
-
-	/**
-	 * Initialize the toolbar.
-	 */
-	private void initializeToolBar() {
-		IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
-	}
-
-	/**
-	 * Initialize the menu.
-	 */
-	private void initializeMenu() {
-		IMenuManager menuManager = getViewSite().getActionBars().getMenuManager();
 	}
 
 	@Override
