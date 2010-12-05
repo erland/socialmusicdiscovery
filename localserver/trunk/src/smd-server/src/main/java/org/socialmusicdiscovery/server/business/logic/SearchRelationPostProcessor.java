@@ -6,10 +6,16 @@ import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
 import org.socialmusicdiscovery.server.business.model.SMDEntity;
 import org.socialmusicdiscovery.server.business.model.core.*;
 import org.socialmusicdiscovery.server.business.model.search.*;
+import org.socialmusicdiscovery.server.business.repository.core.ContributorRepository;
+import org.socialmusicdiscovery.server.business.repository.core.RecordingSessionRepository;
 import org.socialmusicdiscovery.server.business.repository.core.ReleaseRepository;
+import org.socialmusicdiscovery.server.business.repository.core.TrackRepository;
 
 import javax.persistence.EntityManager;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class SearchRelationPostProcessor implements PostProcessor {
     @Inject
@@ -17,6 +23,15 @@ public class SearchRelationPostProcessor implements PostProcessor {
 
     @Inject
     private ReleaseRepository releaseRepository;
+
+    @Inject
+    private ContributorRepository contributorRepository;
+
+    @Inject
+    private TrackRepository trackRepository;
+
+    @Inject
+    private RecordingSessionRepository recordingSessionRepository;
 
     private boolean abort = false;
 
@@ -46,12 +61,17 @@ public class SearchRelationPostProcessor implements PostProcessor {
         entityManager.clear();
         entityManager.getTransaction().begin();
         Collection<Release> releases = releaseRepository.findAllWithRelations(null, Arrays.asList("label"));
+        entityManager.getTransaction().commit();
+        entityManager.clear();
+
         long i=0;
         for (Release release : releases) {
-            progressHandler.progress(getId(),release.getName(), i+1, (long) releases.size());
-            Set<Contributor> releaseContributors = release.getContributors();
+            entityManager.getTransaction().begin();
+            i++;
+            progressHandler.progress(getId(),release.getName(), i, (long) releases.size());
+            Collection<Contributor> releaseContributors = contributorRepository.findByReleaseWithRelations(release.getId(),Arrays.asList("artist"),null);
             Set<ReleaseSearchRelation> releaseSearchRelations = new HashSet<ReleaseSearchRelation>();
-            List<Track> tracks = release.getTracks();
+            Collection<Track> tracks = trackRepository.findByReleaseWithRelations(release.getId(),Arrays.asList("recording"), null);
             Set<Contributor> aggregatedContributors = new HashSet<Contributor>(releaseContributors);
             Set<Recording> aggregatedRecordings = new HashSet<Recording>();
             Set<Work> aggregatedWorks = new HashSet<Work>();
@@ -59,14 +79,15 @@ public class SearchRelationPostProcessor implements PostProcessor {
             for (Track track : tracks) {
                 Recording recording = track.getRecording();
                 handledRecordings.add(recording);
-                addRecording(aggregatedContributors, aggregatedRecordings, aggregatedWorks,release, recording, track);
+                addRecording(aggregatedContributors, aggregatedRecordings, aggregatedWorks,releaseContributors, release, recording, track);
             }
 
-            for (RecordingSession session : release.getRecordingSessions()) {
+            Collection<RecordingSession> recordingSessions = recordingSessionRepository.findByReleaseWithRelations(release.getId(), Arrays.asList("recordings"),null);
+            for (RecordingSession session : recordingSessions) {
                 for (Recording recording : session.getRecordings()) {
                     // We only need to handle this if we haven't already taken care of this recording
                     if(!handledRecordings.contains(recording)) {
-                        addRecording(aggregatedContributors, aggregatedRecordings, aggregatedWorks,release, recording, null);
+                        addRecording(aggregatedContributors, aggregatedRecordings, aggregatedWorks,releaseContributors, release, recording, null);
                     }
                 }
             }
@@ -85,17 +106,12 @@ public class SearchRelationPostProcessor implements PostProcessor {
                 entityManager.persist(relation);
             }
 
-            // Let's do a commit every 20'th release
-            i++;
-            if(i%10 == 0 || abort) {
-                entityManager.getTransaction().commit();
-                entityManager.getTransaction().begin();
-            }
+            entityManager.getTransaction().commit();
+            entityManager.clear();
             if(abort) {
                 break;
             }
         }
-        entityManager.getTransaction().commit();
         if(abort) {
             progressHandler.aborted(getId());
         }else {
@@ -103,17 +119,17 @@ public class SearchRelationPostProcessor implements PostProcessor {
         }
     }
 
-    private void addRecording(Set<Contributor> aggregatedContributors, Set<Recording> aggregatedRecordings, Set<Work> aggregatedWorks, Release release, Recording recording, Track track) {
+    private void addRecording(Set<Contributor> aggregatedContributors, Set<Recording> aggregatedRecordings, Set<Work> aggregatedWorks, Collection<Contributor> releaseContributors, Release release, Recording recording, Track track) {
         // Get all contributors for a recording session which this recording is part of
-        Set<Contributor> releaseContributors = release.getContributors();
         Set<Contributor> sessionContributors = new HashSet<Contributor>();
         Set<RecordingSession> recordingSessions = new HashSet<RecordingSession>();
-        for (RecordingSession session : release.getRecordingSessions()) {
-            if(session.getRecordings().contains(recording)) {
-                sessionContributors.addAll(session.getContributors());
-                recordingSessions.add(session);
-            }
+
+        RecordingSession session = recording.getRecordingSession();
+        if(session != null) {
+            sessionContributors.addAll(session.getContributors());
+            recordingSessions.add(session);
         }
+
         Set<RecordingSearchRelation> recordingSearchRelations = new HashSet<RecordingSearchRelation>();
         Set<Contributor> recordingContributors = recording.getContributors();
         aggregatedContributors.addAll(recordingContributors);

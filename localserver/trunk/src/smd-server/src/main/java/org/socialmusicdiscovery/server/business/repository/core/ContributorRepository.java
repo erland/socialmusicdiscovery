@@ -9,4 +9,5 @@ import java.util.Collection;
 @ImplementedBy(ContributorRepositoryImpl.class)
 public interface ContributorRepository extends SMDEntityRepository<Contributor> {
     Collection<Contributor> findByArtistWithRelations(String artistId, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
+    Collection<Contributor> findByReleaseWithRelations(String releaseId, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
 }

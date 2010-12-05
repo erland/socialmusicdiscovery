@@ -29,6 +29,11 @@ public class Recording extends SMDEntity<Recording> {
     @JoinColumn(name="work_id")
     private Work work;
 
+    @ManyToOne
+    @JoinColumn(name="session_id")
+    @XmlTransient
+    private RecordingSession recordingSession;
+
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "id")
     @XmlTransient
     private Set<RecordingSearchRelation> searchRelations;
@@ -79,5 +84,13 @@ public class Recording extends SMDEntity<Recording> {
 
     public void setSearchRelations(Set<RecordingSearchRelation> searchRelations) {
         this.searchRelations = searchRelations;
+    }
+
+    public RecordingSession getRecordingSession() {
+        return recordingSession;
+    }
+
+    public void setRecordingSession(RecordingSession recordingSession) {
+        this.recordingSession = recordingSession;
     }
 }
