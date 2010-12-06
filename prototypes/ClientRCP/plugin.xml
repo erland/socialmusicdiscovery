@@ -138,6 +138,23 @@
                   style="push">
             </command>
          </menu>
+         <menu
+               id="server"
+               label="%menu.server.label"
+               mnemonic="%menu.server.mnemonic">
+            <command
+                  commandId="org.socialmusicdiscovery.rcp.commands.LoadDataSource"
+                  label="%command.server.reload.label"
+                  mnemonic="%command.server.reload.mnemonic"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.socialmusicdiscovery.rcp.commands.LaunchServer"
+                  label="%command.server.launch.label"
+                  mnemonic="%command.server.launch.mnemonic"
+                  style="push">
+            </command>
+         </menu>
          <separator
                name="additions"
                visible="false">
@@ -147,19 +164,33 @@
                label="%menu.window.label"
                mnemonic="%menu.window.mnemonic">
             <command
-                  commandId="org.eclipse.ui.window.newWindow"
-                  mnemonic="%command.newWindow.mnemonic"
+                  commandId="org.eclipse.ui.window.preferences"
+                  mnemonic="%command.preferences.mnemonic"
                   style="push">
             </command>
             <separator
                   name="sep1"
                   visible="true">
             </separator>
+            <command
+                  commandId="org.eclipse.ui.window.newWindow"
+                  mnemonic="%command.newWindow.mnemonic"
+                  style="push">
+            </command>
           </menu>
          <menu
                id="help"
                label="%menu.help.label"
                mnemonic="%menu.help.mnemonic">
+            <command
+                  commandId="org.eclipse.ui.help.quickStartAction"
+                  mnemonic="%command.introAction.mnemonic"
+                  style="push">
+            </command>
+            <separator
+                  name="separator"
+                  visible="true">
+            </separator>
             <command
                   commandId="org.eclipse.ui.help.aboutAction"
                   mnemonic="%command.aboutAction.mnemonic"
@@ -167,6 +198,22 @@
             </command>
          </menu>
       </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.socialmusicdiscovery.rcp.commands.LoadDataSource"
+            id="org.socialmusicdiscovery.rcp.commands.LoadDataSource"
+            name="(Re)Load Data Source">
+      </command>
+      <command
+            defaultHandler="org.socialmusicdiscovery.rcp.commands.LaunchLocalServer"
+            id="org.socialmusicdiscovery.rcp.commands.LaunchServer"
+            name="Launch Server">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
    </extension>
 
 </plugin>

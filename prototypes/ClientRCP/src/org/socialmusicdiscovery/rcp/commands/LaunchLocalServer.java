@@ -1,17 +1,19 @@
-package org.socialmusicdiscovery.rcp.actions;
+package org.socialmusicdiscovery.rcp.commands;
 
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.socialmusicdiscovery.rcp.Activator;
 import org.socialmusicdiscovery.rcp.error.NotYetImplementedException;
 import org.socialmusicdiscovery.rcp.prefs.PreferenceConstants;
 
-public class LaunchLocalServerAction extends Action implements IWorkbenchAction  {
+public class LaunchLocalServer extends AbstractHandler  {
+	public static final String COMMAND_ID = LaunchLocalServer.class.getName();	
 	private class MyJob extends Job {
 
 		private static final String DB_KEY = "org.socialmusicdiscovery.server.database";
@@ -52,24 +54,6 @@ public class LaunchLocalServerAction extends Action implements IWorkbenchAction 
 		}
 	}
 
-	public LaunchLocalServerAction() {
-		super("&Launch server");
-		setId(getClass().getName());
-	}
-
-	@Override
-	public void dispose() {
-		// no-op
-	}
-
-	@Override
-	public void run() {
-		Job job = new MyJob(getDB()); 
-//        IWorkbench workbench = PlatformUI.getWorkbench();
-//		workbench.getProgressService().showInDialog(workbench.getDisplay().getActiveShell(), job); 
-
-		job.schedule();
-	}
 
 //	private String getCommand() {
 //		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
@@ -82,6 +66,16 @@ public class LaunchLocalServerAction extends Action implements IWorkbenchAction 
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 		String value = store.getString(PreferenceConstants.P_LOCALSERVER_DB);
 		return value;
+	}
+
+	@Override
+	public Object execute(ExecutionEvent event) throws ExecutionException {
+		Job job = new MyJob(getDB()); 
+//      IWorkbench workbench = PlatformUI.getWorkbench();
+//		workbench.getProgressService().showInDialog(workbench.getDisplay().getActiveShell(), job); 
+
+		job.schedule();
+		return null;
 	}
 
 }
