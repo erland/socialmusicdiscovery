@@ -14,7 +14,7 @@
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            name="RCP Main Perspective"
+            name="%perspective.name"
             class="org.socialmusicdiscovery.rcp.Perspective"
             id="org.socialmusicdiscovery.rcp.Perspective">
       </perspective>
@@ -24,7 +24,7 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="smd-rcp.application"
-            name="SMD Rich Client">
+            name="%product.name">
          <property
                name="windowImages"
                value="icons/alt_window_16.gif,icons/alt_window_32.gif">
@@ -69,7 +69,7 @@
       <view
             class="org.socialmusicdiscovery.rcp.views.navigator.NavigatorView"
             id="org.socialmusicdiscovery.rcp.views.NavigatorView"
-            name="Navigator">
+            name="%view.navigatorname">
       </view>
    </extension>
    <extension
@@ -78,35 +78,35 @@
             class="org.socialmusicdiscovery.rcp.editors.artist.ArtistEditor"
             default="false"
             id="org.socialmusicdiscovery.rcp.editors.artist.ArtistEditor"
-            name="Artist Editor">
+            name="%editor.artist.name">
       </editor>
       <editor
             class="org.socialmusicdiscovery.rcp.editors.release.ReleaseEditor"
             default="false"
             id="org.socialmusicdiscovery.rcp.editors.release.ReleaseEditor"
-            name="Release Editor">
+            name="%editor.release.name">
       </editor>
    </extension>
    <extension
          id="org.socialmusicdiscovery.rcp.prefs"
-         name="SMD Preferences"
+         name="%preferences.name"
          point="org.eclipse.ui.preferencePages">
       <page
             category="org.socialmusicdiscovery.rcp.prefs.Main"
             class="org.socialmusicdiscovery.rcp.prefs.ServerConnection"
             id="org.socialmusicdiscovery.rcp.prefs.ServerConnection"
-            name="Server Connection">
+            name="%preferences.server.connection.name">
       </page>
       <page
             category="org.socialmusicdiscovery.rcp.prefs.Main"
             class="org.socialmusicdiscovery.rcp.prefs.LocalServer"
             id="org.socialmusicdiscovery.rcp.prefs.LocalServer"
-            name="Local Server">
+            name="%preferences.server.local.name">
       </page>
       <page
             class="org.socialmusicdiscovery.rcp.prefs.Main"
             id="org.socialmusicdiscovery.rcp.prefs.Main"
-            name="SMD (Social Music Discovery)">
+            name="%preferences.main.name">
       </page>
    </extension>
    <extension
@@ -126,6 +126,12 @@
             <command
                   commandId="org.eclipse.ui.file.refresh"
                   mnemonic="%command.refresh.mnemonic"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.socialmusicdiscovery.rcp.commands.OpenEntityEditor"
+                  label="%menu.command.edit.label"
+                  mnemonic="%menu.command.edit.mnemonic"
                   style="push">
             </command>
             <separator
@@ -198,6 +204,16 @@
             </command>
          </menu>
       </menuContribution>
+      <menuContribution
+            allPopups="true"
+            locationURI="popup:org.eclipse.ui.popup.any">
+         <command
+               commandId="org.socialmusicdiscovery.rcp.commands.OpenEntityEditor"
+               label="%popup.command.edit.label"
+               mnemonic="%popup.command.edit.mnemonic"
+               style="push">
+         </command>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -209,11 +225,26 @@
       <command
             defaultHandler="org.socialmusicdiscovery.rcp.commands.LaunchLocalServer"
             id="org.socialmusicdiscovery.rcp.commands.LaunchServer"
-            name="Launch Server">
+   			name="Launch Server">
+      </command>
+      <command
+            id="org.socialmusicdiscovery.rcp.commands.OpenEntityEditor"
+            name="Edit">
       </command>
    </extension>
    <extension
-         point="org.eclipse.ui.handlers">
+          point="org.eclipse.ui.handlers">
+      <handler
+            class="org.socialmusicdiscovery.rcp.commands.OpenEntityEditor"
+            commandId="org.socialmusicdiscovery.rcp.commands.OpenEntityEditor">
+          <enabledWhen>
+                <iterate>
+                  <instanceof
+                        value="org.socialmusicdiscovery.server.business.model.SMDEntity">
+                  </instanceof>
+               </iterate>
+         </enabledWhen>
+      </handler>
    </extension>
 
 </plugin>
