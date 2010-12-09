@@ -5,16 +5,23 @@ import org.eclipse.swt.widgets.Composite;
 import org.socialmusicdiscovery.rcp.editors.AbstractEditorPart;
 import org.socialmusicdiscovery.server.business.model.core.Release;
 
-public class ReleaseEditor extends AbstractEditorPart<Release> {
+public class ReleaseEditor extends AbstractEditorPart<Release, ReleaseUI> {
 
 	public static final String ID = ReleaseEditor.class.getName();
-
-	public ReleaseEditor() {
-	}
 
 	@Override
 	public void createPartControl(Composite parent) {
 		super.createPartControl(parent, new ReleaseUI(parent, SWT.NONE));
+		hookContextMenus();
+	}
+
+	private void hookContextMenus() {
+		hookContextMenus(
+			getUI().getGridViewerTracks(),
+			getUI().getPerformersPanel().getGridViewer(),
+			getUI().getComposersPanel().getGridViewer(),
+			getUI().getConductorsPanel().getGridViewer()
+		);
 	}
 
 }

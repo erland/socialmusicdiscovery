@@ -8,6 +8,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
 import org.socialmusicdiscovery.rcp.Activator;
 import org.socialmusicdiscovery.rcp.content.DataSource;
+import org.socialmusicdiscovery.rcp.util.ViewerUtil;
 import org.socialmusicdiscovery.rcp.views.util.OpenListener;
 
 public class NavigatorView extends ViewPart {
@@ -43,6 +44,7 @@ public class NavigatorView extends ViewPart {
 	}
 
 	private void hook(NavigatorUI ui) {
+		ViewerUtil.hookContextMenu(this, ui.getTreeViewer());
 		ui.getTreeViewer().addOpenListener(new OpenListener());
 	}
 

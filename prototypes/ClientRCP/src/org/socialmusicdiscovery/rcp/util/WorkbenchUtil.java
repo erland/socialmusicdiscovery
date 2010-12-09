@@ -1,16 +1,25 @@
 package org.socialmusicdiscovery.rcp.util;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.OpenEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.handlers.HandlerUtil;
+import org.eclipse.ui.handlers.IHandlerService;
+import org.eclipse.ui.services.IEvaluationService;
 import org.socialmusicdiscovery.rcp.editors.artist.ArtistEditor;
 import org.socialmusicdiscovery.rcp.editors.release.ReleaseEditor;
 import org.socialmusicdiscovery.rcp.error.FatalApplicationException;
@@ -32,12 +41,10 @@ public final class WorkbenchUtil {
 
 	private WorkbenchUtil() { } // static util
 
-	public static void openView(String viewId, String secondaryId) {
+	public static IViewPart openView(String viewId, String secondaryId) {
 		try {
-			IWorkbench workbench = PlatformUI.getWorkbench();
-			IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-			IWorkbenchPage page = window.getActivePage();
-			page.showView(viewId, secondaryId, IWorkbenchPage.VIEW_ACTIVATE);
+			IWorkbenchPage page = getActivePage();
+			return page.showView(viewId, secondaryId, IWorkbenchPage.VIEW_ACTIVATE);
 		} catch (PartInitException e) {
 			throw new FatalApplicationException("Failed to open view: "+viewId+"/"+secondaryId);
 		}
@@ -46,15 +53,38 @@ public final class WorkbenchUtil {
 	public static IEditorPart openEditor(SMDEntity<?> entity, String editorId) {
 		SMDEditorInput input = new SMDEditorInput(entity);
 		try {
-			IWorkbench wb = PlatformUI.getWorkbench();
-			IWorkbenchWindow window = wb.getActiveWorkbenchWindow();
-			IWorkbenchPage page = window.getActivePage();
+			IWorkbenchPage page = getActivePage();
 			return page.openEditor(input, editorId, true);
 		} catch (PartInitException e) {
 			throw new FatalApplicationException("Failed to open editor: "+editorId+"/"+entity);
 		}
 	}
 
+	public static IWorkbenchPage getActivePage() {
+		IWorkbenchWindow window = getWindow();
+		IWorkbenchPage page = window.getActivePage();
+		return page;
+	}
+
+	public static IWorkbenchWindow getWindow() {
+		IWorkbench workbench = PlatformUI.getWorkbench();
+		IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+		return window;
+	}
+
+	 @SuppressWarnings("unchecked")
+	public static <T> T getService(Class<?> api) {
+		return (T) getWindow().getService(api);
+	}
+	 
+	public static IHandlerService getHandlerService() {
+		return getService(IHandlerService.class);
+	}
+
+	public static IEvaluationService getEvaluationService() {
+		return getService(IEvaluationService.class);
+	}
+	
 	@SuppressWarnings("rawtypes")
 	private static SMDEntity getSelectedEntity(OpenEvent event) {
 		StructuredSelection selection = (StructuredSelection) event.getSelection();
@@ -64,31 +94,44 @@ public final class WorkbenchUtil {
 
 	public static void open(OpenEvent event) {
 		SMDEntity<?> entity = getSelectedEntity(event);
-		openAll(entity);
+		openDistinct(entity);
 	}
 
-	public static void openAll(SMDEntity<?>... list) {
-		for (SMDEntity<?> element : list) {
-			SMDEntity<?> entity = resolveEditableElement(element);
-			String editorId = resolveEditorId(entity);
-			String viewId = resolveViewId(entity);
-			
-			if (editorId!=null) {
-				WorkbenchUtil.openEditor(entity, editorId);
+	public static void openAll(Object... elements) {
+		for (Object element : elements) {
+			if (element instanceof Collection) {
+				Collection<?> c = (Collection<?>) element;
+				openAll(c.toArray());
+			} else if (element !=null) {
+				openDistinct(element);
 			} else {
-				if (viewId!=null) {
-					WorkbenchUtil.openView(viewId, entity.getId());
-				}
+				throw new IllegalArgumentException("Found null element: " + Arrays.asList(elements));
 			}
 		}
 	}
 
-	private static SMDEntity<?> resolveEditableElement(SMDEntity<?> element) {
+	public static void openDistinct(Object element) {
+		SMDEntity<?> entity = resolveEditableElement(element);
+		String editorId = resolveEditorId(entity);
+		String viewId = resolveViewId(entity);
+		IWorkbenchPart part = null;
+		
+		if (editorId!=null) {
+			part = WorkbenchUtil.openEditor(entity, editorId);
+		} else if (viewId!=null) {
+			part = WorkbenchUtil.openView(viewId, entity.getId());
+		}
+		if (part!=null) {
+			
+		}
+	}
+
+	private static SMDEntity<?> resolveEditableElement(Object element) {
 		if (element instanceof Contributor) {
 			Contributor c = (Contributor) element;
 			return c.getArtist();
 		}
-		return element;
+		return element instanceof SMDEntity ? (SMDEntity<?>) element : null;
 	}
 
 	private static String resolveEditorId(Object element) {
@@ -101,6 +144,13 @@ public final class WorkbenchUtil {
 		// TODO this will need to be made much more robust, we cannot depend on the base class
 		// the view should probably declare an interface that it can handle 
 		return views.get(element.getClass());
+	}
+
+	public static Object open(ExecutionEvent event) {
+		ISelection selection = HandlerUtil.getCurrentSelection(event);
+		Object[] selected = ViewerUtil.getSelectedEntities(selection);
+		WorkbenchUtil.openAll(selected);
+		return null;
 	}
 
 }

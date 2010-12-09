@@ -346,7 +346,7 @@ public class ReleaseUI extends AbstractComposite<Release> {
 
 	private void setAlbumDataInput() {
 		Map<String, List<Contributor>> map = getContributorMap(release.getContributors());
-		getPerformesPanel().getGridViewer().setInput(map.get(CONTRIBUTOR_TYPE_PERFORMER));
+		getPerformersPanel().getGridViewer().setInput(map.get(CONTRIBUTOR_TYPE_PERFORMER));
 		getComposersPanel().getGridViewer().setInput(map.get(CONTRIBUTOR_TYPE_COMPOSER));
 		getConductorsPanel().getGridViewer().setInput(map.get(CONTRIBUTOR_TYPE_CONDUCTOR));
 	}
@@ -384,7 +384,7 @@ public class ReleaseUI extends AbstractComposite<Release> {
 	private static boolean isEmpty(String s) {
 		return s==null || s.trim().length()<1;
 	}
-	public ContributorPanel getPerformesPanel() {
+	public ContributorPanel getPerformersPanel() {
 		return performersPanel;
 	}
 	public ContributorPanel getConductorsPanel() {
@@ -392,5 +392,8 @@ public class ReleaseUI extends AbstractComposite<Release> {
 	}
 	public ContributorPanel getComposersPanel() {
 		return composersPanel;
+	}
+	public GridTableViewer getGridViewerTracks() {
+		return gridViewerTracks;
 	}
 }
