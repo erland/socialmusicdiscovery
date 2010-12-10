@@ -7,8 +7,6 @@ import java.util.Map;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.OpenEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbench;
@@ -20,10 +18,10 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.services.IEvaluationService;
+import org.socialmusicdiscovery.rcp.editors.SMDEditorInput;
 import org.socialmusicdiscovery.rcp.editors.artist.ArtistEditor;
 import org.socialmusicdiscovery.rcp.editors.release.ReleaseEditor;
 import org.socialmusicdiscovery.rcp.error.FatalApplicationException;
-import org.socialmusicdiscovery.rcp.views.util.SMDEditorInput;
 import org.socialmusicdiscovery.server.business.model.SMDEntity;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
@@ -85,18 +83,6 @@ public final class WorkbenchUtil {
 		return getService(IEvaluationService.class);
 	}
 	
-	@SuppressWarnings("rawtypes")
-	private static SMDEntity getSelectedEntity(OpenEvent event) {
-		StructuredSelection selection = (StructuredSelection) event.getSelection();
-		Object selected = selection.getFirstElement();
-		return selected instanceof SMDEntity ? (SMDEntity) selected : null;
-	}
-
-	public static void open(OpenEvent event) {
-		SMDEntity<?> entity = getSelectedEntity(event);
-		openDistinct(entity);
-	}
-
 	public static void openAll(Object... elements) {
 		for (Object element : elements) {
 			if (element instanceof Collection) {
