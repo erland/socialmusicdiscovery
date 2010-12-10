@@ -13,7 +13,6 @@ import org.socialmusicdiscovery.rcp.util.TextUtil;
 import org.socialmusicdiscovery.rcp.util.ViewerUtil;
 import org.socialmusicdiscovery.rcp.views.util.AbstractComposite;
 import org.socialmusicdiscovery.rcp.views.util.EntityLabelProvider;
-import org.socialmusicdiscovery.rcp.views.util.SMDEditorInput;
 import org.socialmusicdiscovery.server.business.model.SMDEntity;
 
 public abstract class AbstractEditorPart<T extends SMDEntity<?>, U extends AbstractComposite<T>> extends EditorPart {

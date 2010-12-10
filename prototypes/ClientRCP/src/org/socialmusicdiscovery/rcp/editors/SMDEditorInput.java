@@ -1,8 +1,9 @@
-package org.socialmusicdiscovery.rcp.views.util;
+package org.socialmusicdiscovery.rcp.editors;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
+import org.socialmusicdiscovery.rcp.views.util.EntityLabelProvider;
 import org.socialmusicdiscovery.server.business.model.SMDEntity;
 
 public class SMDEditorInput implements IEditorInput {

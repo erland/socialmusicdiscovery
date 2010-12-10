@@ -13,7 +13,9 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.OpenEvent;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
@@ -169,5 +171,16 @@ public class ViewerUtil {
 		viewer.addSelectionChangedListener(new MyBridgeFromSelectionProviderToEvaluationService());
 	}
 
+	public static void handleOpen(OpenEvent event) {
+		SMDEntity<?> entity = getSelectedEntity(event);
+		WorkbenchUtil.openDistinct(entity);
+	}
+
+	@SuppressWarnings("rawtypes")
+	private static SMDEntity getSelectedEntity(OpenEvent event) {
+		StructuredSelection selection = (StructuredSelection) event.getSelection();
+		Object selected = selection.getFirstElement();
+		return selected instanceof SMDEntity ? (SMDEntity) selected : null;
+	}
 	
 }
