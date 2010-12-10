@@ -4,6 +4,9 @@
 
 This page contains a description of the structure and contents of the information managed by the Social Music Discovery Application
 
+Note that the UML model is handled through community edition of [http://www.visual-paradigm.com/product/vpuml/ Visual Paradigm for UML]
+<br/>
+http://images.visual-paradigm.com/vpuml/vpuml_title_80.png
 
 = Domain Model =
 The model files can be found in svn here: https://socialmusicdiscovery.googlecode.com/svn/wiki/DatabaseModel/
