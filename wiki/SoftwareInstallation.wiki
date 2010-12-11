@@ -1,0 +1,99 @@
+#summary Installation instruction
+
+= Introduction =
+
+There are a number of different options to install the SMD prototype as described below.
+
+= Installation for beta testing =
+
+The easiest way to install if you just want to beta test the software, is to do as follows. This is not the best way if you want to look at the source code or run the software in the debugger, but it's the preferred way if you are only looking for a way to get it up and running and do some testing.
+
+  # Configure the alpha repository in your Squeezebox Server in Settings/Plugins
+    * http://socialmusicdiscovery.googlecode.com/svn/repository/alpha.xml
+  # In Squeezebox Server inside Settings/Plugin, select to install "Social Music Discovery" which is available in the repository you just setup.
+
+This will give you:
+  * The SMD plugin installed into Squeezebox Server
+  * The SMD Server installed into Squeezebox Server and automatically launched when Squeezebox Server is started:
+    * It will use the MySQL database of Squeezebox Sever and store it's data in a "smd" schema if Squeezebox Server is configured to use its bundled MySQL database.
+    * It will use a H2 database stored in the Squeezebox Server cache directory if Squeezebox Server is configured to use its SQLite database (SBS 7.6 or later) or it's configure to use a standalone MySQL database.
+  * The SMD Frontend can be launched from Squeezebox Server web interface
+    * The frontend is the simple Apache Pivot based version, it doesn't contain any management of data.
+    * The Apache Pivot fronend is planned to be replaced with the RCP version at some stage.
+
+To start using it, you need to:
+  # Start SMD Frontend
+  # Click the "Import" button to import your SBS library into the SMD database
+  # After the import is finished you can
+    * Search for releases, artists or works
+    * Double click on a release to see more details about the release
+    * Single click on a release to see related artists and works
+    * Single click on an artist to see related releases and works
+    * Single click on a work to see related releases or artists
+
+= Installation for SMD Server development / debugging =
+
+This installation is suitable for SMD Server development, if you like to change the SMD Server code or you like to run it in a debugger to see what happens.
+
+Install the prerequisites which is needed to compile the server:
+  * Maven: http://maven.apache.org/
+  * Java 6 JDK: http://www.oracle.com/technetwork/java/javase/downloads/index.html
+    * The package under "Java Platform, Standard Edition" should be enough
+    * After installation you need to setup a JAVA_HOME environment variable that points to the newly install Java 6 JDK
+
+You now need to build both SMD Server and SMD Frontend
+  * Check out the source code and build with maven
+    * See the separate [BuildInstructions build instructions] page for more information about this
+
+If you like the server to use a Squeezebox Server library, you also need to install the SMD Plugin in your Squeezebox Server
+  # Configure the development repository in your Squeezebox Server in Settings/Plugins
+    * http://socialmusicdiscovery.googlecode.com/svn/repository/development.xml
+  # In Squeezebox Server inside Settings/Plugin, select to install "Social Music Discovery" which is available in the repository you just setup.
+    * The development repository only contains the SMD Plugin without and server/frontend, so this installation differs from the above suggested installation for beta testing.
+
+To start using you need to:
+  # Open a new command prompt/shell and launch the SMD Server: java -jar smd-server-1.0-SNAPSHOT.jar
+    * If you are running Squeezebox Server on a separate machine (somehost), you can instead use: java -Dsqueezeboxserver.host=somehost -jar smd-server-1.0-SNAPSHOT.jar
+  # Open a new command prompt/shell and launch the SMD Frontend: java -jar smd-frontend-1.0-SNAPSHOT.jar
+
+Now, you probably want to run the server inside your development environment so you can step through the code in the debugger, to do this you first need to install a Java development environment. The preferred choices are:
+  * IntelliJ IDEA Community Edition: http://www.jetbrains.com/idea/download/index.html
+    * The commercial version of IntelliJ IDEA will of course also work if you have access to a license.
+  * Eclipse for RCP and RAD developers: http://www.eclipse.org/downloads/packages/eclipse-rcp-and-rap-developers/heliossr1 
+
+You can generate project files with maven, see the [BuildInstructions build instructions] for more information about this.
+
+To launch the SMD Server in the development environment, you just launch the class:
+  * org.socialmusicdiscovery.server.business.logic.SMDAppplication
+
+You can specify the -Dsqueezeboxserver.host JVM parameter when you launch it if Squeezebox Server is running on a separate machine.
+
+= Installation for SMD Frontend development / debugging =
+
+This installation is suitable for SMD Frontend development. Since the Apache Pivot based frontend is just a temporary solution, it's not described here, instead this description focus on what's needed for the RCP based frontend.
+
+Install the prerequisites which is needed to compile the frontend:
+  * Maven: http://maven.apache.org/
+  * Java 6 JDK: http://www.oracle.com/technetwork/java/javase/downloads/index.html
+    * The package under "Java Platform, Standard Edition" should be enough
+    * After installation you need to setup a JAVA_HOME environment variable that points to the newly install Java 6 JDK
+  * Eclipse for RCP and RAD developers: http://www.eclipse.org/downloads/packages/eclipse-rcp-and-rap-developers/heliossr1 
+
+You now need to build SMD Server
+  * Check out the source code and build with maven
+    * See the separate [BuildInstructions build instructions] page for more information about this
+    * An alternative to building SMD Server, is to download the latest smd-plugin-full package from our download page: http://code.google.com/p/socialmusicdiscovery/downloads/list
+      * You will need the smd-server-1.0-SNAPSHOT.jar bundled in this zip file.
+
+If you like the server to use a Squeezebox Server library, you also need to install the SMD Plugin in your Squeezebox Server
+  # Configure the development repository in your Squeezebox Server in Settings/Plugins
+    * http://socialmusicdiscovery.googlecode.com/svn/repository/development.xml
+    * The development repository only contains the SMD Plugin without and server/frontend, so this installation differs from the above suggested installation for beta testing.
+  # In Squeezebox Server inside Settings/Plugin, select to install "Social Music Discovery" which is available in the repository you just setup.
+
+To start using you need to:
+  # Open a new command prompt/shell and launch the SMD Server: java -jar smd-server-1.0-SNAPSHOT.jar
+    * If you are running Squeezebox Server on a separate machine (somehost), you can instead use: java -Dsqueezeboxserver.host=somehost -jar smd-server-1.0-SNAPSHOT.jar
+    * If you want an in-memory database filled with some sample data, you can instead use: java -Dorg.socialmusicdiscovery.server.database=h2-memory-test -jar smd-server-1.0-SNAPSHOT.jar
+
+To build the RCP client, follow the instructions described on the separate [PrototypeRCPClient RCP client page]
