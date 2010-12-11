@@ -68,6 +68,14 @@ To launch the SMD Server in the development environment, you just launch the cla
 
 You can specify the -Dsqueezeboxserver.host JVM parameter when you launch it if Squeezebox Server is running on a separate machine.
 
+As a suitable further reading, it's suggested that you take a look at:
+ * [SoftwareSMDServer SMD Server design description]
+ * Other documentation that might be of interest are:
+   * [SoftwarePlugin SMD Plugin design description]
+   * [PrototypeRCPClient Description of RCP client]
+   * [SoftwareSMDFrontend SMD Frontend design description]
+     * Note that this is just a temporary solution until RCP client is a bit more finished.
+
 = Installation for SMD Frontend development / debugging =
 
 This installation is suitable for SMD Frontend development. Since the Apache Pivot based frontend is just a temporary solution, it's not described here, instead this description focus on what's needed for the RCP based frontend.
@@ -97,3 +105,9 @@ To start using you need to:
     * If you want an in-memory database filled with some sample data, you can instead use: java -Dorg.socialmusicdiscovery.server.database=h2-memory-test -jar smd-server-1.0-SNAPSHOT.jar
 
 To build the RCP client, follow the instructions described on the separate [PrototypeRCPClient RCP client page]
+
+As a suitable further reading, it's suggested that you take a look at:
+ * [PrototypeRCPClient Description of RCP client]
+ * Other documentation that might be of interest are:
+   * [SoftwareSMDServer SMD Server design description]
+   * [SoftwarePlugin SMD Plugin design description]
