@@ -8,9 +8,33 @@ Note that the UML model is handled through community edition of [http://www.visu
 <br/>
 http://images.visual-paradigm.com/vpuml/vpuml_title_80.png
 
-= Domain Model =
-The model files can be found in svn here: https://socialmusicdiscovery.googlecode.com/svn/wiki/DatabaseModel/
+== Visual Paradigm instructions ==
+Here are some short instructions where you find things in Visual Paradigm.
+  * A good start is to select the "Diagram Navigation" tab at the upper left corner on Visual Paradigm.
+  * Under "UML Diagrams/Class Diagram" in the "Diagram Navigation" tab, you will find the domain model diagrams, as you can see later on this page there are three of them (Core, Subjective, Classification)
+  * Under "UML Diagrams/Object Diagram" in the "Diagram Navigation" tab, you will find the sample releases which have modeled based on the domain model.
+  * After you have done some change, commit the updated vpp file and generate a png image using "File/Export/Active Diagram as Image" and commit that too. 
+    * Sample releases that have been modeled should be linked from the [DomainModelSamples domain model samples page]
 
+* Note! *
+  * Currently there is no locking in the svn repository of the model file (due to Google Code limitations), so if two users are editing the model file simultaneously only one will be able to commit it. 
+  * It's important that you do an update from svn before you start to ensure that you have the latest version.
+  * Due to this, it's suitable that you post to the mailing list if you plan to do some addition that takes a long time, this way other people can avoid changing the model files during this time.
+  * There is no merging of binary files in svn, so if this happens and you aren't able to commit, you need to either:
+    * Redo your changes in the latest version
+    * If you have added a release sample, you can save your version with a new file name and then:
+      # Make sure to update from svn so the !DomainModel.vpp is the latest version
+      # In your personal model file, select all objects in a diagram and select "Edit/Copy/Default Copy (With VP UML CE)
+      # In the !DomainModel.vpp file, select to create a new diagram and then select Edit/Paste View.
+
+The main domain model in Visual Paradigm can be found here:
+https://socialmusicdiscovery.googlecode.com/svn/wiki/DatabaseModel/
+
+The main model file is the one called !DomainModel.vpp
+
+If you just want to experiment, you can create your own model file in parallel with the !DomainModel.vpp file. Just prefix it with your name and make sure you create it by copying the latest !DomainModel.vpp file, for example use a file name like !RobinDomainModel.vpp.
+
+= Domain Model =
 Sample albums represented with the domain model structures can be found the page: [DomainModelSamples]
 == Core model ==
 [http://socialmusicdiscovery.googlecode.com/svn/wiki/DatabaseModel/DomainModel.png]
