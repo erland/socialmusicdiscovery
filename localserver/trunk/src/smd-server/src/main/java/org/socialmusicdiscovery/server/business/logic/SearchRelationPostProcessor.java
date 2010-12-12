@@ -64,14 +64,14 @@ public class SearchRelationPostProcessor implements PostProcessor {
         entityManager.getTransaction().commit();
         entityManager.clear();
 
-        long i=0;
+        long i = 0;
         for (Release release : releases) {
             entityManager.getTransaction().begin();
             i++;
-            progressHandler.progress(getId(),release.getName(), i, (long) releases.size());
-            Collection<Contributor> releaseContributors = contributorRepository.findByReleaseWithRelations(release.getId(),Arrays.asList("artist"),null);
+            progressHandler.progress(getId(), release.getName(), i, (long) releases.size());
+            Collection<Contributor> releaseContributors = contributorRepository.findByReleaseWithRelations(release.getId(), Arrays.asList("artist"), null);
             Set<ReleaseSearchRelation> releaseSearchRelations = new HashSet<ReleaseSearchRelation>();
-            Collection<Track> tracks = trackRepository.findByReleaseWithRelations(release.getId(),Arrays.asList("recording"), null);
+            Collection<Track> tracks = trackRepository.findByReleaseWithRelations(release.getId(), Arrays.asList("recording"), null);
             Set<Contributor> aggregatedContributors = new HashSet<Contributor>(releaseContributors);
             Set<Recording> aggregatedRecordings = new HashSet<Recording>();
             Set<Work> aggregatedWorks = new HashSet<Work>();
@@ -79,15 +79,15 @@ public class SearchRelationPostProcessor implements PostProcessor {
             for (Track track : tracks) {
                 Recording recording = track.getRecording();
                 handledRecordings.add(recording);
-                addRecording(aggregatedContributors, aggregatedRecordings, aggregatedWorks,releaseContributors, release, recording, track);
+                addRecording(aggregatedContributors, aggregatedRecordings, aggregatedWorks, releaseContributors, release, recording, track);
             }
 
-            Collection<RecordingSession> recordingSessions = recordingSessionRepository.findByReleaseWithRelations(release.getId(), Arrays.asList("recordings"),null);
+            Collection<RecordingSession> recordingSessions = recordingSessionRepository.findByReleaseWithRelations(release.getId(), Arrays.asList("recordings"), null);
             for (RecordingSession session : recordingSessions) {
                 for (Recording recording : session.getRecordings()) {
                     // We only need to handle this if we haven't already taken care of this recording
-                    if(!handledRecordings.contains(recording)) {
-                        addRecording(aggregatedContributors, aggregatedRecordings, aggregatedWorks,releaseContributors, release, recording, null);
+                    if (!handledRecordings.contains(recording)) {
+                        addRecording(aggregatedContributors, aggregatedRecordings, aggregatedWorks, releaseContributors, release, recording, null);
                     }
                 }
             }
@@ -97,10 +97,10 @@ public class SearchRelationPostProcessor implements PostProcessor {
                 addContributor(releaseSearchRelations, contributor, release, ReleaseSearchRelation.class);
             }
             for (Work work : aggregatedWorks) {
-                releaseSearchRelations.add(new ReleaseSearchRelation(release.getId(),work));
+                releaseSearchRelations.add(new ReleaseSearchRelation(release.getId(), work));
             }
             for (Recording recording : aggregatedRecordings) {
-                releaseSearchRelations.add(new ReleaseSearchRelation(release.getId(),recording));
+                releaseSearchRelations.add(new ReleaseSearchRelation(release.getId(), recording));
             }
             for (ReleaseSearchRelation relation : releaseSearchRelations) {
                 entityManager.persist(relation);
@@ -108,13 +108,13 @@ public class SearchRelationPostProcessor implements PostProcessor {
 
             entityManager.getTransaction().commit();
             entityManager.clear();
-            if(abort) {
+            if (abort) {
                 break;
             }
         }
-        if(abort) {
+        if (abort) {
             progressHandler.aborted(getId());
-        }else {
+        } else {
             progressHandler.finished(getId());
         }
     }
@@ -125,7 +125,7 @@ public class SearchRelationPostProcessor implements PostProcessor {
         Set<RecordingSession> recordingSessions = new HashSet<RecordingSession>();
 
         RecordingSession session = recording.getRecordingSession();
-        if(session != null) {
+        if (session != null) {
             sessionContributors.addAll(session.getContributors());
             recordingSessions.add(session);
         }
@@ -138,7 +138,7 @@ public class SearchRelationPostProcessor implements PostProcessor {
         Work work = recording.getWork();
         Set<Contributor> aggregatedWorkContributors = new HashSet<Contributor>();
         Set<Work> works = new HashSet<Work>();
-        while(work != null) {
+        while (work != null) {
             works.add(work);
             Set<WorkSearchRelation> workSearchRelations = new HashSet<WorkSearchRelation>();
             Set<Contributor> workContributors = work.getContributors();
@@ -156,7 +156,7 @@ public class SearchRelationPostProcessor implements PostProcessor {
             // Add relations for contributors related to a recording session which contains this work
             // If there are contributors of the same role defined directly on the recording or work, the contributors on the recording session with this role is ignored
             for (Contributor contributor : sessionContributors) {
-                if(!containsRole(workContributors,contributor.getType()) &&
+                if (!containsRole(workContributors, contributor.getType()) &&
                         !containsRole(recordingContributors, contributor.getType())) {
                     for (Work workOrPart : works) {
                         addContributor(workSearchRelations, contributor, workOrPart, WorkSearchRelation.class);
@@ -167,7 +167,7 @@ public class SearchRelationPostProcessor implements PostProcessor {
             // Add relations for contributors related to a recording which contains this work
             // If there are contributors of the same role defined directly on the work, the contributors on the recording with this role is ignored
             for (Contributor contributor : recordingContributors) {
-                if(!containsRole(workContributors,contributor.getType())) {
+                if (!containsRole(workContributors, contributor.getType())) {
                     addContributor(workSearchRelations, contributor, work, WorkSearchRelation.class);
                 }
             }
@@ -175,22 +175,22 @@ public class SearchRelationPostProcessor implements PostProcessor {
             // Add relations for contributors related to a release which contains this work
             // If there are contributors of the same role defined directly on the recording, session or work, the contributors on the release with this role is ignored
             for (Contributor contributor : releaseContributors) {
-                if(!containsRole(workContributors,contributor.getType()) &&
+                if (!containsRole(workContributors, contributor.getType()) &&
                         !containsRole(recordingContributors, contributor.getType()) &&
                         !containsRole(sessionContributors, contributor.getType())) {
                     addContributor(workSearchRelations, contributor, work, WorkSearchRelation.class);
                 }
             }
-            if(release.getLabel() != null) {
-                workSearchRelations.add(new WorkSearchRelation(work.getId(),release.getLabel()));
+            if (release.getLabel() != null) {
+                workSearchRelations.add(new WorkSearchRelation(work.getId(), release.getLabel()));
             }
-            workSearchRelations.add(new WorkSearchRelation(work.getId(),recording));
-            workSearchRelations.add(new WorkSearchRelation(work.getId(),release));
-            if(track != null) {
-                workSearchRelations.add(new WorkSearchRelation(work.getId(),track));
+            workSearchRelations.add(new WorkSearchRelation(work.getId(), recording));
+            workSearchRelations.add(new WorkSearchRelation(work.getId(), release));
+            if (track != null) {
+                workSearchRelations.add(new WorkSearchRelation(work.getId(), track));
             }
-            if(release.getLabel()!=null) {
-                workSearchRelations.add(new WorkSearchRelation(work.getId(),release.getLabel()));
+            if (release.getLabel() != null) {
+                workSearchRelations.add(new WorkSearchRelation(work.getId(), release.getLabel()));
             }
             for (WorkSearchRelation relation : workSearchRelations) {
                 // Need to use merge because a work can be part of multiple releases
@@ -207,7 +207,7 @@ public class SearchRelationPostProcessor implements PostProcessor {
         // Add relations for contributors related to a recording session which this recording is part of
         // If there are contributors of the same role defined directly on the recording, the contributors on the release with this role is ignored.
         for (Contributor contributor : sessionContributors) {
-            if(!containsRole(recordingContributors,contributor.getType())) {
+            if (!containsRole(recordingContributors, contributor.getType())) {
                 addContributor(recordingSearchRelations, contributor, recording, RecordingSearchRelation.class);
             }
         }
@@ -215,7 +215,7 @@ public class SearchRelationPostProcessor implements PostProcessor {
         // Add relations for contributors related to a release which this recording is part of
         // If there are contributors of the same role defined directly on the recording, the contributors on the release with this role is ignored.
         for (Contributor contributor : releaseContributors) {
-            if(!containsRole(recordingContributors,contributor.getType())) {
+            if (!containsRole(recordingContributors, contributor.getType())) {
                 addContributor(recordingSearchRelations, contributor, recording, RecordingSearchRelation.class);
             }
         }
@@ -224,46 +224,48 @@ public class SearchRelationPostProcessor implements PostProcessor {
         for (Contributor contributor : aggregatedWorkContributors) {
             addContributor(recordingSearchRelations, contributor, recording, RecordingSearchRelation.class);
         }
-        if(release.getLabel() != null) {
-            recordingSearchRelations.add(new RecordingSearchRelation(recording.getId(),release.getLabel()));
+        if (release.getLabel() != null) {
+            recordingSearchRelations.add(new RecordingSearchRelation(recording.getId(), release.getLabel()));
         }
-        recordingSearchRelations.add(new RecordingSearchRelation(recording.getId(),release));
-        if(track != null) {
-            recordingSearchRelations.add(new RecordingSearchRelation(recording.getId(),track));
+        recordingSearchRelations.add(new RecordingSearchRelation(recording.getId(), release));
+        if (track != null) {
+            recordingSearchRelations.add(new RecordingSearchRelation(recording.getId(), track));
         }
-        if(release.getLabel()!=null) {
-            recordingSearchRelations.add(new RecordingSearchRelation(recording.getId(),release.getLabel()));
+        if (release.getLabel() != null) {
+            recordingSearchRelations.add(new RecordingSearchRelation(recording.getId(), release.getLabel()));
         }
         for (RecordingSearchRelation relation : recordingSearchRelations) {
             // Need to use merge because a recording can be part of multiple releases
             entityManager.merge(relation);
         }
     }
+
     private <T extends SearchRelation> void addContributor(Set<T> relations, Contributor contributor, SMDEntity owner, Class<T> relationClass) {
         try {
+            Artist artist = contributor.getArtist();
             T relation = relationClass.newInstance();
             relation.setId(owner.getId());
-            relation.setReference(contributor);
+            relation.setReferenceType(artist.getClass().getName() + "#" + contributor.getType());
+            relation.setReference(artist.getId());
             relations.add(relation);
 
-            Artist artist = contributor.getArtist();
             relation = relationClass.newInstance();
             relation.setId(owner.getId());
             relation.setReference(artist);
             relations.add(relation);
 
             // Need to use merge because an artist can be part of multiple releases
-            entityManager.merge(new ArtistSearchRelation(artist.getId(),contributor));
-            entityManager.merge(new ArtistSearchRelation(artist.getId(),owner));
+            entityManager.merge(new ArtistSearchRelation(artist.getId(), owner.getClass().getName() + "#" + contributor.getType(), owner.getId()));
+            entityManager.merge(new ArtistSearchRelation(artist.getId(), owner));
 
             Person person = contributor.getArtist().getPerson();
-            if(person!=null) {
+            if (person != null) {
                 relation = relationClass.newInstance();
                 relation.setId(owner.getId());
                 relation.setReference(person);
                 relations.add(relation);
                 // Need to use merge because a person can be part of multiple releases
-                entityManager.merge(new PersonSearchRelation(person.getId(),owner));
+                entityManager.merge(new PersonSearchRelation(person.getId(), owner));
             }
         } catch (InstantiationException e) {
             throw new RuntimeException(e);
@@ -271,15 +273,17 @@ public class SearchRelationPostProcessor implements PostProcessor {
             throw new RuntimeException(e);
         }
     }
+
     /**
      * Check if the list of contributors contain a contributor of the specified type
+     *
      * @param contributors List of contributors to check
-     * @param type Type of contributor to check for
+     * @param type         Type of contributor to check for
      * @return true if the list of contributors contains the specified role
      */
     private boolean containsRole(Collection<Contributor> contributors, String type) {
         for (Contributor contributor : contributors) {
-            if(contributor.getType().equals(type)) {
+            if (contributor.getType().equals(type)) {
                 return true;
             }
         }
