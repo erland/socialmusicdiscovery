@@ -14,7 +14,7 @@ import java.util.*;
 @XmlRootElement(name = "release")
 @javax.persistence.Entity
 @Table(name = "releases")
-public class Release extends SMDEntity<Release> {
+public class Release extends SMDEntity {
     private Date date;
     @Column(nullable = false)
     private String name;

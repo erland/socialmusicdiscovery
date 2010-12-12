@@ -14,7 +14,7 @@ import java.util.Set;
 @XmlRootElement(name = "track")
 @javax.persistence.Entity
 @Table(name = "tracks")
-public class Track extends SMDEntity<Track> {
+public class Track extends SMDEntity {
     private Integer number;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "recording_id")

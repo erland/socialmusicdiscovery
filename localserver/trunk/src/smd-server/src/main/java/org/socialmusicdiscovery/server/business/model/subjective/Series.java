@@ -7,15 +7,15 @@ import javax.persistence.*;
 import java.util.Collection;
 
 @javax.persistence.Entity
-@Table(name="series")
-public class Series extends SMDEntity<Series> {
+@Table(name = "series")
+public class Series extends SMDEntity {
     @Column(nullable = false)
     private String name;
 
     @OneToMany
-    @JoinTable(name="release_series",
-          joinColumns=@JoinColumn(name="serie_id"),
-          inverseJoinColumns=@JoinColumn(name="release_id"))
+    @JoinTable(name = "release_series",
+            joinColumns = @JoinColumn(name = "serie_id"),
+            inverseJoinColumns = @JoinColumn(name = "release_id"))
     private Collection<Release> releases;
 
     public String getName() {

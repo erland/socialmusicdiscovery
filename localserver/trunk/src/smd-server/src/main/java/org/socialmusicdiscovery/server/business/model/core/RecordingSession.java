@@ -16,7 +16,7 @@ import java.util.Set;
 @XmlRootElement(name = "recording_session")
 @javax.persistence.Entity
 @Table(name = "recording_sessions")
-public class RecordingSession extends SMDEntity<RecordingSession> {
+public class RecordingSession extends SMDEntity {
     private Date date;
     @OneToMany
     @JoinColumn(name = "session_id")

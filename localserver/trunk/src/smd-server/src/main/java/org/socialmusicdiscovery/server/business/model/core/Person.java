@@ -18,13 +18,14 @@ import java.util.Set;
 @XmlRootElement(name = "person")
 @javax.persistence.Entity
 @Table(name = "persons")
-public class Person extends SMDEntity<Person> {
+public class Person extends SMDEntity {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy="id")
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "id")
     @XmlTransient
-    private Set<PersonSearchRelation> searchRelations = new HashSet<PersonSearchRelation>();;
+    private Set<PersonSearchRelation> searchRelations = new HashSet<PersonSearchRelation>();
+    ;
 
     public String getName() {
         return name;

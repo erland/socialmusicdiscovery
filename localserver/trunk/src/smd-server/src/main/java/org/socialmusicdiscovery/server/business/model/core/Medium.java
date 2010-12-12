@@ -17,7 +17,7 @@ import java.util.List;
 @XmlRootElement(name = "medium")
 @javax.persistence.Entity
 @Table(name = "mediums")
-public class Medium extends SMDEntity<Medium> {
+public class Medium extends SMDEntity {
     private Integer number;
     private String name;
     @OneToMany

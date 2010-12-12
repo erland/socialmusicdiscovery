@@ -14,7 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "contributor")
 @javax.persistence.Entity
 @Table(name = "contributors")
-public class Contributor extends SMDEntity<Contributor> {
+public class Contributor extends SMDEntity {
     public static final String PERFORMER = "performer";
     public static final String COMPOSER = "composer";
     public static final String CONDUCTOR = "conductor";
