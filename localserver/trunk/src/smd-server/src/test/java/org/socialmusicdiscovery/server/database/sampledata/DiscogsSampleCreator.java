@@ -1,6 +1,7 @@
 package org.socialmusicdiscovery.server.database.sampledata;
 
 import com.sun.jersey.api.client.Client;
+import org.socialmusicdiscovery.server.business.model.classification.Classification;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
 import org.testng.annotations.Test;
 import org.w3c.dom.Document;
@@ -33,6 +34,7 @@ public class DiscogsSampleCreator extends SampleCreator {
     static {
         importedRoles.put("Conductor", Contributor.CONDUCTOR);
         importedRoles.put("Written-By", Contributor.COMPOSER);
+        importedRoles.put("Songwriter", Contributor.COMPOSER);
         importedRoles.put("Composed By", Contributor.COMPOSER);
         importedRoles.put("Trumpet", Contributor.PERFORMER);
         importedRoles.put("Vocals", Contributor.PERFORMER);
@@ -47,6 +49,30 @@ public class DiscogsSampleCreator extends SampleCreator {
         importRelease(result, "1794218");
         printCollectedData(result);
     }
+
+    @Test(groups = {"manual"})
+    public void importTheBodyguardReleaseAsDbUnit() throws Exception {
+        Map<String, List<String>> result = new HashMap<String, List<String>>();
+        importRelease(result, "1794218");
+        printCollectedDataAsDbUnit(result);
+    }
+
+    @Test(groups = {"manual"})
+    public void importAristaAndRCAReleasesAsDbUnit() throws Exception {
+        Map<String, List<String>> result = new HashMap<String, List<String>>();
+        Map<String, String> artistCache = new HashMap<String, String>();
+        Map<String, String> personCache = new HashMap<String, String>();
+        Map<String, String> labelCache = new HashMap<String, String>();
+        Map<String, String> genreCache = new HashMap<String, String>();
+        Map<String, String> styleCache = new HashMap<String, String>();
+        importRelease(result, artistCache, personCache, labelCache, genreCache, styleCache, "1794218"); // Whitney Collection Arista
+        importRelease(result, artistCache, personCache, labelCache, genreCache, styleCache, "389486");  // Whitney Arista
+        importRelease(result, artistCache, personCache, labelCache, genreCache, styleCache, "1656019"); // Lisa Stanfield Arista
+        importRelease(result, artistCache, personCache, labelCache, genreCache, styleCache, "2012327"); // Whitney RCA release
+        importRelease(result, artistCache, personCache, labelCache, genreCache, styleCache, "2575167"); // Dolly Parton RCA release
+        printCollectedDataAsDbUnit(result);
+    }
+
 
     @Test(groups = {"manual"})
     public void importGarageActIIAndIIIRelease() throws Exception {
@@ -110,6 +136,13 @@ public class DiscogsSampleCreator extends SampleCreator {
     private void importRelease(Map<String, List<String>> result, String discogsReleaseId) throws ParserConfigurationException, IOException, SAXException {
         Map<String, String> artistCache = new HashMap<String, String>();
         Map<String, String> personCache = new HashMap<String, String>();
+        Map<String, String> labelCache = new HashMap<String, String>();
+        Map<String, String> genreCache = new HashMap<String, String>();
+        Map<String, String> styleCache = new HashMap<String, String>();
+        importRelease(result, artistCache, personCache, labelCache, genreCache, styleCache, discogsReleaseId);
+    }
+
+    private void importRelease(Map<String, List<String>> result, Map<String, String> artistCache, Map<String, String> personCache, Map<String, String> labelCache, Map<String, String> genreCache, Map<String, String> styleCache, String discogsReleaseId) throws ParserConfigurationException, IOException, SAXException {
         String data = Client.create().resource("http://www.discogs.com/release/" + discogsReleaseId + "?f=xml&api_key=" + API_KEY).accept(MediaType.APPLICATION_XML).header("Accept-Encoding", "gzip").get(String.class);
 
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(data.getBytes()));
@@ -119,7 +152,22 @@ public class DiscogsSampleCreator extends SampleCreator {
             String releaseTitle = getChildrenByTagName(release, "title").get(0).getTextContent();
             String releaseId = UUID.randomUUID().toString();
 
-            addRelease(result, releaseId, releaseTitle);
+            String labelId = "NULL";
+            List<Element> labelsElement = getChildrenByTagName(release, "labels");
+            if (labelsElement.size() > 0) {
+                List<Element> labels = getChildrenByTagName(labelsElement.get(0), "label");
+                if (labels.size() > 0) {
+                    String name = labels.get(0).getAttribute("name");
+                    labelId = labelCache.get(name);
+                    if (labelId == null) {
+                        labelId = UUID.randomUUID().toString();
+                        labelCache.put(name, labelId);
+                        addLabel(result, labelId, name);
+                    }
+                }
+            }
+
+            addRelease(result, releaseId, releaseTitle, labelId);
 
             List<Element> albumArtistsElement = getChildrenByTagName(release, "artists");
             if (albumArtistsElement.size() > 0) {
@@ -169,21 +217,29 @@ public class DiscogsSampleCreator extends SampleCreator {
                     String workId = UUID.randomUUID().toString();
                     addWork(result, workId, trackTitle);
                     addRecording(result, recordingId, workId, "NULL");
-                    try {
-                        if (trackNumber.startsWith("A") || trackNumber.startsWith("B") || trackNumber.startsWith("C") || trackNumber.startsWith("D")) {
-                            String diskId = mediumCache.get(trackNumber.substring(0, 1));
-                            if (diskId == null) {
-                                diskId = UUID.randomUUID().toString();
-                                mediumCache.put(trackNumber.substring(0, 1), diskId);
-                                addMedium(result, releaseId, diskId, trackNumber.substring(0, 1));
-                            }
-                            addTrack(result, releaseId, recordingId, trackId, diskId, Integer.parseInt(trackNumber.substring(1)));
-                        } else {
-                            addTrack(result, releaseId, recordingId, trackId, Integer.parseInt(trackNumber));
+
+                    if (trackNumber.toString().matches("^[A-Z][0-9]+$")) {
+                        String diskId = mediumCache.get(trackNumber.substring(0, 1));
+                        if (diskId == null) {
+                            diskId = UUID.randomUUID().toString();
+                            mediumCache.put(trackNumber.substring(0, 1), diskId);
+                            addMedium(result, releaseId, diskId, trackNumber.substring(0, 1));
                         }
-                    } catch (NumberFormatException e) {
+                        addTrack(result, releaseId, recordingId, trackId, diskId, Integer.parseInt(trackNumber.substring(1)));
+                    } else if (trackNumber.toString().matches("^[0-9]-[0-9]+$")) {
+                        String diskId = mediumCache.get(trackNumber.substring(0, 1));
+                        if (diskId == null) {
+                            diskId = UUID.randomUUID().toString();
+                            mediumCache.put(trackNumber.substring(0, 1), diskId);
+                            addMedium(result, releaseId, diskId, trackNumber.substring(0, 1));
+                        }
+                        addTrack(result, releaseId, recordingId, trackId, diskId, Integer.parseInt(trackNumber.substring(2)));
+                    } else if (trackNumber.toString().matches("^[0-9]+$")) {
+                        addTrack(result, releaseId, recordingId, trackId, Integer.parseInt(trackNumber));
+                    } else {
                         addTrack(result, releaseId, recordingId, trackId);
                     }
+
                     List<Element> artistsElement = getChildrenByTagName(track, "artists");
                     if (artistsElement.size() > 0) {
                         List<Element> artists = getChildrenByTagName(artistsElement.get(0), "artist");
@@ -218,6 +274,36 @@ public class DiscogsSampleCreator extends SampleCreator {
                             }
                         }
                     }
+                }
+            }
+
+            List<Element> genresElement = getChildrenByTagName(release, "genres");
+            if (genresElement.size() > 0) {
+                List<Element> genreElement = getChildrenByTagName(genresElement.get(0), "genre");
+                for (Element element : genreElement) {
+                    String name = element.getTextContent();
+                    String id = genreCache.get(name);
+                    if (id == null) {
+                        id = UUID.randomUUID().toString();
+                        genreCache.put(name, id);
+                        addClassification(result, id, name, Classification.GENRE);
+                    }
+                    addClassificationReference(result, id, releaseId);
+                }
+            }
+
+            List<Element> stylesElement = getChildrenByTagName(release, "styles");
+            if (stylesElement.size() > 0) {
+                List<Element> styleElement = getChildrenByTagName(stylesElement.get(0), "style");
+                for (Element element : styleElement) {
+                    String name = element.getTextContent();
+                    String id = genreCache.get(name);
+                    if (id == null) {
+                        id = UUID.randomUUID().toString();
+                        genreCache.put(name, id);
+                        addClassification(result, id, name, Classification.STYLE);
+                    }
+                    addClassificationReference(result, id, releaseId);
                 }
             }
         }
