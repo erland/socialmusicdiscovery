@@ -1,9 +1,13 @@
 package org.socialmusicdiscovery.server.database.sampledata;
 
+import liquibase.csv.opencsv.CSVReader;
+import org.socialmusicdiscovery.server.business.model.classification.Classification;
 import org.socialmusicdiscovery.server.business.model.core.*;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.*;
 
 public class SampleCreator {
@@ -15,6 +19,32 @@ public class SampleCreator {
             }
             System.out.println();
             System.out.println();
+        }
+    }
+
+    protected void printCollectedDataAsDbUnit(Map<String, List<String>> result) {
+        try {
+            for (Map.Entry<String, List<String>> entry : result.entrySet()) {
+                List<String> values = new ArrayList<String>(entry.getValue());
+                String columns = values.remove(0);
+                for (String line : values) {
+                    System.out.print("<" + entry.getKey() + " ");
+                    CSVReader columnNames = new CSVReader(new StringReader(columns));
+                    CSVReader columnValues = new CSVReader(new StringReader(line));
+                    String[] columnValueItems = columnValues.readNext();
+                    String[] columnNameItems = columnNames.readNext();
+
+                    for (int i = 0; i < columnNameItems.length; i++) {
+                        if (!columnValueItems[i].equals("NULL")) {
+                            System.out.print(columnNameItems[i] + "=\"" + columnValueItems[i].replaceAll("&", "&amp;") + "\" ");
+                        }
+                    }
+                    System.out.println("/>");
+                }
+                System.out.println();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -31,8 +61,43 @@ public class SampleCreator {
             result.put("releases", new ArrayList<String>(Arrays.asList(
                     "id,name")));
         }
-        result.get("releases").add(id + "," + name);
+        result.get("releases").add(id + ",\"" + name + "\"");
         addSMDEntityReference(result, id, Release.class.getName());
+    }
+
+    protected void addRelease(Map<String, List<String>> result, String id, String name, String labelId) {
+        if (result.get("releases") == null) {
+            result.put("releases", new ArrayList<String>(Arrays.asList(
+                    "id,name,label_id")));
+        }
+        result.get("releases").add(id + ",\"" + name + "\"," + labelId);
+        addSMDEntityReference(result, id, Release.class.getName());
+    }
+
+    protected void addLabel(Map<String, List<String>> result, String id, String name) {
+        if (result.get("labels") == null) {
+            result.put("labels", new ArrayList<String>(Arrays.asList(
+                    "id,name")));
+        }
+        result.get("labels").add(id + ",\"" + name + "\"");
+        addSMDEntityReference(result, id, Label.class.getName());
+    }
+
+    protected void addClassification(Map<String, List<String>> result, String id, String name, String type) {
+        if (result.get("classifications") == null) {
+            result.put("classifications", new ArrayList<String>(Arrays.asList(
+                    "id,name,type")));
+        }
+        result.get("classifications").add(id + ",\"" + name + "\"," + type);
+        addSMDEntityReference(result, id, Classification.class.getName());
+    }
+
+    protected void addClassificationReference(Map<String, List<String>> result, String classificationId, String referenceId) {
+        if (result.get("classification_references") == null) {
+            result.put("classification_references", new ArrayList<String>(Arrays.asList(
+                    "classification_id,reference_id")));
+        }
+        result.get("classification_references").add(classificationId + "," + referenceId);
     }
 
     protected void addArtist(Map<String, List<String>> result, String id, String name) {
@@ -44,7 +109,7 @@ public class SampleCreator {
             result.put("artists", new ArrayList<String>(Arrays.asList(
                     "id,name,person_id")));
         }
-        result.get("artists").add(id + "," + name + "," + personId);
+        result.get("artists").add(id + ",\"" + name + "\",\"" + personId + "\"");
         addSMDEntityReference(result, id, Artist.class.getName());
     }
 
@@ -53,7 +118,7 @@ public class SampleCreator {
             result.put("persons", new ArrayList<String>(Arrays.asList(
                     "id,name")));
         }
-        result.get("persons").add(id + "," + name);
+        result.get("persons").add(id + ",\"" + name + "\"");
         addSMDEntityReference(result, id, Person.class.getName());
     }
 
@@ -74,7 +139,7 @@ public class SampleCreator {
             result.put("mediums", new ArrayList<String>(Arrays.asList(
                     "id,release_id,number,name")));
         }
-        result.get("mediums").add(id + "," + releaseId + "," + number + "," + name);
+        result.get("mediums").add(id + "," + releaseId + "," + number + ",\"" + name + "\"");
         addSMDEntityReference(result, id, Medium.class.getName());
     }
 
@@ -92,7 +157,7 @@ public class SampleCreator {
             result.put("recordings", new ArrayList<String>(Arrays.asList(
                     "id,name,work_id")));
         }
-        result.get("recordings").add(id + ",NULL," + workId);
+        result.get("recordings").add(id + ",NULL,\"" + workId + "\"");
         addSMDEntityReference(result, id, Recording.class.getName());
     }
 
@@ -101,7 +166,7 @@ public class SampleCreator {
             result.put("works", new ArrayList<String>(Arrays.asList(
                     "id,name")));
         }
-        result.get("works").add(id + "," + name);
+        result.get("works").add(id + ",\"" + name + "\"");
         addSMDEntityReference(result, id, Work.class.getName());
     }
 

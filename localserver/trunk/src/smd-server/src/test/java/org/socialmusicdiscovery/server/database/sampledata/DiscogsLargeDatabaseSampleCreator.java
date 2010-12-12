@@ -160,7 +160,7 @@ public class DiscogsLargeDatabaseSampleCreator extends SampleCreator {
             String releaseTitle = getChildrenByTagName(release, "title").get(0).getTextContent();
             String releaseId = UUID.randomUUID().toString();
 
-            if (releaseTitle.contains("<") || releaseTitle.contains(">") || releaseTitle.contains(",") || releaseTitle.contains("\"")) {
+            if (releaseTitle.contains("<") || releaseTitle.contains(">")) {
                 // Skip releases with problematic characters
                 return false;
             }
@@ -171,7 +171,7 @@ public class DiscogsLargeDatabaseSampleCreator extends SampleCreator {
                 List<Element> albumArtists = getChildrenByTagName(albumArtistsElement.get(0), "artist");
                 for (Element albumArtist : albumArtists) {
                     String name = getChildrenByTagName(albumArtist, "name").get(0).getTextContent();
-                    if (name.contains("<") || name.contains(">") || name.contains(",") || name.contains("\"")) {
+                    if (name.contains("<") || name.contains(">")) {
                         // Skip releases with strange artist names
                         return false;
                     }
@@ -194,7 +194,7 @@ public class DiscogsLargeDatabaseSampleCreator extends SampleCreator {
                     if (importedRoles.containsKey(role)) {
                         String name = getChildrenByTagName(artist, "name").get(0).getTextContent();
                         String id = artistCache.get(name);
-                        if (name.contains("<") || name.contains(">") || name.contains(",") || name.contains("\"")) {
+                        if (name.contains("<") || name.contains(">")) {
                             // Skip releases with problematic characters
                             return false;
                         }
@@ -223,7 +223,7 @@ public class DiscogsLargeDatabaseSampleCreator extends SampleCreator {
                     String recordingId = UUID.randomUUID().toString();
                     String workId = UUID.randomUUID().toString();
 
-                    if (trackTitle.contains("<") || trackTitle.contains(">") || trackTitle.contains(",") || trackTitle.contains("\"")) {
+                    if (trackTitle.contains("<") || trackTitle.contains(">")) {
                         // Skip releases with problematic characters
                         return false;
                     }
@@ -239,6 +239,14 @@ public class DiscogsLargeDatabaseSampleCreator extends SampleCreator {
                             addMedium(result, releaseId, diskId, trackNumber.substring(0, 1));
                         }
                         addTrack(result, releaseId, recordingId, trackId, diskId, Integer.parseInt(trackNumber.substring(1)));
+                    } else if (trackNumber.toString().matches("^[0-9]-[0-9]+$")) {
+                        String diskId = mediumCache.get(trackNumber.substring(0, 1));
+                        if (diskId == null) {
+                            diskId = UUID.randomUUID().toString();
+                            mediumCache.put(trackNumber.substring(0, 1), diskId);
+                            addMedium(result, releaseId, diskId, trackNumber.substring(0, 1));
+                        }
+                        addTrack(result, releaseId, recordingId, trackId, diskId, Integer.parseInt(trackNumber.substring(2)));
                     } else if (trackNumber.toString().matches("^[0-9]+$")) {
                         addTrack(result, releaseId, recordingId, trackId, Integer.parseInt(trackNumber));
                     } else {
@@ -250,7 +258,7 @@ public class DiscogsLargeDatabaseSampleCreator extends SampleCreator {
                         List<Element> artists = getChildrenByTagName(artistsElement.get(0), "artist");
                         for (Element artist : artists) {
                             String name = getChildrenByTagName(artist, "name").get(0).getTextContent();
-                            if (name.contains("<") || name.contains(">") || name.contains(",") || name.contains("\"")) {
+                            if (name.contains("<") || name.contains(">")) {
                                 // Skip releases with problematic characters
                                 return false;
                             }
@@ -272,7 +280,7 @@ public class DiscogsLargeDatabaseSampleCreator extends SampleCreator {
                             if (importedRoles.containsKey(role)) {
                                 String name = getChildrenByTagName(artist, "name").get(0).getTextContent();
                                 String id = artistCache.get(name);
-                                if (name.contains("<") || name.contains(">") || name.contains(",") || name.contains("\"")) {
+                                if (name.contains("<") || name.contains(">")) {
                                     // Skip releases with problematic characters
                                     return false;
                                 }
