@@ -17,7 +17,7 @@ import java.util.Set;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 @javax.persistence.Entity
 @Table(name = "artists")
-public class Artist extends SMDEntity<Artist> {
+public class Artist extends SMDEntity {
     @Column(nullable = false)
     private String name;
 
@@ -29,7 +29,7 @@ public class Artist extends SMDEntity<Artist> {
     @JoinColumn(name = "person_id")
     private Person person;
 
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy="id")
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "id")
     @XmlTransient
     private Set<ArtistSearchRelation> searchRelations = new HashSet<ArtistSearchRelation>();
 

@@ -16,21 +16,21 @@ import java.util.Set;
 @XmlRootElement(name = "recording")
 @javax.persistence.Entity
 @Table(name = "recordings")
-public class Recording extends SMDEntity<Recording> {
+public class Recording extends SMDEntity {
     private String name;
     private Date date;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="mixof_id")
+    @JoinColumn(name = "mixof_id")
     private Recording mixOf;
     @OneToMany
-    @JoinColumn(name="recording_id")
+    @JoinColumn(name = "recording_id")
     private Set<Contributor> contributors = new HashSet<Contributor>();
     @ManyToOne(optional = false)
-    @JoinColumn(name="work_id")
+    @JoinColumn(name = "work_id")
     private Work work;
 
     @ManyToOne
-    @JoinColumn(name="session_id")
+    @JoinColumn(name = "session_id")
     @XmlTransient
     private RecordingSession recordingSession;
 

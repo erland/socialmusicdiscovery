@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "label")
 @javax.persistence.Entity
 @Table(name = "labels")
-public class Label extends SMDEntity<Label> {
+public class Label extends SMDEntity {
     @Column(nullable = false)
     private String name;
 

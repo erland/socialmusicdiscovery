@@ -16,13 +16,14 @@ import java.util.Set;
 @XmlRootElement(name = "work")
 @javax.persistence.Entity
 @Table(name = "works")
-public class Work extends SMDEntity<Work> {
+public class Work extends SMDEntity {
     @Column(nullable = false)
     private String name;
     private Date date;
     @OneToMany
     @JoinColumn(name = "parent_id")
-    @XmlTransient  // XmlTransient required to avoid circular dependencies during JSON/XML encoding
+    @XmlTransient
+    // XmlTransient required to avoid circular dependencies during JSON/XML encoding
     private Set<Work> parts = new HashSet<Work>();
     @ManyToOne
     @JoinColumn(name = "parent_id")

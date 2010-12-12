@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.UUID;
 
 @MappedSuperclass
-public class SMDEntity<T> {
+public class SMDEntity {
     @Id
     @Column(length = 36)
     private String id;

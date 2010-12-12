@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "playable_element")
 @javax.persistence.Entity
 @Table(name = "playable_elements")
-public class PlayableElement extends SMDEntity<PlayableElement> {
+public class PlayableElement extends SMDEntity {
     @Column(nullable = false, length = 1024)
     private String uri;
     @Column(nullable = false)
