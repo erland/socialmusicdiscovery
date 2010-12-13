@@ -1,8 +1,8 @@
 package org.socialmusicdiscovery.server.api.management.model.core;
 
-import org.socialmusicdiscovery.server.api.management.model.BaseCRUDFacade;
+import org.socialmusicdiscovery.server.api.management.model.AbstractCRUDFacade;
 import org.socialmusicdiscovery.server.business.logic.DetachHelper;
-import org.socialmusicdiscovery.server.business.model.core.Release;
+import org.socialmusicdiscovery.server.business.model.core.ReleaseEntity;
 import org.socialmusicdiscovery.server.business.repository.core.ReleaseRepository;
 
 import javax.ws.rs.*;
@@ -11,10 +11,10 @@ import java.util.Arrays;
 import java.util.Collection;
 
 @Path("/releases")
-public class ReleaseFacade extends BaseCRUDFacade<Release, ReleaseRepository> {
+public class ReleaseFacade extends AbstractCRUDFacade<ReleaseEntity, ReleaseRepository> {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Collection<Release> search(@QueryParam("name") String name, @QueryParam("nameContains") String nameContains, @QueryParam("artist") String artist, @QueryParam("work") String work) {
+    public Collection<ReleaseEntity> search(@QueryParam("name") String name, @QueryParam("nameContains") String nameContains, @QueryParam("artist") String artist, @QueryParam("work") String work) {
         if (name != null) {
             return DetachHelper.createDetachedCopy(repository.findByNameWithRelations(name, Arrays.asList("reference"), null));
         } else if (nameContains != null) {
@@ -31,33 +31,29 @@ public class ReleaseFacade extends BaseCRUDFacade<Release, ReleaseRepository> {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
-    @Override
-    public Release get(@PathParam("id") String id) {
-        return super.get(id);
+    public ReleaseEntity get(@PathParam("id") String id) {
+        return super.getEntity(id);
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Override
-    public Release create(Release release) {
-        return super.create(release);
+    public ReleaseEntity create(ReleaseEntity release) {
+        return super.createEntity(release);
     }
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
-    @Override
-    public Release update(@PathParam("id") String id, Release release) {
-        return super.update(id, release);
+    public ReleaseEntity update(@PathParam("id") String id, ReleaseEntity release) {
+        return super.updateEntity(id, release);
     }
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
-    @Override
     public void delete(@PathParam("id") String id) {
-        super.delete(id);
+        super.deleteEntity(id);
     }
 }

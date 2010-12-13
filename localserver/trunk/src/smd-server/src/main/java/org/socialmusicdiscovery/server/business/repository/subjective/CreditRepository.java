@@ -1,13 +1,13 @@
 package org.socialmusicdiscovery.server.business.repository.subjective;
 
 import com.google.inject.ImplementedBy;
-import org.socialmusicdiscovery.server.business.model.SMDEntity;
-import org.socialmusicdiscovery.server.business.model.subjective.Credit;
+import org.socialmusicdiscovery.server.business.model.SMDIdentity;
+import org.socialmusicdiscovery.server.business.model.subjective.CreditEntity;
 import org.socialmusicdiscovery.server.business.repository.EntityRepository;
 
 import java.util.Collection;
 
-@ImplementedBy(CreditRepositoryImpl.class)
-public interface CreditRepository extends EntityRepository<Credit, Credit> {
-    Collection<Credit> findCreditsForReleaseRecordingWork(SMDEntity releaseRecordingWorkId);
+@ImplementedBy(JPACreditRepository.class)
+public interface CreditRepository extends EntityRepository<CreditEntity, CreditEntity> {
+    Collection<CreditEntity> findCreditsForReleaseRecordingWork(SMDIdentity releaseRecordingWorkId);
 }

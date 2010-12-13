@@ -1,7 +1,8 @@
 package org.socialmusicdiscovery.server.database.sampledata;
 
 import liquibase.csv.opencsv.CSVReader;
-import org.socialmusicdiscovery.server.business.model.classification.Classification;
+import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
+import org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity;
 import org.socialmusicdiscovery.server.business.model.core.*;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -48,12 +49,12 @@ public class SampleCreator {
         }
     }
 
-    protected void addSMDEntityReference(Map<String, List<String>> result, String id, String type) {
-        if (result.get("smdentity_references") == null) {
-            result.put("smdentity_references", new ArrayList<String>(Arrays.asList(
+    protected void addSMDIdentityReference(Map<String, List<String>> result, String id, String type) {
+        if (result.get("smdidentity_references") == null) {
+            result.put("smdidentity_references", new ArrayList<String>(Arrays.asList(
                     "id,type")));
         }
-        result.get("smdentity_references").add(id + "," + type);
+        result.get("smdidentity_references").add(id + "," + type);
     }
 
     protected void addRelease(Map<String, List<String>> result, String id, String name) {
@@ -62,7 +63,7 @@ public class SampleCreator {
                     "id,name")));
         }
         result.get("releases").add(id + ",\"" + name + "\"");
-        addSMDEntityReference(result, id, Release.class.getName());
+        addSMDIdentityReference(result, id, SMDIdentityReferenceEntity.typeForClass(ReleaseEntity.class));
     }
 
     protected void addRelease(Map<String, List<String>> result, String id, String name, String labelId) {
@@ -71,7 +72,7 @@ public class SampleCreator {
                     "id,name,label_id")));
         }
         result.get("releases").add(id + ",\"" + name + "\"," + labelId);
-        addSMDEntityReference(result, id, Release.class.getName());
+        addSMDIdentityReference(result, id, SMDIdentityReferenceEntity.typeForClass(ReleaseEntity.class));
     }
 
     protected void addLabel(Map<String, List<String>> result, String id, String name) {
@@ -80,7 +81,7 @@ public class SampleCreator {
                     "id,name")));
         }
         result.get("labels").add(id + ",\"" + name + "\"");
-        addSMDEntityReference(result, id, Label.class.getName());
+        addSMDIdentityReference(result, id, SMDIdentityReferenceEntity.typeForClass(LabelEntity.class));
     }
 
     protected void addClassification(Map<String, List<String>> result, String id, String name, String type) {
@@ -89,7 +90,7 @@ public class SampleCreator {
                     "id,name,type")));
         }
         result.get("classifications").add(id + ",\"" + name + "\"," + type);
-        addSMDEntityReference(result, id, Classification.class.getName());
+        addSMDIdentityReference(result, id, SMDIdentityReferenceEntity.typeForClass(ClassificationEntity.class));
     }
 
     protected void addClassificationReference(Map<String, List<String>> result, String classificationId, String referenceId) {
@@ -110,7 +111,7 @@ public class SampleCreator {
                     "id,name,person_id")));
         }
         result.get("artists").add(id + ",\"" + name + "\",\"" + personId + "\"");
-        addSMDEntityReference(result, id, Artist.class.getName());
+        addSMDIdentityReference(result, id, SMDIdentityReferenceEntity.typeForClass(ArtistEntity.class));
     }
 
     protected void addPerson(Map<String, List<String>> result, String id, String name) {
@@ -119,7 +120,7 @@ public class SampleCreator {
                     "id,name")));
         }
         result.get("persons").add(id + ",\"" + name + "\"");
-        addSMDEntityReference(result, id, Person.class.getName());
+        addSMDIdentityReference(result, id, SMDIdentityReferenceEntity.typeForClass(PersonEntity.class));
     }
 
     protected void addTrack(Map<String, List<String>> result, String releaseId, String recordingId, String id) {
@@ -140,7 +141,7 @@ public class SampleCreator {
                     "id,release_id,number,name")));
         }
         result.get("mediums").add(id + "," + releaseId + "," + number + ",\"" + name + "\"");
-        addSMDEntityReference(result, id, Medium.class.getName());
+        addSMDIdentityReference(result, id, SMDIdentityReferenceEntity.typeForClass(MediumEntity.class));
     }
 
     protected void addTrack(Map<String, List<String>> result, String releaseId, String recordingId, String id, String mediumId, Integer number) {
@@ -149,7 +150,7 @@ public class SampleCreator {
                     "id,release_id,recording_id,medium_id,number")));
         }
         result.get("tracks").add(id + "," + releaseId + "," + recordingId + "," + mediumId + "," + (number != null ? "" + number : "NULL"));
-        addSMDEntityReference(result, id, Track.class.getName());
+        addSMDIdentityReference(result, id, SMDIdentityReferenceEntity.typeForClass(TrackEntity.class));
     }
 
     protected void addRecording(Map<String, List<String>> result, String id, String workId, String name) {
@@ -158,7 +159,7 @@ public class SampleCreator {
                     "id,name,work_id")));
         }
         result.get("recordings").add(id + ",NULL,\"" + workId + "\"");
-        addSMDEntityReference(result, id, Recording.class.getName());
+        addSMDIdentityReference(result, id, SMDIdentityReferenceEntity.typeForClass(RecordingEntity.class));
     }
 
     protected void addWork(Map<String, List<String>> result, String id, String name) {
@@ -167,7 +168,7 @@ public class SampleCreator {
                     "id,name")));
         }
         result.get("works").add(id + ",\"" + name + "\"");
-        addSMDEntityReference(result, id, Work.class.getName());
+        addSMDIdentityReference(result, id, SMDIdentityReferenceEntity.typeForClass(WorkEntity.class));
     }
 
     protected void addReleaseContributor(Map<String, List<String>> result, String releaseId, String artistId, String type) {
@@ -176,7 +177,7 @@ public class SampleCreator {
                     "id,artist_id,release_id,session_id,recording_id,work_id,type")));
         }
         String id = UUID.randomUUID().toString();
-        addSMDEntityReference(result, id, Contributor.class.getName());
+        addSMDIdentityReference(result, id, SMDIdentityReferenceEntity.typeForClass(ContributorEntity.class));
         result.get("contributors").add(id + "," + artistId + "," + releaseId + ",NULL,NULL,NULL," + type);
     }
 
@@ -186,7 +187,7 @@ public class SampleCreator {
                     "id,artist_id,release_id,session_id,recording_id,work_id,type")));
         }
         String id = UUID.randomUUID().toString();
-        addSMDEntityReference(result, id, Contributor.class.getName());
+        addSMDIdentityReference(result, id, SMDIdentityReferenceEntity.typeForClass(ContributorEntity.class));
         result.get("contributors").add(id + "," + artistId + ",NULL,NULL," + recordingId + ",NULL," + type);
     }
 
@@ -196,7 +197,7 @@ public class SampleCreator {
                     "id,artist_id,release_id,session_id,recording_id,work_id,type")));
         }
         String id = UUID.randomUUID().toString();
-        addSMDEntityReference(result, id, Contributor.class.getName());
+        addSMDIdentityReference(result, id, SMDIdentityReferenceEntity.typeForClass(ContributorEntity.class));
         result.get("contributors").add(id + "," + artistId + ",NULL,NULL,NULL," + workId + "," + type);
     }
 

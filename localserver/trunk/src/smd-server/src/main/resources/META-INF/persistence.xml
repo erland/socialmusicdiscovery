@@ -3,33 +3,33 @@
     <persistence-unit name="smd" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
 
-        <class>org.socialmusicdiscovery.server.business.model.SMDEntityReference</class>
+        <class>org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity</class>
 
-        <class>org.socialmusicdiscovery.server.business.model.core.Label</class>
-        <class>org.socialmusicdiscovery.server.business.model.core.Release</class>
-        <class>org.socialmusicdiscovery.server.business.model.core.Medium</class>
-        <class>org.socialmusicdiscovery.server.business.model.core.Track</class>
-        <class>org.socialmusicdiscovery.server.business.model.core.Recording</class>
-        <class>org.socialmusicdiscovery.server.business.model.core.RecordingSession</class>
-        <class>org.socialmusicdiscovery.server.business.model.core.Work</class>
-        <class>org.socialmusicdiscovery.server.business.model.core.Contributor</class>
-        <class>org.socialmusicdiscovery.server.business.model.core.Artist</class>
-        <class>org.socialmusicdiscovery.server.business.model.core.Person</class>
-        <class>org.socialmusicdiscovery.server.business.model.core.PlayableElement</class>
+        <class>org.socialmusicdiscovery.server.business.model.core.LabelEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.core.ReleaseEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.core.MediumEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.core.TrackEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.core.RecordingEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.core.RecordingSessionEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.core.WorkEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.core.ContributorEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.core.ArtistEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.core.PersonEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.core.PlayableElementEntity</class>
 
-        <class>org.socialmusicdiscovery.server.business.model.subjective.Credit</class>
-        <class>org.socialmusicdiscovery.server.business.model.subjective.Relation</class>
-        <class>org.socialmusicdiscovery.server.business.model.subjective.Series</class>
+        <class>org.socialmusicdiscovery.server.business.model.subjective.CreditEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.subjective.RelationEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.subjective.SeriesEntity</class>
 
-        <class>org.socialmusicdiscovery.server.business.model.classification.Classification</class>
+        <class>org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity</class>
 
-        <class>org.socialmusicdiscovery.server.business.model.GlobalIdentity</class>
+        <class>org.socialmusicdiscovery.server.business.model.GlobalIdentityEntity</class>
 
-        <class>org.socialmusicdiscovery.server.business.model.search.ReleaseSearchRelation</class>
-        <class>org.socialmusicdiscovery.server.business.model.search.RecordingSearchRelation</class>
-        <class>org.socialmusicdiscovery.server.business.model.search.WorkSearchRelation</class>
-        <class>org.socialmusicdiscovery.server.business.model.search.ArtistSearchRelation</class>
-        <class>org.socialmusicdiscovery.server.business.model.search.PersonSearchRelation</class>
+        <class>org.socialmusicdiscovery.server.business.model.search.ReleaseSearchRelationEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.search.RecordingSearchRelationEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.search.WorkSearchRelationEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.search.ArtistSearchRelationEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.search.PersonSearchRelationEntity</class>
 
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>

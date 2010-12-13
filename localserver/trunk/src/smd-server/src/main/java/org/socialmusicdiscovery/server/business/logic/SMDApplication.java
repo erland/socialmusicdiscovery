@@ -126,7 +126,7 @@ public class SMDApplication {
                 });
             }
 
-            Collection<Release> releases = releaseRepository.findAll();
+            Collection<ReleaseEntity> releases = releaseRepository.findAll();
             if (releases.size() > 0) {
                 System.out.println("\nFound " + releases.size() + " releases in database");
                 //System.out.println("\nPrinting all available releases in database, please wait...\n");
@@ -138,7 +138,7 @@ public class SMDApplication {
             //}
 
             Map<String, String> initParams = new HashMap<String, String>();
-            initParams.put("com.sun.jersey.config.property.packages", "org.socialmusicdiscovery.server.api");
+            initParams.put("com.sun.jersey.config.property.packages", "org.socialmusicdiscovery.server.api;org.socialmusicdiscovery.server.business.logic.jersey");
 
             System.out.println("Starting grizzly...");
             URI uri = UriBuilder.fromUri("http://localhost/").port(Integer.parseInt(serverPort)).build();
@@ -195,7 +195,7 @@ public class SMDApplication {
             }
             if (release.getMediums().size() > 0) {
                 for (Medium medium : release.getMediums()) {
-                    printTracks(medium.getTracks(), (medium.getName() != null ? medium.getName() : "" + medium.getNumber()) + " - ");
+                    printTracks(((MediumEntity)medium).getTracks(), (medium.getName() != null ? medium.getName() : "" + medium.getNumber()) + " - ");
                 }
             } else {
                 printTracks(release.getTracks(), "");

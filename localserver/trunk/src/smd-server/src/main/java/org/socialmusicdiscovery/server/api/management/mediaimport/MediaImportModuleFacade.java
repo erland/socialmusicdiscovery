@@ -2,7 +2,7 @@ package org.socialmusicdiscovery.server.api.management.mediaimport;
 
 import com.google.inject.Inject;
 import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+import org.socialmusicdiscovery.server.api.OperationStatus;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
 import org.socialmusicdiscovery.server.business.logic.MediaImportManager;
 
@@ -40,20 +40,22 @@ public class MediaImportModuleFacade {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{module}")
-    public JSONObject startImport(@PathParam("module") String module) throws JSONException {
+    public OperationStatus startImport(@PathParam("module") String module) throws JSONException {
         if(mediaImportManager.startImport(module)) {
-            return new JSONObject().put("success",true);
+            return new OperationStatus(true);
+        }else {
+            return new OperationStatus(false);
         }
-        return new JSONObject().put("success",false);
     }
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{module}")
-    public JSONObject abortImport(@PathParam("module") String module) throws JSONException {
+    public OperationStatus abortImport(@PathParam("module") String module) throws JSONException {
         if(mediaImportManager.abortImport(module)) {
-            return new JSONObject().put("success",true);
+            return new OperationStatus(true);
+        }else {
+            return new OperationStatus(false);
         }
-        return new JSONObject().put("success",false);
     }
 }

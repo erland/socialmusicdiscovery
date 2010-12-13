@@ -117,6 +117,14 @@
             <version>1.9.5</version>
         </dependency>
 
+        <!-- Google GSON -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>1.6</version>
+
+        </dependency>
+
     </dependencies>
 
     <repositories>
@@ -131,6 +139,12 @@
             <id>repository.jboss.org</id>
             <name>JBoss.org Repository for maven</name>
             <url>http://repository.jboss.org/nexus/content/groups/public-jboss/</url>
+            <layout>default</layout>
+        </repository>
+        <repository>
+            <id>google-gson.googlecode.com</id>
+            <name>Gson maven repository</name>
+            <url>http://google-gson.googlecode.com/svn/mavenrepo/</url>
             <layout>default</layout>
         </repository>
     </repositories>

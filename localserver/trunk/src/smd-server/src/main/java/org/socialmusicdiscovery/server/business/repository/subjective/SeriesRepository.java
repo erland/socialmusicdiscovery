@@ -1,9 +1,9 @@
 package org.socialmusicdiscovery.server.business.repository.subjective;
 
 import com.google.inject.ImplementedBy;
-import org.socialmusicdiscovery.server.business.repository.SMDEntityRepository;
-import org.socialmusicdiscovery.server.business.model.subjective.Series;
+import org.socialmusicdiscovery.server.business.model.subjective.SeriesEntity;
+import org.socialmusicdiscovery.server.business.repository.SMDIdentityRepository;
 
-@ImplementedBy(SeriesRepositoryImpl.class)
-public interface SeriesRepository extends SMDEntityRepository<Series> {
+@ImplementedBy(JPASeriesRepository.class)
+public interface SeriesRepository extends SMDIdentityRepository<SeriesEntity> {
 }

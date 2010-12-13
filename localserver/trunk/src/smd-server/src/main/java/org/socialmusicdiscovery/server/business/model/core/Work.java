@@ -1,87 +1,28 @@
 package org.socialmusicdiscovery.server.business.model.core;
 
-import org.socialmusicdiscovery.server.business.model.SMDEntity;
-import org.socialmusicdiscovery.server.business.model.search.WorkSearchRelation;
+import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 
-import javax.persistence.*;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "work")
-@javax.persistence.Entity
-@Table(name = "works")
-public class Work extends SMDEntity {
-    @Column(nullable = false)
-    private String name;
-    private Date date;
-    @OneToMany
-    @JoinColumn(name = "parent_id")
-    @XmlTransient
-    // XmlTransient required to avoid circular dependencies during JSON/XML encoding
-    private Set<Work> parts = new HashSet<Work>();
-    @ManyToOne
-    @JoinColumn(name = "parent_id")
-    private Work parent;
+public interface Work extends SMDIdentity {
+    String getName();
 
-    @OneToMany
-    @JoinColumn(name = "work_id")
-    private Set<Contributor> contributors = new HashSet<Contributor>();
+    void setName(String name);
 
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "id")
-    @XmlTransient
-    private Set<WorkSearchRelation> searchRelations;
+    Date getDate();
 
-    public String getName() {
-        return name;
-    }
+    void setDate(Date date);
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    Set<Work> getParts();
 
-    public Date getDate() {
-        return date;
-    }
+    void setParts(Set<Work> parts);
 
-    public void setDate(Date date) {
-        this.date = date;
-    }
+    Work getParent();
 
-    public Set<Work> getParts() {
-        return parts;
-    }
+    void setParent(Work parent);
 
-    public void setParts(Set<Work> parts) {
-        this.parts = parts;
-    }
+    Set<Contributor> getContributors();
 
-    public Work getParent() {
-        return parent;
-    }
-
-    public void setParent(Work parent) {
-        this.parent = parent;
-    }
-
-    public Set<Contributor> getContributors() {
-        return contributors;
-    }
-
-    public void setContributors(Set<Contributor> contributors) {
-        this.contributors = contributors;
-    }
-
-    public Set<WorkSearchRelation> getSearchRelations() {
-        return searchRelations;
-    }
-
-    public void setSearchRelations(Set<WorkSearchRelation> searchRelations) {
-        this.searchRelations = searchRelations;
-    }
+    void setContributors(Set<Contributor> contributors);
 }

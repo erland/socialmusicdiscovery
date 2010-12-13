@@ -1,72 +1,21 @@
 package org.socialmusicdiscovery.server.business.model;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-import java.util.UUID;
+public interface GlobalIdentity {
+    final static String SOURCE_MUSICBRAINZ = "musicbrainz";
 
-@javax.persistence.Entity
-@Table(name = "global_identities", uniqueConstraints = @UniqueConstraint(columnNames = {"source", "entityid"}))
-public class GlobalIdentity {
-    public static final String SOURCE_MUSICBRAINZ = "musicbrainz";
-    @Id
-    @Column(length = 36)
-    private String id;
+    String getId();
 
-    @Column(name = "source", nullable = false)
-    private String source;
-    @Column(nullable = false)
-    private String uri;
-    @Column(name = "entityid", nullable = false)
-    private String entityId;
+    void setId(String id);
 
-    public GlobalIdentity() {
-        id = UUID.randomUUID().toString();
-    }
+    String getSource();
 
-    public String getId() {
-        return id;
-    }
+    void setSource(String source);
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    String getUri();
 
-    public String getSource() {
-        return source;
-    }
+    void setUri(String uri);
 
-    public void setSource(String source) {
-        this.source = source;
-    }
+    String getEntityId();
 
-    public String getUri() {
-        return uri;
-    }
-
-    public void setUri(String uri) {
-        this.uri = uri;
-    }
-
-    public String getEntityId() {
-        return entityId;
-    }
-
-    public void setEntityId(String entityId) {
-        this.entityId = entityId;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof GlobalIdentity)) return false;
-
-        return id.equals(((GlobalIdentity) o).id);
-    }
-
-    @Override
-    public int hashCode() {
-        return id.hashCode();
-    }
+    void setEntityId(String entityId);
 }

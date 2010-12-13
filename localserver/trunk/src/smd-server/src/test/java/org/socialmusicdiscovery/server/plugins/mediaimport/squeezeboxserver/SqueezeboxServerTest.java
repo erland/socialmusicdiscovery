@@ -2,6 +2,7 @@ package org.socialmusicdiscovery.server.plugins.mediaimport.squeezeboxserver;
 
 import org.socialmusicdiscovery.server.business.model.GlobalIdentity;
 import org.socialmusicdiscovery.server.business.model.core.Release;
+import org.socialmusicdiscovery.server.business.model.core.ReleaseEntity;
 import org.socialmusicdiscovery.server.business.model.core.Track;
 import org.socialmusicdiscovery.test.BaseTestCase;
 import org.testng.annotations.AfterTest;
@@ -123,7 +124,7 @@ public class SqueezeboxServerTest extends BaseTestCase {
             ));
             squeezeboxServer.importNewPlayableElement(trackData);
 
-            Collection<Release> releases = releaseRepository.findAll();
+            Collection<ReleaseEntity> releases = releaseRepository.findAll();
             assert releases != null;
             assert releases.size() == 1;
 

@@ -1,8 +1,8 @@
 package org.socialmusicdiscovery.server.api.management.model.core;
 
-import org.socialmusicdiscovery.server.api.management.model.BaseCRUDFacade;
+import org.socialmusicdiscovery.server.api.management.model.AbstractCRUDFacade;
 import org.socialmusicdiscovery.server.business.logic.DetachHelper;
-import org.socialmusicdiscovery.server.business.model.core.Track;
+import org.socialmusicdiscovery.server.business.model.core.TrackEntity;
 import org.socialmusicdiscovery.server.business.repository.core.TrackRepository;
 
 import javax.ws.rs.*;
@@ -11,10 +11,10 @@ import java.util.Arrays;
 import java.util.Collection;
 
 @Path("/tracks")
-public class TrackFacade extends BaseCRUDFacade<Track, TrackRepository> {
+public class TrackFacade extends AbstractCRUDFacade<TrackEntity, TrackRepository> {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Collection<Track> search(@QueryParam("name") String name, @QueryParam("nameContains") String nameContains, @QueryParam("release") String release, @QueryParam("artist") String artist, @QueryParam("work") String work) {
+    public Collection<TrackEntity> search(@QueryParam("name") String name, @QueryParam("nameContains") String nameContains, @QueryParam("release") String release, @QueryParam("artist") String artist, @QueryParam("work") String work) {
         if (name != null) {
             return DetachHelper.createDetachedCopy(repository.findByNameWithRelations(name, Arrays.asList("reference"), null));
         } else if (nameContains != null) {
@@ -33,33 +33,29 @@ public class TrackFacade extends BaseCRUDFacade<Track, TrackRepository> {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
-    @Override
-    public Track get(@PathParam("id") String id) {
-        return super.get(id);
+    public TrackEntity get(@PathParam("id") String id) {
+        return super.getEntity(id);
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Override
-    public Track create(Track track) {
-        return super.create(track);
+    public TrackEntity create(TrackEntity track) {
+        return super.createEntity(track);
     }
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
-    @Override
-    public Track update(@PathParam("id") String id, Track track) {
-        return super.update(id, track);
+    public TrackEntity update(@PathParam("id") String id, TrackEntity track) {
+        return super.updateEntity(id, track);
     }
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
-    @Override
     public void delete(@PathParam("id") String id) {
-        super.delete(id);
+        super.deleteEntity(id);
     }
 }

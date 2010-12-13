@@ -5,6 +5,7 @@ import com.google.inject.name.Named;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.UniformInterfaceException;
+import com.sun.jersey.api.client.config.ClientConfig;
 import org.apache.pivot.collections.List;
 import org.apache.pivot.collections.Sequence;
 import org.apache.pivot.serialization.SerializationException;
@@ -16,8 +17,7 @@ import org.apache.pivot.wtk.*;
 import org.apache.pivot.wtkx.Bindable;
 import org.apache.pivot.wtkx.WTKX;
 import org.apache.pivot.wtkx.WTKXSerializer;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+import org.socialmusicdiscovery.server.api.OperationStatus;
 import org.socialmusicdiscovery.server.api.management.mediaimport.MediaImportStatus;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
 import org.socialmusicdiscovery.server.business.model.core.Release;
@@ -85,6 +85,9 @@ public class SMDApplicationWindow extends Window implements Bindable {
 
     private Resources resources;
 
+    @Inject
+    private ClientConfig config;
+
     @Override
     public void initialize(Resources resources) {
         this.resources = resources;
@@ -104,7 +107,7 @@ public class SMDApplicationWindow extends Window implements Bindable {
 
         // Check if an import is in progress and refresh the progress bar if it is
         try {
-            MediaImportStatus status = Client.create().resource(HOSTURL + "/mediaimportmodules/" + IMPORT_MODULE).accept(MediaType.APPLICATION_JSON).get(MediaImportStatus.class);
+            MediaImportStatus status = Client.create(config).resource(HOSTURL + "/mediaimportmodules/" + IMPORT_MODULE).accept(MediaType.APPLICATION_JSON).get(MediaImportStatus.class);
             if (status != null) {
                 startImportProgressBar(IMPORT_MODULE);
             }
@@ -242,13 +245,18 @@ public class SMDApplicationWindow extends Window implements Bindable {
         searchTasks.put("artist", new Task<Void>() {
             @Override
             public Void execute() throws TaskExecutionException {
-                Collection<Artist> artists = Client.create().resource(HOSTURL + "/artists" + searchParameters).accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<Artist>>() {
-                });
-                artistResultsTableView.getTableData().clear();
-                for (Artist artist : artists) {
-                    ((List<Artist>) artistResultsTableView.getTableData()).add(artist);
+                try {
+                    Collection<Artist> artists = Client.create(config).resource(HOSTURL + "/artists" + searchParameters).accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<Artist>>() {
+                    });
+                    artistResultsTableView.getTableData().clear();
+                    for (Artist artist : artists) {
+                        ((List<Artist>) artistResultsTableView.getTableData()).add(artist);
+                    }
+                    return null;
+                } catch (Throwable t) {
+                    t.printStackTrace();
+                    throw new TaskExecutionException(t);
                 }
-                return null;
             }
         });
         executeAndCleanupSearch(name, "artist");
@@ -294,13 +302,18 @@ public class SMDApplicationWindow extends Window implements Bindable {
         searchTasks.put("release", new Task<Void>() {
             @Override
             public Void execute() throws TaskExecutionException {
-                Collection<Release> releases = Client.create().resource(HOSTURL + "/releases" + searchParameters).accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<Release>>() {
-                });
-                releaseResultsTableView.getTableData().clear();
-                for (Release release : releases) {
-                    ((List<Release>) releaseResultsTableView.getTableData()).add(release);
+                try {
+                    Collection<Release> releases = Client.create(config).resource(HOSTURL + "/releases" + searchParameters).accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<Release>>() {
+                    });
+                    releaseResultsTableView.getTableData().clear();
+                    for (Release release : releases) {
+                        ((List<Release>) releaseResultsTableView.getTableData()).add(release);
+                    }
+                    return null;
+                } catch (Throwable t) {
+                    t.printStackTrace();
+                    throw new TaskExecutionException(t);
                 }
-                return null;
             }
         });
         executeAndCleanupSearch(name, "release");
@@ -345,13 +358,18 @@ public class SMDApplicationWindow extends Window implements Bindable {
         searchTasks.put("work", new Task<Void>() {
             @Override
             public Void execute() throws TaskExecutionException {
-                Collection<Work> works = Client.create().resource(HOSTURL + "/works" + searchParameters).accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<Work>>() {
-                });
-                workResultsTableView.getTableData().clear();
-                for (Work work : works) {
-                    ((List<Work>) workResultsTableView.getTableData()).add(work);
+                try {
+                    Collection<Work> works = Client.create(config).resource(HOSTURL + "/works" + searchParameters).accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<Work>>() {
+                    });
+                    workResultsTableView.getTableData().clear();
+                    for (Work work : works) {
+                        ((List<Work>) workResultsTableView.getTableData()).add(work);
+                    }
+                    return null;
+                } catch (Throwable t) {
+                    t.printStackTrace();
+                    throw new TaskExecutionException(t);
                 }
-                return null;
             }
         });
         executeAndCleanupSearch(name, "work");
@@ -402,14 +420,10 @@ public class SMDApplicationWindow extends Window implements Bindable {
     private void startImport(String module) {
         if (importTask == null) {
             importAborted = false;
-            JSONObject jsonStatus = Client.create().resource(HOSTURL + "/mediaimportmodules/" + module).post(JSONObject.class);
-            try {
-                Boolean status = jsonStatus.getBoolean("success");
-                if (status != null && status) {
-                    startImportProgressBar(module);
-                }
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
+            OperationStatus operationStatus = Client.create(config).resource(HOSTURL + "/mediaimportmodules/" + module).post(OperationStatus.class);
+            Boolean status = operationStatus.getSuccess();
+            if (status != null && status) {
+                startImportProgressBar(module);
             }
         }
     }
@@ -429,7 +443,7 @@ public class SMDApplicationWindow extends Window implements Bindable {
                         importProgressMeter.setPercentage(0);
                         importProgressMeter.setText("");
                         importProgressMeter.setVisible(true);
-                        MediaImportStatus status = Client.create().resource(HOSTURL + "/mediaimportmodules/" + module).accept(MediaType.APPLICATION_JSON).get(MediaImportStatus.class);
+                        MediaImportStatus status = Client.create(config).resource(HOSTURL + "/mediaimportmodules/" + module).accept(MediaType.APPLICATION_JSON).get(MediaImportStatus.class);
                         while (status != null) {
                             if (status.getTotalNumber() > 0) {
                                 importProgressMeter.setPercentage((double) status.getCurrentNumber() / status.getTotalNumber());
@@ -441,7 +455,7 @@ public class SMDApplicationWindow extends Window implements Bindable {
                             } catch (InterruptedException e) {
                                 throw new TaskExecutionException(e);
                             }
-                            status = Client.create().resource(HOSTURL + "/mediaimportmodules/" + module).accept(MediaType.APPLICATION_JSON).get(MediaImportStatus.class);
+                            status = Client.create(config).resource(HOSTURL + "/mediaimportmodules/" + module).accept(MediaType.APPLICATION_JSON).get(MediaImportStatus.class);
                         }
                     } catch (UniformInterfaceException e) {
                         if (e.getResponse().getStatus() != 204) {
@@ -487,7 +501,7 @@ public class SMDApplicationWindow extends Window implements Bindable {
     public void abortImport(String module) {
         if (importTask != null) {
             importAborted = true;
-            Client.create().resource(HOSTURL + "/mediaimportmodules/" + module).delete();
+            Client.create(config).resource(HOSTURL + "/mediaimportmodules/" + module).delete();
         }
     }
 }

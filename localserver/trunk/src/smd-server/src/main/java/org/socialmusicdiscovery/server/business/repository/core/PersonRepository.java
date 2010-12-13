@@ -1,14 +1,14 @@
 package org.socialmusicdiscovery.server.business.repository.core;
 
 import com.google.inject.ImplementedBy;
-import org.socialmusicdiscovery.server.business.model.core.Person;
-import org.socialmusicdiscovery.server.business.repository.SMDEntityRepository;
+import org.socialmusicdiscovery.server.business.model.core.PersonEntity;
+import org.socialmusicdiscovery.server.business.repository.SMDIdentityRepository;
 
 import java.util.Collection;
 
-@ImplementedBy(PersonRepositoryImpl.class)
-public interface PersonRepository extends SMDEntityRepository<Person> {
-    Collection<Person> findByName(String name);
-    Collection<Person> findByNameWithRelations(String name, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
-    Collection<Person> findByPartialNameWithRelations(String name, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
+@ImplementedBy(JPAPersonRepository.class)
+public interface PersonRepository extends SMDIdentityRepository<PersonEntity> {
+    Collection<PersonEntity> findByName(String name);
+    Collection<PersonEntity> findByNameWithRelations(String name, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
+    Collection<PersonEntity> findByPartialNameWithRelations(String name, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
 }

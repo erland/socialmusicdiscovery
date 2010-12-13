@@ -12,9 +12,14 @@
           <outputDirectory>/</outputDirectory>
           <directory>${project.build.outputDirectory}</directory>
           <includes>
+              <include>org/socialmusicdiscovery/server/support/**/*</include>
               <include>org/socialmusicdiscovery/server/business/model/**/*</include>
               <include>org/socialmusicdiscovery/server/api/management/mediaimport/MediaImportStatus.class</include>
+              <include>org/socialmusicdiscovery/server/api/OperationStatus.class</include>
           </includes>
+          <excludes>
+              <exclude>org/socialmusicdiscovery/server/business/model/search/**</exclude>
+          </excludes>
       </fileSet>
   </fileSets>
 </assembly>

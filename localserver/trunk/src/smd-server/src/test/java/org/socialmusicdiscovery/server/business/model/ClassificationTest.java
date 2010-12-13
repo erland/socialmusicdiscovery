@@ -1,6 +1,7 @@
 package org.socialmusicdiscovery.server.business.model;
 
 import org.socialmusicdiscovery.server.business.model.classification.Classification;
+import org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity;
 import org.socialmusicdiscovery.server.business.model.core.Release;
 import org.socialmusicdiscovery.server.business.model.core.Track;
 import org.socialmusicdiscovery.test.BaseTestCase;
@@ -36,26 +37,26 @@ public class ClassificationTest extends BaseTestCase {
         try {
             Release release = releaseRepository.findByName("The Bodyguard (Original Soundtrack Album)").iterator().next();
 
-            Classification classification = new Classification();
+            ClassificationEntity classification = new ClassificationEntity();
             classification.setName("Pop");
             classification.setType(Classification.GENRE);
-            classification.getReferences().add(SMDEntityReference.forEntity(release));
+            classification.getReferences().add(SMDIdentityReferenceEntity.forEntity(release));
             classificationRepository.create(classification);
 
             for (Track track : release.getTracks()) {
-                classification.getReferences().add(SMDEntityReference.forEntity(track));
+                classification.getReferences().add(SMDIdentityReferenceEntity.forEntity(track));
             }
 
-            Collection<Classification> classifications = classificationRepository.findByNameAndType("Pop", Classification.GENRE);
+            Collection<ClassificationEntity> classifications = classificationRepository.findByNameAndType("Pop", Classification.GENRE);
             assert classifications != null;
             assert classifications.size() == 1;
             classification = classifications.iterator().next();
-            Collection<SMDEntityReference> references = classification.getReferences();
+            Collection<SMDIdentityReference> references = classification.getReferences();
             assert references != null;
             assert references.size() == 5;
             int releaseMatches = 0;
             int trackMatches = 0;
-            for (SMDEntityReference reference : references) {
+            for (SMDIdentityReference reference : references) {
                 if (reference.getId().equals(release.getId())) {
                     releaseMatches++;
                     continue;

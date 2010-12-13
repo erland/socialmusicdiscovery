@@ -15,7 +15,7 @@ import org.dbunit.operation.DatabaseOperation;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
 import org.socialmusicdiscovery.server.business.logic.injections.database.DatabaseProvider;
 import org.socialmusicdiscovery.server.business.repository.GlobalIdentityRepository;
-import org.socialmusicdiscovery.server.business.repository.SMDEntityReferenceRepository;
+import org.socialmusicdiscovery.server.business.repository.SMDIdentityReferenceRepository;
 import org.socialmusicdiscovery.server.business.repository.classification.ClassificationRepository;
 import org.socialmusicdiscovery.server.business.repository.core.*;
 import org.socialmusicdiscovery.server.business.repository.subjective.CreditRepository;
@@ -56,7 +56,7 @@ public class BaseTestCase {
     @Inject
     protected RelationRepository relationRepository;
     @Inject
-    protected SMDEntityReferenceRepository smdEntityReferenceRepository;
+    protected SMDIdentityReferenceRepository smdIdentityReferenceRepository;
 
     protected final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy");
 

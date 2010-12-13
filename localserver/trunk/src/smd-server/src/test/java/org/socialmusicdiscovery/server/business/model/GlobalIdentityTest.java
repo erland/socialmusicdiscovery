@@ -36,13 +36,13 @@ public class GlobalIdentityTest extends BaseTestCase {
             Artist artist = artistRepository.findByName("Whitney Houston").iterator().next();
             Release release = releaseRepository.findByName("The Bodyguard (Original Soundtrack Album)").iterator().next();
 
-            GlobalIdentity identity = new GlobalIdentity();
+            GlobalIdentityEntity identity = new GlobalIdentityEntity();
             identity.setSource(GlobalIdentity.SOURCE_MUSICBRAINZ);
             identity.setEntityId(artist.getId());
             identity.setUri("0307edfc-437c-4b48-8700-80680e66a228");
             globalIdentityRepository.create(identity);
 
-            identity = new GlobalIdentity();
+            identity = new GlobalIdentityEntity();
             identity.setSource(GlobalIdentity.SOURCE_MUSICBRAINZ);
             identity.setEntityId(release.getId());
             identity.setUri("11cafb9e-5fbc-49c7-b920-4ff754e03e93");
@@ -50,7 +50,7 @@ public class GlobalIdentityTest extends BaseTestCase {
 
             int identifiedTracks = 0;
             for (Track track : release.getTracks()) {
-                identity = new GlobalIdentity();
+                identity = new GlobalIdentityEntity();
                 identity.setSource(GlobalIdentity.SOURCE_MUSICBRAINZ);
                 identity.setEntityId(track.getId());
                 if (track.getNumber().equals(1)) {

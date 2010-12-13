@@ -1,15 +1,15 @@
 package org.socialmusicdiscovery.server.api.management.mediaimport;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
+import com.google.gson.annotations.Expose;
 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "mediaimporter")
 public class MediaImportStatus {
+    @Expose
     private String module;
+    @Expose
     private String currentDescription;
+    @Expose
     private Long currentNumber;
+    @Expose
     private Long totalNumber;
 
     public MediaImportStatus() {}

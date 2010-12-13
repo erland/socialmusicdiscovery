@@ -3,8 +3,8 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
     <changeSet id="sample_crazyfrog_axelf" author="erland">
-        <loadData tableName="smdentity_references"
-                  file="org/socialmusicdiscovery/server/database/sampledata/crazyfrog_axelf/smdentity_references.csv">
+        <loadData tableName="smdidentity_references"
+                  file="org/socialmusicdiscovery/server/database/sampledata/crazyfrog_axelf/smdidentity_references.csv">
             <column header="id" type="STRING"/>
             <column header="type" type="STRING"/>
         </loadData>

@@ -1,42 +1,17 @@
 package org.socialmusicdiscovery.server.business.model.core;
 
-import org.socialmusicdiscovery.server.business.model.SMDEntity;
+import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
+public interface Contributor extends SMDIdentity {
+    final static String PERFORMER = "performer";
+    final static String COMPOSER = "composer";
+    final static String CONDUCTOR = "conductor";
 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "contributor")
-@javax.persistence.Entity
-@Table(name = "contributors")
-public class Contributor extends SMDEntity {
-    public static final String PERFORMER = "performer";
-    public static final String COMPOSER = "composer";
-    public static final String CONDUCTOR = "conductor";
-    @Column(nullable = false)
-    private String type;
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "artist_id")
-    private Artist artist;
+    String getType();
 
-    public String getType() {
-        return type;
-    }
+    void setType(String type);
 
-    public void setType(String type) {
-        this.type = type;
-    }
+    Artist getArtist();
 
-    public Artist getArtist() {
-        return artist;
-    }
-
-    public void setArtist(Artist artist) {
-        this.artist = artist;
-    }
+    void setArtist(Artist artist);
 }
