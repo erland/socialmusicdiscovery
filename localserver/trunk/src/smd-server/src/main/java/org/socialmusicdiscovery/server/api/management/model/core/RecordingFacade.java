@@ -1,8 +1,8 @@
 package org.socialmusicdiscovery.server.api.management.model.core;
 
-import org.socialmusicdiscovery.server.api.management.model.BaseCRUDFacade;
+import org.socialmusicdiscovery.server.api.management.model.AbstractCRUDFacade;
 import org.socialmusicdiscovery.server.business.logic.DetachHelper;
-import org.socialmusicdiscovery.server.business.model.core.Recording;
+import org.socialmusicdiscovery.server.business.model.core.RecordingEntity;
 import org.socialmusicdiscovery.server.business.repository.core.RecordingRepository;
 
 import javax.ws.rs.*;
@@ -11,10 +11,10 @@ import java.util.Arrays;
 import java.util.Collection;
 
 @Path("/recordings")
-public class RecordingFacade extends BaseCRUDFacade<Recording, RecordingRepository> {
+public class RecordingFacade extends AbstractCRUDFacade<RecordingEntity, RecordingRepository> {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Collection<Recording> search(@QueryParam("name") String name, @QueryParam("nameContains") String nameContains) {
+    public Collection<RecordingEntity> search(@QueryParam("name") String name, @QueryParam("nameContains") String nameContains) {
         if (name != null) {
             return DetachHelper.createDetachedCopy(repository.findByNameWithRelations(name, Arrays.asList("reference"), null));
         } else if (nameContains != null) {
@@ -27,33 +27,29 @@ public class RecordingFacade extends BaseCRUDFacade<Recording, RecordingReposito
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
-    @Override
-    public Recording get(@PathParam("id") String id) {
-        return super.get(id);
+    public RecordingEntity get(@PathParam("id") String id) {
+        return super.getEntity(id);
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Override
-    public Recording create(Recording recording) {
-        return super.create(recording);
+    public RecordingEntity create(RecordingEntity recording) {
+        return super.createEntity(recording);
     }
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
-    @Override
-    public Recording update(@PathParam("id") String id, Recording recording) {
-        return super.update(id, recording);
+    public RecordingEntity update(@PathParam("id") String id, RecordingEntity recording) {
+        return super.updateEntity(id, recording);
     }
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
-    @Override
     public void delete(@PathParam("id") String id) {
-        super.delete(id);
+        super.deleteEntity(id);
     }
 }

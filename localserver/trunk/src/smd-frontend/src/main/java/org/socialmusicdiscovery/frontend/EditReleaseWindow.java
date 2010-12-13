@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.GenericType;
+import com.sun.jersey.api.client.config.ClientConfig;
 import org.apache.pivot.collections.ArrayList;
 import org.apache.pivot.collections.List;
 import org.apache.pivot.serialization.SerializationException;
@@ -39,6 +40,9 @@ public class EditReleaseWindow extends Window implements Bindable {
     @Inject
     @Named("org.socialmusicdiscovery.server.port")
     private String SMDSERVERPORT;
+
+    @Inject
+    private ClientConfig config;
 
     @WTKX
     TextInput releaseNameTextInput;
@@ -139,7 +143,7 @@ public class EditReleaseWindow extends Window implements Bindable {
     }
 
     public void open(Display display, Window owner, Release release) {
-        release = Client.create().resource("http://" + SMDSERVER + ":" + SMDSERVERPORT + "/releases/" + release.getId()).accept(MediaType.APPLICATION_JSON).get(Release.class);
+        release = Client.create(config).resource("http://" + SMDSERVER + ":" + SMDSERVERPORT + "/releases/" + release.getId()).accept(MediaType.APPLICATION_JSON).get(Release.class);
         this.release = release;
 
         cancelButton.getButtonPressListeners().add(new ButtonPressListener() {

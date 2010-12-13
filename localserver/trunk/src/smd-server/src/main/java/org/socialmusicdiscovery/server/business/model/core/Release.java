@@ -1,108 +1,37 @@
 package org.socialmusicdiscovery.server.business.model.core;
 
-import org.socialmusicdiscovery.server.business.model.SMDEntity;
-import org.socialmusicdiscovery.server.business.model.search.ReleaseSearchRelation;
+import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 
-import javax.persistence.*;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "release")
-@javax.persistence.Entity
-@Table(name = "releases")
-public class Release extends SMDEntity {
-    private Date date;
-    @Column(nullable = false)
-    private String name;
-    @ManyToOne
-    @JoinColumn(name = "label_id")
-    private Label label;
-    @OneToMany
-    @OrderBy("number, name")
-    @JoinColumn(name = "release_id", nullable = false)
-    private List<Medium> mediums = new ArrayList<Medium>();
-    @OneToMany
-    @JoinColumn(name = "release_id")
-    @OrderBy("number")
-    private List<Track> tracks = new ArrayList<Track>();
-    @ManyToMany
-    @JoinTable(name = "release_recording_sessions",
-            joinColumns = @JoinColumn(name = "release_id"),
-            inverseJoinColumns = @JoinColumn(name = "session_id"))
-    private Set<RecordingSession> recordingSessions = new HashSet<RecordingSession>();
-    @OneToMany
-    @JoinColumn(name = "release_id")
-    private Set<Contributor> contributors = new HashSet<Contributor>();
+public interface Release extends SMDIdentity {
+    Date getDate();
 
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "id")
-    @XmlTransient
-    private Set<ReleaseSearchRelation> searchRelations;
+    void setDate(Date date);
 
-    public Date getDate() {
-        return date;
-    }
+    String getName();
 
-    public void setDate(Date date) {
-        this.date = date;
-    }
+    void setName(String name);
 
-    public String getName() {
-        return name;
-    }
+    Label getLabel();
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    void setLabel(Label label);
 
-    public Label getLabel() {
-        return label;
-    }
+    List<Medium> getMediums();
 
-    public void setLabel(Label label) {
-        this.label = label;
-    }
+    void setMediums(List<Medium> mediums);
 
-    public List<Medium> getMediums() {
-        return mediums;
-    }
+    List<Track> getTracks();
 
-    public void setMediums(List<Medium> mediums) {
-        this.mediums = mediums;
-    }
+    void setTracks(List<Track> tracks);
 
-    public List<Track> getTracks() {
-        return tracks;
-    }
+    Set<RecordingSession> getRecordingSessions();
 
-    public void setTracks(List<Track> tracks) {
-        this.tracks = tracks;
-    }
+    void setRecordingSessions(Set<RecordingSession> recordingSessions);
 
-    public Set<RecordingSession> getRecordingSessions() {
-        return recordingSessions;
-    }
+    Set<Contributor> getContributors();
 
-    public void setRecordingSessions(Set<RecordingSession> recordingSessions) {
-        this.recordingSessions = recordingSessions;
-    }
-
-    public Set<Contributor> getContributors() {
-        return contributors;
-    }
-
-    public void setContributors(Set<Contributor> contributors) {
-        this.contributors = contributors;
-    }
-
-    public Set<ReleaseSearchRelation> getSearchRelations() {
-        return searchRelations;
-    }
-
-    public void setSearchRelations(Set<ReleaseSearchRelation> searchRelations) {
-        this.searchRelations = searchRelations;
-    }
+    void setContributors(Set<Contributor> contributors);
 }

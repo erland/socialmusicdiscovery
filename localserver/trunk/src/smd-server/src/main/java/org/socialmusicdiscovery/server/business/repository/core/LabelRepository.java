@@ -1,14 +1,14 @@
 package org.socialmusicdiscovery.server.business.repository.core;
 
 import com.google.inject.ImplementedBy;
-import org.socialmusicdiscovery.server.business.model.core.Label;
-import org.socialmusicdiscovery.server.business.repository.SMDEntityRepository;
+import org.socialmusicdiscovery.server.business.model.core.LabelEntity;
+import org.socialmusicdiscovery.server.business.repository.SMDIdentityRepository;
 
 import java.util.Collection;
 
-@ImplementedBy(LabelRepositoryImpl.class)
-public interface LabelRepository extends SMDEntityRepository<Label> {
-    Collection<Label> findByName(String name);
-    Collection<Label> findByNameWithRelations(String name, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
-    Collection<Label> findByPartialNameWithRelations(String name, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
+@ImplementedBy(JPALabelRepository.class)
+public interface LabelRepository extends SMDIdentityRepository<LabelEntity> {
+    Collection<LabelEntity> findByName(String name);
+    Collection<LabelEntity> findByNameWithRelations(String name, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
+    Collection<LabelEntity> findByPartialNameWithRelations(String name, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
 }

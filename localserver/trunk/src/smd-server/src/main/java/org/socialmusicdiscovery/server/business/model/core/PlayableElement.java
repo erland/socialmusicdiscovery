@@ -1,55 +1,21 @@
 package org.socialmusicdiscovery.server.business.model.core;
 
-import org.socialmusicdiscovery.server.business.model.SMDEntity;
+import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 
-import javax.persistence.Column;
-import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
+public interface PlayableElement extends SMDIdentity {
+    String getSmdID();
 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "playable_element")
-@javax.persistence.Entity
-@Table(name = "playable_elements")
-public class PlayableElement extends SMDEntity {
-    @Column(nullable = false, length = 1024)
-    private String uri;
-    @Column(nullable = false)
-    private String smdID;
-    @Column(nullable = false)
-    private String format;
-    private Integer bitrate;
+    void setSmdID(String smdID);
 
-    public String getSmdID() {
-        return smdID;
-    }
+    String getUri();
 
-    public void setSmdID(String smdID) {
-        this.smdID = smdID;
-    }
+    void setUri(String uri);
 
-    public String getUri() {
-        return uri;
-    }
+    String getFormat();
 
-    public void setUri(String uri) {
-        this.uri = uri;
-    }
+    void setFormat(String format);
 
-    public String getFormat() {
-        return format;
-    }
+    Integer getBitrate();
 
-    public void setFormat(String format) {
-        this.format = format;
-    }
-
-    public Integer getBitrate() {
-        return bitrate;
-    }
-
-    public void setBitrate(Integer bitrate) {
-        this.bitrate = bitrate;
-    }
+    void setBitrate(Integer bitrate);
 }
