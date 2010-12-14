@@ -8,6 +8,13 @@ Note that the UML model is handled through community edition of [http://www.visu
 <br/>
 http://images.visual-paradigm.com/vpuml/vpuml_title_80.png
 
+Visual Paradigm has sponsored us with a 6-month license to the Professional version of Visual Paradigm which contains a bit more features needed for advanced modeling. All team members are allowed to install this license but each team member can only run it on one machine at the time. The license is only allowed to be used for the work within this project, so it's not a general purpose license which you can use in other projects.
+
+Anyone that wants a license, contact Erland or reply to the following thread in the mailing list:
+http://groups.google.com/group/socialmusicdiscovery-developers/t/e0f537382aeb056d
+
+If you only want to view models and don't plan to modify them, you can use the Community Edition.
+
 == Visual Paradigm instructions ==
 Here are some short instructions where you find things in Visual Paradigm.
   * A good start is to select the "Diagram Navigation" tab at the upper left corner on Visual Paradigm.
