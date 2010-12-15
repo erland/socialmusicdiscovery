@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+    <changeSet author="erland" id="7post" dbms="derby">
+
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="contributors" constraintName="FK_CONTRIBUTORS_ID"
+                                 deferrable="false" initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="smdidentity_references"/>
+        <addForeignKeyConstraint baseColumnNames="reference_id" baseTableName="classification_references"
+                                 constraintName="FK_CLASSIFICATION_REFERENCES_REFERENCE" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="smdidentity_references"/>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="playable_elements"
+                                 constraintName="FK_PLAYABLE_ELEMENTS_ID" deferrable="false" initiallyDeferred="false"
+                                 referencedColumnNames="id" referencedTableName="smdidentity_references"/>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="series" constraintName="FK_SERIES_ID"
+                                 deferrable="false" initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="smdidentity_references"/>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="works" constraintName="FK_WORKS_ID"
+                                 deferrable="false" initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="smdidentity_references"/>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="mediums" constraintName="FK_MEDIUMS_ID"
+                                 deferrable="false" initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="smdidentity_references"/>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="tracks" constraintName="FK_TRACKS_ID"
+                                 deferrable="false" initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="smdidentity_references"/>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="classifications"
+                                 constraintName="FK_CLASSIFICATIONS_ID" deferrable="false" initiallyDeferred="false"
+                                 referencedColumnNames="id" referencedTableName="smdidentity_references"/>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="recording_sessions"
+                                 constraintName="FK_RECORDING_SESSIONS_ID" deferrable="false" initiallyDeferred="false"
+                                 referencedColumnNames="id" referencedTableName="smdidentity_references"/>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="labels" constraintName="FK_LABELS_ID"
+                                 deferrable="false" initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="smdidentity_references"/>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="recordings" constraintName="FK_RECORDINGS_ID"
+                                 deferrable="false" initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="smdidentity_references"/>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="releases" constraintName="FK_RELEASES_ID"
+                                 deferrable="false" initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="smdidentity_references"/>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="persons" constraintName="FK_PERSONS_ID"
+                                 deferrable="false" initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="smdidentity_references"/>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="artists" constraintName="FK_ARTISTS_ID"
+                                 deferrable="false" initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="smdidentity_references"/>
+
+    </changeSet>
+</databaseChangeLog>
