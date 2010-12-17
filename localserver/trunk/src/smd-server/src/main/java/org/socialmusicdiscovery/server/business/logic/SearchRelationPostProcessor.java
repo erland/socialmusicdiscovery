@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import org.socialmusicdiscovery.server.api.mediaimport.PostProcessor;
 import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
+import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
 import org.socialmusicdiscovery.server.business.model.core.*;
 import org.socialmusicdiscovery.server.business.model.search.*;
 import org.socialmusicdiscovery.server.business.repository.core.ContributorRepository;
@@ -125,7 +126,7 @@ public class SearchRelationPostProcessor implements PostProcessor {
         Set<RecordingSession> recordingSessions = new HashSet<RecordingSession>();
 
         //TODO: Can we solve this without type casting ?
-        RecordingSession session = ((RecordingEntity)recording).getRecordingSession();
+        RecordingSession session = ((RecordingEntity) recording).getRecordingSession();
         if (session != null) {
             sessionContributors.addAll(session.getContributors());
             recordingSessions.add(session);
@@ -246,7 +247,7 @@ public class SearchRelationPostProcessor implements PostProcessor {
             Artist artist = contributor.getArtist();
             T relation = relationClass.newInstance();
             relation.setId(owner.getId());
-            relation.setReferenceType(artist.getClass().getName() + "#" + contributor.getType());
+            relation.setReferenceType(SMDIdentityReferenceEntity.typeForClass(artist.getClass()) + "#" + contributor.getType());
             relation.setReference(artist.getId());
             relations.add(relation);
 
@@ -256,7 +257,7 @@ public class SearchRelationPostProcessor implements PostProcessor {
             relations.add(relation);
 
             // Need to use merge because an artist can be part of multiple releases
-            entityManager.merge(new ArtistSearchRelationEntity(artist.getId(), owner.getClass().getName() + "#" + contributor.getType(), owner.getId()));
+            entityManager.merge(new ArtistSearchRelationEntity(artist.getId(), SMDIdentityReferenceEntity.typeForClass(owner.getClass()) + "#" + contributor.getType(), owner.getId()));
             entityManager.merge(new ArtistSearchRelationEntity(artist.getId(), owner));
 
             Person person = contributor.getArtist().getPerson();
