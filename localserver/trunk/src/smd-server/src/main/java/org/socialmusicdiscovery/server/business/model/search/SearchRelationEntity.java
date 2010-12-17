@@ -3,6 +3,7 @@ package org.socialmusicdiscovery.server.business.model.search;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
+import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -14,19 +15,22 @@ import java.io.Serializable;
 @IdClass(SearchRelationEntity.class)
 public class SearchRelationEntity implements Serializable {
     @Id
-    @Column(length=36)
+    @Column(length = 36)
     private String id;
     @Id
     private String referenceType;
     @Id
-    @Column(length=36)
+    @Column(length = 36)
     private String reference;
 
-    public SearchRelationEntity() {}
+    public SearchRelationEntity() {
+    }
+
     public SearchRelationEntity(String id, SMDIdentity reference) {
         setId(id);
         setReference(reference);
     }
+
     public SearchRelationEntity(String id, String referenceType, String reference) {
         setId(id);
         setReferenceType(referenceType);
@@ -58,10 +62,10 @@ public class SearchRelationEntity implements Serializable {
     }
 
     public void setReference(SMDIdentity reference) {
-        if(reference!=null) {
-            setReferenceType(reference.getClass().getName());
+        if (reference != null) {
+            setReferenceType(SMDIdentityReferenceEntity.typeForClass(reference.getClass()));
             setReference(reference.getId());
-        }else {
+        } else {
             this.referenceType = null;
             this.reference = null;
         }
@@ -74,6 +78,6 @@ public class SearchRelationEntity implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        return EqualsBuilder.reflectionEquals(this,o);
+        return EqualsBuilder.reflectionEquals(this, o);
     }
 }
