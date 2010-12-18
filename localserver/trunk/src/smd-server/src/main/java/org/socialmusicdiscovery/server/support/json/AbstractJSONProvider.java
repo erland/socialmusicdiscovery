@@ -24,24 +24,30 @@ public abstract class AbstractJSONProvider implements MessageBodyReader<Object>,
      */
     public static class ImplementationSerializer implements JsonSerializer {
         private Class implementationClass;
+
         public ImplementationSerializer(Class implementationClass) {
             this.implementationClass = implementationClass;
         }
+
         public JsonElement serialize(Object o, Type type, JsonSerializationContext jsonSerializationContext) {
-            return jsonSerializationContext.serialize(o,implementationClass);
+            return jsonSerializationContext.serialize(o, implementationClass);
         }
-    };
+    }
+
+    ;
 
     /**
      * Provides a JSON deserializer for the specified implementation class
      */
     public static class ImplementationDeserializer implements JsonDeserializer {
         private Class implementationClass;
+
         public ImplementationDeserializer(Class implementationClass) {
             this.implementationClass = implementationClass;
         }
+
         public Object deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
-            return jsonDeserializationContext.deserialize(jsonElement,implementationClass);
+            return jsonDeserializationContext.deserialize(jsonElement, implementationClass);
         }
     }
 
@@ -50,9 +56,11 @@ public abstract class AbstractJSONProvider implements MessageBodyReader<Object>,
      */
     public static class ImplementationCreator implements InstanceCreator {
         private Class implementationClass;
+
         public ImplementationCreator(Class implementationClass) {
             this.implementationClass = implementationClass;
         }
+
         public Object createInstance(Type type) {
             try {
                 return implementationClass.newInstance();
@@ -62,7 +70,9 @@ public abstract class AbstractJSONProvider implements MessageBodyReader<Object>,
                 throw new RuntimeException(e);
             }
         }
-    };
+    }
+
+    ;
 
     /**
      * Returns a map with interface classes as keys and implementation classes as values.
@@ -70,15 +80,19 @@ public abstract class AbstractJSONProvider implements MessageBodyReader<Object>,
      * - Creating an implementation class instance when an interface type is found
      * - Deserializing to an implementation class when an interface type is found
      * - Serializing from an implementation class when an interface type is found
+     *
      * @return A map with interface/implementation class mapping
      */
     protected abstract Map<Class, Class> getConversionMap();
 
-    /** Google Gson GsonBuilder instance that will be used during JSON conversion */
+    /**
+     * Google Gson GsonBuilder instance that will be used during JSON conversion
+     */
     private GsonBuilder gsonBuilder;
 
     /**
      * Create a new JSON provider
+     *
      * @param onlyExposed If true, only the attributes annotated with @Exposed will be serialized/deserialized
      */
     public AbstractJSONProvider(boolean onlyExposed) {
@@ -86,7 +100,7 @@ public abstract class AbstractJSONProvider implements MessageBodyReader<Object>,
 
         Map<Class, Class> converters = getConversionMap();
 
-        if(onlyExposed) {
+        if (onlyExposed) {
             this.gsonBuilder.excludeFieldsWithoutExposeAnnotation();
         }
 
@@ -101,7 +115,7 @@ public abstract class AbstractJSONProvider implements MessageBodyReader<Object>,
      * @inheritDoc
      */
     public long getSize(Object t, Class type, Type genericType, Annotation[] annotations,
-            MediaType mediaType) {
+                        MediaType mediaType) {
         return -1;
     }
 
@@ -109,9 +123,10 @@ public abstract class AbstractJSONProvider implements MessageBodyReader<Object>,
      * @inheritDoc
      */
     public void writeTo(Object t, Class type, Type genericType, Annotation[] annotations,
-            MediaType mediaType, MultivaluedMap httpHeaders, OutputStream entityStream)
+                        MediaType mediaType, MultivaluedMap httpHeaders, OutputStream entityStream)
             throws IOException, WebApplicationException {
-        entityStream.write(gsonBuilder.create().toJson(t).getBytes());
+        //TODO: Remove setPrettyPrinting later, for now it's useful during debugging
+        entityStream.write(gsonBuilder.setPrettyPrinting().create().toJson(t).getBytes());
 
     }
 
@@ -119,7 +134,7 @@ public abstract class AbstractJSONProvider implements MessageBodyReader<Object>,
      * @inheritDoc
      */
     public boolean isWriteable(Class type, Type genericType, Annotation[] annotations,
-            MediaType mediaType) {
+                               MediaType mediaType) {
         return true;
     }
 
