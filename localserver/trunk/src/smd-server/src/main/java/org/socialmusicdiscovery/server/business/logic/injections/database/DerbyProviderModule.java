@@ -112,4 +112,10 @@ public class DerbyProviderModule extends AbstractModule {
     public DatabaseProvider getMemoryTestProvider() {
         return derbyMemory;
     }
+
+    @Provides
+    @Named("derby-test")
+    public DatabaseProvider getDiskTestProvider() {
+        return getDiskProvider();
+    }
 }

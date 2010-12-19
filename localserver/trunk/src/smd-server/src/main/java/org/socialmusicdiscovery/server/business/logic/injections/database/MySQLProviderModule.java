@@ -97,11 +97,23 @@ public class MySQLProviderModule extends AbstractModule {
     }
 
     @Provides
+    @Named("mysql-sbs-test")
+    public DatabaseProvider getSBSTestProvider() {
+        return getSBSProvider();
+    }
+
+    @Provides
     @Named("mysql-standalone")
     public DatabaseProvider getStandaloneProvider() {
         if (mysqlStandalone == null) {
             mysqlStandalone = new MySQLProvider("jdbc:mysql://" + getMySQLHost() + "/smd?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf-8");
         }
         return mysqlStandalone;
+    }
+
+    @Provides
+    @Named("mysql-standalone-test")
+    public DatabaseProvider getStandaloneTestProvider() {
+        return getStandaloneProvider();
     }
 }
