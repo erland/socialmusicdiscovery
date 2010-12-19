@@ -103,6 +103,12 @@ public class H2ProviderModule extends AbstractModule {
         return h2Memory;
     }
 
+    @Provides
+    @Named("h2-test")
+    public DatabaseProvider getDiskTestProvider() {
+        return getDiskProvider();
+    }
+
     private String getDatabaseFile() {
         String dir = "";
         if (System.getProperty("org.socialmusicdiscovery.server.database.directory") != null) {

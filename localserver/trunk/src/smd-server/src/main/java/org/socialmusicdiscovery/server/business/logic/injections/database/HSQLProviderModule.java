@@ -96,6 +96,12 @@ public class HSQLProviderModule extends AbstractModule {
     }
 
     @Provides
+    @Named("hsql-test")
+    public DatabaseProvider getDiskTestProvider() {
+        return getDiskProvider();
+    }
+
+    @Provides
     @Named("hsql-memory-test")
     public DatabaseProvider getMemoryTestProvider() {
         return hsqlMemory;
