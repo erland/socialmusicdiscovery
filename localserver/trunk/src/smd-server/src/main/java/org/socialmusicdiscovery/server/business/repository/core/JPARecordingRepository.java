@@ -43,6 +43,7 @@ public class JPARecordingRepository extends AbstractJPASMDIdentityRepository<Rec
         entityManager.createQuery("DELETE from PersonSearchRelationEntity where reference=:id").setParameter("id",entity.getId()).executeUpdate();
         entityManager.createQuery("DELETE from ReleaseSearchRelationEntity where reference=:id").setParameter("id",entity.getId()).executeUpdate();
         entityManager.createQuery("DELETE from WorkSearchRelationEntity where reference=:id").setParameter("id",entity.getId()).executeUpdate();
+        entityManager.createQuery("DELETE from TrackSearchRelationEntity where reference=:id").setParameter("id",entity.getId()).executeUpdate();
         super.remove(entity);
     }
 }

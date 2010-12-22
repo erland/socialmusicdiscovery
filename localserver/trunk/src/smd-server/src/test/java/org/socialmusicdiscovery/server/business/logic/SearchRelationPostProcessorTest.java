@@ -60,7 +60,8 @@ public class SearchRelationPostProcessorTest extends BaseTestCase {
         ReleaseEntity release = (ReleaseEntity) query.getSingleResult();
         assert (release != null);
 
-        Recording recording = release.getTracks().get(0).getRecording();
+        Track track = release.getTracks().get(0);
+        Recording recording = track.getRecording();
         Collection<Contributor> recordingContributors = recording.getContributors();
         Work work = recording.getWork();
         Collection<Contributor> workContributors = work.getContributors();
@@ -81,40 +82,70 @@ public class SearchRelationPostProcessorTest extends BaseTestCase {
 
         // Verify release search relations
         Collection<ReleaseSearchRelationEntity> releaseSearchRelations = release.getSearchRelations();
-        // Recording + Work + Artists + Persons + Contributors
-        int found = 1 + 1 + artists.size() + persons.size() + recordingContributors.size() + workContributors.size();
+        // Recording + Track + Work + Artists + Persons + Contributors
+        int found = 1 + 1 + 1+ persons.size() + recordingContributors.size() + workContributors.size();
         for (ReleaseSearchRelationEntity searchRelation : releaseSearchRelations) {
             if (searchRelation.getReference().equals(recording.getId())) {
                 found--;
-                continue;
             } else if (searchRelation.getReference().equals(work.getId())) {
                 found--;
-                continue;
+            } else if (searchRelation.getReference().equals(track.getId())) {
+                found--;
+            }else if (searchRelation.getReferenceType().equals(SMDIdentityReferenceEntity.typeForClass(ArtistEntity.class)) && searchRelation.getType().equals("")) {
+                assert false;
             } else {
-                for (Artist artist : artists) {
-                    if (searchRelation.getReference().equals(artist.getId()) && searchRelation.getReferenceType().equals(SMDIdentityReferenceEntity.typeForClass(ArtistEntity.class))) {
-                        found--;
-                        continue;
-                    }
-                }
                 for (Person person : persons) {
                     if (searchRelation.getReference().equals(person.getId())) {
                         found--;
-                        continue;
                     }
                 }
                 for (Contributor contributor : workContributors) {
                     if (searchRelation.getReference().equals(contributor.getArtist().getId()) &&
-                            searchRelation.getReferenceType().equals(SMDIdentityReferenceEntity.typeForClass(ArtistEntity.class) + "#" + contributor.getType())) {
+                            searchRelation.getReferenceType().equals(SMDIdentityReferenceEntity.typeForClass(ArtistEntity.class)) &&
+                            searchRelation.getType().equals(contributor.getType())) {
                         found--;
-                        continue;
                     }
                 }
                 for (Contributor contributor : recordingContributors) {
                     if (searchRelation.getReference().equals(contributor.getArtist().getId()) &&
-                            searchRelation.getReferenceType().equals(SMDIdentityReferenceEntity.typeForClass(ArtistEntity.class) + "#" + contributor.getType())) {
+                            searchRelation.getReferenceType().equals(SMDIdentityReferenceEntity.typeForClass(ArtistEntity.class)) &&
+                            searchRelation.getType().equals(contributor.getType())) {
                         found--;
-                        continue;
+                    }
+                }
+            }
+        }
+        assert found == 0;
+
+        // Verify track search relations
+        Collection<TrackSearchRelationEntity> trackSearchRelations = ((TrackEntity) track).getSearchRelations();
+        // Release + Recording + Artists + Persons + Contributors
+        found = 1 + 1 + persons.size() + workContributors.size() + recordingContributors.size();
+        for (TrackSearchRelationEntity searchRelation : trackSearchRelations) {
+            if (searchRelation.getReference().equals(release.getId())) {
+                found--;
+            } else if (searchRelation.getReference().equals(recording.getId())) {
+                found--;
+            }else if (searchRelation.getReferenceType().equals(SMDIdentityReferenceEntity.typeForClass(ArtistEntity.class)) && searchRelation.getType().equals("")) {
+                assert false;
+            } else {
+                for (Person person : persons) {
+                    if (searchRelation.getReference().equals(person.getId())) {
+                        found--;
+                    }
+                }
+                for (Contributor contributor : workContributors) {
+                    if (searchRelation.getReference().equals(contributor.getArtist().getId()) &&
+                            searchRelation.getReferenceType().equals(SMDIdentityReferenceEntity.typeForClass(ArtistEntity.class)) &&
+                            searchRelation.getType().equals(contributor.getType())) {
+                        found--;
+                    }
+                }
+                for (Contributor contributor : recordingContributors) {
+                    if (searchRelation.getReference().equals(contributor.getArtist().getId()) &&
+                            searchRelation.getReferenceType().equals(SMDIdentityReferenceEntity.typeForClass(ArtistEntity.class)) &&
+                            searchRelation.getType().equals(contributor.getType())) {
+                        found--;
                     }
                 }
             }
@@ -123,37 +154,33 @@ public class SearchRelationPostProcessorTest extends BaseTestCase {
 
         // Verify recording search relations
         Collection<RecordingSearchRelationEntity> recordingSearchRelations = ((RecordingEntity) recording).getSearchRelations();
-        // Release + Artists + Persons + Contributors
-        found = 1 + artists.size() + persons.size() + workContributors.size() + recordingContributors.size();
+        // Release + Track + Artists + Persons + Contributors
+        found = 1 + 1 + persons.size() + workContributors.size() + recordingContributors.size();
         for (RecordingSearchRelationEntity searchRelation : recordingSearchRelations) {
             if (searchRelation.getReference().equals(release.getId())) {
                 found--;
-                continue;
+            } else if (searchRelation.getReference().equals(track.getId())) {
+                found--;
+            }else if (searchRelation.getReferenceType().equals(SMDIdentityReferenceEntity.typeForClass(ArtistEntity.class)) && searchRelation.getType().equals("")) {
+                assert false;
             } else {
-                for (Artist artist : artists) {
-                    if (searchRelation.getReference().equals(artist.getId()) && searchRelation.getReferenceType().equals(SMDIdentityReferenceEntity.typeForClass(ArtistEntity.class))) {
-                        found--;
-                        continue;
-                    }
-                }
                 for (Person person : persons) {
                     if (searchRelation.getReference().equals(person.getId())) {
                         found--;
-                        continue;
                     }
                 }
                 for (Contributor contributor : workContributors) {
                     if (searchRelation.getReference().equals(contributor.getArtist().getId()) &&
-                            searchRelation.getReferenceType().equals(SMDIdentityReferenceEntity.typeForClass(ArtistEntity.class) + "#" + contributor.getType())) {
+                            searchRelation.getReferenceType().equals(SMDIdentityReferenceEntity.typeForClass(ArtistEntity.class)) &&
+                            searchRelation.getType().equals(contributor.getType())) {
                         found--;
-                        continue;
                     }
                 }
                 for (Contributor contributor : recordingContributors) {
                     if (searchRelation.getReference().equals(contributor.getArtist().getId()) &&
-                            searchRelation.getReferenceType().equals(SMDIdentityReferenceEntity.typeForClass(ArtistEntity.class) + "#" + contributor.getType())) {
+                            searchRelation.getReferenceType().equals(SMDIdentityReferenceEntity.typeForClass(ArtistEntity.class)) &&
+                            searchRelation.getType().equals(contributor.getType())) {
                         found--;
-                        continue;
                     }
                 }
             }
@@ -163,40 +190,35 @@ public class SearchRelationPostProcessorTest extends BaseTestCase {
 
         // Verify work search relations
         Collection<WorkSearchRelationEntity> workSearchRelations = ((WorkEntity) work).getSearchRelations();
-        // Release + Recording + Artists + Persons + Contributors
-        found = 1 + 1 + artists.size() + persons.size() + workContributors.size() + recordingContributors.size();
+        // Release + Recording + Track + Persons + Contributors
+        found = 1 + 1 + 1 + persons.size() + workContributors.size() + recordingContributors.size();
         for (WorkSearchRelationEntity searchRelation : workSearchRelations) {
             if (searchRelation.getReference().equals(release.getId())) {
                 found--;
-                continue;
             } else if (searchRelation.getReference().equals(recording.getId())) {
                 found--;
-                continue;
+            } else if (searchRelation.getReference().equals(track.getId())) {
+                found--;
+            }else if (searchRelation.getReferenceType().equals(SMDIdentityReferenceEntity.typeForClass(ArtistEntity.class)) && searchRelation.getType().equals("")) {
+                assert false;
             } else {
-                for (Artist artist : artists) {
-                    if (searchRelation.getReference().equals(artist.getId()) && searchRelation.getReferenceType().equals(SMDIdentityReferenceEntity.typeForClass(ArtistEntity.class))) {
-                        found--;
-                        continue;
-                    }
-                }
                 for (Person person : persons) {
                     if (searchRelation.getReference().equals(person.getId())) {
                         found--;
-                        continue;
                     }
                 }
                 for (Contributor contributor : workContributors) {
                     if (searchRelation.getReference().equals(contributor.getArtist().getId()) &&
-                            searchRelation.getReferenceType().equals(SMDIdentityReferenceEntity.typeForClass(ArtistEntity.class) + "#" + contributor.getType())) {
+                            searchRelation.getReferenceType().equals(SMDIdentityReferenceEntity.typeForClass(ArtistEntity.class)) &&
+                            searchRelation.getType().equals(contributor.getType())) {
                         found--;
-                        continue;
                     }
                 }
                 for (Contributor contributor : recordingContributors) {
                     if (searchRelation.getReference().equals(contributor.getArtist().getId()) &&
-                            searchRelation.getReferenceType().equals(SMDIdentityReferenceEntity.typeForClass(ArtistEntity.class) + "#" + contributor.getType())) {
+                            searchRelation.getReferenceType().equals(SMDIdentityReferenceEntity.typeForClass(ArtistEntity.class)) &&
+                            searchRelation.getType().equals(contributor.getType())) {
                         found--;
-                        continue;
                     }
                 }
             }
@@ -206,28 +228,36 @@ public class SearchRelationPostProcessorTest extends BaseTestCase {
         // Verify artist search relations
         for (Artist artist : artists) {
             Collection<ArtistSearchRelationEntity> artistSearchRelations = ((ArtistEntity) artist).getSearchRelations();
-            // Release + Recording + Work + Contributor
-            found = 1 + 1 + 1 + 1;
+            // Release + Recording + Track + Work + Contributor
+            found = 1 + 1 + 1 + 1 + 2;
+            if(artist.getName().equals("Whitney Houston")) {
+                // Add reference to self because combining performer/composer role on other works 
+                found+=2;
+            }
             for (ArtistSearchRelationEntity searchRelation : artistSearchRelations) {
                 if (searchRelation.getReference().equals(release.getId()) && searchRelation.getReferenceType().equals(SMDIdentityReferenceEntity.typeForClass(ReleaseEntity.class))) {
                     found--;
                 } else if (searchRelation.getReference().equals(recording.getId()) && searchRelation.getReferenceType().equals(SMDIdentityReferenceEntity.typeForClass(RecordingEntity.class))) {
                     found--;
+                } else if (searchRelation.getReference().equals(track.getId()) && searchRelation.getReferenceType().equals(SMDIdentityReferenceEntity.typeForClass(TrackEntity.class))) {
+                    found--;
                 } else if (searchRelation.getReference().equals(work.getId()) && searchRelation.getReferenceType().equals(SMDIdentityReferenceEntity.typeForClass(WorkEntity.class))) {
                     found--;
+                } else if (searchRelation.getType().equals("")) {
+                    assert false;
                 } else {
                     for (Contributor contributor : workContributors) {
-                        if (searchRelation.getReference().equals(work.getId()) &&
-                                searchRelation.getReferenceType().equals(SMDIdentityReferenceEntity.typeForClass(WorkEntity.class) + "#" + contributor.getType())) {
+                        if (searchRelation.getReference().equals(contributor.getArtist().getId()) &&
+                                searchRelation.getReferenceType().equals(SMDIdentityReferenceEntity.typeForClass(ArtistEntity.class)) &&
+                                searchRelation.getType().equals(contributor.getType())) {
                             found--;
-                            break;
                         }
                     }
                     for (Contributor contributor : recordingContributors) {
-                        if (searchRelation.getReference().equals(recording.getId()) &&
-                                searchRelation.getReferenceType().equals(SMDIdentityReferenceEntity.typeForClass(RecordingEntity.class) + "#" + contributor.getType())) {
+                        if (searchRelation.getReference().equals(contributor.getArtist().getId()) &&
+                                searchRelation.getReferenceType().equals(SMDIdentityReferenceEntity.typeForClass(ArtistEntity.class)) &&
+                                searchRelation.getType().equals(contributor.getType())) {
                             found--;
-                            break;
                         }
                     }
                 }
@@ -239,16 +269,24 @@ public class SearchRelationPostProcessorTest extends BaseTestCase {
         for (Artist artist : artists) {
             Person person = artist.getPerson();
             Collection<PersonSearchRelationEntity> personSearchRelations = ((PersonEntity) person).getSearchRelations();
-            // Release + Recording + Work
-            found = 1 + 1 + 1;
+            // Release + Recording + Work + Track + Contributor
+            found = 1 + 1 + 1 +1 +1;
+            if(artist.getName().equals("Whitney Houston")) {
+                // Add reference to self because combining performer/composer role on other works
+                found++;
+            }
             for (PersonSearchRelationEntity searchRelation : personSearchRelations) {
                 if (searchRelation.getReference().equals(release.getId()) && searchRelation.getReferenceType().equals(SMDIdentityReferenceEntity.typeForClass(ReleaseEntity.class))) {
                     found--;
                 } else if (searchRelation.getReference().equals(recording.getId()) && searchRelation.getReferenceType().equals(SMDIdentityReferenceEntity.typeForClass(RecordingEntity.class))) {
                     found--;
+                } else if (searchRelation.getReference().equals(track.getId()) && searchRelation.getReferenceType().equals(SMDIdentityReferenceEntity.typeForClass(TrackEntity.class))) {
+                    found--;
                 } else if (searchRelation.getReference().equals(work.getId()) && searchRelation.getReferenceType().equals(SMDIdentityReferenceEntity.typeForClass(WorkEntity.class))) {
                     found--;
-                } else if (searchRelation.getReference().equals(artist.getId()) && searchRelation.getReferenceType().equals(SMDIdentityReferenceEntity.typeForClass(ArtistEntity.class))) {
+                } else if (searchRelation.getReference().equals(artist.getId()) && searchRelation.getReferenceType().equals(SMDIdentityReferenceEntity.typeForClass(ArtistEntity.class)) && searchRelation.getType().equals("")) {
+                    assert false;
+                } else if (searchRelation.getReference().equals(artist.getId()) && searchRelation.getReferenceType().equals(SMDIdentityReferenceEntity.typeForClass(ArtistEntity.class)) && !searchRelation.getType().equals("")) {
                     found--;
                 }
             }

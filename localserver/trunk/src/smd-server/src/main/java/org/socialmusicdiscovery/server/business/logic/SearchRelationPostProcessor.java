@@ -57,6 +57,7 @@ public class SearchRelationPostProcessor implements PostProcessor {
         entityManager.createQuery("DELETE from WorkSearchRelationEntity").executeUpdate();
         entityManager.createQuery("DELETE from PersonSearchRelationEntity").executeUpdate();
         entityManager.createQuery("DELETE from ArtistSearchRelationEntity").executeUpdate();
+        entityManager.createQuery("DELETE from TrackSearchRelationEntity").executeUpdate();
         entityManager.getTransaction().commit();
 
         entityManager.clear();
@@ -81,6 +82,7 @@ public class SearchRelationPostProcessor implements PostProcessor {
                 Recording recording = track.getRecording();
                 handledRecordings.add(recording);
                 addRecording(aggregatedContributors, aggregatedRecordings, aggregatedWorks, releaseContributors, release, recording, track);
+                releaseSearchRelations.add(new ReleaseSearchRelationEntity(release.getId(), track));
             }
 
             Collection<RecordingSessionEntity> recordingSessions = recordingSessionRepository.findByReleaseWithRelations(release.getId(), Arrays.asList("recordings"), null);
@@ -132,6 +134,8 @@ public class SearchRelationPostProcessor implements PostProcessor {
             recordingSessions.add(session);
         }
 
+        Set<TrackSearchRelationEntity> trackSearchRelations = new HashSet<TrackSearchRelationEntity>();
+        Set<Contributor> aggregatedTrackContributors = new HashSet<Contributor>(recording.getContributors());
         Set<RecordingSearchRelationEntity> recordingSearchRelations = new HashSet<RecordingSearchRelationEntity>();
         Set<Contributor> recordingContributors = recording.getContributors();
         aggregatedContributors.addAll(recordingContributors);
@@ -183,16 +187,16 @@ public class SearchRelationPostProcessor implements PostProcessor {
                     addContributor(workSearchRelations, contributor, work, WorkSearchRelationEntity.class);
                 }
             }
-            if (release.getLabel() != null) {
-                workSearchRelations.add(new WorkSearchRelationEntity(work.getId(), release.getLabel()));
+            if(release != null) {
+                workSearchRelations.add(new WorkSearchRelationEntity(work.getId(), release));
+                if (release.getLabel() != null) {
+                    workSearchRelations.add(new WorkSearchRelationEntity(work.getId(), release.getLabel()));
+                }
             }
             workSearchRelations.add(new WorkSearchRelationEntity(work.getId(), recording));
-            workSearchRelations.add(new WorkSearchRelationEntity(work.getId(), release));
             if (track != null) {
                 workSearchRelations.add(new WorkSearchRelationEntity(work.getId(), track));
-            }
-            if (release.getLabel() != null) {
-                workSearchRelations.add(new WorkSearchRelationEntity(work.getId(), release.getLabel()));
+                entityManager.persist(new TrackSearchRelationEntity(track.getId(), work));
             }
             for (WorkSearchRelationEntity relation : workSearchRelations) {
                 // Need to use merge because a work can be part of multiple releases
@@ -200,17 +204,25 @@ public class SearchRelationPostProcessor implements PostProcessor {
             }
             work = work.getParent();
         }
+        aggregatedTrackContributors.addAll(aggregatedWorkContributors);
 
         // Add relations for contributors directly related to this recording
         for (Contributor contributor : recordingContributors) {
             addContributor(recordingSearchRelations, contributor, recording, RecordingSearchRelationEntity.class);
+            if(track != null) {
+                addContributor(trackSearchRelations, contributor, track, TrackSearchRelationEntity.class);
+            }
         }
 
         // Add relations for contributors related to a recording session which this recording is part of
         // If there are contributors of the same role defined directly on the recording, the contributors on the release with this role is ignored.
         for (Contributor contributor : sessionContributors) {
             if (!containsRole(recordingContributors, contributor.getType())) {
+                aggregatedTrackContributors.add(contributor);
                 addContributor(recordingSearchRelations, contributor, recording, RecordingSearchRelationEntity.class);
+                if(track != null) {
+                    addContributor(trackSearchRelations, contributor, track, TrackSearchRelationEntity.class);
+                }
             }
         }
 
@@ -218,27 +230,54 @@ public class SearchRelationPostProcessor implements PostProcessor {
         // If there are contributors of the same role defined directly on the recording, the contributors on the release with this role is ignored.
         for (Contributor contributor : releaseContributors) {
             if (!containsRole(recordingContributors, contributor.getType())) {
+                aggregatedTrackContributors.add(contributor);
                 addContributor(recordingSearchRelations, contributor, recording, RecordingSearchRelationEntity.class);
+                if(track != null) {
+                    addContributor(trackSearchRelations, contributor, track, TrackSearchRelationEntity.class);
+                }
             }
         }
 
         // Add relations for contributors related to the work which this recording represent
         for (Contributor contributor : aggregatedWorkContributors) {
             addContributor(recordingSearchRelations, contributor, recording, RecordingSearchRelationEntity.class);
+            if(track != null) {
+                addContributor(trackSearchRelations, contributor, track, TrackSearchRelationEntity.class);
+            }
         }
-        if (release.getLabel() != null) {
-            recordingSearchRelations.add(new RecordingSearchRelationEntity(recording.getId(), release.getLabel()));
+
+        // Create artist search relations between artists that performs or contributes on the same recording
+        for (Contributor contributor1 : aggregatedTrackContributors) {
+            for (Contributor contributor2 : aggregatedTrackContributors) {
+                if(!contributor1.equals(contributor2) && !contributor1.getType().equals(contributor2.getType())) {
+                    // Need to use merge because an artist can be part of multiple releases
+                    entityManager.merge(new ArtistSearchRelationEntity(contributor1.getArtist().getId(), SMDIdentityReferenceEntity.typeForClass(contributor2.getArtist().getClass()), contributor2.getArtist().getId(),contributor2.getType()));
+                }
+            }
         }
-        recordingSearchRelations.add(new RecordingSearchRelationEntity(recording.getId(), release));
+        if(release != null) {
+            if (release.getLabel() != null) {
+                recordingSearchRelations.add(new RecordingSearchRelationEntity(recording.getId(), release.getLabel()));
+                if(track != null) {
+                    trackSearchRelations.add(new TrackSearchRelationEntity(track.getId(), release.getLabel()));
+                }
+            }
+            recordingSearchRelations.add(new RecordingSearchRelationEntity(recording.getId(), release));
+            if(track != null) {
+                trackSearchRelations.add(new TrackSearchRelationEntity(track.getId(), release));
+            }
+        }
         if (track != null) {
             recordingSearchRelations.add(new RecordingSearchRelationEntity(recording.getId(), track));
+            trackSearchRelations.add(new TrackSearchRelationEntity(track.getId(), recording));
         }
-        if (release.getLabel() != null) {
-            recordingSearchRelations.add(new RecordingSearchRelationEntity(recording.getId(), release.getLabel()));
-        }
+
         for (RecordingSearchRelationEntity relation : recordingSearchRelations) {
             // Need to use merge because a recording can be part of multiple releases
             entityManager.merge(relation);
+        }
+        for (TrackSearchRelationEntity relation : trackSearchRelations) {
+            entityManager.persist(relation);
         }
     }
 
@@ -247,18 +286,13 @@ public class SearchRelationPostProcessor implements PostProcessor {
             Artist artist = contributor.getArtist();
             T relation = relationClass.newInstance();
             relation.setId(owner.getId());
-            relation.setReferenceType(SMDIdentityReferenceEntity.typeForClass(artist.getClass()) + "#" + contributor.getType());
+            relation.setReferenceType(SMDIdentityReferenceEntity.typeForClass(artist.getClass()));
+            relation.setType(contributor.getType());
             relation.setReference(artist.getId());
             relations.add(relation);
 
-            relation = relationClass.newInstance();
-            relation.setId(owner.getId());
-            relation.setReference(artist);
-            relations.add(relation);
-
             // Need to use merge because an artist can be part of multiple releases
-            entityManager.merge(new ArtistSearchRelationEntity(artist.getId(), SMDIdentityReferenceEntity.typeForClass(owner.getClass()) + "#" + contributor.getType(), owner.getId()));
-            entityManager.merge(new ArtistSearchRelationEntity(artist.getId(), owner));
+            entityManager.merge(new ArtistSearchRelationEntity(artist.getId(), SMDIdentityReferenceEntity.typeForClass(owner.getClass()), owner.getId(),contributor.getType()));
 
             Person person = contributor.getArtist().getPerson();
             if (person != null) {
@@ -268,6 +302,7 @@ public class SearchRelationPostProcessor implements PostProcessor {
                 relations.add(relation);
                 // Need to use merge because a person can be part of multiple releases
                 entityManager.merge(new PersonSearchRelationEntity(person.getId(), owner));
+                entityManager.merge(new PersonSearchRelationEntity(person.getId(), SMDIdentityReferenceEntity.typeForClass(artist.getClass()), artist.getId(), contributor.getType()));
             }
         } catch (InstantiationException e) {
             throw new RuntimeException(e);

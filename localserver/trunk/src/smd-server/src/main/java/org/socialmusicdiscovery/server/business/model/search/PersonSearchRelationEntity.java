@@ -11,4 +11,7 @@ public class PersonSearchRelationEntity extends SearchRelationEntity {
     public PersonSearchRelationEntity(String id, SMDIdentity reference) {
         super(id,reference);
     }
+    public PersonSearchRelationEntity(String id, String referenceType, String reference, String type) {
+        super(id,referenceType,reference,type);
+    }
 }
