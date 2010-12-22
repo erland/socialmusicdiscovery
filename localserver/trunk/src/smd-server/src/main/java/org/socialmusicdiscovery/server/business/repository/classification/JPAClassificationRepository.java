@@ -18,4 +18,17 @@ public class JPAClassificationRepository extends AbstractJPASMDIdentityRepositor
         query.setParameter("type",type);
         return query.getResultList();
     }
+
+    public Collection<ClassificationEntity> findByReference(String reference) {
+        Query query = entityManager.createQuery("from ClassificationEntity JOIN references as r where r.id=:reference");
+        query.setParameter("reference",reference);
+        return query.getResultList();
+    }
+
+    public Collection<ClassificationEntity> findByTypeAndReference(String type, String reference) {
+        Query query = entityManager.createQuery("from ClassificationEntity JOIN references as r where r.type=:type and r.id=:reference");
+        query.setParameter("type",type);
+        query.setParameter("reference",reference);
+        return query.getResultList();
+    }
 }

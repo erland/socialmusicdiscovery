@@ -9,4 +9,6 @@ import java.util.Collection;
 @ImplementedBy(JPAClassificationRepository.class)
 public interface ClassificationRepository extends SMDIdentityRepository<ClassificationEntity> {
     Collection<ClassificationEntity> findByNameAndType(String name, String type);
+    Collection<ClassificationEntity> findByReference(String reference);
+    Collection<ClassificationEntity> findByTypeAndReference(String type, String reference);
 }
