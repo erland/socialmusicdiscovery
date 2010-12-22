@@ -342,6 +342,7 @@ public class CoreTest extends BaseTestCase {
         assert recording != null;
 
         trackRepository.remove((TrackEntity)trackForRecording);
+        em.flush();
         recordingRepository.remove((RecordingEntity)recording);
         em.flush();
 

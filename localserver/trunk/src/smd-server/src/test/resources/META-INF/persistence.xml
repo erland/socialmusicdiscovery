@@ -30,6 +30,7 @@
         <class>org.socialmusicdiscovery.server.business.model.search.WorkSearchRelationEntity</class>
         <class>org.socialmusicdiscovery.server.business.model.search.ArtistSearchRelationEntity</class>
         <class>org.socialmusicdiscovery.server.business.model.search.PersonSearchRelationEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.search.TrackSearchRelationEntity</class>
 
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>

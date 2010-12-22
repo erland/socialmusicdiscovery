@@ -25,5 +25,6 @@
     <works_search_relations/>
     <artists_search_relations/>
     <persons_search_relations/>
+    <tracks_search_relations/>
     <playable_elements/>
 </dataset>

@@ -12,4 +12,6 @@
     <include file="changesets/changeset-7-pre-derby.xml" relativeToChangelogFile="true"/>
     <include file="changesets/changeset-7.xml" relativeToChangelogFile="true"/>
     <include file="changesets/changeset-7-post-derby.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/changeset-8.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/changeset-9.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

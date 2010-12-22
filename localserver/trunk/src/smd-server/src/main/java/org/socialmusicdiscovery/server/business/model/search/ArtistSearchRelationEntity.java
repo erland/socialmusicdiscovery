@@ -17,4 +17,7 @@ public class ArtistSearchRelationEntity extends SearchRelationEntity {
     public ArtistSearchRelationEntity(String id, String referenceType, String reference) {
         super(id, referenceType, reference);
     }
+    public ArtistSearchRelationEntity(String id, String referenceType, String reference, String type) {
+        super(id, referenceType, reference, type);
+    }
 }

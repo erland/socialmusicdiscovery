@@ -35,9 +35,9 @@ public class SMDIdentityReferenceEntity implements SMDIdentityReference {
     public static String typeForClass(Class cls) {
         Annotation annotation = cls.getAnnotation(ReferenceType.class);
         if(annotation instanceof ReferenceType) {
-            return ((ReferenceType)annotation).type().getName();
+            return ((ReferenceType)annotation).type().getSimpleName();
         }
-        throw new RuntimeException("Unsupported SMDIdentity: "+cls.getName());
+        throw new RuntimeException("Unsupported SMDIdentity: "+cls.getSimpleName());
     }
 
     public String getId() {

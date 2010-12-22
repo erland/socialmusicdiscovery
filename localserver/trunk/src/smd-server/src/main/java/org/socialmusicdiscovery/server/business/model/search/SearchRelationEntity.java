@@ -22,19 +22,31 @@ public class SearchRelationEntity implements Serializable {
     @Id
     @Column(length = 36)
     private String reference;
+    @Id
+    private String type;
 
     public SearchRelationEntity() {
+        setType("");
     }
 
     public SearchRelationEntity(String id, SMDIdentity reference) {
         setId(id);
         setReference(reference);
+        setType("");
     }
 
     public SearchRelationEntity(String id, String referenceType, String reference) {
         setId(id);
         setReferenceType(referenceType);
         setReference(reference);
+        setType("");
+    }
+
+    public SearchRelationEntity(String id, String referenceType, String reference, String type) {
+        setId(id);
+        setReferenceType(referenceType);
+        setReference(reference);
+        setType(type);
     }
 
     public String getId() {
@@ -69,6 +81,14 @@ public class SearchRelationEntity implements Serializable {
             this.referenceType = null;
             this.reference = null;
         }
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     @Override
