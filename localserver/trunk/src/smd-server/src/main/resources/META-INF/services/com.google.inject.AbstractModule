@@ -6,3 +6,4 @@ org.socialmusicdiscovery.server.business.logic.injections.database.DerbyProvider
 org.socialmusicdiscovery.server.business.logic.injections.database.H2ProviderModule
 org.socialmusicdiscovery.server.business.logic.injections.database.HSQLProviderModule
 org.socialmusicdiscovery.server.business.logic.injections.database.MySQLProviderModule
+org.socialmusicdiscovery.server.business.logic.injections.BrowseServiceModule
