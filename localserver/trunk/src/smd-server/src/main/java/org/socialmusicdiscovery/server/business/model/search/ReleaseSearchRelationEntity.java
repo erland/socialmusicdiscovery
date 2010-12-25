@@ -11,4 +11,7 @@ public class ReleaseSearchRelationEntity extends SearchRelationEntity {
     public ReleaseSearchRelationEntity(String id, SMDIdentity reference) {
         super(id,reference);
     }
+    public ReleaseSearchRelationEntity(String id, String referenceType, String reference, String type) {
+        super(id,referenceType, reference, type);
+    }
 }

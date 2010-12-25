@@ -133,10 +133,22 @@
     <Smdidentity_references id="40013003" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
     <CONTRIBUTORS id="40013003" type="conductor" recording_id="40013" artist_id="14"/>
 
+    <Smdidentity_references id="60001" type="org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity"/>
+    <CLASSIFICATIONS id="60001" type="genre" name="Movie"/>
+    <Smdidentity_references id="60002" type="org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity"/>
+    <CLASSIFICATIONS id="60002" type="genre" name="Instrumental"/>
+    <Smdidentity_references id="60003" type="org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity"/>
+    <CLASSIFICATIONS id="60003" type="genre" name="Soundtrack"/>
+    <Smdidentity_references id="60004" type="org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity"/>
+    <CLASSIFICATIONS id="60004" type="genre" name="Romantic"/>
+
+    <CLASSIFICATION_REFERENCES classification_id="60001" reference_id="20000"/>
+    <CLASSIFICATION_REFERENCES classification_id="60002" reference_id="40013"/>
+    <CLASSIFICATION_REFERENCES classification_id="60003" reference_id="20000"/>
+    <CLASSIFICATION_REFERENCES classification_id="60004" reference_id="40001"/>
+
     <MEDIUMS/>
     <CREDITS/>
-    <CLASSIFICATIONS/>
-    <CLASSIFICATION_REFERENCES/>
     <RELATIONS/>
     <GLOBAL_IDENTITIES/>
     <releases_search_relations/>
@@ -145,5 +157,6 @@
     <artists_search_relations/>
     <persons_search_relations/>
     <tracks_search_relations/>
+    <classifications_search_relations/>
     <playable_elements/>
 </dataset>

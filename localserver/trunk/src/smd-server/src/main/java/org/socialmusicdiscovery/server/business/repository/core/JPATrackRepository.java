@@ -69,6 +69,7 @@ public class JPATrackRepository extends AbstractJPASMDIdentityRepository<TrackEn
         entityManager.createQuery("DELETE from RecordingSearchRelationEntity where reference=:id").setParameter("id",entity.getId()).executeUpdate();
         entityManager.createQuery("DELETE from ReleaseSearchRelationEntity where reference=:id").setParameter("id",entity.getId()).executeUpdate();
         entityManager.createQuery("DELETE from WorkSearchRelationEntity where reference=:id").setParameter("id",entity.getId()).executeUpdate();
+        entityManager.createQuery("DELETE from ClassificationSearchRelationEntity where reference=:id").setParameter("id",entity.getId()).executeUpdate();
         super.remove(entity);
     }
 }

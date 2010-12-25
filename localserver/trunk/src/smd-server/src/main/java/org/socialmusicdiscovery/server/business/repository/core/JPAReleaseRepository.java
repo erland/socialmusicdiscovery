@@ -64,6 +64,9 @@ public class JPAReleaseRepository extends AbstractJPASMDIdentityRepository<Relea
         entityManager.createQuery("DELETE from PersonSearchRelationEntity where reference=:id").setParameter("id",entity.getId()).executeUpdate();
         entityManager.createQuery("DELETE from RecordingSearchRelationEntity where reference=:id").setParameter("id",entity.getId()).executeUpdate();
         entityManager.createQuery("DELETE from WorkSearchRelationEntity where reference=:id").setParameter("id",entity.getId()).executeUpdate();
+        entityManager.createQuery("DELETE from ClassificationSearchRelationEntity where reference=:id").setParameter("id",entity.getId()).executeUpdate();
+
+        entityManager.createNativeQuery("DELETE from classification_references where reference_id=:id").setParameter("id",entity.getId()).executeUpdate();
         super.remove(entity);
     }
 

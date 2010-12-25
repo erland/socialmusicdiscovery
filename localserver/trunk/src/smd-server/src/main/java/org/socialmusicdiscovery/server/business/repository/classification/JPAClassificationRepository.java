@@ -20,7 +20,7 @@ public class JPAClassificationRepository extends AbstractJPASMDIdentityRepositor
     }
 
     public Collection<ClassificationEntity> findByReference(String reference) {
-        Query query = entityManager.createQuery("from ClassificationEntity JOIN references as r where r.id=:reference");
+        Query query = entityManager.createQuery("select e from ClassificationEntity as e JOIN e.references as r where r.id=:reference");
         query.setParameter("reference",reference);
         return query.getResultList();
     }
