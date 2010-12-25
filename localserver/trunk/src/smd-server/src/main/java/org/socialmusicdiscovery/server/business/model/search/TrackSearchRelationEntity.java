@@ -11,4 +11,7 @@ public class TrackSearchRelationEntity extends SearchRelationEntity {
     public TrackSearchRelationEntity(String id, SMDIdentity reference) {
         super(id,reference);
     }
+    public TrackSearchRelationEntity(String id, String referenceType, String reference, String type) {
+        super(id,referenceType, reference, type);
+    }
 }

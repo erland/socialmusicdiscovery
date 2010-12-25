@@ -5,8 +5,11 @@ import org.socialmusicdiscovery.server.api.mediaimport.PostProcessor;
 import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
+import org.socialmusicdiscovery.server.business.model.classification.Classification;
+import org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity;
 import org.socialmusicdiscovery.server.business.model.core.*;
 import org.socialmusicdiscovery.server.business.model.search.*;
+import org.socialmusicdiscovery.server.business.repository.classification.ClassificationRepository;
 import org.socialmusicdiscovery.server.business.repository.core.ContributorRepository;
 import org.socialmusicdiscovery.server.business.repository.core.RecordingSessionRepository;
 import org.socialmusicdiscovery.server.business.repository.core.ReleaseRepository;
@@ -34,6 +37,9 @@ public class SearchRelationPostProcessor implements PostProcessor {
     @Inject
     private RecordingSessionRepository recordingSessionRepository;
 
+    @Inject
+    private ClassificationRepository classificationRepository;
+
     private boolean abort = false;
 
     public SearchRelationPostProcessor() {
@@ -58,6 +64,7 @@ public class SearchRelationPostProcessor implements PostProcessor {
         entityManager.createQuery("DELETE from PersonSearchRelationEntity").executeUpdate();
         entityManager.createQuery("DELETE from ArtistSearchRelationEntity").executeUpdate();
         entityManager.createQuery("DELETE from TrackSearchRelationEntity").executeUpdate();
+        entityManager.createQuery("DELETE from ClassificationSearchRelationEntity").executeUpdate();
         entityManager.getTransaction().commit();
 
         entityManager.clear();
@@ -72,16 +79,18 @@ public class SearchRelationPostProcessor implements PostProcessor {
             i++;
             progressHandler.progress(getId(), release.getName(), i, (long) releases.size());
             Collection<ContributorEntity> releaseContributors = contributorRepository.findByReleaseWithRelations(release.getId(), Arrays.asList("artist"), null);
+            Collection<ClassificationEntity> releaseClassifications = classificationRepository.findByReference(release.getId());
             Set<ReleaseSearchRelationEntity> releaseSearchRelations = new HashSet<ReleaseSearchRelationEntity>();
             Collection<TrackEntity> tracks = trackRepository.findByReleaseWithRelations(release.getId(), Arrays.asList("recording"), null);
             Set<Contributor> aggregatedContributors = new HashSet<Contributor>(releaseContributors);
+            Set<Classification> aggregatedClassifications = new HashSet<Classification>(releaseClassifications);
             Set<Recording> aggregatedRecordings = new HashSet<Recording>();
             Set<Work> aggregatedWorks = new HashSet<Work>();
             Set<Recording> handledRecordings = new HashSet<Recording>();
             for (Track track : tracks) {
                 Recording recording = track.getRecording();
                 handledRecordings.add(recording);
-                addRecording(aggregatedContributors, aggregatedRecordings, aggregatedWorks, releaseContributors, release, recording, track);
+                addRecording(aggregatedContributors, aggregatedRecordings, aggregatedWorks, aggregatedClassifications, releaseContributors, releaseClassifications, release, recording, track);
                 releaseSearchRelations.add(new ReleaseSearchRelationEntity(release.getId(), track));
             }
 
@@ -90,7 +99,7 @@ public class SearchRelationPostProcessor implements PostProcessor {
                 for (Recording recording : session.getRecordings()) {
                     // We only need to handle this if we haven't already taken care of this recording
                     if (!handledRecordings.contains(recording)) {
-                        addRecording(aggregatedContributors, aggregatedRecordings, aggregatedWorks, releaseContributors, release, recording, null);
+                        addRecording(aggregatedContributors, aggregatedRecordings, aggregatedWorks, aggregatedClassifications, releaseContributors, releaseClassifications, release, recording, null);
                     }
                 }
             }
@@ -99,6 +108,12 @@ public class SearchRelationPostProcessor implements PostProcessor {
             for (Contributor contributor : aggregatedContributors) {
                 addContributor(releaseSearchRelations, contributor, release, ReleaseSearchRelationEntity.class);
             }
+            // Add relations for all classifications related to either a track or, work which is part of this release or related to the release itself
+            for (Classification classification : aggregatedClassifications) {
+                releaseSearchRelations.add(new ReleaseSearchRelationEntity(release.getId(), SMDIdentityReferenceEntity.typeForClass(classification.getClass()),classification.getId(),classification.getType()));
+                entityManager.persist(new ClassificationSearchRelationEntity(classification.getId(), release));
+            }
+
             for (Work work : aggregatedWorks) {
                 releaseSearchRelations.add(new ReleaseSearchRelationEntity(release.getId(), work));
             }
@@ -122,7 +137,7 @@ public class SearchRelationPostProcessor implements PostProcessor {
         }
     }
 
-    private void addRecording(Set<Contributor> aggregatedContributors, Set<Recording> aggregatedRecordings, Set<Work> aggregatedWorks, Collection<ContributorEntity> releaseContributors, Release release, Recording recording, Track track) {
+    private void addRecording(Set<Contributor> aggregatedContributors, Set<Recording> aggregatedRecordings, Set<Work> aggregatedWorks, Set<Classification> aggregatedClassifications, Collection<ContributorEntity> releaseContributors, Collection<ClassificationEntity> releaseClassifications, Release release, Recording recording, Track track) {
         // Get all contributors for a recording session which this recording is part of
         Set<Contributor> sessionContributors = new HashSet<Contributor>();
         Set<RecordingSession> recordingSessions = new HashSet<RecordingSession>();
@@ -134,6 +149,11 @@ public class SearchRelationPostProcessor implements PostProcessor {
             recordingSessions.add(session);
         }
 
+        Set<ClassificationEntity> aggregatedTrackClassifications = new HashSet<ClassificationEntity>();
+        Collection<ClassificationEntity> recordingClassifications = classificationRepository.findByReference(recording.getId());
+        aggregatedTrackClassifications.addAll(recordingClassifications);
+        aggregatedClassifications.addAll(recordingClassifications);
+
         Set<TrackSearchRelationEntity> trackSearchRelations = new HashSet<TrackSearchRelationEntity>();
         Set<Contributor> aggregatedTrackContributors = new HashSet<Contributor>(recording.getContributors());
         Set<RecordingSearchRelationEntity> recordingSearchRelations = new HashSet<RecordingSearchRelationEntity>();
@@ -143,6 +163,7 @@ public class SearchRelationPostProcessor implements PostProcessor {
         aggregatedRecordings.add(recording);
         Work work = recording.getWork();
         Set<Contributor> aggregatedWorkContributors = new HashSet<Contributor>();
+        Set<ClassificationEntity> aggregatedWorkClassifications = new HashSet<ClassificationEntity>();
         Set<Work> works = new HashSet<Work>();
         while (work != null) {
             works.add(work);
@@ -151,6 +172,10 @@ public class SearchRelationPostProcessor implements PostProcessor {
             aggregatedWorkContributors.addAll(workContributors);
             aggregatedContributors.addAll(workContributors);
             aggregatedWorks.add(work);
+
+            Collection<ClassificationEntity> workClassifications = classificationRepository.findByReference(work.getId());
+            aggregatedClassifications.addAll(workClassifications);
+            aggregatedWorkClassifications.addAll(workClassifications);
 
             // Add relations for contributors directly related to this work
             for (Contributor contributor : workContributors) {
@@ -187,6 +212,34 @@ public class SearchRelationPostProcessor implements PostProcessor {
                     addContributor(workSearchRelations, contributor, work, WorkSearchRelationEntity.class);
                 }
             }
+
+            for (ClassificationEntity classification : workClassifications) {
+                for (Work workOrPart : works) {
+                    workSearchRelations.add(new WorkSearchRelationEntity(workOrPart.getId(), SMDIdentityReferenceEntity.typeForClass(classification.getClass()),classification.getId(),classification.getType()));
+                    // Need to use merge because a work can be part of multiple releases
+                    entityManager.merge(new ClassificationSearchRelationEntity(classification.getId(),workOrPart));
+                }
+            }
+            for (ClassificationEntity classification : recordingClassifications) {
+                for (Work workOrPart : works) {
+                    workSearchRelations.add(new WorkSearchRelationEntity(workOrPart.getId(), SMDIdentityReferenceEntity.typeForClass(classification.getClass()),classification.getId(),classification.getType()));
+                    // Need to use merge because a work can be part of multiple releases
+                    entityManager.merge(new ClassificationSearchRelationEntity(classification.getId(),workOrPart));
+                }
+            }
+
+            for (ClassificationEntity classification : releaseClassifications) {
+                // Only add release classifications if it hasn't been defined on the recording or work
+                if(!containsType(recordingClassifications, classification.getType()) &&
+                    !containsType(workClassifications, classification.getType())) {
+                    for (Work workOrPart : works) {
+                        workSearchRelations.add(new WorkSearchRelationEntity(workOrPart.getId(), SMDIdentityReferenceEntity.typeForClass(classification.getClass()),classification.getId(),classification.getType()));
+                        // Need to use merge because a work can be part of multiple releases
+                        entityManager.merge(new ClassificationSearchRelationEntity(classification.getId(),workOrPart));
+                    }
+                }
+            }
+
             if(release != null) {
                 workSearchRelations.add(new WorkSearchRelationEntity(work.getId(), release));
                 if (release.getLabel() != null) {
@@ -205,6 +258,21 @@ public class SearchRelationPostProcessor implements PostProcessor {
             work = work.getParent();
         }
         aggregatedTrackContributors.addAll(aggregatedWorkContributors);
+
+        for (ClassificationEntity classification : aggregatedWorkClassifications) {
+            // Only use work classifications if they aren't already defined on the Recording
+            if(!containsType(recordingClassifications, classification.getType())) {
+                aggregatedTrackClassifications.add(classification);
+            }
+        }
+
+        for (ClassificationEntity classification : releaseClassifications) {
+            // Only add release classifications if the classification on the recording or work doesn't contain the same type of classification
+            if(!containsType(recordingClassifications,classification.getType()) &&
+               !containsType(aggregatedWorkClassifications,classification.getType())) {
+                aggregatedTrackClassifications.add(classification);
+            }
+        }
 
         // Add relations for contributors directly related to this recording
         for (Contributor contributor : recordingContributors) {
@@ -246,12 +314,32 @@ public class SearchRelationPostProcessor implements PostProcessor {
             }
         }
 
-        // Create artist search relations between artists that performs or contributes on the same recording
         for (Contributor contributor1 : aggregatedTrackContributors) {
+            // Create artist search relations between artists that performs or contributes on the same recording
             for (Contributor contributor2 : aggregatedTrackContributors) {
                 if(!contributor1.equals(contributor2) && !contributor1.getType().equals(contributor2.getType())) {
                     // Need to use merge because an artist can be part of multiple releases
                     entityManager.merge(new ArtistSearchRelationEntity(contributor1.getArtist().getId(), SMDIdentityReferenceEntity.typeForClass(contributor2.getArtist().getClass()), contributor2.getArtist().getId(),contributor2.getType()));
+                }
+            }
+
+            // Create artist search relations to classification
+            for (ClassificationEntity classification : aggregatedTrackClassifications) {
+                // Need to use merge because an artist can be part of multiple releases
+                entityManager.merge(new ArtistSearchRelationEntity(contributor1.getArtist().getId(), SMDIdentityReferenceEntity.typeForClass(classification.getClass()),classification.getId(),contributor1.getType()));
+                entityManager.merge(new ClassificationSearchRelationEntity(classification.getId(),SMDIdentityReferenceEntity.typeForClass(contributor1.getArtist().getClass()),contributor1.getArtist().getId(),contributor1.getType()));
+            }
+        }
+        for (ClassificationEntity classification : aggregatedTrackClassifications) {
+            // Need to use merge because a recording can be part of multiple releases
+            entityManager.merge(new ClassificationSearchRelationEntity(classification.getId(),recording));
+            if(release != null) {
+                if(track!=null) {
+                    entityManager.persist(new ClassificationSearchRelationEntity(classification.getId(), track));
+                }
+                if(release.getLabel()!=null) {
+                    // Need to use merge because a label can be part of multiple releases
+                    entityManager.merge(new ClassificationSearchRelationEntity(classification.getId(), release.getLabel()));
                 }
             }
         }
@@ -270,6 +358,12 @@ public class SearchRelationPostProcessor implements PostProcessor {
         if (track != null) {
             recordingSearchRelations.add(new RecordingSearchRelationEntity(recording.getId(), track));
             trackSearchRelations.add(new TrackSearchRelationEntity(track.getId(), recording));
+            for (ClassificationEntity classification : aggregatedTrackClassifications) {
+                trackSearchRelations.add(new TrackSearchRelationEntity(track.getId(), SMDIdentityReferenceEntity.typeForClass(classification.getClass()),classification.getId(),classification.getType()));
+            }
+        }
+        for (ClassificationEntity classification : aggregatedTrackClassifications) {
+            recordingSearchRelations.add(new RecordingSearchRelationEntity(recording.getId(), SMDIdentityReferenceEntity.typeForClass(classification.getClass()),classification.getId(),classification.getType()));
         }
 
         for (RecordingSearchRelationEntity relation : recordingSearchRelations) {
@@ -321,6 +415,22 @@ public class SearchRelationPostProcessor implements PostProcessor {
     private boolean containsRole(Collection<Contributor> contributors, String type) {
         for (Contributor contributor : contributors) {
             if (contributor.getType().equals(type)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if the list of classifications contain a classification of the specified type
+     *
+     * @param classifications List of classifications to check
+     * @param type         Type of classification to check for
+     * @return true if the list of contributors contains the specified role
+     */
+    private boolean containsType(Collection<? extends Classification> classifications, String type) {
+        for (Classification classification : classifications) {
+            if (classification.getType().equals(type)) {
                 return true;
             }
         }

@@ -39,4 +39,11 @@ public class BrowseServiceModule extends AbstractModule {
     public BrowseService getArtistBrowseService() {
         return new ArtistBrowseService();
     }
+
+    @Provides
+    @Named("Classification")
+    @Singleton
+    public BrowseService getClassificationBrowseService() {
+        return new ClassificationBrowseService();
+    }
 }

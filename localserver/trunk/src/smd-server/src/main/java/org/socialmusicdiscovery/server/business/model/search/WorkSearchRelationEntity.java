@@ -11,4 +11,7 @@ public class WorkSearchRelationEntity extends SearchRelationEntity {
     public WorkSearchRelationEntity(String id, SMDIdentity reference) {
         super(id,reference);
     }
+    public WorkSearchRelationEntity(String id, String referenceType, String reference, String type) {
+        super(id,referenceType,reference, type);
+    }
 }

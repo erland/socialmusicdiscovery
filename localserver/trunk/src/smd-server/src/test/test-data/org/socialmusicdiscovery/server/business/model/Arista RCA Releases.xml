@@ -918,5 +918,6 @@
     <artists_search_relations/>
     <persons_search_relations/>
     <tracks_search_relations/>
+    <classifications_search_relations/>
     <playable_elements/>
 </dataset>
