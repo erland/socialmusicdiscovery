@@ -10,8 +10,20 @@ import javax.ws.rs.core.MediaType;
 import java.util.Arrays;
 import java.util.Collection;
 
+/**
+ * Provides functionality to create, update, delete and find a specific work
+ */
 @Path("/works")
 public class WorkFacade extends AbstractCRUDFacade<WorkEntity, WorkRepository> {
+    /**
+     * Search for work matching the search criterias
+     *
+     * @param name         Exact name of the work
+     * @param nameContains The name of the work has to contain this string
+     * @param release      Identity of a release which the work is part of
+     * @param artist       Identity of an artist which contributes to the work
+     * @return List of matching works
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Collection<WorkEntity> search(@QueryParam("name") String name, @QueryParam("nameContains") String nameContains, @QueryParam("release") String release, @QueryParam("artist") String artist) {
@@ -28,6 +40,12 @@ public class WorkFacade extends AbstractCRUDFacade<WorkEntity, WorkRepository> {
         }
     }
 
+    /**
+     * Get information about a specific work
+     *
+     * @param id Identity of the work
+     * @return Information about the work
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
@@ -35,6 +53,12 @@ public class WorkFacade extends AbstractCRUDFacade<WorkEntity, WorkRepository> {
         return super.getEntity(id);
     }
 
+    /**
+     * Create a new work
+     *
+     * @param work Information about work to be created
+     * @return Information about newly created work including its generated identity
+     */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -42,6 +66,13 @@ public class WorkFacade extends AbstractCRUDFacade<WorkEntity, WorkRepository> {
         return super.createEntity(work);
     }
 
+    /**
+     * Update an existing work
+     *
+     * @param id   Identity of the work
+     * @param work Updated information about the work
+     * @return Updated information about the work
+     */
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -50,6 +81,11 @@ public class WorkFacade extends AbstractCRUDFacade<WorkEntity, WorkRepository> {
         return super.updateEntity(id, work);
     }
 
+    /**
+     * Delete an existing work
+     *
+     * @param id Identity of the work
+     */
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")

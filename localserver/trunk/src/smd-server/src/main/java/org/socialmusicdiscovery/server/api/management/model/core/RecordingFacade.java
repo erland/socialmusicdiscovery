@@ -10,8 +10,18 @@ import javax.ws.rs.core.MediaType;
 import java.util.Arrays;
 import java.util.Collection;
 
+/**
+ * Provides functionality to create, update, delete and find a specific recording
+ */
 @Path("/recordings")
 public class RecordingFacade extends AbstractCRUDFacade<RecordingEntity, RecordingRepository> {
+    /**
+     * Search for recordings matching specified search criterias
+     *
+     * @param name         Exact name of recording
+     * @param nameContains The name of the recording has to contain this string
+     * @return List of matching recordings
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Collection<RecordingEntity> search(@QueryParam("name") String name, @QueryParam("nameContains") String nameContains) {
@@ -24,6 +34,12 @@ public class RecordingFacade extends AbstractCRUDFacade<RecordingEntity, Recordi
         }
     }
 
+    /**
+     * Get information about a specific recording
+     *
+     * @param id Identity of recording
+     * @return Information about recording
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
@@ -31,6 +47,12 @@ public class RecordingFacade extends AbstractCRUDFacade<RecordingEntity, Recordi
         return super.getEntity(id);
     }
 
+    /**
+     * Create a new recording
+     *
+     * @param recording Information about recording to create
+     * @return Information about newly created recording including its generated identity
+     */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -38,6 +60,13 @@ public class RecordingFacade extends AbstractCRUDFacade<RecordingEntity, Recordi
         return super.createEntity(recording);
     }
 
+    /**
+     * Update an existing recording
+     *
+     * @param id        Identity of recording
+     * @param recording Information about recording
+     * @return Information about recording
+     */
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -46,6 +75,11 @@ public class RecordingFacade extends AbstractCRUDFacade<RecordingEntity, Recordi
         return super.updateEntity(id, recording);
     }
 
+    /**
+     * Delete an existing recording
+     *
+     * @param id Identity of recording
+     */
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")

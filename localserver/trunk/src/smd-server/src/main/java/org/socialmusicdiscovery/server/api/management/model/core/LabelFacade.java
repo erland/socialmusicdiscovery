@@ -10,8 +10,18 @@ import javax.ws.rs.core.MediaType;
 import java.util.Arrays;
 import java.util.Collection;
 
+/**
+ * Provides functionality to create, update, delete and find a specific label
+ */
 @Path("/labels")
 public class LabelFacade extends AbstractCRUDFacade<LabelEntity, LabelRepository> {
+    /**
+     * Search for matching labels
+     *
+     * @param name         Exact name of label
+     * @param nameContains The name of the label has to contain this string
+     * @return List of matching labels
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Collection<LabelEntity> search(@QueryParam("name") String name, @QueryParam("nameContains") String nameContains) {
@@ -24,6 +34,12 @@ public class LabelFacade extends AbstractCRUDFacade<LabelEntity, LabelRepository
         }
     }
 
+    /**
+     * Get information about the label with the specified identity
+     *
+     * @param id Identity of the label
+     * @return Information about the label
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
@@ -31,6 +47,12 @@ public class LabelFacade extends AbstractCRUDFacade<LabelEntity, LabelRepository
         return super.getEntity(id);
     }
 
+    /**
+     * Creates a new label
+     *
+     * @param label Information about the label to create
+     * @return Information about the newly create label including its generated identity
+     */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -38,6 +60,13 @@ public class LabelFacade extends AbstractCRUDFacade<LabelEntity, LabelRepository
         return super.createEntity(label);
     }
 
+    /**
+     * Update an existing label
+     *
+     * @param id    Identity of the label
+     * @param label Updated information about the label
+     * @return The updated information about the label
+     */
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -46,6 +75,11 @@ public class LabelFacade extends AbstractCRUDFacade<LabelEntity, LabelRepository
         return super.updateEntity(id, label);
     }
 
+    /**
+     * Delete an existing label
+     *
+     * @param id Identity of the label
+     */
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")

@@ -139,11 +139,12 @@ public class SMDApplication {
 
             Map<String, String> initParams = new HashMap<String, String>();
             initParams.put("com.sun.jersey.config.property.packages", "org.socialmusicdiscovery.server.api;org.socialmusicdiscovery.server.business.logic.jersey");
+            initParams.put("com.sun.jersey.config.property.WadlGeneratorConfig","org.socialmusicdiscovery.server.business.logic.jersey.SMDWadlGeneratorConfig");
 
             System.out.println("Starting grizzly...");
             URI uri = UriBuilder.fromUri("http://localhost/").port(Integer.parseInt(serverPort)).build();
             SelectorThread threadSelector = GrizzlyWebContainerFactory.create(uri, initParams);
-            System.out.println(String.format("Try out %spersons\nHit q+enter to stop it...", uri));
+            System.out.println(String.format("Try out %sapplication.wadl\nHit q+enter to stop it...", uri));
             while (System.in.read() != 'q') {
             }
             ;
