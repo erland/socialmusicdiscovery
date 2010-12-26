@@ -10,14 +10,28 @@ import javax.ws.rs.core.MediaType;
 import java.util.Arrays;
 import java.util.Collection;
 
+/**
+ * Provides functionality to create, update, delete and find a specific recording session
+ */
 @Path("/recordingsessions")
 public class RecordingSessionFacade extends AbstractCRUDFacade<RecordingSessionEntity, RecordingSessionRepository> {
+    /**
+     * Search for recordings sessions
+     *
+     * @return List of recording sessions
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Collection<RecordingSessionEntity> search() {
         return DetachHelper.createDetachedCopy(repository.findAllWithRelations(Arrays.asList("reference"), null));
     }
 
+    /**
+     * Get information about a specific recording session
+     *
+     * @param id Identity of recording session
+     * @return Information about recording session
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
@@ -25,6 +39,12 @@ public class RecordingSessionFacade extends AbstractCRUDFacade<RecordingSessionE
         return super.getEntity(id);
     }
 
+    /**
+     * Create a new recording session
+     *
+     * @param recordingSession Information about recording session to create
+     * @return Information about newly created recording session including its generated identity
+     */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -32,6 +52,13 @@ public class RecordingSessionFacade extends AbstractCRUDFacade<RecordingSessionE
         return super.createEntity(recordingSession);
     }
 
+    /**
+     * Update an existing recording session
+     *
+     * @param id               Identity of recording session
+     * @param recordingSession Information about recording session
+     * @return Information about recording session
+     */
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -40,6 +67,11 @@ public class RecordingSessionFacade extends AbstractCRUDFacade<RecordingSessionE
         return super.updateEntity(id, recordingSession);
     }
 
+    /**
+     * Delete an existing recording session
+     *
+     * @param id Identity of recording session
+     */
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
