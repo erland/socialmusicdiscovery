@@ -33,14 +33,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
-public class ResultItem {
-    public class Child {
+public class Result {
+    public static class Child {
         @Expose
         private String id;
         @Expose
         private Long count;
 
-        public Child() {};
+        public Child() {
+        }
+
+        ;
+
         public Child(String id, Long count) {
             this.id = id;
             this.count = count;
@@ -62,23 +66,69 @@ public class ResultItem {
             this.count = count;
         }
     }
-    @Expose
-    private Collection<Child> childItems;
-    @Expose
-    private Object item;
-    public ResultItem() {}
-    public ResultItem(Object item, Map<String,Long> childCounters) {
-        this.item = item;
-        childItems = new ArrayList<Child>(childCounters.size());
-        for (Map.Entry<String, Long> entry : childCounters.entrySet()) {
-            childItems.add(new Child(entry.getKey(),entry.getValue()));
+
+    public static class ResultItem {
+        @Expose
+        private Collection<Child> childItems;
+        @Expose
+        private Object item;
+
+        public ResultItem() {
+        }
+
+        public ResultItem(Object item) {
+            this.item = item;
+        }
+
+        public ResultItem(Object item, Map<String, Long> childCounters) {
+            this.item = item;
+            childItems = new ArrayList<Child>(childCounters.size());
+            for (Map.Entry<String, Long> entry : childCounters.entrySet()) {
+                childItems.add(new Child(entry.getKey(), entry.getValue()));
+            }
+        }
+
+        public Collection<Child> getChildItems() {
+            return childItems;
+        }
+
+        public Object getItem() {
+            return item;
         }
     }
-    public Collection<Child> getChildItems() {
-        return childItems;
+
+    @Expose
+    private Collection<ResultItem> items;
+    @Expose
+    private Long totalSize;
+    @Expose
+    private Long offset;
+    @Expose
+    private Long size;
+
+    public Result() {
     }
 
-    public Object getItem() {
-        return item;
+    public Result(Collection<ResultItem> items, Long totalSize, Long offset, Long size) {
+        this.items = items;
+        this.totalSize = totalSize;
+        this.offset = offset;
+        this.size = size;
+    }
+
+    public Collection<ResultItem> getItems() {
+        return items;
+    }
+
+    public Long getTotalSize() {
+        return totalSize;
+    }
+
+    public Long getOffset() {
+        return offset;
+    }
+
+    public Long getSize() {
+        return size;
     }
 }

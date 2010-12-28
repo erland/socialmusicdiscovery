@@ -4,14 +4,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ResultItem<T> {
-    private Map<String,Long> childItems;
+    private Map<String, Long> childItems;
     private T item;
-    public ResultItem() {}
-    public ResultItem(T item, Map<String,Long> childCounters) {
-        this.item = item;
-        childItems = new HashMap<String,Long>(childCounters);
+
+    public ResultItem() {
     }
-    public Map<String,Long> getChildItems() {
+
+    public ResultItem(T item) {
+        this.item = item;
+    }
+
+    public ResultItem(T item, Map<String, Long> childCounters) {
+        this.item = item;
+        childItems = new HashMap<String, Long>(childCounters);
+    }
+
+    public Map<String, Long> getChildItems() {
         return childItems;
     }
 
