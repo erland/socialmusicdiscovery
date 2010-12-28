@@ -182,3 +182,14 @@ This section contains online streaming sources that would be interesting to inte
     * 30 seconds previews are available without having to use iTunes, this could possibly be useful.
     * AMG ID to iTunes ID mapping are available, this could possibly be useful to be able to open a web browser towards AMG web site
   *   
+
+= Other sites/tools which is of interest =
+  * *tuneglue*
+    * http://audiomap.tuneglue.net/
+    * Interesting way to browse artist relations, not usre if it's open source or possible to integrate
+  * *Acoustid*
+    * http://acoustid.org/
+    * http://wiki.acoustid.org/wiki/Chromaprint
+    * Automatic identification of music and retrieval of Musicbrainz tags. 
+    * The project is in an early stage but this should be very interesting to integrate
+  * 
