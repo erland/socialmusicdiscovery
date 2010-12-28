@@ -159,4 +159,12 @@ public abstract class AbstractJSONProvider implements MessageBodyReader<Object>,
 
         return gsonBuilder.create().fromJson(entityReader, targetType);
     }
+
+    public <T> T fromJson(String jsonString, Class<T> type) {
+        return gsonBuilder.create().fromJson(jsonString, type);
+    }
+
+    public String toJson(Object object) {
+        return gsonBuilder.setPrettyPrinting().create().toJson(object);
+    }
 }
