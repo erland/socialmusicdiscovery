@@ -16,7 +16,7 @@ public class TrackBrowseService extends AbstractBrowseService implements BrowseS
         String countJoinString = null;
         if (criteriaList.size() > 0) {
             countJoinString = buildResultJoinString("e", criteriaList);
-            joinString = " JOIN FETCH e.recording as r JOIN FETCH r.work LEFT JOIN FETCH e.medium" + countJoinString;
+            joinString = " JOIN FETCH e.recording as r JOIN FETCH r.work LEFT JOIN FETCH e.medium as m" + countJoinString;
         }
         String whereString = buildResultWhereString(criteriaList);
 
@@ -39,10 +39,10 @@ public class TrackBrowseService extends AbstractBrowseService implements BrowseS
         if (maxItems == null || count > 0L) {
             Query query = null;
             if (criteriaList.size() > 0) {
-                query = entityManager.createQuery("SELECT distinct e from TrackEntity as e " + joinString + " WHERE " + whereString + " order by e.number");
+                query = entityManager.createQuery("SELECT distinct e from TrackEntity as e " + joinString + " WHERE " + whereString + " order by m.number,m.name,e.number");
                 setQueryParameters(query, criteriaList);
             } else {
-                query = entityManager.createQuery("SELECT e from TrackEntity as e JOIN FETCH e.recording as r JOIN FETCH r.work LEFT JOIN FETCH e.medium order by e.number");
+                query = entityManager.createQuery("SELECT e from TrackEntity as e JOIN FETCH e.recording as r JOIN FETCH r.work LEFT JOIN FETCH e.medium as m order by m.number,m.name,e.number");
             }
             if (firstItem != null) {
                 query.setFirstResult(firstItem);
