@@ -39,7 +39,13 @@ use Slim::Utils::OSDetect;
 
 use Data::Dumper;
 
+if ( main::WEBUI ) {
+	require Plugins::SocialMusicDiscovery::Settings;
+}
 use Plugins::SocialMusicDiscovery::Scanner;
+use Plugins::SocialMusicDiscovery::MenuAPI::BrowseLibrary;
+use Plugins::SocialMusicDiscovery::Menu::SMDMenus;
+use Plugins::SocialMusicDiscovery::MenuAPI::Buttons::XMLBrowser;
 
 my $log = Slim::Utils::Log->addLogCategory({
 	'category'     => 'plugin.socialmusicdiscovery',
@@ -89,8 +95,16 @@ sub initPlugin
 	# Store plugin version from install.xml file so we can show it in the user interface
 	$PLUGINVERSION = Slim::Utils::PluginManager->dataForPlugin($class)->{'version'};
 
+	if ( main::WEBUI ) {
+		# Initialize settings module
+		Plugins::SocialMusicDiscovery::Settings->new();
+	}
+
 	# Initialize scanner module so it's JSON commands are registered
 	Plugins::SocialMusicDiscovery::Scanner::init();
+	Plugins::SocialMusicDiscovery::MenuAPI::BrowseLibrary->init();
+	Plugins::SocialMusicDiscovery::MenuAPI::Buttons::XMLBrowser->init();
+	Plugins::SocialMusicDiscovery::Menu::SMDMenus->init();
 
     # Find location of smd-server binary in plugin directory
     my $smdServerPath = undef;
@@ -139,18 +153,20 @@ sub shutdownPlugin
 
 # Register web interface pages, will be called by plugin framework
 sub webPages {
+	if ( main::WEBUI ) {
 
-	my %pages = (
-		"SocialMusicDiscovery/scanner\.(?:htm|xml)"     => \&webScanner,
-		"SocialMusicDiscovery/index\.(?:htm|xml)"     => \&webIndex,
-		"SocialMusicDiscovery/fullwindow\.(?:htm|xml)"     => \&webFullWindow,
-	);
+		my %pages = (
+			"SocialMusicDiscovery/scanner\.(?:htm|xml)"     => \&webScanner,
+			"SocialMusicDiscovery/index\.(?:htm|xml)"     => \&webIndex,
+			"SocialMusicDiscovery/fullwindow\.(?:htm|xml)"     => \&webFullWindow,
+		);
 
-	for my $page (keys %pages) {
-		Slim::Web::Pages->addPageFunction($page, $pages{$page});
+		for my $page (keys %pages) {
+			Slim::Web::Pages->addPageFunction($page, $pages{$page});
+		}
+		Slim::Web::Pages->addPageLinks("plugins", { 'PLUGIN_SOCIALMUSICDISCOVERY' => 'plugins/SocialMusicDiscovery/index.html' });
+		Slim::Web::Pages->addPageLinks("plugins", { 'PLUGIN_SOCIALMUSICDISCOVERY_SCANNER' => 'plugins/SocialMusicDiscovery/scanner.html' });
 	}
-	Slim::Web::Pages->addPageLinks("plugins", { 'PLUGIN_SOCIALMUSICDISCOVERY' => 'plugins/SocialMusicDiscovery/index.html' });
-	Slim::Web::Pages->addPageLinks("plugins", { 'PLUGIN_SOCIALMUSICDISCOVERY_SCANNER' => 'plugins/SocialMusicDiscovery/scanner.html' });
 }
 
 # Page handler for the scanner status page of the plugin
