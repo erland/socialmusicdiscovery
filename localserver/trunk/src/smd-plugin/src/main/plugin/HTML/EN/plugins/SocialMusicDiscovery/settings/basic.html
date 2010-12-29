@@ -1,0 +1,12 @@
+[% PROCESS settings/header.html %]
+
+	[% WRAPPER setting title="SETUP_PLUGIN_SOCIALMUSICDISCOVERY_HOSTNAME" desc="SETUP_PLUGIN_SOCIALMUSICDISCOVERY_HOSTNAME_DESC" %]
+		<input type="text" class="stdedit" name="pref_hostname" id="hostname" value="[% prefs.pref_hostname %]" size="15">
+	[% END %]
+
+	[% WRAPPER setting title="SETUP_PLUGIN_SOCIALMUSICDISCOVERY_PORT" desc="SETUP_PLUGIN_SOCIALMUSICDISCOVERY_PORT_DESC" %]
+		<input type="text" class="stdedit" name="pref_port" id="port" value="[% prefs.pref_port %]" size="5">
+	[% END %]
+
+[% PROCESS settings/footer.html %]
+
