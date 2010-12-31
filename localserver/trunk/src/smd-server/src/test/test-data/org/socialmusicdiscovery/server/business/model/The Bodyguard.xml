@@ -1,156 +1,156 @@
 <dataset>
-    <Smdidentity_references id="10000" type="org.socialmusicdiscovery.server.business.model.core.LabelEntity"/>
-    <LABELS id="10000" name="Arista"/>
-    <Smdidentity_references id="20000" type="org.socialmusicdiscovery.server.business.model.core.ReleaseEntity"/>
-    <RELEASES id="20000" date="1992-01-01" name="The Bodyguard (Original Soundtrack Album)" label_id="10000"/>
+    <smdidentity_references id="10000" type="org.socialmusicdiscovery.server.business.model.core.LabelEntity"/>
+    <labels id="10000" name="Arista"/>
+    <smdidentity_references id="20000" type="org.socialmusicdiscovery.server.business.model.core.ReleaseEntity"/>
+    <releases id="20000" date="1992-01-01" name="The Bodyguard (Original Soundtrack Album)" label_id="10000"/>
 
 
-    <Smdidentity_references id="101" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
-    <PERSONS id="101" name="Dolly Rebecca Parton"/>
-    <Smdidentity_references id="102" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
-    <PERSONS id="102" name="Ricky Minor"/>
-    <Smdidentity_references id="103" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
-    <PERSONS id="103" name="Kenneth Brian Edmonds"/>
-    <Smdidentity_references id="104" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
-    <PERSONS id="104" name="Daryl L. Simmons"/>
-    <Smdidentity_references id="105" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
-    <PERSONS id="105" name="Antonio M. Reid"/>
-    <Smdidentity_references id="106" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
-    <PERSONS id="106" name="Whitney Elisabeth Houston"/>
-    <Smdidentity_references id="107" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
-    <PERSONS id="107" name="William Harrison Withers, Jr."/>
-    <Smdidentity_references id="108" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
-    <PERSONS id="108" name="David Bryon Cole"/>
-    <Smdidentity_references id="109" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
-    <PERSONS id="109" name="Robert Manuel Clivilles"/>
-    <Smdidentity_references id="110" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
-    <PERSONS id="110" name="Clarence Alexander Scarborough"/>
-    <Smdidentity_references id="111" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
-    <PERSONS id="111" name="Tommy Never"/>
-    <Smdidentity_references id="112" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
-    <PERSONS id="112" name="Alan Antonio Silverstri"/>
-    <Smdidentity_references id="113" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
-    <PERSONS id="113" name="Gary Grant"/>
-    <Smdidentity_references id="114" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
-    <PERSONS id="114" name="William Ross"/>
-    <Smdidentity_references id="115" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
-    <PERSONS id="115" name="Michelle Shupack"/>
+    <smdidentity_references id="101" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
+    <persons id="101" name="Dolly Rebecca Parton"/>
+    <smdidentity_references id="102" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
+    <persons id="102" name="Ricky Minor"/>
+    <smdidentity_references id="103" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
+    <persons id="103" name="Kenneth Brian Edmonds"/>
+    <smdidentity_references id="104" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
+    <persons id="104" name="Daryl L. Simmons"/>
+    <smdidentity_references id="105" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
+    <persons id="105" name="Antonio M. Reid"/>
+    <smdidentity_references id="106" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
+    <persons id="106" name="Whitney Elisabeth Houston"/>
+    <smdidentity_references id="107" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
+    <persons id="107" name="William Harrison Withers, Jr."/>
+    <smdidentity_references id="108" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
+    <persons id="108" name="David Bryon Cole"/>
+    <smdidentity_references id="109" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
+    <persons id="109" name="Robert Manuel Clivilles"/>
+    <smdidentity_references id="110" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
+    <persons id="110" name="Clarence Alexander Scarborough"/>
+    <smdidentity_references id="111" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
+    <persons id="111" name="Tommy Never"/>
+    <smdidentity_references id="112" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
+    <persons id="112" name="Alan Antonio Silverstri"/>
+    <smdidentity_references id="113" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
+    <persons id="113" name="Gary Grant"/>
+    <smdidentity_references id="114" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
+    <persons id="114" name="William Ross"/>
+    <smdidentity_references id="115" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
+    <persons id="115" name="Michelle Shupack"/>
 
-    <Smdidentity_references id="1" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
-    <ARTISTS id="1" person_id="101" name="Dolly Parton"/>
-    <Smdidentity_references id="2" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
-    <ARTISTS id="2" person_id="102" name="Ricky Minor"/>
-    <Smdidentity_references id="3" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
-    <ARTISTS id="3" person_id="103" name="Babyface"/>
-    <Smdidentity_references id="4" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
-    <ARTISTS id="4" person_id="104" name="Daryl Simmons"/>
-    <Smdidentity_references id="5" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
-    <ARTISTS id="5" person_id="105" name="L.A. Reid"/>
-    <Smdidentity_references id="6" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
-    <ARTISTS id="6" person_id="106" name="Whitney Houston"/>
-    <Smdidentity_references id="7" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
-    <ARTISTS id="7" person_id="107" name="Bill Withers"/>
-    <Smdidentity_references id="8" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
-    <ARTISTS id="8" person_id="108" name="David Cole"/>
-    <Smdidentity_references id="9" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
-    <ARTISTS id="9" person_id="109" name="Robert Clivilles"/>
-    <Smdidentity_references id="10" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
-    <ARTISTS id="10" person_id="110" name="Skip Scarborough"/>
-    <Smdidentity_references id="11" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
-    <ARTISTS id="11" person_id="111" name="Tommy Never"/>
-    <Smdidentity_references id="12" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
-    <ARTISTS id="12" person_id="112" name="Alan Silverstri"/>
-    <Smdidentity_references id="13" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
-    <ARTISTS id="13" person_id="113" name="Gary Grant"/>
-    <Smdidentity_references id="14" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
-    <ARTISTS id="14" person_id="114" name="William Ross"/>
-    <Smdidentity_references id="15" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
-    <ARTISTS id="15" person_id="115" name="Michelle Visage"/>
-    <Smdidentity_references id="16" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
-    <ARTISTS id="16" name="The S.O.U.L. S.Y.S.T.E.M."/>
+    <smdidentity_references id="1" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
+    <artists id="1" person_id="101" name="Dolly Parton"/>
+    <smdidentity_references id="2" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
+    <artists id="2" person_id="102" name="Ricky Minor"/>
+    <smdidentity_references id="3" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
+    <artists id="3" person_id="103" name="Babyface"/>
+    <smdidentity_references id="4" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
+    <artists id="4" person_id="104" name="Daryl Simmons"/>
+    <smdidentity_references id="5" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
+    <artists id="5" person_id="105" name="L.A. Reid"/>
+    <smdidentity_references id="6" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
+    <artists id="6" person_id="106" name="Whitney Houston"/>
+    <smdidentity_references id="7" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
+    <artists id="7" person_id="107" name="Bill Withers"/>
+    <smdidentity_references id="8" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
+    <artists id="8" person_id="108" name="David Cole"/>
+    <smdidentity_references id="9" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
+    <artists id="9" person_id="109" name="Robert Clivilles"/>
+    <smdidentity_references id="10" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
+    <artists id="10" person_id="110" name="Skip Scarborough"/>
+    <smdidentity_references id="11" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
+    <artists id="11" person_id="111" name="Tommy Never"/>
+    <smdidentity_references id="12" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
+    <artists id="12" person_id="112" name="Alan Silverstri"/>
+    <smdidentity_references id="13" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
+    <artists id="13" person_id="113" name="Gary Grant"/>
+    <smdidentity_references id="14" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
+    <artists id="14" person_id="114" name="William Ross"/>
+    <smdidentity_references id="15" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
+    <artists id="15" person_id="115" name="Michelle Visage"/>
+    <smdidentity_references id="16" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
+    <artists id="16" name="The S.O.U.L. S.Y.S.T.E.M."/>
 
-    <Smdidentity_references id="30001" type="org.socialmusicdiscovery.server.business.model.core.WorkEntity"/>
-    <WORKS id="30001" name="I Will Always Love You"/>
-    <Smdidentity_references id="40001" type="org.socialmusicdiscovery.server.business.model.core.RecordingEntity"/>
-    <RECORDINGS id="40001" work_id="30001"/>
-    <Smdidentity_references id="50001" type="org.socialmusicdiscovery.server.business.model.core.TrackEntity"/>
-    <TRACKS id="50001" number="1" recording_id="40001" release_id="20000"/>
-    <Smdidentity_references id="30001001" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
-    <CONTRIBUTORS id="30001001" type="composer" work_id="30001" artist_id="1"/>
-    <Smdidentity_references id="40001002" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
-    <CONTRIBUTORS id="40001002" type="performer" recording_id="40001" artist_id="6"/>
-    <Smdidentity_references id="40001003" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
-    <CONTRIBUTORS id="40001003" type="conductor" recording_id="40001" artist_id="2"/>
+    <smdidentity_references id="30001" type="org.socialmusicdiscovery.server.business.model.core.WorkEntity"/>
+    <works id="30001" name="I Will Always Love You"/>
+    <smdidentity_references id="40001" type="org.socialmusicdiscovery.server.business.model.core.RecordingEntity"/>
+    <recordings id="40001" work_id="30001"/>
+    <smdidentity_references id="50001" type="org.socialmusicdiscovery.server.business.model.core.TrackEntity"/>
+    <tracks id="50001" number="1" recording_id="40001" release_id="20000"/>
+    <smdidentity_references id="30001001" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
+    <contributors id="30001001" type="composer" work_id="30001" artist_id="1"/>
+    <smdidentity_references id="40001002" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
+    <contributors id="40001002" type="performer" recording_id="40001" artist_id="6"/>
+    <smdidentity_references id="40001003" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
+    <contributors id="40001003" type="conductor" recording_id="40001" artist_id="2"/>
 
-    <Smdidentity_references id="30005" type="org.socialmusicdiscovery.server.business.model.core.WorkEntity"/>
-    <WORKS id="30005" name="Queen Of The Night"/>
-    <Smdidentity_references id="40005" type="org.socialmusicdiscovery.server.business.model.core.RecordingEntity"/>
-    <RECORDINGS id="40005" work_id="30005"/>
-    <Smdidentity_references id="50005" type="org.socialmusicdiscovery.server.business.model.core.TrackEntity"/>
-    <TRACKS id="50005" number="5" recording_id="40005" release_id="20000"/>
-    <Smdidentity_references id="30005001" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
-    <CONTRIBUTORS id="30005001" type="composer" work_id="30005" artist_id="3"/>
-    <Smdidentity_references id="30005002" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
-    <CONTRIBUTORS id="30005002" type="composer" work_id="30005" artist_id="4"/>
-    <Smdidentity_references id="30005003" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
-    <CONTRIBUTORS id="30005003" type="composer" work_id="30005" artist_id="5"/>
-    <Smdidentity_references id="30005004" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
-    <CONTRIBUTORS id="30005004" type="composer" work_id="30005" artist_id="6"/>
-    <Smdidentity_references id="40005005" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
-    <CONTRIBUTORS id="40005005" type="performer" recording_id="40005" artist_id="6"/>
+    <smdidentity_references id="30005" type="org.socialmusicdiscovery.server.business.model.core.WorkEntity"/>
+    <works id="30005" name="Queen Of The Night"/>
+    <smdidentity_references id="40005" type="org.socialmusicdiscovery.server.business.model.core.RecordingEntity"/>
+    <recordings id="40005" work_id="30005"/>
+    <smdidentity_references id="50005" type="org.socialmusicdiscovery.server.business.model.core.TrackEntity"/>
+    <tracks id="50005" number="5" recording_id="40005" release_id="20000"/>
+    <smdidentity_references id="30005001" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
+    <contributors id="30005001" type="composer" work_id="30005" artist_id="3"/>
+    <smdidentity_references id="30005002" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
+    <contributors id="30005002" type="composer" work_id="30005" artist_id="4"/>
+    <smdidentity_references id="30005003" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
+    <contributors id="30005003" type="composer" work_id="30005" artist_id="5"/>
+    <smdidentity_references id="30005004" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
+    <contributors id="30005004" type="composer" work_id="30005" artist_id="6"/>
+    <smdidentity_references id="40005005" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
+    <contributors id="40005005" type="performer" recording_id="40005" artist_id="6"/>
 
-    <Smdidentity_references id="30009" type="org.socialmusicdiscovery.server.business.model.core.WorkEntity"/>
-    <WORKS id="30009" name="It's Gonna Be A Lovely Day"/>
-    <Smdidentity_references id="40009" type="org.socialmusicdiscovery.server.business.model.core.RecordingEntity"/>
-    <RECORDINGS id="40009" work_id="30009"/>
-    <Smdidentity_references id="50009" type="org.socialmusicdiscovery.server.business.model.core.TrackEntity"/>
-    <TRACKS id="50009" number="9" recording_id="40009" release_id="20000"/>
-    <Smdidentity_references id="30009001" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
-    <CONTRIBUTORS id="30009001" type="composer" work_id="30009" artist_id="7"/>
-    <Smdidentity_references id="30009002" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
-    <CONTRIBUTORS id="30009002" type="composer" work_id="30009" artist_id="8"/>
-    <Smdidentity_references id="30009003" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
-    <CONTRIBUTORS id="30009003" type="composer" work_id="30009" artist_id="15"/>
-    <Smdidentity_references id="30009004" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
-    <CONTRIBUTORS id="30009004" type="composer" work_id="30009" artist_id="9"/>
-    <Smdidentity_references id="30009005" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
-    <CONTRIBUTORS id="30009005" type="composer" work_id="30009" artist_id="10"/>
-    <Smdidentity_references id="30009006" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
-    <CONTRIBUTORS id="30009006" type="composer" work_id="30009" artist_id="11"/>
-    <Smdidentity_references id="40009007" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
-    <CONTRIBUTORS id="40009007" type="performer" recording_id="40009" artist_id="16"/>
+    <smdidentity_references id="30009" type="org.socialmusicdiscovery.server.business.model.core.WorkEntity"/>
+    <works id="30009" name="It's Gonna Be A Lovely Day"/>
+    <smdidentity_references id="40009" type="org.socialmusicdiscovery.server.business.model.core.RecordingEntity"/>
+    <recordings id="40009" work_id="30009"/>
+    <smdidentity_references id="50009" type="org.socialmusicdiscovery.server.business.model.core.TrackEntity"/>
+    <tracks id="50009" number="9" recording_id="40009" release_id="20000"/>
+    <smdidentity_references id="30009001" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
+    <contributors id="30009001" type="composer" work_id="30009" artist_id="7"/>
+    <smdidentity_references id="30009002" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
+    <contributors id="30009002" type="composer" work_id="30009" artist_id="8"/>
+    <smdidentity_references id="30009003" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
+    <contributors id="30009003" type="composer" work_id="30009" artist_id="15"/>
+    <smdidentity_references id="30009004" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
+    <contributors id="30009004" type="composer" work_id="30009" artist_id="9"/>
+    <smdidentity_references id="30009005" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
+    <contributors id="30009005" type="composer" work_id="30009" artist_id="10"/>
+    <smdidentity_references id="30009006" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
+    <contributors id="30009006" type="composer" work_id="30009" artist_id="11"/>
+    <smdidentity_references id="40009007" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
+    <contributors id="40009007" type="performer" recording_id="40009" artist_id="16"/>
 
-    <Smdidentity_references id="30013" type="org.socialmusicdiscovery.server.business.model.core.WorkEntity"/>
-    <WORKS id="30013" name="Theme From The Bodyguard"/>
-    <Smdidentity_references id="40013" type="org.socialmusicdiscovery.server.business.model.core.RecordingEntity"/>
-    <RECORDINGS id="40013" work_id="30013"/>
-    <Smdidentity_references id="50013" type="org.socialmusicdiscovery.server.business.model.core.TrackEntity"/>
-    <TRACKS id="50013" number="13" recording_id="40013" release_id="20000"/>
-    <Smdidentity_references id="30013001" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
-    <CONTRIBUTORS id="30013001" type="composer" work_id="30013" artist_id="12"/>
-    <Smdidentity_references id="40013002" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
-    <CONTRIBUTORS id="40013002" type="performer" recording_id="40013" artist_id="13"/>
-    <Smdidentity_references id="40013003" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
-    <CONTRIBUTORS id="40013003" type="conductor" recording_id="40013" artist_id="14"/>
+    <smdidentity_references id="30013" type="org.socialmusicdiscovery.server.business.model.core.WorkEntity"/>
+    <works id="30013" name="Theme From The Bodyguard"/>
+    <smdidentity_references id="40013" type="org.socialmusicdiscovery.server.business.model.core.RecordingEntity"/>
+    <recordings id="40013" work_id="30013"/>
+    <smdidentity_references id="50013" type="org.socialmusicdiscovery.server.business.model.core.TrackEntity"/>
+    <tracks id="50013" number="13" recording_id="40013" release_id="20000"/>
+    <smdidentity_references id="30013001" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
+    <contributors id="30013001" type="composer" work_id="30013" artist_id="12"/>
+    <smdidentity_references id="40013002" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
+    <contributors id="40013002" type="performer" recording_id="40013" artist_id="13"/>
+    <smdidentity_references id="40013003" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
+    <contributors id="40013003" type="conductor" recording_id="40013" artist_id="14"/>
 
-    <Smdidentity_references id="60001" type="org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity"/>
-    <CLASSIFICATIONS id="60001" type="genre" name="Movie"/>
-    <Smdidentity_references id="60002" type="org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity"/>
-    <CLASSIFICATIONS id="60002" type="genre" name="Instrumental"/>
-    <Smdidentity_references id="60003" type="org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity"/>
-    <CLASSIFICATIONS id="60003" type="genre" name="Soundtrack"/>
-    <Smdidentity_references id="60004" type="org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity"/>
-    <CLASSIFICATIONS id="60004" type="genre" name="Romantic"/>
+    <smdidentity_references id="60001" type="org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity"/>
+    <classifications id="60001" type="genre" name="Movie"/>
+    <smdidentity_references id="60002" type="org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity"/>
+    <classifications id="60002" type="genre" name="Instrumental"/>
+    <smdidentity_references id="60003" type="org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity"/>
+    <classifications id="60003" type="genre" name="Soundtrack"/>
+    <smdidentity_references id="60004" type="org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity"/>
+    <classifications id="60004" type="genre" name="Romantic"/>
 
-    <CLASSIFICATION_REFERENCES classification_id="60001" reference_id="20000"/>
-    <CLASSIFICATION_REFERENCES classification_id="60002" reference_id="40013"/>
-    <CLASSIFICATION_REFERENCES classification_id="60003" reference_id="20000"/>
-    <CLASSIFICATION_REFERENCES classification_id="60004" reference_id="40001"/>
+    <classification_references classification_id="60001" reference_id="20000"/>
+    <classification_references classification_id="60002" reference_id="40013"/>
+    <classification_references classification_id="60003" reference_id="20000"/>
+    <classification_references classification_id="60004" reference_id="40001"/>
 
-    <MEDIUMS/>
-    <CREDITS/>
-    <RELATIONS/>
-    <GLOBAL_IDENTITIES/>
+    <mediums/>
+    <credits/>
+    <relations/>
+    <global_identities/>
     <releases_search_relations/>
     <recordings_search_relations/>
     <works_search_relations/>

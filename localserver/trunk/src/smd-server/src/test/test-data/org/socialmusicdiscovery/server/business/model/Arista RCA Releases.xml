@@ -907,11 +907,11 @@
     <works id="1fa5aeef-014f-4469-b31d-c83eab55e771" name="Rockin' Years" />
     <works id="9d2535bb-dc3a-4fa8-91dc-367c48590c0b" name="Shine" />
 
-    <CREDITS/>
-    <CLASSIFICATIONS/>
-    <CLASSIFICATION_REFERENCES/>
-    <RELATIONS/>
-    <GLOBAL_IDENTITIES/>
+    <credits/>
+    <classifications/>
+    <classification_references/>
+    <relations/>
+    <global_identities/>
     <releases_search_relations/>
     <recordings_search_relations/>
     <works_search_relations/>
