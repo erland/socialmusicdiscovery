@@ -225,6 +225,52 @@ public class BrowseServiceTest extends BaseTestCase {
             assert resultItem.getChildItems() == null;
             assert resultItem.getItem() != null;
         }
+
+        result = browseService.findChildren(Arrays.asList("Release:d972b0fa-42f5-45f9-ba56-2cede7666446"), new ArrayList<String>(), null, null, false);
+        assert result.getItems().size() == 37;
+        assert result.getCount() == 37;
+        for (ResultItem<Artist> resultItem : result.getItems()) {
+            assert resultItem.getChildItems() == null;
+            assert resultItem.getItem() != null;
+        }
+
+        result = browseService.findChildren(Arrays.asList(
+                "Release:d972b0fa-42f5-45f9-ba56-2cede7666446", // The Bodyguard
+                "Artist:d7465c1b-2115-42cf-b96c-141a3ef93a47",  // Dolly Parton
+                "Artist:231424b6-b3a9-45b8-bce2-77e694e67319"), // Whitney Houston
+                new ArrayList<String>(), null, null, true);
+        assert result.getItems().size() == 2;
+        assert result.getCount() == 2;
+        for (ResultItem<Artist> item : result.getItems()) {
+            assert item.getChildItems() != null;
+            if (item.getItem().getName().equals("Rickey Minor")) {
+                long artists = 0;
+                for (String key : item.getChildItems().keySet()) {
+                    if (key.startsWith(SMDIdentityReferenceEntity.typeForClass(ArtistEntity.class))) {
+                        if (key.endsWith(Contributor.PERFORMER)) {
+                            artists = item.getChildItems().get(key);
+                        } else {
+                            assert false;
+                        }
+                    }
+                }
+                assert artists == 1;
+            } else if (item.getItem().getName().equals("Kirk Whalum")) {
+                long artists = 0;
+                for (String key : item.getChildItems().keySet()) {
+                    if (key.startsWith(SMDIdentityReferenceEntity.typeForClass(ArtistEntity.class))) {
+                        if (key.endsWith(Contributor.CONDUCTOR)) {
+                            artists = item.getChildItems().get(key);
+                        } else {
+                            assert false;
+                        }
+                    }
+                }
+                assert artists == 1;
+            } else {
+                assert false;
+            }
+        }
     }
 
     @Test
@@ -340,6 +386,8 @@ public class BrowseServiceTest extends BaseTestCase {
                     foundWork = true;
                 } else if (child.getKey().equals(SMDIdentityReferenceEntity.typeForClass(TrackEntity.class))) {
                     foundTrack = true;
+                } else if (((String) child.getKey()).startsWith(SMDIdentityReferenceEntity.typeForClass(ClassificationEntity.class))) {
+                    // Not mandatory
                 } else {
                     assert false;
                 }
