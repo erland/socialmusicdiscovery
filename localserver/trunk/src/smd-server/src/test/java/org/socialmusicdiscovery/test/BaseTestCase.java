@@ -11,6 +11,7 @@ import org.dbunit.dataset.filter.ITableFilter;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.dbunit.ext.h2.H2DataTypeFactory;
 import org.dbunit.ext.hsqldb.HsqldbDataTypeFactory;
+import org.dbunit.ext.mysql.MySqlDataTypeFactory;
 import org.dbunit.operation.DatabaseOperation;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
 import org.socialmusicdiscovery.server.business.logic.injections.database.DatabaseProvider;
@@ -120,24 +121,25 @@ public class BaseTestCase {
 
     public String getTestDataDiretory() {
         String path = getClass().getResource("/META-INF/persistence.xml").getPath();
-        if(path != null) {
+        if (path != null) {
             path = getParentDirectory(path);
-            if(path != null) {
+            if (path != null) {
                 path = getParentDirectory(path);
             }
-            if(path != null) {
+            if (path != null) {
                 path = getParentDirectory(path);
             }
-            if(path != null) {
+            if (path != null) {
                 path = getParentDirectory(path);
             }
         }
-        if(path != null) {
-            return path+"/"+"src/test/test-data/";
-        }else {
+        if (path != null) {
+            return path + "/" + "src/test/test-data/";
+        } else {
             return "src/test/test-data/";
         }
     }
+
     public void loadTestData(String pkg, String file) throws Exception {
         loadTestData(DatabaseOperation.CLEAN_INSERT, getTestDataDiretory() + pkg.replaceAll("\\.", "/") + "/" + file);
     }
@@ -148,12 +150,24 @@ public class BaseTestCase {
 
     protected void loadTestData(DatabaseOperation dboperation, String file) throws Exception {
         Class.forName(getProvider().getDriver());
-        IDatabaseConnection connection = new DatabaseConnection(DriverManager.getConnection(provider.getUrl(), "", ""));
+        String username = "";
+        String password = "";
+        if (provider.getUrl().startsWith("jdbc:mysql")) {
+            if (System.getProperty("mysql.username") != null) {
+                username = System.getProperty("mysql.username");
+            }
+            if (System.getProperty("mysql.password") != null) {
+                password = System.getProperty("mysql.password");
+            }
+        }
+        IDatabaseConnection connection = new DatabaseConnection(DriverManager.getConnection(provider.getUrl(), username, password));
         DatabaseConfig config = connection.getConfig();
-        if(provider.getUrl().startsWith("jdbc:h2")) {
+        if (provider.getUrl().startsWith("jdbc:h2")) {
             config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new H2DataTypeFactory());
-        }else if(provider.getUrl().startsWith("jdbc:hsql")) {
+        } else if (provider.getUrl().startsWith("jdbc:hsql")) {
             config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new HsqldbDataTypeFactory());
+        } else if (provider.getUrl().startsWith("jdbc:mysql")) {
+            config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new MySqlDataTypeFactory());
         }
 
         FlatXmlDataSetBuilder builder = new FlatXmlDataSetBuilder();
