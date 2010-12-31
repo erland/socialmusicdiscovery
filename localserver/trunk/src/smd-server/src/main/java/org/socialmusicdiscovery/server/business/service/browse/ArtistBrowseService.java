@@ -1,87 +1,16 @@
 package org.socialmusicdiscovery.server.business.service.browse;
 
-import org.socialmusicdiscovery.server.business.logic.InjectHelper;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
+import org.socialmusicdiscovery.server.business.model.core.ArtistEntity;
 
-import javax.persistence.Query;
-import java.util.*;
+import java.util.Collection;
 
-public class ArtistBrowseService extends AbstractBrowseService implements BrowseService<Artist> {
+public class ArtistBrowseService extends AbstractBrowseService<Artist> implements BrowseService<Artist> {
     public ArtistBrowseService() {
         super(Artist.class.getSimpleName());
     }
 
     public Result<Artist> findChildren(Collection<String> criteriaList, Collection<String> sortCriteriaList, Integer firstItem, Integer maxItems, Boolean returnChildCounters) {
-        String joinString = buildResultJoinString("e", criteriaList);
-        String whereString = buildResultWhereString(criteriaList);
-
-        Long count = null;
-        if (maxItems != null) {
-            Query countQuery = null;
-            if (criteriaList.size() > 0) {
-                countQuery = entityManager.createQuery("SELECT count(distinct e.id) from ArtistEntity as e " + joinString + " WHERE " + whereString);
-                setQueryParameters(countQuery, criteriaList);
-            } else {
-                countQuery = entityManager.createQuery("SELECT count(distinct e.id) from ArtistEntity as e");
-            }
-            List<Long> countList = countQuery.getResultList();
-            count = countList.iterator().next();
-        }
-
-        Result<Artist> result = new Result<Artist>();
-        result.setCount(count);
-        if (maxItems == null || count > 0L) {
-            Query query = null;
-            if (criteriaList.size() > 0) {
-                query = entityManager.createQuery("SELECT distinct e from ArtistEntity as e " + joinString + " WHERE " + whereString + " order by e.name");
-                setQueryParameters(query, criteriaList);
-            } else {
-                query = entityManager.createQuery("SELECT e from ArtistEntity as e" + " order by e.name");
-            }
-            if (firstItem != null) {
-                query.setFirstResult(firstItem);
-            }
-            if (maxItems != null) {
-                query.setMaxResults(maxItems);
-            }
-            List<Artist> artists = query.getResultList();
-
-            Collection<ResultItem<Artist>> resultItems = new ArrayList<ResultItem<Artist>>(artists.size());
-            result.setItems(resultItems);
-            if (maxItems == null) {
-                result.setCount((long) artists.size());
-            }
-            for (Artist artist : artists) {
-                if (returnChildCounters != null && returnChildCounters) {
-                    Query countQuery = null;
-                    if (criteriaList.size() > 0) {
-                        String exclusions = buildCountExclusionString("e", criteriaList);
-                        countQuery = entityManager.createQuery("SELECT e.referenceType,e.type,count(*) from ArtistSearchRelationEntity as e WHERE e.id=:artist " + exclusions + " GROUP BY e.referenceType,e.type");
-                        setExclusionQueryParameters(countQuery, criteriaList);
-                    } else {
-                        countQuery = entityManager.createQuery("SELECT e.referenceType,e.type,count(*) from ArtistSearchRelationEntity as e WHERE e.id=:artist GROUP BY e.referenceType,e.type");
-                    }
-                    countQuery.setParameter("artist", artist.getId());
-                    List<Object[]> counts = countQuery.getResultList();
-                    Map<String, Long> childCounters = new HashMap<String, Long>();
-                    for (Object[] objects : counts) {
-                        String referenceType = (String) objects[0];
-                        String type = "";
-                        if (!objects[1].equals("")) {
-                            type = "." + objects[1];
-                        }
-                        if (InjectHelper.existsWithName(BrowseService.class, referenceType)) {
-                            childCounters.put(referenceType + type, ((Long) objects[2]));
-                        }
-                    }
-                    ResultItem<Artist> resultItem = new ResultItem<Artist>(artist, childCounters);
-                    resultItems.add(resultItem);
-                } else {
-                    ResultItem<Artist> resultItem = new ResultItem<Artist>(artist);
-                    resultItems.add(resultItem);
-                }
-            }
-        }
-        return result;
+        return super.findChildren(ArtistEntity.class, "artists", "e.name", criteriaList, sortCriteriaList, firstItem, maxItems, returnChildCounters);
     }
 }
