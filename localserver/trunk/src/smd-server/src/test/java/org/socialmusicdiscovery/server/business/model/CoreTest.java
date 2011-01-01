@@ -210,9 +210,6 @@ public class CoreTest extends BaseTestCase {
         PersonEntity person = (PersonEntity) query.getSingleResult();
         assert(person != null);
 
-        String personId = person.getId();
-        assert 0 < em.createQuery("from ReleaseSearchRelationEntity where reference=:person").setParameter("person",personId).getResultList().size();
-
         personRepository.remove(person);
         em.flush();
 
@@ -224,8 +221,6 @@ public class CoreTest extends BaseTestCase {
             person = null;
         }
         assert(person == null);
-
-        assert 0 == em.createQuery("from ReleaseSearchRelationEntity where reference=:person").setParameter("person",personId).getResultList().size();
 
         query = em.createQuery("from ArtistEntity where name=:name");
         query.setParameter("name","Dolly Parton");

@@ -16,6 +16,7 @@
                   file="org/socialmusicdiscovery/server/database/sampledata/thebodyguard/releases.csv">
             <column header="id" type="STRING"/>
             <column header="name" type="STRING"/>
+            <column header="label_id" type="STRING"/>
         </loadData>
         <loadData tableName="persons"
                   file="org/socialmusicdiscovery/server/database/sampledata/thebodyguard/persons.csv">

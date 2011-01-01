@@ -1,20 +1,23 @@
 package org.socialmusicdiscovery.server.business.model.search;
 
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
+import org.socialmusicdiscovery.server.business.model.classification.Classification;
+import org.socialmusicdiscovery.server.business.model.core.Contributor;
+import org.socialmusicdiscovery.server.business.model.core.Recording;
 
-import javax.persistence.Table;
+public abstract class RecordingSearchRelationEntity extends SearchRelationEntity {
+    public RecordingSearchRelationEntity() {
+    }
 
-@javax.persistence.Entity
-@Table(name = "recordings_search_relations")
-public class RecordingSearchRelationEntity extends SearchRelationEntity {
-    public RecordingSearchRelationEntity() {}
-    public RecordingSearchRelationEntity(String id, SMDIdentity reference) {
-        super(id,reference);
+    public RecordingSearchRelationEntity(Recording recording, SMDIdentity reference) {
+        super(recording, reference);
     }
-    public RecordingSearchRelationEntity(String id, String referenceType, String reference) {
-        super(id, referenceType, reference);
+
+    public RecordingSearchRelationEntity(Recording recording, Contributor contributor) {
+        super(recording, contributor);
     }
-    public RecordingSearchRelationEntity(String id, String referenceType, String reference, String type) {
-        super(id, referenceType, reference, type);
+
+    public RecordingSearchRelationEntity(Recording recording, Classification classification) {
+        super(recording, classification);
     }
 }

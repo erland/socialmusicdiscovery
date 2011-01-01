@@ -11,6 +11,6 @@ public class WorkBrowseService extends AbstractBrowseService<Work> implements Br
     }
 
     public Result<Work> findChildren(Collection<String> criteriaList, Collection<String> sortCriteriaList, Integer firstItem, Integer maxItems, Boolean returnChildCounters) {
-        return super.findChildren(WorkEntity.class, "works", "e.name", criteriaList, sortCriteriaList, firstItem, maxItems, returnChildCounters);
+        return super.findChildren(WorkEntity.class, "work", "e.name", criteriaList, sortCriteriaList, firstItem, maxItems, returnChildCounters);
     }
 }

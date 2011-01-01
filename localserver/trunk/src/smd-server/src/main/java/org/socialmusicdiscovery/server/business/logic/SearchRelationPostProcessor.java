@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import org.socialmusicdiscovery.server.api.mediaimport.PostProcessor;
 import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
-import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
 import org.socialmusicdiscovery.server.business.model.classification.Classification;
 import org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity;
 import org.socialmusicdiscovery.server.business.model.core.*;
@@ -59,7 +58,12 @@ public class SearchRelationPostProcessor implements PostProcessor {
         entityManager.getTransaction().begin();
         entityManager.clear();
         entityManager.createQuery("DELETE from ReleaseSearchRelationEntity").executeUpdate();
-        entityManager.createQuery("DELETE from RecordingSearchRelationEntity").executeUpdate();
+        entityManager.createQuery("DELETE from RecordingLabelSearchRelationEntity").executeUpdate();
+        entityManager.createQuery("DELETE from RecordingReleaseSearchRelationEntity").executeUpdate();
+        entityManager.createQuery("DELETE from RecordingTrackSearchRelationEntity").executeUpdate();
+        entityManager.createQuery("DELETE from RecordingWorkSearchRelationEntity").executeUpdate();
+        entityManager.createQuery("DELETE from RecordingArtistSearchRelationEntity").executeUpdate();
+        entityManager.createQuery("DELETE from RecordingClassificationSearchRelationEntity").executeUpdate();
         entityManager.createQuery("DELETE from WorkSearchRelationEntity").executeUpdate();
         entityManager.createQuery("DELETE from PersonSearchRelationEntity").executeUpdate();
         entityManager.createQuery("DELETE from ArtistSearchRelationEntity").executeUpdate();
@@ -80,7 +84,7 @@ public class SearchRelationPostProcessor implements PostProcessor {
             progressHandler.progress(getId(), release.getName(), i, (long) releases.size());
             Collection<ContributorEntity> releaseContributors = contributorRepository.findByReleaseWithRelations(release.getId(), Arrays.asList("artist"), null);
             Collection<ClassificationEntity> releaseClassifications = classificationRepository.findByReference(release.getId());
-            Set<ReleaseSearchRelationEntity> releaseSearchRelations = new HashSet<ReleaseSearchRelationEntity>();
+            Set<SearchRelationEntity> releaseSearchRelations = new HashSet<SearchRelationEntity>();
             Collection<TrackEntity> tracks = trackRepository.findByReleaseWithRelations(release.getId(), Arrays.asList("recording"), null);
             Set<Contributor> aggregatedContributors = new HashSet<Contributor>(releaseContributors);
             Set<Classification> aggregatedClassifications = new HashSet<Classification>(releaseClassifications);
@@ -91,7 +95,7 @@ public class SearchRelationPostProcessor implements PostProcessor {
                 Recording recording = track.getRecording();
                 handledRecordings.add(recording);
                 addRecording(aggregatedContributors, aggregatedRecordings, aggregatedWorks, aggregatedClassifications, releaseContributors, releaseClassifications, release, recording, track);
-                releaseSearchRelations.add(new ReleaseSearchRelationEntity(release.getId(), track));
+                releaseSearchRelations.add(new ReleaseSearchRelationEntity(release, track));
             }
 
             Collection<RecordingSessionEntity> recordingSessions = recordingSessionRepository.findByReleaseWithRelations(release.getId(), Arrays.asList("recordings"), null);
@@ -110,17 +114,17 @@ public class SearchRelationPostProcessor implements PostProcessor {
             }
             // Add relations for all classifications related to either a track or, work which is part of this release or related to the release itself
             for (Classification classification : aggregatedClassifications) {
-                releaseSearchRelations.add(new ReleaseSearchRelationEntity(release.getId(), SMDIdentityReferenceEntity.typeForClass(classification.getClass()), classification.getId(), classification.getType()));
-                entityManager.persist(new ClassificationSearchRelationEntity(classification.getId(), release));
+                releaseSearchRelations.add(new ReleaseSearchRelationEntity(release, classification));
+                entityManager.persist(new ClassificationSearchRelationEntity(classification, release));
             }
 
             for (Work work : aggregatedWorks) {
-                releaseSearchRelations.add(new ReleaseSearchRelationEntity(release.getId(), work));
+                releaseSearchRelations.add(new ReleaseSearchRelationEntity(release, work));
             }
             for (Recording recording : aggregatedRecordings) {
-                releaseSearchRelations.add(new ReleaseSearchRelationEntity(release.getId(), recording));
+                releaseSearchRelations.add(new ReleaseSearchRelationEntity(release, recording));
             }
-            for (ReleaseSearchRelationEntity relation : releaseSearchRelations) {
+            for (SearchRelationEntity relation : releaseSearchRelations) {
                 entityManager.persist(relation);
             }
 
@@ -154,9 +158,9 @@ public class SearchRelationPostProcessor implements PostProcessor {
         aggregatedTrackClassifications.addAll(recordingClassifications);
         aggregatedClassifications.addAll(recordingClassifications);
 
-        Set<TrackSearchRelationEntity> trackSearchRelations = new HashSet<TrackSearchRelationEntity>();
+        Set<SearchRelationEntity> trackSearchRelations = new HashSet<SearchRelationEntity>();
         Set<Contributor> aggregatedTrackContributors = new HashSet<Contributor>(recording.getContributors());
-        Set<RecordingSearchRelationEntity> recordingSearchRelations = new HashSet<RecordingSearchRelationEntity>();
+        Set<SearchRelationEntity> recordingSearchRelations = new HashSet<SearchRelationEntity>();
         Set<Contributor> recordingContributors = recording.getContributors();
         aggregatedContributors.addAll(recordingContributors);
         aggregatedContributors.addAll(sessionContributors);
@@ -167,7 +171,7 @@ public class SearchRelationPostProcessor implements PostProcessor {
         Set<Work> works = new HashSet<Work>();
         while (work != null) {
             works.add(work);
-            Set<WorkSearchRelationEntity> workSearchRelations = new HashSet<WorkSearchRelationEntity>();
+            Set<SearchRelationEntity> workSearchRelations = new HashSet<SearchRelationEntity>();
             Set<Contributor> workContributors = work.getContributors();
             aggregatedWorkContributors.addAll(workContributors);
             aggregatedContributors.addAll(workContributors);
@@ -215,16 +219,16 @@ public class SearchRelationPostProcessor implements PostProcessor {
 
             for (ClassificationEntity classification : workClassifications) {
                 for (Work workOrPart : works) {
-                    workSearchRelations.add(new WorkSearchRelationEntity(workOrPart.getId(), SMDIdentityReferenceEntity.typeForClass(classification.getClass()), classification.getId(), classification.getType()));
+                    workSearchRelations.add(new WorkSearchRelationEntity(workOrPart, classification));
                     // Need to use merge because a work can be part of multiple releases
-                    entityManager.merge(new ClassificationSearchRelationEntity(classification.getId(), workOrPart));
+                    entityManager.merge(new ClassificationSearchRelationEntity(classification, workOrPart));
                 }
             }
             for (ClassificationEntity classification : recordingClassifications) {
                 for (Work workOrPart : works) {
-                    workSearchRelations.add(new WorkSearchRelationEntity(workOrPart.getId(), SMDIdentityReferenceEntity.typeForClass(classification.getClass()), classification.getId(), classification.getType()));
+                    workSearchRelations.add(new WorkSearchRelationEntity(workOrPart, classification));
                     // Need to use merge because a work can be part of multiple releases
-                    entityManager.merge(new ClassificationSearchRelationEntity(classification.getId(), workOrPart));
+                    entityManager.merge(new ClassificationSearchRelationEntity(classification, workOrPart));
                 }
             }
 
@@ -233,26 +237,26 @@ public class SearchRelationPostProcessor implements PostProcessor {
                 if (!containsType(recordingClassifications, classification.getType()) &&
                         !containsType(workClassifications, classification.getType())) {
                     for (Work workOrPart : works) {
-                        workSearchRelations.add(new WorkSearchRelationEntity(workOrPart.getId(), SMDIdentityReferenceEntity.typeForClass(classification.getClass()), classification.getId(), classification.getType()));
+                        workSearchRelations.add(new WorkSearchRelationEntity(workOrPart, classification));
                         // Need to use merge because a work can be part of multiple releases
-                        entityManager.merge(new ClassificationSearchRelationEntity(classification.getId(), workOrPart));
+                        entityManager.merge(new ClassificationSearchRelationEntity(classification, workOrPart));
                     }
                 }
             }
 
             if (release != null) {
-                workSearchRelations.add(new WorkSearchRelationEntity(work.getId(), release));
+                workSearchRelations.add(new WorkSearchRelationEntity(work, release));
                 if (release.getLabel() != null) {
-                    workSearchRelations.add(new WorkSearchRelationEntity(work.getId(), release.getLabel()));
+                    workSearchRelations.add(new WorkSearchRelationEntity(work, release.getLabel()));
                 }
             }
-            workSearchRelations.add(new WorkSearchRelationEntity(work.getId(), recording));
-            recordingSearchRelations.add(new RecordingSearchRelationEntity(recording.getId(), work));
+            workSearchRelations.add(new WorkSearchRelationEntity(work, recording));
+            recordingSearchRelations.add(new RecordingWorkSearchRelationEntity(recording, work));
             if (track != null) {
-                workSearchRelations.add(new WorkSearchRelationEntity(work.getId(), track));
-                entityManager.persist(new TrackSearchRelationEntity(track.getId(), work));
+                workSearchRelations.add(new WorkSearchRelationEntity(work, track));
+                entityManager.persist(new TrackSearchRelationEntity(track, work));
             }
-            for (WorkSearchRelationEntity relation : workSearchRelations) {
+            for (SearchRelationEntity relation : workSearchRelations) {
                 // Need to use merge because a work can be part of multiple releases
                 entityManager.merge(relation);
             }
@@ -277,7 +281,7 @@ public class SearchRelationPostProcessor implements PostProcessor {
 
         // Add relations for contributors directly related to this recording
         for (Contributor contributor : recordingContributors) {
-            addContributor(recordingSearchRelations, contributor, recording, RecordingSearchRelationEntity.class);
+            addContributor(recordingSearchRelations, contributor, recording, RecordingArtistSearchRelationEntity.class);
             if (track != null) {
                 addContributor(trackSearchRelations, contributor, track, TrackSearchRelationEntity.class);
             }
@@ -288,7 +292,7 @@ public class SearchRelationPostProcessor implements PostProcessor {
         for (Contributor contributor : sessionContributors) {
             if (!containsRole(recordingContributors, contributor.getType())) {
                 aggregatedTrackContributors.add(contributor);
-                addContributor(recordingSearchRelations, contributor, recording, RecordingSearchRelationEntity.class);
+                addContributor(recordingSearchRelations, contributor, recording, RecordingArtistSearchRelationEntity.class);
                 if (track != null) {
                     addContributor(trackSearchRelations, contributor, track, TrackSearchRelationEntity.class);
                 }
@@ -300,7 +304,7 @@ public class SearchRelationPostProcessor implements PostProcessor {
         for (Contributor contributor : releaseContributors) {
             if (!containsRole(recordingContributors, contributor.getType())) {
                 aggregatedTrackContributors.add(contributor);
-                addContributor(recordingSearchRelations, contributor, recording, RecordingSearchRelationEntity.class);
+                addContributor(recordingSearchRelations, contributor, recording, RecordingArtistSearchRelationEntity.class);
                 if (track != null) {
                     addContributor(trackSearchRelations, contributor, track, TrackSearchRelationEntity.class);
                 }
@@ -309,7 +313,7 @@ public class SearchRelationPostProcessor implements PostProcessor {
 
         // Add relations for contributors related to the work which this recording represent
         for (Contributor contributor : aggregatedWorkContributors) {
-            addContributor(recordingSearchRelations, contributor, recording, RecordingSearchRelationEntity.class);
+            addContributor(recordingSearchRelations, contributor, recording, RecordingArtistSearchRelationEntity.class);
             if (track != null) {
                 addContributor(trackSearchRelations, contributor, track, TrackSearchRelationEntity.class);
             }
@@ -320,84 +324,77 @@ public class SearchRelationPostProcessor implements PostProcessor {
             for (Contributor contributor2 : aggregatedTrackContributors) {
                 if (!contributor1.equals(contributor2) && !contributor1.getType().equals(contributor2.getType())) {
                     // Need to use merge because an artist can be part of multiple releases
-                    entityManager.merge(new ArtistSearchRelationEntity(contributor1.getArtist().getId(), SMDIdentityReferenceEntity.typeForClass(contributor2.getArtist().getClass()), contributor2.getArtist().getId(), contributor2.getType()));
+                    entityManager.merge(new ArtistSearchRelationEntity(contributor1.getArtist(), contributor2));
                 }
             }
 
             // Create artist search relations to classification
             for (ClassificationEntity classification : aggregatedTrackClassifications) {
                 // Need to use merge because an artist can be part of multiple releases
-                entityManager.merge(new ArtistSearchRelationEntity(contributor1.getArtist().getId(), SMDIdentityReferenceEntity.typeForClass(classification.getClass()), classification.getId(), contributor1.getType()));
-                entityManager.merge(new ClassificationSearchRelationEntity(classification.getId(), SMDIdentityReferenceEntity.typeForClass(contributor1.getArtist().getClass()), contributor1.getArtist().getId(), contributor1.getType()));
+                entityManager.merge(new ArtistSearchRelationEntity(contributor1.getArtist(), classification));
+                entityManager.merge(new ClassificationSearchRelationEntity(classification, contributor1));
             }
         }
         for (ClassificationEntity classification : aggregatedTrackClassifications) {
             // Need to use merge because a recording can be part of multiple releases
-            entityManager.merge(new ClassificationSearchRelationEntity(classification.getId(), recording));
+            entityManager.merge(new ClassificationSearchRelationEntity(classification, recording));
             if (release != null) {
                 if (track != null) {
-                    entityManager.persist(new ClassificationSearchRelationEntity(classification.getId(), track));
+                    entityManager.persist(new ClassificationSearchRelationEntity(classification, track));
                 }
                 if (release.getLabel() != null) {
                     // Need to use merge because a label can be part of multiple releases
-                    entityManager.merge(new ClassificationSearchRelationEntity(classification.getId(), release.getLabel()));
+                    entityManager.merge(new ClassificationSearchRelationEntity(classification, release.getLabel()));
                 }
             }
         }
         if (release != null) {
             if (release.getLabel() != null) {
-                recordingSearchRelations.add(new RecordingSearchRelationEntity(recording.getId(), release.getLabel()));
+                recordingSearchRelations.add(new RecordingLabelSearchRelationEntity(recording, release.getLabel()));
                 if (track != null) {
-                    trackSearchRelations.add(new TrackSearchRelationEntity(track.getId(), release.getLabel()));
+                    trackSearchRelations.add(new TrackSearchRelationEntity(track, release.getLabel()));
                 }
             }
-            recordingSearchRelations.add(new RecordingSearchRelationEntity(recording.getId(), release));
+            recordingSearchRelations.add(new RecordingReleaseSearchRelationEntity(recording, release));
             if (track != null) {
-                trackSearchRelations.add(new TrackSearchRelationEntity(track.getId(), release));
+                trackSearchRelations.add(new TrackSearchRelationEntity(track, release));
             }
         }
         if (track != null) {
-            recordingSearchRelations.add(new RecordingSearchRelationEntity(recording.getId(), track));
-            trackSearchRelations.add(new TrackSearchRelationEntity(track.getId(), recording));
+            recordingSearchRelations.add(new RecordingTrackSearchRelationEntity(recording, track));
+            trackSearchRelations.add(new TrackSearchRelationEntity(track, recording));
             for (ClassificationEntity classification : aggregatedTrackClassifications) {
-                trackSearchRelations.add(new TrackSearchRelationEntity(track.getId(), SMDIdentityReferenceEntity.typeForClass(classification.getClass()), classification.getId(), classification.getType()));
+                trackSearchRelations.add(new TrackSearchRelationEntity(track, classification));
             }
         }
         for (ClassificationEntity classification : aggregatedTrackClassifications) {
-            recordingSearchRelations.add(new RecordingSearchRelationEntity(recording.getId(), SMDIdentityReferenceEntity.typeForClass(classification.getClass()), classification.getId(), classification.getType()));
+            recordingSearchRelations.add(new RecordingClassificationSearchRelationEntity(recording, classification));
         }
 
-        for (RecordingSearchRelationEntity relation : recordingSearchRelations) {
+        for (SearchRelationEntity relation : recordingSearchRelations) {
             // Need to use merge because a recording can be part of multiple releases
             entityManager.merge(relation);
         }
-        for (TrackSearchRelationEntity relation : trackSearchRelations) {
+        for (SearchRelationEntity relation : trackSearchRelations) {
             entityManager.persist(relation);
         }
     }
 
-    private <T extends SearchRelationEntity> void addContributor(Set<T> relations, Contributor contributor, SMDIdentity owner, Class<T> relationClass) {
+    private <T extends SearchRelationEntity> void addContributor(Set<SearchRelationEntity> relations, Contributor contributor, SMDIdentity owner, Class<T> relationClass) {
         try {
             Artist artist = contributor.getArtist();
-            T relation = relationClass.newInstance();
-            relation.setId(owner.getId());
-            relation.setReferenceType(SMDIdentityReferenceEntity.typeForClass(artist.getClass()));
-            relation.setType(contributor.getType());
-            relation.setReference(artist.getId());
-            relations.add(relation);
+            T artistRelation = relationClass.newInstance();
+            artistRelation.setId(owner.getId());
+            artistRelation.setReference(contributor);
+            relations.add(artistRelation);
 
             // Need to use merge because an artist can be part of multiple releases
-            entityManager.merge(new ArtistSearchRelationEntity(artist.getId(), SMDIdentityReferenceEntity.typeForClass(owner.getClass()), owner.getId(), contributor.getType()));
+            entityManager.merge(new ArtistSearchRelationEntity(artist, owner));
 
             Person person = contributor.getArtist().getPerson();
             if (person != null) {
-                relation = relationClass.newInstance();
-                relation.setId(owner.getId());
-                relation.setReference(person);
-                relations.add(relation);
                 // Need to use merge because a person can be part of multiple releases
-                entityManager.merge(new PersonSearchRelationEntity(person.getId(), owner));
-                entityManager.merge(new PersonSearchRelationEntity(person.getId(), SMDIdentityReferenceEntity.typeForClass(artist.getClass()), artist.getId(), contributor.getType()));
+                entityManager.merge(new PersonSearchRelationEntity(person, contributor));
             }
         } catch (InstantiationException e) {
             throw new RuntimeException(e);

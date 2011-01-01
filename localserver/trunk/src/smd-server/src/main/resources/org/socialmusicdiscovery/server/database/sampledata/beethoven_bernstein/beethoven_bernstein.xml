@@ -17,6 +17,7 @@
                   file="org/socialmusicdiscovery/server/database/sampledata/beethoven_bernstein/releases.csv">
             <column header="id" type="STRING"/>
             <column header="name" type="STRING"/>
+            <column header="label_id" type="STRING"/>
         </loadData>
         <loadData tableName="persons"
                   file="org/socialmusicdiscovery/server/database/sampledata/beethoven_bernstein/persons.csv">

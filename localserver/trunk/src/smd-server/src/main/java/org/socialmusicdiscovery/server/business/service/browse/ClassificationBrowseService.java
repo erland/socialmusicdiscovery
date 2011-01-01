@@ -11,6 +11,6 @@ public class ClassificationBrowseService extends AbstractBrowseService<Classific
     }
 
     public Result<Classification> findChildren(Collection<String> criteriaList, Collection<String> sortCriteriaList, Integer firstItem, Integer maxItems, Boolean returnChildCounters) {
-        return super.findChildren(ClassificationEntity.class, "classifications", "e.name", criteriaList, sortCriteriaList, firstItem, maxItems, returnChildCounters);
+        return super.findChildren(ClassificationEntity.class, "classification", "e.name", criteriaList, sortCriteriaList, firstItem, maxItems, returnChildCounters);
     }
 }
