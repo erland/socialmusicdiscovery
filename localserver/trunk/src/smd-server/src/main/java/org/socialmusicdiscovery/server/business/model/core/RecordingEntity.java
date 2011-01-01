@@ -3,7 +3,7 @@ package org.socialmusicdiscovery.server.business.model.core;
 import com.google.gson.annotations.Expose;
 import org.socialmusicdiscovery.server.business.model.AbstractSMDIdentityEntity;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
-import org.socialmusicdiscovery.server.business.model.search.RecordingSearchRelationEntity;
+import org.socialmusicdiscovery.server.business.model.search.*;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -36,7 +36,17 @@ public class RecordingEntity extends AbstractSMDIdentityEntity implements Record
     private RecordingSession recordingSession;
 
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "id")
-    private Set<RecordingSearchRelationEntity> searchRelations;
+    private Set<RecordingLabelSearchRelationEntity> labelSearchRelations;
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "id")
+    private Set<RecordingReleaseSearchRelationEntity> releaseSearchRelations;
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "id")
+    private Set<RecordingTrackSearchRelationEntity> trackSearchRelations;
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "id")
+    private Set<RecordingWorkSearchRelationEntity> workSearchRelations;
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "id")
+    private Set<RecordingArtistSearchRelationEntity> artistSearchRelations;
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "id")
+    private Set<RecordingClassificationSearchRelationEntity> classificationSearchRelations;
 
     public String getName() {
         return name;
@@ -78,12 +88,69 @@ public class RecordingEntity extends AbstractSMDIdentityEntity implements Record
         this.work = work;
     }
 
-    public Set<RecordingSearchRelationEntity> getSearchRelations() {
-        return searchRelations;
+    public Set<SearchRelationEntity> getSearchRelations() {
+        Set<SearchRelationEntity> aggregatedSearchRelations = new HashSet<SearchRelationEntity>(
+                getLabelSearchRelations().size()+
+                getReleaseSearchRelations().size()+
+                getTrackSearchRelations().size()+
+                getWorkSearchRelations().size()+
+                getArtistSearchRelations().size()+
+                getClassificationSearchRelations().size());
+        aggregatedSearchRelations.addAll(getLabelSearchRelations());
+        aggregatedSearchRelations.addAll(getReleaseSearchRelations());
+        aggregatedSearchRelations.addAll(getTrackSearchRelations());
+        aggregatedSearchRelations.addAll(getWorkSearchRelations());
+        aggregatedSearchRelations.addAll(getArtistSearchRelations());
+        aggregatedSearchRelations.addAll(getClassificationSearchRelations());
+        return aggregatedSearchRelations;
     }
 
-    public void setSearchRelations(Set<RecordingSearchRelationEntity> searchRelations) {
-        this.searchRelations = searchRelations;
+    public Set<RecordingLabelSearchRelationEntity> getLabelSearchRelations() {
+        return labelSearchRelations;
+    }
+
+    public void setLabelSearchRelations(Set<RecordingLabelSearchRelationEntity> labelSearchRelations) {
+        this.labelSearchRelations = labelSearchRelations;
+    }
+
+    public Set<RecordingReleaseSearchRelationEntity> getReleaseSearchRelations() {
+        return releaseSearchRelations;
+    }
+
+    public void setReleaseSearchRelations(Set<RecordingReleaseSearchRelationEntity> releaseSearchRelations) {
+        this.releaseSearchRelations = releaseSearchRelations;
+    }
+
+    public Set<RecordingTrackSearchRelationEntity> getTrackSearchRelations() {
+        return trackSearchRelations;
+    }
+
+    public void setTrackSearchRelations(Set<RecordingTrackSearchRelationEntity> trackSearchRelations) {
+        this.trackSearchRelations = trackSearchRelations;
+    }
+
+    public Set<RecordingWorkSearchRelationEntity> getWorkSearchRelations() {
+        return workSearchRelations;
+    }
+
+    public void setWorkSearchRelations(Set<RecordingWorkSearchRelationEntity> workSearchRelations) {
+        this.workSearchRelations = workSearchRelations;
+    }
+
+    public Set<RecordingArtistSearchRelationEntity> getArtistSearchRelations() {
+        return artistSearchRelations;
+    }
+
+    public void setArtistSearchRelations(Set<RecordingArtistSearchRelationEntity> artistSearchRelations) {
+        this.artistSearchRelations = artistSearchRelations;
+    }
+
+    public Set<RecordingClassificationSearchRelationEntity> getClassificationSearchRelations() {
+        return classificationSearchRelations;
+    }
+
+    public void setClassificationSearchRelations(Set<RecordingClassificationSearchRelationEntity> classificationSearchRelations) {
+        this.classificationSearchRelations = classificationSearchRelations;
     }
 
     public RecordingSession getRecordingSession() {

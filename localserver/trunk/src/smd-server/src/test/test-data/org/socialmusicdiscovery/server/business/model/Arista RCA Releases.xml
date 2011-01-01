@@ -913,7 +913,13 @@
     <relations/>
     <global_identities/>
     <releases_search_relations/>
-    <recordings_search_relations/>
+    <recording_labels_search_relations/>
+    <recording_releases_search_relations/>
+    <recording_tracks_search_relations/>
+    <recording_works_search_relations/>
+    <recording_artists_search_relations/>
+    <recording_persons_search_relations/>
+    <recording_classifications_search_relations/>
     <works_search_relations/>
     <artists_search_relations/>
     <persons_search_relations/>

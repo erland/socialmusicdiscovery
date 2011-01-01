@@ -79,6 +79,7 @@ public class BrowseServiceTest extends BaseTestCase {
             boolean foundArtist = false;
             boolean foundRelease = false;
             boolean foundWork = false;
+            boolean foundLabel = false;
             for (Map.Entry child : trackResultItem.getChildItems().entrySet()) {
                 if (((String) child.getKey()).startsWith(SMDIdentityReferenceEntity.typeForClass(ArtistEntity.class))) {
                     foundArtist = true;
@@ -86,6 +87,8 @@ public class BrowseServiceTest extends BaseTestCase {
                     foundRelease = true;
                 } else if (child.getKey().equals(SMDIdentityReferenceEntity.typeForClass(WorkEntity.class))) {
                     foundWork = true;
+                } else if (child.getKey().equals(SMDIdentityReferenceEntity.typeForClass(LabelEntity.class))) {
+                    foundLabel = true;
                 } else if (((String) child.getKey()).startsWith(SMDIdentityReferenceEntity.typeForClass(ClassificationEntity.class))) {
                     // Not mandatory
                 } else {
@@ -96,8 +99,10 @@ public class BrowseServiceTest extends BaseTestCase {
             assert foundWork;
             if (trackResultItem.getItem().getRecording().getWork().getName().equals("Axel F")) {
                 assert !foundRelease;
+                assert !foundLabel;
             } else {
                 assert foundRelease;
+                assert foundLabel;
             }
         }
         assert foundMedium;
@@ -118,10 +123,10 @@ public class BrowseServiceTest extends BaseTestCase {
         assert track.getId().equals(result.getItems().iterator().next().getItem().getId());
 
         result = browseService.findChildren(Arrays.asList(
-                "231424b6-b3a9-45b8-bce2-77e694e67319", // Whitney Houston
-                "d7465c1b-2115-42cf-b96c-141a3ef93a47", // Dolly Parton
-                "bf88a696-0cc5-4cfa-b690-85ddb25835cc", // Arista
-                "d972b0fa-42f5-45f9-ba56-2cede7666446" // The Bodyguard
+                SMDIdentityReferenceEntity.typeForClass(ArtistEntity.class)+":231424b6-b3a9-45b8-bce2-77e694e67319", // Whitney Houston
+                SMDIdentityReferenceEntity.typeForClass(ArtistEntity.class)+":d7465c1b-2115-42cf-b96c-141a3ef93a47", // Dolly Parton
+                SMDIdentityReferenceEntity.typeForClass(LabelEntity.class)+":bf88a696-0cc5-4cfa-b690-85ddb25835cc", // Arista
+                SMDIdentityReferenceEntity.typeForClass(ReleaseEntity.class)+":d972b0fa-42f5-45f9-ba56-2cede7666446" // The Bodyguard
         ), new ArrayList<String>(), null, null, true);
         assert result.getItems().size() == 1;
         assert result.getCount() == 1;
@@ -193,6 +198,7 @@ public class BrowseServiceTest extends BaseTestCase {
             boolean foundRelease = false;
             boolean foundWork = false;
             boolean foundTrack = false;
+            boolean foundLabel = false;
             for (Map.Entry child : artistResultItem.getChildItems().entrySet()) {
                 if (((String) child.getKey()).startsWith(SMDIdentityReferenceEntity.typeForClass(ClassificationEntity.class))) {
                     foundClassification = true;
@@ -202,6 +208,8 @@ public class BrowseServiceTest extends BaseTestCase {
                     foundWork = true;
                 } else if (((String) child.getKey()).startsWith(SMDIdentityReferenceEntity.typeForClass(TrackEntity.class))) {
                     foundTrack = true;
+                } else if (((String) child.getKey()).startsWith(SMDIdentityReferenceEntity.typeForClass(LabelEntity.class))) {
+                    foundLabel = true;
                 } else if (((String) child.getKey()).startsWith(SMDIdentityReferenceEntity.typeForClass(ArtistEntity.class))) {
                     // Not mandatory
                 } else {
@@ -212,6 +220,7 @@ public class BrowseServiceTest extends BaseTestCase {
             assert foundClassification;
             assert foundWork;
             assert foundTrack;
+            assert foundLabel;
         }
 
         result = browseService.findChildren(new ArrayList<String>(), new ArrayList<String>(), 0, 10, true);
@@ -287,6 +296,7 @@ public class BrowseServiceTest extends BaseTestCase {
             boolean foundArtist = false;
             boolean foundWork = false;
             boolean foundTrack = false;
+            boolean foundLabel = false;
             for (Map.Entry child : releaseResultItem.getChildItems().entrySet()) {
                 if (((String) child.getKey()).startsWith(SMDIdentityReferenceEntity.typeForClass(ClassificationEntity.class))) {
                     foundClassification = true;
@@ -296,6 +306,8 @@ public class BrowseServiceTest extends BaseTestCase {
                     foundWork = true;
                 } else if (child.getKey().equals(SMDIdentityReferenceEntity.typeForClass(TrackEntity.class))) {
                     foundTrack = true;
+                } else if (child.getKey().equals(SMDIdentityReferenceEntity.typeForClass(LabelEntity.class))) {
+                    foundLabel = true;
                 } else {
                     assert false;
                 }
@@ -304,6 +316,7 @@ public class BrowseServiceTest extends BaseTestCase {
             assert foundClassification;
             assert foundWork;
             assert foundTrack;
+            assert foundLabel;
         }
 
         result = browseService.findChildren(new ArrayList<String>(), new ArrayList<String>(), 0, 2, true);
@@ -332,6 +345,7 @@ public class BrowseServiceTest extends BaseTestCase {
             boolean foundArtist = false;
             boolean foundRelease = false;
             boolean foundTrack = false;
+            boolean foundLabel = false;
             for (Map.Entry child : workResultItem.getChildItems().entrySet()) {
                 if (((String) child.getKey()).startsWith(SMDIdentityReferenceEntity.typeForClass(ClassificationEntity.class))) {
                     foundClassification = true;
@@ -341,6 +355,8 @@ public class BrowseServiceTest extends BaseTestCase {
                     foundRelease = true;
                 } else if (child.getKey().equals(SMDIdentityReferenceEntity.typeForClass(TrackEntity.class))) {
                     foundTrack = true;
+                } else if (child.getKey().equals(SMDIdentityReferenceEntity.typeForClass(LabelEntity.class))) {
+                    foundLabel = true;
                 } else {
                     assert false;
                 }
@@ -349,6 +365,7 @@ public class BrowseServiceTest extends BaseTestCase {
             assert foundClassification;
             assert foundRelease;
             assert foundTrack;
+            assert foundLabel;
         }
 
         result = browseService.findChildren(new ArrayList<String>(), new ArrayList<String>(), 0, 10, true);
@@ -359,6 +376,55 @@ public class BrowseServiceTest extends BaseTestCase {
         assert result.getItems().size() == 10;
         assert result.getCount() == 79;
         for (ResultItem<Work> resultItem : result.getItems()) {
+            assert resultItem.getChildItems() == null;
+            assert resultItem.getItem() != null;
+        }
+    }
+
+    @Test
+    public void testBrowseLabels() throws Exception {
+        LabelBrowseService browseService = new LabelBrowseService();
+        Result<Label> result = browseService.findChildren(new ArrayList<String>(), new ArrayList<String>(), null, null, true);
+        assert result.getItems().size() == 3;
+        assert result.getCount() == 3;
+        for (ResultItem<Label> workResultItem : result.getItems()) {
+            assert workResultItem.getChildItems() != null;
+            assert workResultItem.getChildItems().size() > 0;
+            boolean foundClassification = false;
+            boolean foundArtist = false;
+            boolean foundRelease = false;
+            boolean foundTrack = false;
+            boolean foundWork = false;
+            for (Map.Entry child : workResultItem.getChildItems().entrySet()) {
+                if (((String) child.getKey()).startsWith(SMDIdentityReferenceEntity.typeForClass(ClassificationEntity.class))) {
+                    foundClassification = true;
+                } else if (((String) child.getKey()).startsWith(SMDIdentityReferenceEntity.typeForClass(ArtistEntity.class))) {
+                    foundArtist = true;
+                } else if (child.getKey().equals(SMDIdentityReferenceEntity.typeForClass(ReleaseEntity.class))) {
+                    foundRelease = true;
+                } else if (child.getKey().equals(SMDIdentityReferenceEntity.typeForClass(TrackEntity.class))) {
+                    foundTrack = true;
+                } else if (child.getKey().equals(SMDIdentityReferenceEntity.typeForClass(WorkEntity.class))) {
+                    foundWork = true;
+                } else {
+                    assert false;
+                }
+            }
+            assert foundArtist;
+            assert foundClassification;
+            assert foundRelease;
+            assert foundTrack;
+            assert foundWork;
+        }
+
+        result = browseService.findChildren(new ArrayList<String>(), new ArrayList<String>(), 0, 2, true);
+        assert result.getItems().size() == 2;
+        assert result.getCount() == 3;
+
+        result = browseService.findChildren(new ArrayList<String>(), new ArrayList<String>(), 2, 10, false);
+        assert result.getItems().size() == 1;
+        assert result.getCount() == 3;
+        for (ResultItem<Label> resultItem : result.getItems()) {
             assert resultItem.getChildItems() == null;
             assert resultItem.getItem() != null;
         }
@@ -377,6 +443,7 @@ public class BrowseServiceTest extends BaseTestCase {
             boolean foundRelease = false;
             boolean foundWork = false;
             boolean foundTrack = false;
+            boolean foundLabel = false;
             for (Map.Entry child : classificationResultItem.getChildItems().entrySet()) {
                 if (((String) child.getKey()).startsWith(SMDIdentityReferenceEntity.typeForClass(ArtistEntity.class))) {
                     foundArtist = true;
@@ -386,6 +453,8 @@ public class BrowseServiceTest extends BaseTestCase {
                     foundWork = true;
                 } else if (child.getKey().equals(SMDIdentityReferenceEntity.typeForClass(TrackEntity.class))) {
                     foundTrack = true;
+                } else if (child.getKey().equals(SMDIdentityReferenceEntity.typeForClass(LabelEntity.class))) {
+                    foundLabel = true;
                 } else if (((String) child.getKey()).startsWith(SMDIdentityReferenceEntity.typeForClass(ClassificationEntity.class))) {
                     // Not mandatory
                 } else {
@@ -396,6 +465,7 @@ public class BrowseServiceTest extends BaseTestCase {
             assert foundArtist;
             assert foundWork;
             assert foundTrack;
+            assert foundLabel;
         }
 
         result = browseService.findChildren(new ArrayList<String>(), new ArrayList<String>(), 0, 10, true);

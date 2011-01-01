@@ -1,6 +1,9 @@
 package org.socialmusicdiscovery.server.business.model.search;
 
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
+import org.socialmusicdiscovery.server.business.model.classification.Classification;
+import org.socialmusicdiscovery.server.business.model.core.Artist;
+import org.socialmusicdiscovery.server.business.model.core.Contributor;
 
 import javax.persistence.Table;
 
@@ -10,14 +13,15 @@ public class ArtistSearchRelationEntity extends SearchRelationEntity {
     public ArtistSearchRelationEntity() {
     }
 
-    public ArtistSearchRelationEntity(String id, SMDIdentity reference) {
-        super(id, reference);
+    public ArtistSearchRelationEntity(Artist artist, SMDIdentity reference) {
+        super(artist, reference);
     }
 
-    public ArtistSearchRelationEntity(String id, String referenceType, String reference) {
-        super(id, referenceType, reference);
+    public ArtistSearchRelationEntity(Artist artist, Classification classification) {
+        super(artist, classification);
     }
-    public ArtistSearchRelationEntity(String id, String referenceType, String reference, String type) {
-        super(id, referenceType, reference, type);
+
+    public ArtistSearchRelationEntity(Artist artist, Contributor contributor) {
+        super(artist, contributor);
     }
 }

@@ -11,6 +11,6 @@ public class ReleaseBrowseService extends AbstractBrowseService<Release> impleme
     }
 
     public Result<Release> findChildren(Collection<String> criteriaList, Collection<String> sortCriteriaList, Integer firstItem, Integer maxItems, Boolean returnChildCounters) {
-        return super.findChildren(ReleaseEntity.class, "releases", "e.name", criteriaList, sortCriteriaList, firstItem, maxItems, returnChildCounters);
+        return super.findChildren(ReleaseEntity.class, "release", "e.name", criteriaList, sortCriteriaList, firstItem, maxItems, returnChildCounters);
     }
 }

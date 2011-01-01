@@ -4,6 +4,8 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
+import org.socialmusicdiscovery.server.business.model.classification.Classification;
+import org.socialmusicdiscovery.server.business.model.core.Contributor;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -12,8 +14,31 @@ import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
 
 @MappedSuperclass
-@IdClass(SearchRelationEntity.class)
-public class SearchRelationEntity implements Serializable {
+@IdClass(SearchRelationEntity.PK.class)
+public abstract class SearchRelationEntity {
+    public static class PK implements Serializable {
+        public String id;
+        public String referenceType;
+        public String reference;
+        public String type;
+
+        public PK() {}
+        public PK(String id, String referenceType, String reference, String type) {
+            this.id = id;
+            this.referenceType = referenceType;
+            this.reference = reference;
+            this.type = type;
+        }
+        @Override
+        public int hashCode() {
+            return HashCodeBuilder.reflectionHashCode(this);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            return EqualsBuilder.reflectionEquals(this, o);
+        }
+    }
     @Id
     @Column(length = 36)
     private String id;
@@ -29,10 +54,20 @@ public class SearchRelationEntity implements Serializable {
         setType("");
     }
 
-    public SearchRelationEntity(String id, SMDIdentity reference) {
-        setId(id);
+    public SearchRelationEntity(SMDIdentity identity, SMDIdentity reference) {
+        setId(identity.getId());
         setReference(reference);
         setType("");
+    }
+
+    public SearchRelationEntity(SMDIdentity identity, Contributor contributor) {
+        setId(identity.getId());
+        setReference(contributor);
+    }
+
+    public SearchRelationEntity(SMDIdentity identity, Classification classification) {
+        setId(identity.getId());
+        setReference(classification);
     }
 
     public SearchRelationEntity(String id, String referenceType, String reference) {
@@ -74,13 +109,20 @@ public class SearchRelationEntity implements Serializable {
     }
 
     public void setReference(SMDIdentity reference) {
-        if (reference != null) {
-            setReferenceType(SMDIdentityReferenceEntity.typeForClass(reference.getClass()));
-            setReference(reference.getId());
-        } else {
-            this.referenceType = null;
-            this.reference = null;
-        }
+        setReferenceType(SMDIdentityReferenceEntity.typeForClass(reference.getClass()));
+        setReference(reference.getId());
+    }
+
+    public void setReference(Contributor contributor) {
+        setReferenceType(SMDIdentityReferenceEntity.typeForClass(contributor.getArtist().getClass()));
+        setReference(contributor.getArtist().getId());
+        setType(contributor.getType());
+    }
+
+    public void setReference(Classification classification) {
+        setReferenceType(SMDIdentityReferenceEntity.typeForClass(classification.getClass()));
+        setReference(classification.getId());
+        setType(classification.getType());
     }
 
     public String getType() {

@@ -20,6 +20,13 @@ public class BrowseServiceModule extends AbstractModule {
     }
 
     @Provides
+    @Named("Label")
+    @Singleton
+    public BrowseService getLabelBrowseService() {
+        return new LabelBrowseService();
+    }
+
+    @Provides
     @Named("Track")
     @Singleton
     public BrowseService getTrackBrowseService() {

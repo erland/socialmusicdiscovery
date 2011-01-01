@@ -72,7 +72,7 @@ public class JPAArtistRepository extends AbstractJPASMDIdentityRepository<Artist
         }
 
         entity.getSearchRelations().clear();
-        entityManager.createQuery("DELETE from RecordingSearchRelationEntity where reference=:id").setParameter("id",entity.getId()).executeUpdate();
+        entityManager.createQuery("DELETE from RecordingArtistSearchRelationEntity where reference=:id").setParameter("id",entity.getId()).executeUpdate();
         entityManager.createQuery("DELETE from ReleaseSearchRelationEntity where reference=:id").setParameter("id",entity.getId()).executeUpdate();
         entityManager.createQuery("DELETE from PersonSearchRelationEntity where reference=:id").setParameter("id",entity.getId()).executeUpdate();
         entityManager.createQuery("DELETE from WorkSearchRelationEntity where reference=:id").setParameter("id",entity.getId()).executeUpdate();

@@ -1,46 +1,29 @@
 package org.socialmusicdiscovery.server.business.service.browse;
 
-import org.apache.commons.lang.builder.CompareToBuilder;
 import org.socialmusicdiscovery.server.business.model.core.Track;
 import org.socialmusicdiscovery.server.business.model.core.TrackEntity;
 
+import javax.persistence.Query;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedList;
 
 public class TrackBrowseService extends AbstractBrowseService<Track> implements BrowseService<Track> {
     public TrackBrowseService() {
         super(Track.class.getSimpleName());
     }
 
+    protected Query createFindQuery(Class entity, String relationType, String orderBy, Collection<String> criteriaList, Collection<String> sortCriteriaList, String joinString, String whereString) {
+        Query query;
+        if (criteriaList.size() > 0) {
+            query = entityManager.createQuery("SELECT distinct e from RecordingEntity as r JOIN r."+relationType+"SearchRelations as searchRelations JOIN searchRelations."+relationType+" as e " + joinString + " LEFT JOIN FETCH e.medium as m WHERE " + whereString + buildExclusionString("searchRelations", criteriaList) + (orderBy != null ? " order by " + orderBy : ""));
+            setExclusionQueryParameters(query, criteriaList);
+            setQueryParameters(query, criteriaList);
+        } else {
+            query = entityManager.createQuery("SELECT distinct e from " + entity.getSimpleName() + " as e JOIN FETCH e.recording as r JOIN FETCH r.work LEFT JOIN FETCH e.medium as m " + (orderBy != null ? " order by " + orderBy : ""));
+        }
+        return query;
+    }
+
     public Result<Track> findChildren(Collection<String> criteriaList, Collection<String> sortCriteriaList, Integer firstItem, Integer maxItems, Boolean returnChildCounters) {
-        // Tracks is a special case, we always get unlimited numbers since the sorting is done in Java code
-        Result<Track> results = super.findChildren(TrackEntity.class, "tracks", null, criteriaList, sortCriteriaList, null, null, returnChildCounters);
-        LinkedList<ResultItem<Track>> items = new LinkedList<ResultItem<Track>>(results.getItems());
-        Collections.sort(items, new Comparator<ResultItem<Track>>() {
-            @Override
-            public int compare(ResultItem<Track> item1, ResultItem<Track> item2) {
-                CompareToBuilder comparator = new CompareToBuilder();
-                comparator.append(item1.getItem().getMedium() != null ? item1.getItem().getMedium().getNumber() : null, item2.getItem().getMedium() != null ? item2.getItem().getMedium().getNumber() : null);
-                comparator.append(item1.getItem().getMedium() != null ? item1.getItem().getMedium().getName() : null, item2.getItem().getMedium() != null ? item2.getItem().getMedium().getName() : null);
-                comparator.append(item1.getItem().getNumber(), item2.getItem().getNumber());
-                return comparator.toComparison();
-            }
-        });
-        if (firstItem != null) {
-            while (firstItem > 0) {
-                items.remove(0);
-                firstItem--;
-            }
-        }
-        if (maxItems != null) {
-            int size = items.size();
-            for (int i = maxItems; i < size; i++) {
-                items.remove(maxItems.intValue());
-            }
-        }
-        results.setItems(items);
-        return results;
+        return findChildren(TrackEntity.class, "track", "m.number,m.name,e.number", criteriaList, sortCriteriaList, firstItem, maxItems, returnChildCounters);
     }
 }

@@ -26,7 +26,12 @@
         <class>org.socialmusicdiscovery.server.business.model.GlobalIdentityEntity</class>
 
         <class>org.socialmusicdiscovery.server.business.model.search.ReleaseSearchRelationEntity</class>
-        <class>org.socialmusicdiscovery.server.business.model.search.RecordingSearchRelationEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.search.RecordingLabelSearchRelationEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.search.RecordingReleaseSearchRelationEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.search.RecordingTrackSearchRelationEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.search.RecordingWorkSearchRelationEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.search.RecordingArtistSearchRelationEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.search.RecordingClassificationSearchRelationEntity</class>
         <class>org.socialmusicdiscovery.server.business.model.search.WorkSearchRelationEntity</class>
         <class>org.socialmusicdiscovery.server.business.model.search.ArtistSearchRelationEntity</class>
         <class>org.socialmusicdiscovery.server.business.model.search.PersonSearchRelationEntity</class>
