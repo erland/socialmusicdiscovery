@@ -3,10 +3,8 @@ package org.socialmusicdiscovery.server.business.model.core;
 import com.google.gson.annotations.Expose;
 import org.socialmusicdiscovery.server.business.model.AbstractSMDIdentityEntity;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
-import org.socialmusicdiscovery.server.business.model.search.ArtistSearchRelationEntity;
 
 import javax.persistence.*;
-import java.util.HashSet;
 import java.util.Set;
 
 @javax.persistence.Entity
@@ -26,9 +24,6 @@ public class ArtistEntity extends AbstractSMDIdentityEntity implements Artist {
     @JoinColumn(name = "person_id")
     @Expose
     private Person person;
-
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "id")
-    private Set<ArtistSearchRelationEntity> searchRelations = new HashSet<ArtistSearchRelationEntity>();
 
     public String getName() {
         return name;
@@ -52,13 +47,5 @@ public class ArtistEntity extends AbstractSMDIdentityEntity implements Artist {
 
     public void setAliases(Set<Artist> aliases) {
         this.aliases = aliases;
-    }
-
-    public Set<ArtistSearchRelationEntity> getSearchRelations() {
-        return searchRelations;
-    }
-
-    public void setSearchRelations(Set<ArtistSearchRelationEntity> searchRelations) {
-        this.searchRelations = searchRelations;
     }
 }

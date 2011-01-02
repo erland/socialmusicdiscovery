@@ -3,7 +3,6 @@ package org.socialmusicdiscovery.server.business.model.core;
 import com.google.gson.annotations.Expose;
 import org.socialmusicdiscovery.server.business.model.AbstractSMDIdentityEntity;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
-import org.socialmusicdiscovery.server.business.model.search.WorkSearchRelationEntity;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -31,9 +30,6 @@ public class WorkEntity extends AbstractSMDIdentityEntity implements Work {
     @JoinColumn(name = "work_id")
     @Expose
     private Set<Contributor> contributors = new HashSet<Contributor>();
-
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "id")
-    private Set<WorkSearchRelationEntity> searchRelations;
 
     public String getName() {
         return name;
@@ -73,13 +69,5 @@ public class WorkEntity extends AbstractSMDIdentityEntity implements Work {
 
     public void setContributors(Set<Contributor> contributors) {
         this.contributors = contributors;
-    }
-
-    public Set<WorkSearchRelationEntity> getSearchRelations() {
-        return searchRelations;
-    }
-
-    public void setSearchRelations(Set<WorkSearchRelationEntity> searchRelations) {
-        this.searchRelations = searchRelations;
     }
 }

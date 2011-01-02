@@ -4,7 +4,6 @@ import com.google.gson.annotations.Expose;
 import org.socialmusicdiscovery.server.business.model.AbstractSMDIdentityEntity;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReference;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
-import org.socialmusicdiscovery.server.business.model.search.ClassificationSearchRelationEntity;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -30,9 +29,6 @@ public class ClassificationEntity extends AbstractSMDIdentityEntity implements C
             joinColumns = @JoinColumn(name = "classification_id"),
             inverseJoinColumns = @JoinColumn(name = "reference_id"))
     private Set<SMDIdentityReference> references = new HashSet<SMDIdentityReference>();
-
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "id")
-    private Set<ClassificationSearchRelationEntity> searchRelations;
 
     public String getType() {
         return type;
@@ -64,13 +60,5 @@ public class ClassificationEntity extends AbstractSMDIdentityEntity implements C
 
     public void setReferences(Set<SMDIdentityReference> references) {
         this.references = references;
-    }
-
-    public Set<ClassificationSearchRelationEntity> getSearchRelations() {
-        return searchRelations;
-    }
-
-    public void setSearchRelations(Set<ClassificationSearchRelationEntity> searchRelations) {
-        this.searchRelations = searchRelations;
     }
 }

@@ -171,7 +171,6 @@ public class CoreTest extends BaseTestCase {
         String releaseId = release.getId();
         assert 0 < em.createQuery("from TrackEntity where release_id=:release").setParameter("release",releaseId).getResultList().size();
         assert 0 < em.createQuery("from ReleaseSearchRelationEntity where id=:release").setParameter("release",releaseId).getResultList().size();
-        assert 0 < em.createQuery("from WorkSearchRelationEntity where reference=:release").setParameter("release",releaseId).getResultList().size();
         int recordings = em.createQuery("from RecordingEntity").getResultList().size();
 
         releaseRepository.remove(release);
@@ -188,7 +187,6 @@ public class CoreTest extends BaseTestCase {
 
         assert 0 == em.createQuery("from TrackEntity where release_id=:release").setParameter("release",releaseId).getResultList().size();
         assert 0 == em.createQuery("from ReleaseSearchRelationEntity where id=:release").setParameter("release",releaseId).getResultList().size();
-        assert 0 == em.createQuery("from WorkSearchRelationEntity where reference=:release").setParameter("release",releaseId).getResultList().size();
         assert recordings == em.createQuery("from RecordingEntity").getResultList().size();
 
         em.getTransaction().commit();
