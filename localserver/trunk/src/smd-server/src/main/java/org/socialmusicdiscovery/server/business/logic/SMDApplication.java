@@ -2,31 +2,20 @@ package org.socialmusicdiscovery.server.business.logic;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import com.sun.grizzly.http.SelectorThread;
-import com.sun.jersey.api.container.grizzly.GrizzlyWebContainerFactory;
 import liquibase.ClassLoaderFileOpener;
 import liquibase.Liquibase;
 import org.socialmusicdiscovery.server.api.management.mediaimport.MediaImportStatus;
-import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
 import org.socialmusicdiscovery.server.business.logic.injections.database.DatabaseProvider;
-import org.socialmusicdiscovery.server.business.model.core.*;
-import org.socialmusicdiscovery.server.business.repository.core.ReleaseRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.ws.rs.core.UriBuilder;
 import java.io.BufferedOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
-import java.net.URI;
 import java.sql.Connection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -40,18 +29,14 @@ public class SMDApplication {
     private EntityManager em;
 
     @Inject
-    ReleaseRepository releaseRepository;
+    MediaImportManager mediaImportManager;
 
     @Inject
-    MediaImportManager mediaImportManager;
+    PluginManager pluginManager;
 
     @Inject
     @Named("mediaimport")
     ExecutorService mediaImportService;
-
-    @Inject
-    @Named("org.socialmusicdiscovery.server.port")
-    String serverPort;
 
     public static void main(String[] args) {
         String customStdOut = System.getProperty("org.socialmusicdiscovery.server.stdout");
@@ -97,58 +82,16 @@ public class SMDApplication {
             if (System.getProperty("liquibase") == null || !System.getProperty("liquibase").equals("false")) {
                 liquibase.update("");
             }
-            if (database != null && (database.endsWith("-test"))) {
-                liquibase = new Liquibase("org/socialmusicdiscovery/server/database/sampledata/smd-database.sampledata.xml", new
-                        ClassLoaderFileOpener(),
-                        connection);
-                liquibase.update("");
-            }
 
             InjectHelper.injectMembers(this);
 
-            String forcedUpdateOfSearchRelations = System.getProperty("org.socialmusicdiscovery.server.searchrelations");
-            if ((database != null && (database.endsWith("-test"))) || (forcedUpdateOfSearchRelations !=null && forcedUpdateOfSearchRelations.equalsIgnoreCase("true"))) {
-                System.out.println("Starting to update search relations...");
-                new SearchRelationPostProcessor().execute(new ProcessingStatusCallback() {
-                    public void progress(String module, String currentDescription, Long currentNo, Long totalNo) {
-                        System.out.println(currentNo+" of "+totalNo+": "+currentDescription);
-                    }
+            // Initialize all installed plugins
+            pluginManager.startAll();
 
-                    public void failed(String module, String error) {
-                        System.err.println("Failed with error: "+error);
-                    }
-
-                    public void finished(String module) {
-                        System.out.println("Finish updating search relations");
-                    }
-
-                    public void aborted(String module) {}
-                });
-            }
-
-            Collection<ReleaseEntity> releases = releaseRepository.findAll();
-            if (releases.size() > 0) {
-                System.out.println("\nFound " + releases.size() + " releases in database");
-                //System.out.println("\nPrinting all available releases in database, please wait...\n");
-            } else {
-                System.out.println("\nNo releases available in database!");
-            }
-            //for (Release release : releases) {
-            //    printRelease(release);
-            //}
-
-            Map<String, String> initParams = new HashMap<String, String>();
-            initParams.put("com.sun.jersey.config.property.packages", "org.socialmusicdiscovery.server.api;org.socialmusicdiscovery.server.business.logic.jersey");
-            initParams.put("com.sun.jersey.config.property.WadlGeneratorConfig","org.socialmusicdiscovery.server.business.logic.jersey.SMDWadlGeneratorConfig");
-
-            System.out.println("Starting grizzly...");
-            URI uri = UriBuilder.fromUri("http://localhost/").port(Integer.parseInt(serverPort)).build();
-            SelectorThread threadSelector = GrizzlyWebContainerFactory.create(uri, initParams);
-            System.out.println(String.format("Try out %sapplication.wadl\nHit q+enter to stop it...", uri));
+            System.out.println("Hit q+enter to stop it...");
             while (System.in.read() != 'q') {
             }
             ;
-            threadSelector.stopEndpoint();
 
             System.out.println("\n\nExiting...\n");
 
@@ -159,6 +102,8 @@ public class SMDApplication {
             if (!mediaImportService.awaitTermination(10, TimeUnit.SECONDS)) {
                 mediaImportService.shutdownNow();
             }
+            // Initialize all activated plugins
+            pluginManager.stopAll();
 
             if (em != null && em.isOpen()) {
                 em.close();
@@ -169,63 +114,6 @@ public class SMDApplication {
             provider.stop();
         } catch (Exception ex) {
             ex.printStackTrace();
-        }
-    }
-
-    public static void printRelease(Release release) {
-        if (release != null) {
-            String label = "";
-            if (release.getLabel() != null) {
-                label = "(" + release.getLabel().getName() + ")";
-            }
-            String date = "";
-            if (release.getDate() != null) {
-                date = " (" + DATE_FORMAT.format(release.getDate()) + ")";
-            }
-            System.out.println(release.getName() + date + " " + label);
-            System.out.println("-------------------------------");
-            for (Contributor contributor : release.getContributors()) {
-                if (contributor.getArtist().getPerson() != null) {
-                    System.out.println("- " + contributor.getType() + ": " + contributor.getArtist().getName() + " (" + contributor.getArtist().getPerson().getName() + ")");
-                } else {
-                    System.out.println("- " + contributor.getType() + ": " + contributor.getArtist().getName());
-                }
-            }
-            if (release.getContributors().size() > 0) {
-                System.out.println();
-            }
-            if (release.getMediums().size() > 0) {
-                for (Medium medium : release.getMediums()) {
-                    printTracks(((MediumEntity)medium).getTracks(), (medium.getName() != null ? medium.getName() : "" + medium.getNumber()) + " - ");
-                }
-            } else {
-                printTracks(release.getTracks(), "");
-            }
-            System.out.println();
-        }
-    }
-
-    private static void printTracks(List<Track> tracks, String prefix) {
-        for (Track track : tracks) {
-            Recording recording = track.getRecording();
-            Work work = recording.getWork();
-
-            System.out.println(prefix + track.getNumber() + ". " + work.getName());
-            for (Contributor contributor : recording.getContributors()) {
-                if (contributor.getArtist().getPerson() != null) {
-                    System.out.println("- " + contributor.getType() + ": " + contributor.getArtist().getName() + " (" + contributor.getArtist().getPerson().getName() + ")");
-                } else {
-                    System.out.println("- " + contributor.getType() + ": " + contributor.getArtist().getName());
-                }
-            }
-            for (Contributor contributor : work.getContributors()) {
-                if (contributor.getArtist().getPerson() != null) {
-                    System.out.println("- " + contributor.getType() + ": " + contributor.getArtist().getName() + " (" + contributor.getArtist().getPerson().getName() + ")");
-                } else {
-                    System.out.println("- " + contributor.getType() + ": " + contributor.getArtist().getName());
-                }
-            }
-            //System.out.println();
         }
     }
 }

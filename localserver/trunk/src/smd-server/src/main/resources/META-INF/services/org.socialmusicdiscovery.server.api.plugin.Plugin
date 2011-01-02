@@ -1,0 +1,4 @@
+org.socialmusicdiscovery.server.plugins.libraryprinter.LibraryPrinterPlugin
+org.socialmusicdiscovery.server.plugins.json.JSONPlugin
+org.socialmusicdiscovery.server.plugins.testdataloader.TestDataLoaderPlugin
+org.socialmusicdiscovery.server.plugins.searchrelationupdater.SearchRelationUpdaterPlugin

@@ -1,7 +1,6 @@
 package org.socialmusicdiscovery.server.business.model;
 
 import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
-import org.socialmusicdiscovery.server.business.logic.SMDApplication;
 import org.socialmusicdiscovery.server.business.logic.SearchRelationPostProcessor;
 import org.socialmusicdiscovery.server.business.model.core.*;
 import org.socialmusicdiscovery.test.BaseTestCase;
@@ -12,6 +11,7 @@ import javax.persistence.Query;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 
 public class CoreTest extends BaseTestCase {
@@ -36,7 +36,64 @@ public class CoreTest extends BaseTestCase {
             em.getTransaction().rollback();
         }
     }
-    
+
+    public void printRelease(Release release) {
+        if (release != null) {
+            String label = "";
+            if (release.getLabel() != null) {
+                label = "(" + release.getLabel().getName() + ")";
+            }
+            String date = "";
+            if (release.getDate() != null) {
+                date = " (" + DATE_FORMAT.format(release.getDate()) + ")";
+            }
+            System.out.println(release.getName() + date + " " + label);
+            System.out.println("-------------------------------");
+            for (Contributor contributor : release.getContributors()) {
+                if (contributor.getArtist().getPerson() != null) {
+                    System.out.println("- " + contributor.getType() + ": " + contributor.getArtist().getName() + " (" + contributor.getArtist().getPerson().getName() + ")");
+                } else {
+                    System.out.println("- " + contributor.getType() + ": " + contributor.getArtist().getName());
+                }
+            }
+            if (release.getContributors().size() > 0) {
+                System.out.println();
+            }
+            if (release.getMediums().size() > 0) {
+                for (Medium medium : release.getMediums()) {
+                    printTracks(((MediumEntity) medium).getTracks(), (medium.getName() != null ? medium.getName() : "" + medium.getNumber()) + " - ");
+                }
+            } else {
+                printTracks(release.getTracks(), "");
+            }
+            System.out.println();
+        }
+    }
+
+    private void printTracks(List<Track> tracks, String prefix) {
+        for (Track track : tracks) {
+            Recording recording = track.getRecording();
+            Work work = recording.getWork();
+
+            System.out.println(prefix + track.getNumber() + ". " + work.getName());
+            for (Contributor contributor : recording.getContributors()) {
+                if (contributor.getArtist().getPerson() != null) {
+                    System.out.println("- " + contributor.getType() + ": " + contributor.getArtist().getName() + " (" + contributor.getArtist().getPerson().getName() + ")");
+                } else {
+                    System.out.println("- " + contributor.getType() + ": " + contributor.getArtist().getName());
+                }
+            }
+            for (Contributor contributor : work.getContributors()) {
+                if (contributor.getArtist().getPerson() != null) {
+                    System.out.println("- " + contributor.getType() + ": " + contributor.getArtist().getName() + " (" + contributor.getArtist().getPerson().getName() + ")");
+                } else {
+                    System.out.println("- " + contributor.getType() + ": " + contributor.getArtist().getName());
+                }
+            }
+            //System.out.println();
+        }
+    }
+
     @Test
     public void testModelCreation() throws Exception {
         loadTestData(getClass().getPackage().getName(),"Empty Tables.xml");
@@ -102,7 +159,7 @@ public class CoreTest extends BaseTestCase {
         Release release = (Release) query.getSingleResult();
         assert(release != null);
 
-        SMDApplication.printRelease(release);
+        printRelease(release);
 
         assert(release.getName().equals("The Bodyguard (Original Soundtrack Album)"));
         assert(DATE_FORMAT.format(release.getDate()).equals("1992"));
@@ -148,7 +205,7 @@ public class CoreTest extends BaseTestCase {
         Release release = (Release) query.getSingleResult();
         assert(release != null);
 
-        SMDApplication.printRelease(release);
+        printRelease(release);
         em.getTransaction().commit();
     }
 
