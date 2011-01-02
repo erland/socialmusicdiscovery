@@ -41,6 +41,8 @@ public class BaseTestCase {
     @Inject
     protected ContributorRepository contributorRepository;
     @Inject
+    protected LabelRepository labelRepository;
+    @Inject
     protected PersonRepository personRepository;
     @Inject
     protected RecordingRepository recordingRepository;

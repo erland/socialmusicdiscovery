@@ -48,13 +48,13 @@ public class JPAArtistRepository extends AbstractJPASMDIdentityRepository<Artist
     }
 
     public Collection<ArtistEntity> findByWorkWithRelations(String workId, Collection<String> mandatoryRelations, Collection<String> optionalRelations) {
-        Query query = entityManager.createQuery(queryStringFor("e", mandatoryRelations, optionalRelations, true) + " JOIN e.searchRelations as r WHERE r.reference=:work order by e.name");
+        Query query = entityManager.createQuery(recordingQueryStringFor("e", "artist", "work", "relation", "searchRelation", mandatoryRelations, optionalRelations, true) + " WHERE searchRelation.reference=:work order by e.name");
         query.setParameter("work", workId);
         return query.getResultList();
     }
 
     public Collection<ArtistEntity> findByReleaseWithRelations(String releaseId, Collection<String> mandatoryRelations, Collection<String> optionalRelations) {
-        Query query = entityManager.createQuery(queryStringFor("e", mandatoryRelations, optionalRelations, true) + " JOIN e.searchRelations as r WHERE r.reference=:release order by e.name");
+        Query query = entityManager.createQuery(recordingQueryStringFor("e", "artist", "release", "relation", "searchRelation", mandatoryRelations, optionalRelations, true) + " WHERE searchRelation.reference=:release order by e.name");
         query.setParameter("release", releaseId);
         return query.getResultList();
     }
@@ -71,13 +71,9 @@ public class JPAArtistRepository extends AbstractJPASMDIdentityRepository<Artist
             contributorRepository.remove((ContributorEntity)contributor);
         }
 
-        entity.getSearchRelations().clear();
         entityManager.createQuery("DELETE from RecordingArtistSearchRelationEntity where reference=:id").setParameter("id",entity.getId()).executeUpdate();
         entityManager.createQuery("DELETE from ReleaseSearchRelationEntity where reference=:id").setParameter("id",entity.getId()).executeUpdate();
         entityManager.createQuery("DELETE from PersonSearchRelationEntity where reference=:id").setParameter("id",entity.getId()).executeUpdate();
-        entityManager.createQuery("DELETE from WorkSearchRelationEntity where reference=:id").setParameter("id",entity.getId()).executeUpdate();
-        entityManager.createQuery("DELETE from TrackSearchRelationEntity where reference=:id").setParameter("id",entity.getId()).executeUpdate();
-        entityManager.createQuery("DELETE from ClassificationSearchRelationEntity where reference=:id").setParameter("id",entity.getId()).executeUpdate();
         super.remove(entity);
     }
 }

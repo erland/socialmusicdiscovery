@@ -49,10 +49,26 @@ public abstract class AbstractJPAEntityRepository<K, E> implements EntityReposit
     protected String queryStringFor(String entityName, Collection<String> mandatoryRelations, Collection<String> optionalRelations) {
         return queryStringFor(entityName, mandatoryRelations, optionalRelations, null);
     }
+    protected String recordingQueryStringFor(String entityName, String wantedRelationType, String filteredByRelationType, String wantedSearchRelationName, String filteredBySearchRelationName, Collection<String> mandatoryRelations, Collection<String> optionalRelations, Boolean distinctResult) {
+        StringBuffer queryString = new StringBuffer(200);
+        queryString.append("select distinct ").append(entityName).append(" from RecordingEntity as recording JOIN recording.").append(wantedRelationType).append("SearchRelations as ").append(wantedSearchRelationName).append(" JOIN ").append(wantedSearchRelationName).append(".").append(wantedRelationType).append(" as e JOIN recording.").append(filteredByRelationType).append("SearchRelations as ").append(filteredBySearchRelationName);
+        if(mandatoryRelations != null) {
+            for (String relation : mandatoryRelations) {
+                queryString.append(" JOIN FETCH ").append(entityName).append(".").append(relation);
+            }
+        }
+        if(optionalRelations != null) {
+            for (String relation : optionalRelations) {
+                queryString.append(" LEFT JOIN FETCH ").append(entityName).append(".").append(relation);
+            }
+        }
+        return queryString.toString();
+    }
+
     protected String queryStringFor(String entityName, Collection<String> mandatoryRelations, Collection<String> optionalRelations, Boolean distinctResult) {
         StringBuffer queryString = new StringBuffer(200);
         String distinct = "";
-        if((optionalRelations != null && optionalRelations.size()>0) || (distinctResult != null && distinctResult)) {
+        if((mandatoryRelations != null && mandatoryRelations.size()>0) || (optionalRelations != null && optionalRelations.size()>0) || (distinctResult != null && distinctResult)) {
             distinct = "distinct ";
         }
         queryString.append("select ").append(distinct).append(entityName).append(" from ").append(entityClass.getSimpleName()).append(" as e");

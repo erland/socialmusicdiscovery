@@ -42,7 +42,7 @@ public class JPATrackRepository extends AbstractJPASMDIdentityRepository<TrackEn
     }
 
     public Collection<TrackEntity> findByArtistWithRelations(String artistId, Collection<String> mandatoryRelations, Collection<String> optionalRelations) {
-        Query query = entityManager.createQuery(queryStringFor("e", mandatoryRelations, optionalRelations, true) + " JOIN e.recording as r JOIN r.searchRelations as sr WHERE sr.reference=:artist order by e.number,e.name");
+        Query query = entityManager.createQuery(queryStringFor("e", mandatoryRelations, optionalRelations, true) + " JOIN e.recording as r JOIN r.artistSearchRelations as sr WHERE sr.reference=:artist order by e.number,e.name");
         query.setParameter("artist", artistId);
         return query.getResultList();
     }
@@ -63,12 +63,8 @@ public class JPATrackRepository extends AbstractJPASMDIdentityRepository<TrackEn
         if(entity.getRelease() != null) {
             entity.getRelease().getTracks().remove(entity);
         }
-        entity.getSearchRelations().clear();
-        entityManager.createQuery("DELETE from ArtistSearchRelationEntity where reference=:id").setParameter("id",entity.getId()).executeUpdate();
         entityManager.createQuery("DELETE from RecordingTrackSearchRelationEntity where reference=:id").setParameter("id",entity.getId()).executeUpdate();
         entityManager.createQuery("DELETE from ReleaseSearchRelationEntity where reference=:id").setParameter("id",entity.getId()).executeUpdate();
-        entityManager.createQuery("DELETE from WorkSearchRelationEntity where reference=:id").setParameter("id",entity.getId()).executeUpdate();
-        entityManager.createQuery("DELETE from ClassificationSearchRelationEntity where reference=:id").setParameter("id",entity.getId()).executeUpdate();
         super.remove(entity);
     }
 }

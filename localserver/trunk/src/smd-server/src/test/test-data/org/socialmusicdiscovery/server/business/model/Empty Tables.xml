@@ -28,10 +28,6 @@
     <recording_artists_search_relations/>
     <recording_persons_search_relations/>
     <recording_classifications_search_relations/>
-    <works_search_relations/>
-    <artists_search_relations/>
     <persons_search_relations/>
-    <tracks_search_relations/>
-    <classifications_search_relations/>
     <playable_elements/>
 </dataset>

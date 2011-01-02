@@ -3,7 +3,6 @@ package org.socialmusicdiscovery.server.business.model.core;
 import com.google.gson.annotations.Expose;
 import org.socialmusicdiscovery.server.business.model.AbstractSMDIdentityEntity;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
-import org.socialmusicdiscovery.server.business.model.search.TrackSearchRelationEntity;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -33,9 +32,6 @@ public class TrackEntity extends AbstractSMDIdentityEntity implements Track {
     @ManyToOne(targetEntity = ReleaseEntity.class)
     @JoinColumn(name = "release_id")
     private Release release;
-
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "id")
-    private Set<TrackSearchRelationEntity> searchRelations;
 
     public Integer getNumber() {
         return number;
@@ -75,13 +71,5 @@ public class TrackEntity extends AbstractSMDIdentityEntity implements Track {
 
     public void setRelease(Release release) {
         this.release = release;
-    }
-
-    public Set<TrackSearchRelationEntity> getSearchRelations() {
-        return searchRelations;
-    }
-
-    public void setSearchRelations(Set<TrackSearchRelationEntity> searchRelations) {
-        this.searchRelations = searchRelations;
     }
 }
