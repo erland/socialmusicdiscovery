@@ -71,6 +71,10 @@ public class Result {
         @Expose
         private Collection<Child> childItems;
         @Expose
+        private String id;
+        @Expose
+        private String type;
+        @Expose
         private Object item;
 
         public ResultItem() {
@@ -80,8 +84,24 @@ public class Result {
             this.item = item;
         }
 
+        public ResultItem(Object item, String type, String id) {
+            this.item = item;
+            this.type = type;
+            this.id = id;
+        }
+
         public ResultItem(Object item, Map<String, Long> childCounters) {
             this.item = item;
+            childItems = new ArrayList<Child>(childCounters.size());
+            for (Map.Entry<String, Long> entry : childCounters.entrySet()) {
+                childItems.add(new Child(entry.getKey(), entry.getValue()));
+            }
+        }
+
+        public ResultItem(Object item, String type, String id, Map<String, Long> childCounters) {
+            this.item = item;
+            this.type = type;
+            this.id=id;
             childItems = new ArrayList<Child>(childCounters.size());
             for (Map.Entry<String, Long> entry : childCounters.entrySet()) {
                 childItems.add(new Child(entry.getKey(), entry.getValue()));

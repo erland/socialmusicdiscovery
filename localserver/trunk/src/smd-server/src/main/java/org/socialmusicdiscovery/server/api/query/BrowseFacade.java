@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import org.socialmusicdiscovery.server.business.logic.DetachHelper;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
 import org.socialmusicdiscovery.server.business.service.browse.BrowseService;
+import org.socialmusicdiscovery.server.business.service.browse.LibraryBrowseService;
 import org.socialmusicdiscovery.server.business.service.browse.ObjectTypeBrowseService;
 import org.socialmusicdiscovery.server.business.service.browse.ResultItem;
 
@@ -84,5 +85,58 @@ public class BrowseFacade {
             result.add(new Result.Child(entry.getKey(), entry.getValue()));
         }
         return result;
+    }
+
+    /**
+     * Browse objects by using the predefined menu structure, starting at the top
+     *
+     * @param offset       Offset of the first item to get, this is used to get the result in smaller chunks
+     * @param size         Number of items to get
+     * @param childs       true if child counters should be provided
+     * @return A list of matching objects
+     */
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/library")
+    public Result browseLibrary(@QueryParam("offset") Integer offset, @QueryParam("size") Integer size, @QueryParam("childs") Boolean childs) {
+        return browseLibrary(null, offset, size, childs);
+    }
+
+    /**
+     * Browse objects by using the predefined menu structure, starting at the the parent object specified as input
+     *
+     * @param objectId   The object to start the browsing from, this needs to be the full path to this object
+     * @param offset       Offset of the first item to get, this is used to get the result in smaller chunks
+     * @param size         Number of items to get
+     * @param childs       true if child counters should be provided
+     * @return A list of matching objects
+     */
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/library/{object:.*}")
+    public Result browseLibrary(@PathParam("object") String objectId, @QueryParam("offset") Integer offset, @QueryParam("size") Integer size, @QueryParam("childs") Boolean childs) {
+        if (size != null && offset == null) {
+            offset = 0;
+        }
+
+        LibraryBrowseService browseService = new LibraryBrowseService();
+        org.socialmusicdiscovery.server.business.service.browse.Result result = DetachHelper.createDetachedCopy(browseService.findChildren(objectId, offset, size, childs));
+
+        Collection<Result.ResultItem> genericResultItems = new ArrayList<Result.ResultItem>(result.getItems().size());
+        Iterator<ResultItem> itemIterator = result.getItems().iterator();
+        while (itemIterator.hasNext()) {
+            ResultItem resultItem = itemIterator.next();
+            if (resultItem.getChildItems() != null) {
+                genericResultItems.add(new Result.ResultItem(resultItem.getItem(), resultItem.getType(), resultItem.getId(), new HashMap<String, Long>(resultItem.getChildItems())));
+            } else {
+                genericResultItems.add(new Result.ResultItem(resultItem.getItem(), resultItem.getType(), resultItem.getId()));
+            }
+        }
+
+        if (size != null) {
+            return new Result(genericResultItems, result.getCount(), offset.longValue(), (long) result.getItems().size());
+        } else {
+            return new Result(genericResultItems, result.getCount(), 0L, (long) result.getItems().size());
+        }
     }
 }
