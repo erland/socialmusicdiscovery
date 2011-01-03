@@ -1,8 +1,10 @@
 package org.socialmusicdiscovery.server.api.query;
 
+import com.google.inject.Inject;
 import org.socialmusicdiscovery.server.business.logic.DetachHelper;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
 import org.socialmusicdiscovery.server.business.service.browse.BrowseService;
+import org.socialmusicdiscovery.server.business.service.browse.ObjectTypeBrowseService;
 import org.socialmusicdiscovery.server.business.service.browse.ResultItem;
 
 import javax.ws.rs.*;
@@ -14,6 +16,12 @@ import java.util.*;
  */
 @Path("/browse")
 public class BrowseFacade {
+    @Inject
+    ObjectTypeBrowseService objectTypeBrowseService;
+
+    public BrowseFacade() {
+        InjectHelper.injectMembers(this);
+    }
     /**
      * Browse for objects of a specific type
      *
@@ -57,5 +65,24 @@ public class BrowseFacade {
         } else {
             return new Result(genericResultItems, result.getCount(), 0L, (long) result.getItems().size());
         }
+    }
+
+    /**
+     * Browse for object types that's available under a specific object which has been found using a list of search criterias.
+     * The counters returned only includes the objects that matches the specified search criterias.
+     *
+     * @param criteriaList Criteria which the parent object and sub items have to match, multiple criteria can be specified as separate request parameters
+     * @param counters    true if number of items per object type should be provided
+     * @return A list of matching object types and optionally counters
+     */
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Result.Child> browseObjectTypes(@QueryParam("criteria") List<String> criteriaList, @QueryParam("counters") Boolean counters) {
+        Map<String,Long> queryResult = objectTypeBrowseService.findObjectTypes(criteriaList, counters);
+        List<Result.Child> result = new ArrayList<Result.Child>(queryResult.size());
+        for (Map.Entry<String,Long> entry : queryResult.entrySet()) {
+            result.add(new Result.Child(entry.getKey(), entry.getValue()));
+        }
+        return result;
     }
 }

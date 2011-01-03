@@ -12,6 +12,7 @@ import org.testng.annotations.*;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class BrowseServiceTest extends BaseTestCase {
@@ -60,6 +61,66 @@ public class BrowseServiceTest extends BaseTestCase {
         }
     }
 
+    @Test
+    public void testBrowseTypes() throws Exception {
+        ObjectTypeBrowseService browseService= new ObjectTypeBrowseService();
+        Map<String, Long> types = browseService.findObjectTypes(new ArrayList<String>(), true);
+        assert types.size()==9;
+        for (String type : types.keySet()) {
+            List<String> criterias = new ArrayList<String>();
+            String serviceType = type;
+            if(type.contains(".")) {
+                serviceType = type.substring(0,type.indexOf("."));
+                criterias.add(type);
+            }
+            BrowseService childBrowseService = InjectHelper.instanceWithName(BrowseService.class,serviceType);
+            Result result = childBrowseService.findChildren(criterias,new ArrayList<String>(),null,null,false);
+            assert result.getItems().size() == types.get(type);
+            assert result.getCount()==result.getItems().size();
+        }
+
+        types = browseService.findObjectTypes(Arrays.asList(
+                SMDIdentityReferenceEntity.typeForClass(ReleaseEntity.class) + ":d972b0fa-42f5-45f9-ba56-2cede7666446" // The Bodyguard
+        ), true);
+        assert types.size()==8;
+        for (String type : types.keySet()) {
+            List<String> criterias = new ArrayList<String>(Arrays.asList(
+                    SMDIdentityReferenceEntity.typeForClass(ReleaseEntity.class) + ":d972b0fa-42f5-45f9-ba56-2cede7666446" // The Bodyguard
+            ));
+            String serviceType = type;
+            if(type.contains(".")) {
+                serviceType = type.substring(0,type.indexOf("."));
+                criterias.add(type);
+            }
+            BrowseService childBrowseService = InjectHelper.instanceWithName(BrowseService.class,serviceType);
+            Result result = childBrowseService.findChildren(criterias,new ArrayList<String>(),null,null,false);
+            assert result.getItems().size() == types.get(type);
+            assert result.getCount()==result.getItems().size();
+        }
+
+        types = browseService.findObjectTypes(Arrays.asList(
+                SMDIdentityReferenceEntity.typeForClass(ArtistEntity.class) + ":d7465c1b-2115-42cf-b96c-141a3ef93a47", // Dolly Parton
+                SMDIdentityReferenceEntity.typeForClass(ArtistEntity.class) + ":231424b6-b3a9-45b8-bce2-77e694e67319", // Whitney Houston,
+                SMDIdentityReferenceEntity.typeForClass(ReleaseEntity.class) + ":d972b0fa-42f5-45f9-ba56-2cede7666446" // The Bodyguard
+        ), true);
+        assert types.size()==7;
+        for (String type : types.keySet()) {
+            List<String> criterias = new ArrayList<String>(Arrays.asList(
+                    SMDIdentityReferenceEntity.typeForClass(ArtistEntity.class)+":d7465c1b-2115-42cf-b96c-141a3ef93a47", // Dolly Parton
+                    SMDIdentityReferenceEntity.typeForClass(ArtistEntity.class)+":231424b6-b3a9-45b8-bce2-77e694e67319", // Whitney Houston
+                    SMDIdentityReferenceEntity.typeForClass(ReleaseEntity.class) + ":d972b0fa-42f5-45f9-ba56-2cede7666446" // The Bodyguard
+            ));
+            String serviceType = type;
+            if(type.contains(".")) {
+                serviceType = type.substring(0,type.indexOf("."));
+                criterias.add(type);
+            }
+            BrowseService childBrowseService = InjectHelper.instanceWithName(BrowseService.class,serviceType);
+            Result result = childBrowseService.findChildren(criterias,new ArrayList<String>(),null,null,false);
+            assert result.getItems().size() == types.get(type);
+            assert result.getCount()==result.getItems().size();
+        }
+    }
     @Test
     public void testBrowseTracks() throws Exception {
         TrackBrowseService browseService = new TrackBrowseService();
