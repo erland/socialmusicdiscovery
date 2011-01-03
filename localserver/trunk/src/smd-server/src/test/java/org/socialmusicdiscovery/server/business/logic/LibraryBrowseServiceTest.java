@@ -81,7 +81,7 @@ public class LibraryBrowseServiceTest extends BaseTestCase {
 
         Collection<ResultItem> items = result.getItems();
         for (ResultItem item : items) {
-            if(logging) System.out.println(item.getItem().toString());
+            if(logging) System.out.println(item.getItem().toString()+getChildString(item.getChildItems()));
             queryAndPrintMenuLevel("  ",item, true);
         }
     }
