@@ -40,9 +40,21 @@ public class LibraryBrowseService {
             result.setItems(items);
             List<Menu> menus = this.menus;
             int i=0;
+            Map<String,Long> counters = null;
+            if(counts) {
+                counters = objectTypeBrowseService.findObjectTypes(new ArrayList<String>(),true);
+            }
             for (Menu menu : menus) {
                 if((firstItem==null || firstItem<=i) && (maxItems==null || maxItems>items.size())) {
-                    items.add(new ResultItem<Object>(menu.name,"Folder",menu.id));
+                    if(counts) {
+                        Map<String,Long> childCounters = new HashMap<String,Long>(1);
+                        if(counters.get(menu.objectTypes.get(0))!=null) {
+                            childCounters.put(menu.objectTypes.get(0),counters.get(menu.objectTypes.get(0)));
+                        }
+                        items.add(new ResultItem<Object>(menu.name,"Folder",menu.id,childCounters));
+                    }else {
+                        items.add(new ResultItem<Object>(menu.name,"Folder",menu.id));
+                    }
                 }
                 i++;
             }
@@ -77,11 +89,13 @@ public class LibraryBrowseService {
                 List<String> criterias = new ArrayList<String>();
                 String requestedMainObjectType = null;
                 String requestedObjectType = null;
+                String nextObjectType = null;
                 for (String objectType : currentMenu.objectTypes) {
                     String value = criteriaMap.get(objectType);
                     if(value != null) {
                         criterias.add(objectType+":"+value);
                     }else {
+                        nextObjectType = currentMenu.objectTypes.get(criterias.size()+1);
                         requestedObjectType = objectType;
                         if(objectType.contains(".")) {
                             requestedMainObjectType=objectType.substring(0,objectType.indexOf("."));
@@ -106,6 +120,14 @@ public class LibraryBrowseService {
                         }
                         item.setId(id);
                         item.setType(requestedMainObjectType);
+
+                        if(counts) {
+                            Map<String, Long> childCounters = new HashMap<String, Long>();
+                            if(nextObjectType!=null && item.getChildItems().containsKey(nextObjectType)) {
+                                childCounters.put(nextObjectType,(Long)item.getChildItems().get(nextObjectType));
+                            }
+                            item.setChildItems(childCounters);
+                        }
                     }
                     result = browseResult;
                 }

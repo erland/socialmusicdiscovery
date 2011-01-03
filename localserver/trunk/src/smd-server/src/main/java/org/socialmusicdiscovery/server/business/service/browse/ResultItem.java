@@ -40,6 +40,10 @@ public class ResultItem<T> {
         return childItems;
     }
 
+    public void setChildItems(Map<String, Long> childItems) {
+        this.childItems = childItems;
+    }
+
     public T getItem() {
         return item;
     }
