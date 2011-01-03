@@ -120,6 +120,60 @@ public class BrowseFacadeTest extends BaseTestCase {
     }
 
     @Test
+    public void testBrowseTypes() throws Exception {
+        JSONArray resultItems = Client.create().resource(HOSTURL + "/browse").accept(MediaType.APPLICATION_JSON).get(JSONArray.class);
+        assert resultItems.length() == 9;
+
+        for (int i = 0; i < resultItems.length(); i++) {
+            String id = ((JSONObject) resultItems.get(i)).getString("id");
+            assert id!=null;
+            Long count = ((JSONObject) resultItems.get(i)).optLong("count");
+            assert count==0;
+        }
+        String release = "Release:bb348240-8d6d-4a22-8b92-ab8446d54235";
+        resultItems = Client.create().resource(HOSTURL + "/browse?criteria="+release+"&counters=true").accept(MediaType.APPLICATION_JSON).get(JSONArray.class);
+        assert resultItems.length() == 7;
+
+        for (int i = 0; i < resultItems.length(); i++) {
+            String id = ((JSONObject) resultItems.get(i)).getString("id");
+            assert id!=null;
+            Long count = ((JSONObject) resultItems.get(i)).optLong("count");
+            assert count!=null;
+            assert count>0;
+
+            JSONObject result = Client.create().resource(HOSTURL + "/browse/"+id+"?criteria="+release+"&childs=true").accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
+            assert result.getLong("size") == count;
+
+            JSONArray childResultItems = result.getJSONArray("items");
+            for (int j = 0; j < childResultItems.length(); j++) {
+                JSONObject item = ((JSONObject) childResultItems.get(j)).getJSONObject("item");
+                String childId = item.getString("id");
+                JSONArray childItems = ((JSONObject) childResultItems.get(j)).optJSONArray("childItems");
+                assert childItems != null;
+
+                Map<String,Long> childMap = new HashMap<String,Long>();
+                for (int k=0;k<childItems.length();k++) {
+                    childMap.put(((JSONObject)childItems.get(k)).getString("id"),((JSONObject)childItems.get(k)).getLong("count"));
+                }
+
+                JSONArray childCounters = Client.create().resource(HOSTURL + "/browse?criteria="+release+"&criteria="+id+":"+childId+"&counters=true").accept(MediaType.APPLICATION_JSON).get(JSONArray.class);
+                for (int v = 0; v < childCounters.length(); v++) {
+                    String childCounterId = ((JSONObject) childCounters.get(v)).getString("id");
+                    assert childCounterId!=null;
+                    Long childCounter = ((JSONObject) childCounters.get(v)).getLong("count");
+                    assert childCounter!=null;
+                    assert childMap.containsKey(childCounterId);
+                    if(!childMap.get(childCounterId).equals(childCounter)) {
+                        JSONObject testing = Client.create().resource(HOSTURL + "/browse/"+childCounterId+"?criteria="+release+"&criteria="+id+":"+childId).accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
+                        testing.toString();
+                    }
+                    assert childMap.get(childCounterId).equals(childCounter);
+                }
+            }
+        }
+    }
+
+    @Test
     public void testBrowseArtists() throws Exception {
         JSONObject result = Client.create().resource(HOSTURL + "/browse/Artist").accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
         assert result.getLong("size") == 50;

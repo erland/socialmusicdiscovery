@@ -5,12 +5,8 @@ import org.socialmusicdiscovery.server.business.model.classification.Classificat
 
 import java.util.Collection;
 
-public class ClassificationBrowseService extends AbstractBrowseService<Classification> implements BrowseService<Classification> {
-    public ClassificationBrowseService() {
-        super(Classification.class.getSimpleName());
-    }
-
+public class ClassificationBrowseService extends AbstractBrowseService implements BrowseService<Classification> {
     public Result<Classification> findChildren(Collection<String> criteriaList, Collection<String> sortCriteriaList, Integer firstItem, Integer maxItems, Boolean returnChildCounters) {
-        return super.findChildren(ClassificationEntity.class, "classification", "e.name", criteriaList, sortCriteriaList, firstItem, maxItems, returnChildCounters);
+        return super.findChildren(ClassificationEntity.class, "Classification", "classification", "e.name", criteriaList, sortCriteriaList, firstItem, maxItems, returnChildCounters);
     }
 }

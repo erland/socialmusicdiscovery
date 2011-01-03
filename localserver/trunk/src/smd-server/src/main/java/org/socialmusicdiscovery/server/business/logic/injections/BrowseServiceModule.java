@@ -53,4 +53,10 @@ public class BrowseServiceModule extends AbstractModule {
     public BrowseService getClassificationBrowseService() {
         return new ClassificationBrowseService();
     }
+
+    @Provides
+    @Singleton
+    public ObjectTypeBrowseService getObjectTypeBrowserService() {
+        return new ObjectTypeBrowseService();
+    }
 }
