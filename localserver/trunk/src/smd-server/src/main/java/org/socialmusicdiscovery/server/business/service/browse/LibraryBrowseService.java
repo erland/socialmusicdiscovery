@@ -33,8 +33,24 @@ public class LibraryBrowseService {
         menus.add(new Menu("classifications.moods","Moods",Arrays.asList("Classification.mood","Artist","Release","Track")));
     }
 
+
+    public Result<Object> findChildren(Integer firstItem, Integer maxItems) {
+        return findChildren(null,firstItem,maxItems,false);
+    }
+
+    public Result<Object> findChildren(Integer firstItem, Integer maxItems, Boolean counts) {
+        return findChildren(null,firstItem,maxItems,counts);
+    }
+
+    public Result<Object> findChildren(String parentPath, Integer firstItem, Integer maxItems) {
+        return findChildren(parentPath,firstItem,maxItems,false);
+    }
+
     public Result<Object> findChildren(String parentPath, Integer firstItem, Integer maxItems, Boolean counts) {
         Result<Object> result = new Result<Object>();
+        if(counts==null) {
+            counts = false;
+        }
         if(parentPath==null) {
             Collection<ResultItem<Object>> items = new ArrayList<ResultItem<Object>>();
             result.setItems(items);
