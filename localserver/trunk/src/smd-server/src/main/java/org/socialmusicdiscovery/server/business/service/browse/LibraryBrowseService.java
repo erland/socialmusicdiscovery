@@ -95,7 +95,9 @@ public class LibraryBrowseService {
                     if(value != null) {
                         criterias.add(objectType+":"+value);
                     }else {
-                        nextObjectType = currentMenu.objectTypes.get(criterias.size()+1);
+                        if(currentMenu.objectTypes.size()>criterias.size()+1) {
+                            nextObjectType = currentMenu.objectTypes.get(criterias.size()+1);
+                        }
                         requestedObjectType = objectType;
                         if(objectType.contains(".")) {
                             requestedMainObjectType=objectType.substring(0,objectType.indexOf("."));

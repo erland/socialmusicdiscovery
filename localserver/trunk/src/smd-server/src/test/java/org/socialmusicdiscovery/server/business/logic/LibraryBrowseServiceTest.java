@@ -69,8 +69,9 @@ public class LibraryBrowseServiceTest extends BaseTestCase {
 
         Collection<ResultItem> items = result.getItems();
         for (ResultItem item : items) {
+            assert item.getChildItems()==null;
             if(logging) System.out.println(item.getItem().toString());
-            queryAndPrintMenuLevel("  ",item, false);
+            queryAndPrintMenuLevel("","  ",item, false,null);
         }
     }
 
@@ -81,18 +82,22 @@ public class LibraryBrowseServiceTest extends BaseTestCase {
 
         Collection<ResultItem> items = result.getItems();
         for (ResultItem item : items) {
+            assert item.getChildItems()!=null;
+            assert item.getChildItems().size()>0;
             if(logging) System.out.println(item.getItem().toString()+getChildString(item.getChildItems()));
-            queryAndPrintMenuLevel("  ",item, true);
+            queryAndPrintMenuLevel("","  ",item, true, (Long)item.getChildItems().values().iterator().next());
         }
     }
 
     private String getChildString(Map<String, Long> childs) {
         StringBuffer sb = new StringBuffer();
-        for (Map.Entry<String, Long> entry : childs.entrySet()) {
-            if(sb.length()>0) {
-                sb.append(", ");
+        if(childs!=null) {
+            for (Map.Entry<String, Long> entry : childs.entrySet()) {
+                if(sb.length()>0) {
+                    sb.append(", ");
+                }
+                sb.append(entry.getKey()).append("=").append(entry.getValue());
             }
-            sb.append(entry.getKey()).append("=").append(entry.getValue());
         }
         if(sb.length()==0) {
             return "";
@@ -100,10 +105,18 @@ public class LibraryBrowseServiceTest extends BaseTestCase {
             return " ("+sb.toString()+")";
         }
     }
-    private void queryAndPrintMenuLevel(String prefix, ResultItem item, boolean childs) {
+    private void queryAndPrintMenuLevel(String parentId, String prefix, ResultItem item, boolean childs, Long noOfChilds) {
         LibraryBrowseService browseService= new LibraryBrowseService();
-        Result result = browseService.findChildren(item.getId(),null,null,childs);
+        String id = parentId;
+        if(parentId.length()>0) {
+            id = parentId+"/";
+        }
+        id=id+item.getId();
+        Result result = browseService.findChildren(id,null,null,childs);
         Collection<ResultItem> childItems = result.getItems();
+        if(childs) {
+            assert noOfChilds==childItems.size();
+        }
         for (ResultItem childItem : childItems) {
             if(childItem.getItem() instanceof TrackEntity) {
                 Track track = (Track) childItem.getItem();
@@ -126,7 +139,17 @@ public class LibraryBrowseServiceTest extends BaseTestCase {
             }else {
                 if(logging) System.out.println(prefix+childItem.getItem().toString()+getChildString(childItem.getChildItems()));
             }
-            queryAndPrintMenuLevel(prefix+"  ",childItem, childs);
+            if(childs) {
+                assert childItem.getChildItems()!=null;
+                if(childItem.getChildItems().size()>0) {
+                    assert childItem.getChildItems().size()==1;
+                    queryAndPrintMenuLevel(id,prefix+"  ",childItem, childs, (Long)childItem.getChildItems().values().iterator().next());
+                }else {
+                    queryAndPrintMenuLevel(id,prefix+"  ",childItem, childs, 0L);
+                }
+            }else {
+                assert childItem.getChildItems()==null;
+            }
         }
     }
 }
