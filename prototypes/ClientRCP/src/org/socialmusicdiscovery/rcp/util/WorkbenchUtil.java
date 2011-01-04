@@ -6,7 +6,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbench;
@@ -18,14 +20,12 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.services.IEvaluationService;
-import org.socialmusicdiscovery.rcp.editors.SMDEditorInput;
+import org.socialmusicdiscovery.rcp.content.ObservableArtist;
+import org.socialmusicdiscovery.rcp.content.ObservableRelease;
 import org.socialmusicdiscovery.rcp.editors.artist.ArtistEditor;
 import org.socialmusicdiscovery.rcp.editors.release.ReleaseEditor;
 import org.socialmusicdiscovery.rcp.error.FatalApplicationException;
-import org.socialmusicdiscovery.server.business.model.SMDEntity;
-import org.socialmusicdiscovery.server.business.model.core.Artist;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
-import org.socialmusicdiscovery.server.business.model.core.Release;
 
 public final class WorkbenchUtil {
 
@@ -33,8 +33,8 @@ public final class WorkbenchUtil {
 	private final static Map<Class<?>, String> views = new HashMap<Class<?>, String>();
 
 	static {
-		editors.put(Artist.class, ArtistEditor.ID);
-		editors.put(Release.class, ReleaseEditor.ID);
+		editors.put(ObservableArtist.class, ArtistEditor.ID);
+		editors.put(ObservableRelease.class, ReleaseEditor.ID);
 	}
 
 	private WorkbenchUtil() { } // static util
@@ -48,13 +48,12 @@ public final class WorkbenchUtil {
 		}
 	}
 
-	public static IEditorPart openEditor(SMDEntity<?> entity, String editorId) {
-		SMDEditorInput input = new SMDEditorInput(entity);
+	public static IEditorPart openEditor(IEditorInput input, String editorId) {
 		try {
 			IWorkbenchPage page = getActivePage();
 			return page.openEditor(input, editorId, true);
 		} catch (PartInitException e) {
-			throw new FatalApplicationException("Failed to open editor: "+editorId+"/"+entity);
+			throw new FatalApplicationException("Failed to open editor: "+editorId+"/"+input);
 		}
 	}
 
@@ -97,44 +96,51 @@ public final class WorkbenchUtil {
 	}
 
 	public static void openDistinct(Object element) {
-		SMDEntity<?> entity = resolveEditableElement(element);
-		String editorId = resolveEditorId(entity);
-		String viewId = resolveViewId(entity);
+		IEditorInput input = resolveEditableElement(element);
+		String editorId = resolveEditorId(input);
+		String viewId = resolveViewId(input);
 		IWorkbenchPart part = null;
 		
 		if (editorId!=null) {
-			part = WorkbenchUtil.openEditor(entity, editorId);
+			part = WorkbenchUtil.openEditor(input, editorId);
 		} else if (viewId!=null) {
-			part = WorkbenchUtil.openView(viewId, entity.getId());
+			part = WorkbenchUtil.openView(viewId, viewId);
 		}
 		if (part!=null) {
 			
 		}
 	}
 
-	private static SMDEntity<?> resolveEditableElement(Object element) {
+	private static IEditorInput resolveEditableElement(Object element) {
 		if (element instanceof Contributor) {
 			Contributor c = (Contributor) element;
-			return c.getArtist();
+			return resolveEditableElement(c.getArtist());
 		}
-		return element instanceof SMDEntity ? (SMDEntity<?>) element : null;
+		if (element instanceof IEditorInput) {
+			return (IEditorInput) element;
+		}
+		if (element instanceof IAdaptable) {
+			IAdaptable a = (IAdaptable) element;
+			return resolveEditableElement(a.getAdapter(IEditorInput.class));
+		}
+		return null;
 	}
 
 	private static String resolveEditorId(Object element) {
 		// TODO this will need to be made much more robust, we cannot depend on the base class
 		// the editor should probably declare an interface that it can handle 
-		return editors.get(element.getClass());
+		return element==null ? null : editors.get(element.getClass());
 	}
 
 	private static String resolveViewId(Object element) {
 		// TODO this will need to be made much more robust, we cannot depend on the base class
 		// the view should probably declare an interface that it can handle 
-		return views.get(element.getClass());
+		return element==null ? null : views.get(element.getClass());
 	}
 
 	public static Object open(ExecutionEvent event) {
 		ISelection selection = HandlerUtil.getCurrentSelection(event);
-		Object[] selected = ViewerUtil.getSelectedEntities(selection);
+		Object[] selected = ViewerUtil.getSelectedObjects(selection);
 		WorkbenchUtil.openAll(selected);
 		return null;
 	}

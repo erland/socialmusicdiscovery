@@ -15,7 +15,7 @@ public class OpenEntityEditor extends AbstractHandler implements IHandler {
 	@Override
 	public Object execute(ExecutionEvent event ) throws ExecutionException {
 		ISelection selection = HandlerUtil.getCurrentSelection(event);
-		Object[] selected = ViewerUtil.getSelectedEntities(selection);
+		Object[] selected = ViewerUtil.getSelectedObjects(selection);
 		WorkbenchUtil.openAll(selected);
 		return null;
 	}

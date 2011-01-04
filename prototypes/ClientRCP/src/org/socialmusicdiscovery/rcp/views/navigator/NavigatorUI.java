@@ -1,13 +1,14 @@
 package org.socialmusicdiscovery.rcp.views.navigator;
 
 
+import org.eclipse.jface.databinding.viewers.ObservableListTreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.socialmusicdiscovery.rcp.content.DataSource;
-import org.socialmusicdiscovery.rcp.views.util.EntityLabelProvider;
+import org.socialmusicdiscovery.rcp.views.util.DefaultLabelProvider;
 
 public class NavigatorUI extends Composite {
 
@@ -19,8 +20,10 @@ public class NavigatorUI extends Composite {
 		
 		treeViewer = new TreeViewer(this, SWT.BORDER);
 		treeViewer.setSorter(new ViewerSorter());
-		treeViewer.setContentProvider(new NavigatorTreeContentProvider());
-		treeViewer.setLabelProvider(new EntityLabelProvider());
+		
+		ObservableListTreeContentProvider contentProvider = new ObservableListTreeContentProvider(new NavigatorListFactory(), new NavigatorStructureAdvisor());
+		treeViewer.setContentProvider(contentProvider);
+		treeViewer.setLabelProvider(new DefaultLabelProvider());
 
 	}
 

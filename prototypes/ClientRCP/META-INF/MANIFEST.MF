@@ -27,4 +27,5 @@ Bundle-ClassPath: .,
  lib/datechooser-1.0.0.jar,
  lib/formattedtext-1.0.0.jar,
  lib/swt-grouplayout.jar,
- lib/smd-server-1.0-SNAPSHOT.jar
+ lib/smd-server-1.0-SNAPSHOT.jar,
+ lib/commons-beanutils-1.8.3.jar

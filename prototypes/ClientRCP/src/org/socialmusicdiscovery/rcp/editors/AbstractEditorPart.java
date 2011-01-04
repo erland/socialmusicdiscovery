@@ -9,29 +9,34 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
+import org.socialmusicdiscovery.rcp.content.AbstractObservableEntity;
 import org.socialmusicdiscovery.rcp.util.TextUtil;
 import org.socialmusicdiscovery.rcp.util.ViewerUtil;
 import org.socialmusicdiscovery.rcp.views.util.AbstractComposite;
-import org.socialmusicdiscovery.rcp.views.util.EntityLabelProvider;
-import org.socialmusicdiscovery.server.business.model.SMDEntity;
 
-public abstract class AbstractEditorPart<T extends SMDEntity<?>, U extends AbstractComposite<T>> extends EditorPart {
+public abstract class AbstractEditorPart<T extends AbstractObservableEntity, U extends AbstractComposite<T>> extends EditorPart {
 
-	private T entity;
 	private U ui;
 
 	public AbstractEditorPart() {
 	}
 
 	public void createPartControl(Composite parent, U ui) {
-		setPartName(getShortName(entity));
 		this.ui = ui;
-		ui.setEntity(getEntity());
+		T model = resolveModel();
+		model.inflate();
+		ui.setModel(model);
 		ui.setPart(this);
+		setPartName(getShortName(model));
 	}
 
-	protected String getShortName(T entity) {
-		return TextUtil.getShortText(EntityLabelProvider.getText(entity));
+	@SuppressWarnings("unchecked")
+	private T resolveModel() {
+		return (T) getEditorInput();
+	}
+
+	protected String getShortName(T model) {
+		return TextUtil.getShortText(model.getName());
 	}
 
 	@Override
@@ -64,13 +69,10 @@ public abstract class AbstractEditorPart<T extends SMDEntity<?>, U extends Abstr
 		// Do the Save As operation
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
 		setSite(site);
 		setInput(input);
-		SMDEditorInput smdInput = (SMDEditorInput) input; 
-		setEntity((T) smdInput.getEntity());
 	}
 
 	@Override
@@ -81,14 +83,6 @@ public abstract class AbstractEditorPart<T extends SMDEntity<?>, U extends Abstr
 	@Override
 	public boolean isSaveAsAllowed() {
 		return false;
-	}
-
-	protected void setEntity(T entity) {
-		this.entity = entity;
-	}
-
-	protected T getEntity() {
-		return entity;
 	}
 
 	protected U getUI() {

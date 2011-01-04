@@ -1,9 +1,7 @@
 package org.socialmusicdiscovery.rcp.util;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -26,7 +24,6 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.services.IEvaluationService;
-import org.socialmusicdiscovery.server.business.model.SMDEntity;
 
 public class ViewerUtil {
 
@@ -132,29 +129,8 @@ public class ViewerUtil {
 		provider.addSelectionChangedListener(new MyControlEnabler(requiredType, items));
 	}
 
-	public static SMDEntity<?>[] getSelectedEntities(ISelectionProvider viewer) {
-		IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
-		return getSelectedEntities(selection);
-	}
-
-	public static SMDEntity<?>[] getSelectedEntities(ISelection selection) {
-		if (selection instanceof IStructuredSelection) {
-			return getSelectedEntities((IStructuredSelection) selection);
-		}
-		return new SMDEntity<?>[0];
-	}
-	
-	public static SMDEntity<?>[] getSelectedEntities(IStructuredSelection selection) {
-		List<SMDEntity<?>> result = new ArrayList<SMDEntity<?>>();
-		if (selection!=null) {
-			for (Object selected : selection.toList()) {
-				if (selected instanceof SMDEntity<?>) {
-					SMDEntity<?> entity = (SMDEntity<?>) selected;
-					result.add(entity);
-				}
-			}
-		}
-		return (SMDEntity<?>[]) result.toArray(new SMDEntity<?>[result.size()]);
+	public static Object[] getSelectedObjects(ISelection selection) {
+		return selection instanceof IStructuredSelection ? ((IStructuredSelection) selection).toArray() : new Object[0];
 	}
 	
 	public static void hookContextMenu(IWorkbenchPart part, Viewer viewer) {
@@ -172,15 +148,16 @@ public class ViewerUtil {
 	}
 
 	public static void handleOpen(OpenEvent event) {
-		SMDEntity<?> entity = getSelectedEntity(event);
+		Object entity = getDistinctSelectedElement(event);
 		WorkbenchUtil.openDistinct(entity);
 	}
 
-	@SuppressWarnings("rawtypes")
-	private static SMDEntity getSelectedEntity(OpenEvent event) {
+	private static Object getDistinctSelectedElement(OpenEvent event) {
 		StructuredSelection selection = (StructuredSelection) event.getSelection();
-		Object selected = selection.getFirstElement();
-		return selected instanceof SMDEntity ? (SMDEntity) selected : null;
+		if (selection.size()>1) {
+			throw new IllegalStateException("More than ine selected element: "+selection.toList());
+		}
+		return selection.getFirstElement();
 	}
 	
 }

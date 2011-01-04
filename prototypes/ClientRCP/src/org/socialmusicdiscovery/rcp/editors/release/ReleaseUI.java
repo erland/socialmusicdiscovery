@@ -1,17 +1,14 @@
 package org.socialmusicdiscovery.rcp.editors.release;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.ws.rs.core.MediaType;
-
 import org.eclipse.core.databinding.DataBindingContext;
-import org.eclipse.core.databinding.beans.PojoObservables;
+import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -35,17 +32,13 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
+import org.socialmusicdiscovery.rcp.content.ObservableRelease;
 import org.socialmusicdiscovery.rcp.views.util.AbstractComposite;
-import org.socialmusicdiscovery.server.business.model.SMDEntity;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
-import org.socialmusicdiscovery.server.business.model.core.Medium;
 import org.socialmusicdiscovery.server.business.model.core.Recording;
-import org.socialmusicdiscovery.server.business.model.core.Release;
 import org.socialmusicdiscovery.server.business.model.core.Track;
 
-import com.sun.jersey.api.client.Client;
-
-public class ReleaseUI extends AbstractComposite<Release> {
+public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 
 	private static final String CONTRIBUTOR_TYPE_CONDUCTOR = "conductor";
 	private static final String CONTRIBUTOR_TYPE_COMPOSER = "composer";
@@ -71,27 +64,27 @@ public class ReleaseUI extends AbstractComposite<Release> {
 	private class MyTrackMediumNumberLabelProvider extends MyAbstractTrackLabelProvider  {
 		@Override
 		protected Object getCellValue(Track track) {
-			List<Medium> media = release.getMediums();
-			int i=0;
-			for (Medium medium : media) {
-				i++;
-				List<Track> tracks = medium.getTracks();
-				if (contains(tracks, track)) {
-					return Integer.valueOf(i);
-				}
-			}
+//			List<Medium> media = release.getMediums();
+//			int i=0;
+//			for (Medium medium : media) {
+//				i++;
+//				List<Track> tracks = medium.getTracks();
+//				if (contains(tracks, track)) {
+//					return Integer.valueOf(i);
+//				}
+//			}
 			return null;
 		}
 
-		private boolean contains(Collection<? extends SMDEntity<?>> members, SMDEntity<?> prospect) {
-			// THIS DOES NOT WORK - we really want the same instances ...
-			for (SMDEntity<?> e : members) {
-				if (e.getReference().equals(prospect.getReference())) {
-					return true;
-				}
-			}
-			return false;
-		}
+//		private boolean contains(Collection<? extends SMDIdentity> members, SMDIdentity prospect) {
+//			// THIS DOES NOT WORK - we really want the same instances ...
+//			for (SMDIdentity e : members) {
+//				if (e.getReference().equals(prospect.getReference())) {
+//					return true;
+//				}
+//			}
+//			return false;
+//		}
 
 	}
 
@@ -144,9 +137,7 @@ public class ReleaseUI extends AbstractComposite<Release> {
 	    }
 	}
 
-	private DataBindingContext m_bindingContext;
 	private Text textName;
-	private Release release;
 	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
 	protected ScrolledForm scrldfrmRelease;
 	protected Text text;
@@ -324,28 +315,16 @@ public class ReleaseUI extends AbstractComposite<Release> {
 	}
 
 	@Override
-	public void setEntity(Release entity) {
-		reset();
-		release = getRelease(entity);
-		init();
-	}
-
-	private void init() {
-		gridViewerTracks.setInput(release.getTracks());
+	public void afterSetModel(ObservableRelease release) {
+		gridViewerTracks.setInput(getModel().getTracks());
 		colMediumNbr.pack();
 		colTrackNumber.pack();
 		setAlbumDataInput();
-		m_bindingContext = initDataBindings();
 	}
 
-	private void reset() {
-		if (m_bindingContext!=null) {
-			m_bindingContext.dispose();
-		}
-	}
 
 	private void setAlbumDataInput() {
-		Map<String, List<Contributor>> map = getContributorMap(release.getContributors());
+		Map<String, List<Contributor>> map = getContributorMap(getModel().getContributors());
 		getPerformersPanel().getGridViewer().setInput(map.get(CONTRIBUTOR_TYPE_PERFORMER));
 		getComposersPanel().getGridViewer().setInput(map.get(CONTRIBUTOR_TYPE_COMPOSER));
 		getConductorsPanel().getGridViewer().setInput(map.get(CONTRIBUTOR_TYPE_CONDUCTOR));
@@ -362,25 +341,6 @@ public class ReleaseUI extends AbstractComposite<Release> {
 	    return contributors;
 	}
 
-	private Release getRelease(Release entity) {
-	    Release release = Client.create().resource("http://localhost:9998/releases/" + entity.getId()).accept(MediaType.APPLICATION_JSON).get(Release.class);
-		return release;
-	}
-
-	@Override
-	public Release getEntity() {
-		return release;
-	}
-	protected DataBindingContext initDataBindings() {
-		DataBindingContext bindingContext = new DataBindingContext();
-		//
-		IObservableValue textNameObserveTextObserveWidget = SWTObservables.observeText(textName, SWT.Modify);
-		IObservableValue artistgetNameEmptyObserveValue = PojoObservables.observeValue(release, "name");
-		bindingContext.bindValue(textNameObserveTextObserveWidget, artistgetNameEmptyObserveValue, null, null);
-		//
-		return bindingContext;
-	}
-
 	private static boolean isEmpty(String s) {
 		return s==null || s.trim().length()<1;
 	}
@@ -395,5 +355,28 @@ public class ReleaseUI extends AbstractComposite<Release> {
 	}
 	public GridTableViewer getGridViewerTracks() {
 		return gridViewerTracks;
+	}
+
+	/**
+	 * @return {@link ObservableRelease}
+	 * @see #getModel()
+	 */
+	public ObservableRelease getRelease() {
+		return getModel();
+	}
+	
+	@Override
+	protected DataBindingContext initDataBindings() {
+		DataBindingContext bindingContext = new DataBindingContext();
+		//
+		IObservableValue textNameObserveTextObserveWidget = SWTObservables.observeText(textName, SWT.Modify);
+		IObservableValue artistgetNameEmptyObserveValue = BeansObservables.observeValue(getModel(), "name");
+		bindingContext.bindValue(textNameObserveTextObserveWidget, artistgetNameEmptyObserveValue, null, null);
+		//
+		IObservableValue textNameObserveTooltipTextObserveWidget = SWTObservables.observeTooltipText(textName);
+		IObservableValue getModelToolTipTextObserveValue = BeansObservables.observeValue(getModel(), "toolTipText");
+		bindingContext.bindValue(textNameObserveTooltipTextObserveWidget, getModelToolTipTextObserveValue, null, null);
+		//
+		return bindingContext;
 	}
 }
