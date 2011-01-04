@@ -1,7 +1,7 @@
 package org.socialmusicdiscovery.rcp.editors.artist;
 
 import org.eclipse.core.databinding.DataBindingContext;
-import org.eclipse.core.databinding.beans.PojoObservables;
+import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
@@ -19,13 +19,11 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
+import org.socialmusicdiscovery.rcp.content.ObservableArtist;
 import org.socialmusicdiscovery.rcp.views.util.AbstractComposite;
-import org.socialmusicdiscovery.server.business.model.core.Artist;
 
-public class ArtistUI extends AbstractComposite<Artist> {
-	private DataBindingContext m_bindingContext;
+public class ArtistUI extends AbstractComposite<ObservableArtist> {
 	private Text textName;
-	private Artist artist;
 	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
 	protected ScrolledForm formArtist;
 	protected Label lblName;
@@ -101,25 +99,23 @@ public class ArtistUI extends AbstractComposite<Artist> {
 		// Disable the check that prevents subclassing of SWT components
 	}
 
-	@Override
-	public void setEntity(Artist entity) {
-		if (m_bindingContext!=null) {
-			m_bindingContext.dispose();
-		}
-		artist = entity;
-		m_bindingContext = initDataBindings();
-	}
-
-	@Override
-	public Artist getEntity() {
-		return artist;
+	/**
+	 * @return {@link ObservableArtist}
+	 * @see #getModel()
+	 */
+	public ObservableArtist getArtist() {
+		return getModel();
 	}
 	protected DataBindingContext initDataBindings() {
 		DataBindingContext bindingContext = new DataBindingContext();
 		//
 		IObservableValue textNameObserveTextObserveWidget = SWTObservables.observeText(textName, SWT.Modify);
-		IObservableValue artistgetNameEmptyObserveValue = PojoObservables.observeValue(artist, "name");
+		IObservableValue artistgetNameEmptyObserveValue = BeansObservables.observeValue(getArtist(), "name");
 		bindingContext.bindValue(textNameObserveTextObserveWidget, artistgetNameEmptyObserveValue, null, null);
+		//
+		IObservableValue textNameObserveTooltipTextObserveWidget = SWTObservables.observeTooltipText(textName);
+		IObservableValue getArtistPersonObserveValue = BeansObservables.observeValue(getArtist(), "person");
+		bindingContext.bindValue(textNameObserveTooltipTextObserveWidget, getArtistPersonObserveValue, null, null);
 		//
 		return bindingContext;
 	}

@@ -1,47 +1,37 @@
 package org.socialmusicdiscovery.rcp.event;
 
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 
+/**
+ * An instance that can be observed by a {@link PropertyChangeListener}.
+ * This is a vital but not crucial enabler for the JFace databinding framework, 
+ * but is also useful for other purposes.   
+ *  
+ * @author Peer Törngren
+ *
+ */
 public interface Observable {
 
-	public abstract void addPropertyChangeListener(
-			PropertyChangeListener listener);
+	/** @see PropertyChangeSupport#addPropertyChangeListener(PropertyChangeListener) */
+	void addPropertyChangeListener(PropertyChangeListener listener);
 
-	public abstract void addPropertyChangeListener(String propertyName,
-			PropertyChangeListener listener);
+	/** @see PropertyChangeSupport#addPropertyChangeListener(String, PropertyChangeListener) */
+	void addPropertyChangeListener(String propertyName, PropertyChangeListener listener);
 
-	public abstract void fireIndexedPropertyChange(String propertyName,
-			int index, boolean oldValue, boolean newValue);
+	/** @see PropertyChangeSupport#getPropertyChangeListeners() */
+	PropertyChangeListener[] getPropertyChangeListeners();
 
-	public abstract void fireIndexedPropertyChange(String propertyName,
-			int index, int oldValue, int newValue);
+	/** @see PropertyChangeSupport#getPropertyChangeListeners(String) */
+	PropertyChangeListener[] getPropertyChangeListeners(String propertyName);
 
-	public abstract void fireIndexedPropertyChange(String propertyName,
-			int index, Object oldValue, Object newValue);
+	/** @see PropertyChangeSupport#hasListeners(String) */
+	boolean hasListeners(String propertyName);
 
-	public abstract void firePropertyChange(PropertyChangeEvent evt);
+	/** @see PropertyChangeSupport#removePropertyChangeListener(PropertyChangeListener) */
+	void removePropertyChangeListener(PropertyChangeListener listener);
 
-	public abstract void firePropertyChange(String propertyName,
-			boolean oldValue, boolean newValue);
-
-	public abstract void firePropertyChange(String propertyName, int oldValue,
-			int newValue);
-
-	public abstract void firePropertyChange(String propertyName,
-			Object oldValue, Object newValue);
-
-	public abstract PropertyChangeListener[] getPropertyChangeListeners();
-
-	public abstract PropertyChangeListener[] getPropertyChangeListeners(
-			String propertyName);
-
-	public abstract boolean hasListeners(String propertyName);
-
-	public abstract void removePropertyChangeListener(
-			PropertyChangeListener listener);
-
-	public abstract void removePropertyChangeListener(String propertyName,
-			PropertyChangeListener listener);
+	/** @see PropertyChangeSupport#removePropertyChangeListener(String, PropertyChangeListener) */
+	void removePropertyChangeListener(String propertyName, PropertyChangeListener listener);
 
 }

@@ -2,10 +2,10 @@ package org.socialmusicdiscovery.rcp.editors.release;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.socialmusicdiscovery.rcp.content.ObservableRelease;
 import org.socialmusicdiscovery.rcp.editors.AbstractEditorPart;
-import org.socialmusicdiscovery.server.business.model.core.Release;
 
-public class ReleaseEditor extends AbstractEditorPart<Release, ReleaseUI> {
+public class ReleaseEditor extends AbstractEditorPart<ObservableRelease, ReleaseUI> {
 
 	public static final String ID = ReleaseEditor.class.getName();
 

@@ -240,7 +240,7 @@
           <enabledWhen>
                 <iterate>
                   <instanceof
-                        value="org.socialmusicdiscovery.server.business.model.SMDEntity">
+                        value="org.socialmusicdiscovery.rcp.content.ObservableEntity">
                   </instanceof>
                </iterate>
          </enabledWhen>
