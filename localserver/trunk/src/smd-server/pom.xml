@@ -125,6 +125,12 @@
 
         </dependency>
 
+        <!-- ANTLR, required for title format parsing -->
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr-runtime</artifactId>
+            <version>3.3</version>
+        </dependency>
     </dependencies>
 
     <pluginRepositories>
@@ -315,6 +321,24 @@
                 </configuration>
             </plugin>
 
+            <plugin>
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr3-maven-plugin</artifactId>
+                <version>3.3</version>
+
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>antlr</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <includes>
+                        <include>org/socialmusicdiscovery/server/support/format/antlr/**</include>
+                    </includes>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <profiles>

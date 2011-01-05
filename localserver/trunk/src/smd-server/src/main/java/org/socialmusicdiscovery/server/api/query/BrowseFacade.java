@@ -127,9 +127,9 @@ public class BrowseFacade {
         while (itemIterator.hasNext()) {
             ResultItem resultItem = itemIterator.next();
             if (resultItem.getChildItems() != null) {
-                genericResultItems.add(new Result.ResultItem(resultItem.getItem(), resultItem.getType(), resultItem.getId(), new HashMap<String, Long>(resultItem.getChildItems())));
+                genericResultItems.add(new Result.ResultItem(resultItem.getItem(), resultItem.getType(), resultItem.getId(), resultItem.getName(), new HashMap<String, Long>(resultItem.getChildItems())));
             } else {
-                genericResultItems.add(new Result.ResultItem(resultItem.getItem(), resultItem.getType(), resultItem.getId()));
+                genericResultItems.add(new Result.ResultItem(resultItem.getItem(), resultItem.getType(), resultItem.getId(), resultItem.getName()));
             }
         }
 
