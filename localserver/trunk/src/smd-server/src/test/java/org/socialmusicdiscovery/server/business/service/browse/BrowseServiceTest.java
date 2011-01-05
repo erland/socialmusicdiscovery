@@ -1,4 +1,4 @@
-package org.socialmusicdiscovery.server.service.browse;
+package org.socialmusicdiscovery.server.business.service.browse;
 
 import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
@@ -7,7 +7,6 @@ import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity
 import org.socialmusicdiscovery.server.business.model.classification.Classification;
 import org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity;
 import org.socialmusicdiscovery.server.business.model.core.*;
-import org.socialmusicdiscovery.server.business.service.browse.*;
 import org.socialmusicdiscovery.test.BaseTestCase;
 import org.testng.annotations.*;
 

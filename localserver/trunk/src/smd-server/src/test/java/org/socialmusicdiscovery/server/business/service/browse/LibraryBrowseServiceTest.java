@@ -1,10 +1,7 @@
-package org.socialmusicdiscovery.server.service.browse;
+package org.socialmusicdiscovery.server.business.service.browse;
 
 import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
 import org.socialmusicdiscovery.server.business.logic.SearchRelationPostProcessor;
-import org.socialmusicdiscovery.server.business.service.browse.LibraryBrowseService;
-import org.socialmusicdiscovery.server.business.service.browse.Result;
-import org.socialmusicdiscovery.server.business.service.browse.ResultItem;
 import org.socialmusicdiscovery.test.BaseTestCase;
 import org.testng.annotations.*;
 
