@@ -1,9 +1,6 @@
 package org.socialmusicdiscovery.server.business.logic;
 
 import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
-import org.socialmusicdiscovery.server.business.model.SMDIdentity;
-import org.socialmusicdiscovery.server.business.model.core.Track;
-import org.socialmusicdiscovery.server.business.model.core.TrackEntity;
 import org.socialmusicdiscovery.server.business.service.browse.LibraryBrowseService;
 import org.socialmusicdiscovery.server.business.service.browse.Result;
 import org.socialmusicdiscovery.server.business.service.browse.ResultItem;
@@ -59,6 +56,12 @@ public class LibraryBrowseServiceTest extends BaseTestCase {
     public void tearDownMethod(Method m) {
         if (em.getTransaction().isActive()) {
             em.getTransaction().rollback();
+        }
+        try {
+            // Stupid delay to make IntelliJ IDEA flush System.out to the console
+            if(logging) Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            // Do nothing
         }
     }
 
@@ -118,27 +121,7 @@ public class LibraryBrowseServiceTest extends BaseTestCase {
             assert noOfChilds==childItems.size();
         }
         for (ResultItem childItem : childItems) {
-            if(childItem.getItem() instanceof TrackEntity) {
-                Track track = (Track) childItem.getItem();
-                if(track.getMedium() != null) {
-                    if(track.getMedium().getName()!=null) {
-                        if(logging) System.out.println(prefix+track.getMedium().getName()+"-"+track.getNumber()+" "+track.getRecording().getWork().getName()+getChildString(childItem.getChildItems()));
-                    }else {
-                        if(logging) System.out.println(prefix+track.getMedium().getNumber()+"-"+track.getNumber()+" "+track.getRecording().getWork().getName()+getChildString(childItem.getChildItems()));
-                    }
-                }else {
-                    if(logging) System.out.println(prefix+track.getNumber()+" "+track.getRecording().getWork().getName()+getChildString(childItem.getChildItems()));
-                }
-            }else if(childItem.getItem() instanceof SMDIdentity) {
-                try {
-                    Method m = childItem.getItem().getClass().getMethod("getName");
-                    if(logging) System.out.println(prefix + m.invoke(childItem.getItem())+getChildString(childItem.getChildItems()));
-                } catch (Exception e) {
-                    if(logging) System.out.println(prefix+childItem.getItem().toString()+getChildString(childItem.getChildItems()));
-                }
-            }else {
-                if(logging) System.out.println(prefix+childItem.getItem().toString()+getChildString(childItem.getChildItems()));
-            }
+            if(logging) System.out.println(prefix+childItem.getName());
             if(childs) {
                 assert childItem.getChildItems()!=null;
                 if(childItem.getChildItems().size()>0) {
@@ -149,6 +132,7 @@ public class LibraryBrowseServiceTest extends BaseTestCase {
                 }
             }else {
                 assert childItem.getChildItems()==null;
+                queryAndPrintMenuLevel(id,prefix+"  ",childItem, childs, 0L);
             }
         }
     }
