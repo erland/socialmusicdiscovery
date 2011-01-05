@@ -1,9 +1,9 @@
 package org.socialmusicdiscovery.server.api.management.model.core;
 
 import org.socialmusicdiscovery.server.api.management.model.AbstractCRUDFacade;
-import org.socialmusicdiscovery.server.business.logic.DetachHelper;
 import org.socialmusicdiscovery.server.business.model.core.RecordingEntity;
 import org.socialmusicdiscovery.server.business.repository.core.RecordingRepository;
+import org.socialmusicdiscovery.server.support.copy.CopyHelper;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -26,11 +26,11 @@ public class RecordingFacade extends AbstractCRUDFacade<RecordingEntity, Recordi
     @Produces(MediaType.APPLICATION_JSON)
     public Collection<RecordingEntity> search(@QueryParam("name") String name, @QueryParam("nameContains") String nameContains) {
         if (name != null) {
-            return DetachHelper.createDetachedCopy(repository.findByNameWithRelations(name, Arrays.asList("reference"), null));
+            return CopyHelper.createDetachedCopy(repository.findByNameWithRelations(name, Arrays.asList("reference"), null));
         } else if (nameContains != null) {
-            return DetachHelper.createDetachedCopy(repository.findByPartialNameWithRelations(nameContains, Arrays.asList("reference"), null));
+            return CopyHelper.createDetachedCopy(repository.findByPartialNameWithRelations(nameContains, Arrays.asList("reference"), null));
         } else {
-            return DetachHelper.createDetachedCopy(repository.findAllWithRelations(Arrays.asList("reference"), null));
+            return CopyHelper.createDetachedCopy(repository.findAllWithRelations(Arrays.asList("reference"), null));
         }
     }
 

@@ -1,12 +1,12 @@
 package org.socialmusicdiscovery.server.api.query;
 
 import com.google.inject.Inject;
-import org.socialmusicdiscovery.server.business.logic.DetachHelper;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
 import org.socialmusicdiscovery.server.business.service.browse.BrowseService;
 import org.socialmusicdiscovery.server.business.service.browse.LibraryBrowseService;
 import org.socialmusicdiscovery.server.business.service.browse.ObjectTypeBrowseService;
 import org.socialmusicdiscovery.server.business.service.browse.ResultItem;
+import org.socialmusicdiscovery.server.support.copy.CopyHelper;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -48,7 +48,7 @@ public class BrowseFacade {
         }
 
         BrowseService browseService = InjectHelper.instanceWithName(BrowseService.class, object);
-        org.socialmusicdiscovery.server.business.service.browse.Result result = DetachHelper.createDetachedCopy(browseService.findChildren(criteriaList, new ArrayList<String>(), offset, size, childs));
+        org.socialmusicdiscovery.server.business.service.browse.Result result = CopyHelper.createDetachedCopy(browseService.findChildren(criteriaList, new ArrayList<String>(), offset, size, childs));
 
         Collection<Result.ResultItem> genericResultItems = new ArrayList<Result.ResultItem>(result.getItems().size());
         Iterator<ResultItem> itemIterator = result.getItems().iterator();
@@ -120,7 +120,7 @@ public class BrowseFacade {
         }
 
         LibraryBrowseService browseService = new LibraryBrowseService();
-        org.socialmusicdiscovery.server.business.service.browse.Result result = DetachHelper.createDetachedCopy(browseService.findChildren(objectId, offset, size, childs));
+        org.socialmusicdiscovery.server.business.service.browse.Result result = CopyHelper.createDetachedCopy(browseService.findChildren(objectId, offset, size, childs));
 
         Collection<Result.ResultItem> genericResultItems = new ArrayList<Result.ResultItem>(result.getItems().size());
         Iterator<ResultItem> itemIterator = result.getItems().iterator();

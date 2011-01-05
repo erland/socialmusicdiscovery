@@ -1,4 +1,4 @@
-package org.socialmusicdiscovery.server.business.logic;
+package org.socialmusicdiscovery.server.support.copy;
 
 import org.hibernate.collection.PersistentCollection;
 import org.hibernate.collection.PersistentMap;
@@ -7,7 +7,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.*;
 
-public class DetachHelper {
+public class CopyHelper {
     private static <T> Collection<T> createDetachedCollectionCopy(Collection<T> toObjects, Collection<T> fromObjects, Map<Object, Object> cache, Class onlyAnnotatedWith) {
         if (fromObjects instanceof PersistentCollection) {
             if (!((PersistentCollection) fromObjects).wasInitialized()) {
