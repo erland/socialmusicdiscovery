@@ -61,7 +61,7 @@ public class BaseTestCase {
     @Inject
     protected SMDIdentityReferenceRepository smdIdentityReferenceRepository;
 
-    protected final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy");
+    protected static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy");
 
     private static boolean initialized = false;
     private DatabaseProvider provider = null;
