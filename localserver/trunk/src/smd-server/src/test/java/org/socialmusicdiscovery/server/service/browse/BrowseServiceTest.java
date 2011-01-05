@@ -1,6 +1,8 @@
-package org.socialmusicdiscovery.server.business.logic;
+package org.socialmusicdiscovery.server.service.browse;
 
 import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
+import org.socialmusicdiscovery.server.business.logic.InjectHelper;
+import org.socialmusicdiscovery.server.business.logic.SearchRelationPostProcessor;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
 import org.socialmusicdiscovery.server.business.model.classification.Classification;
 import org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity;
@@ -73,7 +75,7 @@ public class BrowseServiceTest extends BaseTestCase {
                 serviceType = type.substring(0,type.indexOf("."));
                 criterias.add(type);
             }
-            BrowseService childBrowseService = InjectHelper.instanceWithName(BrowseService.class,serviceType);
+            BrowseService childBrowseService = InjectHelper.instanceWithName(BrowseService.class, serviceType);
             Result result = childBrowseService.findChildren(criterias,new ArrayList<String>(),null,null,false);
             assert result.getItems().size() == types.get(type);
             assert result.getCount()==result.getItems().size();

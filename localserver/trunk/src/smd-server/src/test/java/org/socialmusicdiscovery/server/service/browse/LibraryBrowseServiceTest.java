@@ -1,6 +1,7 @@
-package org.socialmusicdiscovery.server.business.logic;
+package org.socialmusicdiscovery.server.service.browse;
 
 import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
+import org.socialmusicdiscovery.server.business.logic.SearchRelationPostProcessor;
 import org.socialmusicdiscovery.server.business.service.browse.LibraryBrowseService;
 import org.socialmusicdiscovery.server.business.service.browse.Result;
 import org.socialmusicdiscovery.server.business.service.browse.ResultItem;
