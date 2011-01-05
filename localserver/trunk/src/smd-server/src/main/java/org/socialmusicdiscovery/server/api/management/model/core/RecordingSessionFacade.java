@@ -1,9 +1,9 @@
 package org.socialmusicdiscovery.server.api.management.model.core;
 
 import org.socialmusicdiscovery.server.api.management.model.AbstractCRUDFacade;
-import org.socialmusicdiscovery.server.business.logic.DetachHelper;
 import org.socialmusicdiscovery.server.business.model.core.RecordingSessionEntity;
 import org.socialmusicdiscovery.server.business.repository.core.RecordingSessionRepository;
+import org.socialmusicdiscovery.server.support.copy.CopyHelper;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -23,7 +23,7 @@ public class RecordingSessionFacade extends AbstractCRUDFacade<RecordingSessionE
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Collection<RecordingSessionEntity> search() {
-        return DetachHelper.createDetachedCopy(repository.findAllWithRelations(Arrays.asList("reference"), null));
+        return CopyHelper.createDetachedCopy(repository.findAllWithRelations(Arrays.asList("reference"), null));
     }
 
     /**

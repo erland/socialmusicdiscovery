@@ -1,9 +1,9 @@
 package org.socialmusicdiscovery.server.api.management.model.core;
 
 import org.socialmusicdiscovery.server.api.management.model.AbstractCRUDFacade;
-import org.socialmusicdiscovery.server.business.logic.DetachHelper;
 import org.socialmusicdiscovery.server.business.model.core.ArtistEntity;
 import org.socialmusicdiscovery.server.business.repository.core.ArtistRepository;
+import org.socialmusicdiscovery.server.support.copy.CopyHelper;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -28,15 +28,15 @@ public class ArtistFacade extends AbstractCRUDFacade<ArtistEntity, ArtistReposit
     @Produces(MediaType.APPLICATION_JSON)
     public Collection<ArtistEntity> search(@QueryParam("name") String name, @QueryParam("nameContains") String nameContains, @QueryParam("release") String release, @QueryParam("work") String work) {
         if (name != null) {
-            return DetachHelper.createDetachedCopy(repository.findByNameWithRelations(name, Arrays.asList("reference"), null));
+            return CopyHelper.createDetachedCopy(repository.findByNameWithRelations(name, Arrays.asList("reference"), null));
         } else if (nameContains != null) {
-            return DetachHelper.createDetachedCopy(repository.findByPartialNameWithRelations(nameContains, Arrays.asList("reference"), null));
+            return CopyHelper.createDetachedCopy(repository.findByPartialNameWithRelations(nameContains, Arrays.asList("reference"), null));
         } else if (release != null) {
-            return DetachHelper.createDetachedCopy(repository.findByReleaseWithRelations(release, Arrays.asList("reference"), null));
+            return CopyHelper.createDetachedCopy(repository.findByReleaseWithRelations(release, Arrays.asList("reference"), null));
         } else if (work != null) {
-            return DetachHelper.createDetachedCopy(repository.findByWorkWithRelations(work, Arrays.asList("reference"), null));
+            return CopyHelper.createDetachedCopy(repository.findByWorkWithRelations(work, Arrays.asList("reference"), null));
         } else {
-            return DetachHelper.createDetachedCopy(repository.findAllWithRelations(Arrays.asList("reference"), null));
+            return CopyHelper.createDetachedCopy(repository.findAllWithRelations(Arrays.asList("reference"), null));
         }
     }
 

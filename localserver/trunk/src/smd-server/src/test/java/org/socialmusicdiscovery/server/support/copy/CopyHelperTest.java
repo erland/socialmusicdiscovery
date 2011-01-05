@@ -1,4 +1,4 @@
-package org.socialmusicdiscovery.server.business.logic;
+package org.socialmusicdiscovery.server.support.copy;
 
 import com.google.gson.annotations.Expose;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -10,7 +10,7 @@ import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.util.*;
 
-public class DetachHelperTest  extends BaseTestCase {
+public class CopyHelperTest extends BaseTestCase {
     @BeforeTest
     public void setUp() {
         super.setUp();
@@ -264,7 +264,7 @@ public class DetachHelperTest  extends BaseTestCase {
     public void testClone() {
         Various various1 = new Various();
         various1.init(2);
-        Various various2 = DetachHelper.createDetachedCopy(various1);
+        Various various2 = CopyHelper.createDetachedCopy(various1);
         assert various1.equals(various2);
     }
 
@@ -272,7 +272,7 @@ public class DetachHelperTest  extends BaseTestCase {
     public void testCloneExposed() {
         Various various1 = new Various();
         various1.init(2);
-        Various various2 = DetachHelper.createDetachedCopy(various1,Expose.class);
+        Various various2 = CopyHelper.createDetachedCopy(various1, Expose.class);
         assert !various1.equals(various2);
 
         // Non exposed attribute should be zero
@@ -302,7 +302,7 @@ public class DetachHelperTest  extends BaseTestCase {
         Various newObject = new Various();
         newObject.init(2);
         Various oldlObject = new Various();
-        Various updatedObject = DetachHelper.mergeInto(oldlObject, newObject);
+        Various updatedObject = CopyHelper.mergeInto(oldlObject, newObject);
         assert oldlObject==updatedObject;
         assert newObject.equals(updatedObject);
     }
@@ -331,7 +331,7 @@ public class DetachHelperTest  extends BaseTestCase {
         List<Various> oldExposedList = oldObject.list;
         List<Various> oldClonedExposedList = new ArrayList<Various>(oldObject.list);
 
-        Various updatedObject = DetachHelper.mergeInto(oldObject,newObject,Expose.class);
+        Various updatedObject = CopyHelper.mergeInto(oldObject, newObject, Expose.class);
         // Still same instance
         assert oldObject==updatedObject;
         // Still differs compared to new object since not all attributes has been exposed
@@ -369,7 +369,7 @@ public class DetachHelperTest  extends BaseTestCase {
         Various oldObject = new Various();
         oldObject.init(3);
         assert !newObject.equals(oldObject);
-        Various various3 = DetachHelper.mergeInto(oldObject, newObject);
+        Various various3 = CopyHelper.mergeInto(oldObject, newObject);
         assert oldObject==various3;
         assert newObject.equals(oldObject);
 
@@ -378,7 +378,7 @@ public class DetachHelperTest  extends BaseTestCase {
         oldObject = new Various();
         oldObject.init(1);
         assert !newObject.equals(oldObject);
-        various3 = DetachHelper.mergeInto(oldObject, newObject);
+        various3 = CopyHelper.mergeInto(oldObject, newObject);
         assert oldObject==various3;
         assert newObject.equals(oldObject);
 
@@ -387,7 +387,7 @@ public class DetachHelperTest  extends BaseTestCase {
         oldObject = new Various();
         oldObject.init(2,2);
         assert !newObject.equals(oldObject);
-        various3 = DetachHelper.mergeInto(oldObject, newObject);
+        various3 = CopyHelper.mergeInto(oldObject, newObject);
         assert oldObject==various3;
         assert newObject.equals(oldObject);
     }
