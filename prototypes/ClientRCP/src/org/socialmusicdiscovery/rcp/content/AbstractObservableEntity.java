@@ -29,6 +29,8 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 
 	@Expose
 	private String name;
+
+	private boolean isInflated = false;
 	
 	public boolean isDirty() {
 		throw new NotYetImplementedException();
@@ -55,17 +57,21 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 	 * </p>
 	 */
 	public void inflate() {
-		// FIXME - cannot open editor from popup menu since no root is set on secondary items
-		// cannot depend on "root" being set, need to look up root
+		if (isInflated) {
+			return;
+		}
 		DataSource dataSource = Activator.getDefault().getDataSource();
 		Root root = dataSource.resolveRoot(this);
 		SMDIdentity inflated = root.find(getId());
 		try {
-			// Only copy properties declared on interface or by @Expose annotation
+			// TODO Only copy properties declared on interface or by @Expose annotation?
+			// TODO do not create new instances, us cache to re-use already loaded instances? 
+			// See org.socialmusicdiscovery.rcp.content.DataSource.Root.find(String)
 			PropertyUtils.copyProperties(this, inflated);
 		} catch (Exception e) {
 			throw new FatalApplicationException("Failed to inflate instance: "+this, e);  //$NON-NLS-1$
 		}
+		isInflated = true;
 	}
 
 	@Override
