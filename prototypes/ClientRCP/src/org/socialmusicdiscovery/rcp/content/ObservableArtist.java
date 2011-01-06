@@ -3,7 +3,6 @@ package org.socialmusicdiscovery.rcp.content;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
 import org.socialmusicdiscovery.server.business.model.core.Person;
 
@@ -16,12 +15,6 @@ public class ObservableArtist extends AbstractObservableEntity<Artist> implement
 	
 	@Expose private Person person;
 	@Expose private Set<Artist> aliases = new HashSet<Artist>();
-
-	@Override
-	public IObservableList getObservableChildren() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public Person getPerson() {

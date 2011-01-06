@@ -1,6 +1,5 @@
 package org.socialmusicdiscovery.rcp.content;
 
-import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
 
@@ -13,12 +12,6 @@ public class ObservableContributor extends AbstractObservableEntity<Contributor>
 	
 	@Expose private Artist artist;
 	@Expose private String type;
-
-	@Override
-	public IObservableList getObservableChildren() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public String getType() {

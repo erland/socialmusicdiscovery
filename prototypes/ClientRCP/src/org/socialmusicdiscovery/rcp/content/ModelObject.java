@@ -42,20 +42,41 @@ public interface ModelObject extends Observable, IAdaptable {
 	 *         (remember the artist formerly known as Prince?)
 	 */
 	String getName();
-	
+
 	/**
 	 * <p>
 	 * Get an observable, read-only collection of all children of this instance.
 	 * If instance has no children, method returns an empty collection.
 	 * </p>
 	 * <p>
-	 * Design note: we return a {@link List}, not a {@link Set} or a
-	 * {@link Collection}, since we want the ability to modify the list -
-	 * implementers may return a {@link WritableList}. We also need a specific
-	 * collection type to make data binding easy; most/all data binding methods need
-	 * to know if they observe a {@link List} or a {@link Set}.
+	 * <b>Design note 1:</b><br>
+	 * we return a {@link List}, not a {@link Set} or a {@link Collection},
+	 * since we want the ability to modify the list - implementers may return a
+	 * {@link WritableList}. We also need a specific collection type to make
+	 * data binding easy; most/all data binding methods need to know if they
+	 * observe a {@link List} or a {@link Set}.
+	 * </p>
 	 * 
-	 * @return {@link IObservableList}, possibly empty
+	 * <p>
+	 * <b>Design note 2:</b><br>
+	 * We could possibly return a {@link WritableList} to allow clients to
+	 * modify children. However, current expectation is that children are often
+	 * derived from "drilling criteria"; i.e. the list of children depends on
+	 * what type of children the client asks for. Example: for a Release, the
+	 * children may be Tracks, alternative Releases, Composers, performing
+	 * Artists, or .. something completely different. Hence, the returned list
+	 * is read-only; changes are made elsewhere, and reflected in this list.
+	 * Again: this is an expectation. Time will tell what we actually need. And
+	 * as stated above, some implementers may return a {@link WritableList}.
+	 * </p>
+	 * <p>
+	 * <b>Nonsense note:</b><br>
+	 * As a parent, I find the name of this method quite amusing. I wish I could
+	 * implement this In Real Life ;-)<br>
+	 * /Peer
+	 * </p>
+	 * 
+	 * @return {@link IObservableList}, possibly empty (never <code>null</code>)
 	 */
 	IObservableList getObservableChildren();
 }

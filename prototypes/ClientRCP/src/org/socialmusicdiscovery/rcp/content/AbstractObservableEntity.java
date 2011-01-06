@@ -100,7 +100,7 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 
 	/**
 	 * Default implementation returns an empty collection.
-	 * Subclasses are expected to override.
+	 * Subclasses are expected to override as necessary.
 	 * 
 	 * @return {@link IObservableList} (empty)
 	 * @see Observables#emptyObservableList()
