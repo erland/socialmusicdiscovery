@@ -102,6 +102,4 @@ public class ObservableRelease extends AbstractObservableEntity<Release> impleme
 	public void setContributors(Set<Contributor> contributors) {
 		firePropertyChange(PROP_contributors, this.contributors, this.contributors = contributors);
 	}
-
-
 }
