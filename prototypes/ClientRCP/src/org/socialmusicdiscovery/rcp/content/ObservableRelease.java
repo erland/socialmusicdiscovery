@@ -6,8 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.databinding.observable.Observables;
-import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
 import org.socialmusicdiscovery.server.business.model.core.Label;
 import org.socialmusicdiscovery.server.business.model.core.Medium;
@@ -43,11 +41,6 @@ public class ObservableRelease extends AbstractObservableEntity<Release> impleme
 
 	@Expose
 	private Set<Contributor> contributors = new HashSet<Contributor>();
-
-	@Override
-	public IObservableList getObservableChildren() {
-		return Observables.emptyObservableList();
-	}
 
 	@Override
 	public Date getDate() {

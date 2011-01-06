@@ -27,6 +27,66 @@ import com.sun.jersey.api.client.WebResource.Builder;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 
+/**
+ * <p>A connector to the server. Reads and writes data over a JSON API.</p>
+ * 
+ * <p>Some design notes from Erland:
+ *  
+ * 1. Implement your own model objects that implements the
+ * interfaces provided by the server. You can of course choose to use the Entity
+ * classes from the server as a temporary solution if you like to.
+ * 
+ * 2. If you are using Google Guice, add a ClientConfigModule similar to the one
+ * in the Apache Pivot based smd-frontend and add a reference to this in your
+ * META-INF/services/com.google.inject.AbstractModule file. If you are not using
+ * Google Guice, you need to implement a class similar to
+ * ClientConfigModule.JSONProvider somewhere. This class is also where you have
+ * the mapping between the server interface classes and your implementation
+ * classes to allow the JSON encoding/decoding to work correctly.
+ * 
+ * The ClientConfigModule.JSONProvider class uses an abstract class
+ * (AbstractJSONProvider) provided by the server which makes it possible to only
+ * provide and interface/implementation mapping and the abstract class will
+ * implement all necessary converters.
+ * 
+ * 3. If you are using Google Guice, change calls from Client.create() to
+ * Client.create(config) and add a member variable like this which will be
+ * injected from the ClientConfigModule:
+ * 
+ * @Inject ClientConfig config;
+ * 
+ * If you are not using Google Guice, you need to create the
+ * ClientConfig object some other way, you will find the relevant
+ * initialization code in ClientConfigModule.provideClientConfig in the
+ * Apache Pivot based smd-frontend.
+ * 
+ * 4. The actual Client.create call doesn't have to be changed as I
+ * suggested yesterday, thanks to the ClientConfig which contains the
+ * conversion/mapping, you can still send and return real
+ * objects/interfaces with Client.create and don't have to revert to the
+ * two step sequence with String and then using Gson.toJson /
+ * Gson.fromJson as I suggested yesterday. The only thing you need to do
+ * is to provide the ClientConfig object as parameter to the
+ * Client.create call.
+ * 
+ * 5. Depending on how you implement your
+ * ClientConfigModule.JSONProvider (step 2 above), you need to provide @Expose
+ * annotations on all attributes you like to send over the JSON
+ * interface. If you initialize AbstractJSONProvider with "true", it
+ * will only include attributes with @Expose annotations in the JSON
+ * encoding. You can look at the *Entity classes for an example. I've
+ * added @Expose annotation on all attributes which are available in the
+ * new interfaces which the entities implement.
+ * 
+ * I've probably missed something, but look the changes in the Apache
+ * Pivot code or ask question if there is something you are wondering
+ * about.
+ * 
+ * /Erland
+ * </p>
+ * @author Peer Törngren
+ * 
+ */
 public class DataSource extends AbstractObservable implements ModelObject {
 	
 	public static final String PROP_IS_CONNECTED = "isConnected"; //$NON-NLS-1$
@@ -36,90 +96,61 @@ public class DataSource extends AbstractObservable implements ModelObject {
 	private boolean isConnected = false;
 	private final boolean isAutoConnect;
 
-	public abstract class Root<T extends SMDIdentity> extends AbstractObservable implements ModelObject {
+	public class Root<T extends SMDIdentity> extends AbstractObservable implements ModelObject {
 
 		private final String name; // for user presentation
 		private final String path; // for querying server
-		private final Class<T> type; // for querying server
+		private final Class<T> distinctQueryType; // for querying server
+		private GenericType<Collection<T>> genericCollectionQueryType;
 
-		public Root(String nodeName, String path, Class<T> type) {
+		/**
+		 * Private constructor, roots should only be instantiated from this
+		 * class (may change if we need to mock roots for testing). Argument
+		 * list is a bit long, could probably be shortened with better
+		 * understanding of generics.
+		 * 
+		 * @param nodeName
+		 *            human readable, for display in UI listings
+		 * @param queryPath
+		 *            for server query (see {@link #getPath()})
+		 * @param distinctElementQueryType
+		 *            for server query (see {@link #find(String)})
+		 * @param genericCollectionQueryType
+		 *            for server query (see {@link #findAll()})
+		 */
+		private Root(String nodeName, String queryPath, Class<T> distinctElementQueryType, GenericType<Collection<T>> genericCollectionQueryType) {
 			this.name = nodeName;
-			this.path = path;
-			this.type = type;
+			this.path = queryPath;
+			this.distinctQueryType = distinctElementQueryType;
+			this.genericCollectionQueryType = genericCollectionQueryType;
 		}
 
-		/*
-		 * 1. Implement your own model objects that implements the interfaces
-		 * provided by the server. You can of course choose to use the Entity
-		 * classes from the server as a temporary solution if you like to.
-		 * 
-		 * 2. If you are using Google Guice, add a ClientConfigModule similar to
-		 * the one in the Apache Pivot based smd-frontend and add a reference to
-		 * this in your META-INF/services/com.google.inject.AbstractModule file.
-		 * If you are not using Google Guice, you need to implement a class
-		 * similar to ClientConfigModule.JSONProvider somewhere. This class is
-		 * also where you have the mapping between the server interface classes
-		 * and your implementation classes to allow the JSON encoding/decoding
-		 * to work correctly.
-		 * 
-		 * The ClientConfigModule.JSONProvider class uses an abstract class
-		 * (AbstractJSONProvider) provided by the server which makes it possible
-		 * to only provide and interface/implementation mapping and the abstract
-		 * class will implement all necessary converters.
-		 * 
-		 * 3. If you are using Google Guice, change calls from Client.create()
-		 * to Client.create(config) and add a member variable like this which
-		 * will be injected from the ClientConfigModule:
-		 * 
-		 * @Inject ClientConfig config;
-		 * 
-		 * If you are not using Google Guice, you need to create the
-		 * ClientConfig object some other way, you will find the
-		 * relevant initialization code in
-		 * ClientConfigModule.provideClientConfig in the Apache Pivot
-		 * based smd-frontend.
-		 * 
-		 * 4. The actual Client.create call doesn't have to be changed
-		 * as I suggested yesterday, thanks to the ClientConfig which
-		 * contains the conversion/mapping, you can still send and
-		 * return real objects/interfaces with Client.create and don't
-		 * have to revert to the two step sequence with String and then
-		 * using Gson.toJson / Gson.fromJson as I suggested yesterday.
-		 * The only thing you need to do is to provide the ClientConfig
-		 * object as parameter to the Client.create call.
-		 * 
-		 * 5. Depending on how you implement your
-		 * ClientConfigModule.JSONProvider (step 2 above), you need to
-		 * provide @Expose annotations on all attributes you like to
-		 * send over the JSON interface. If you initialize
-		 * AbstractJSONProvider with "true", it will only include
-		 * attributes with @Expose annotations in the JSON encoding. You
-		 * can look at the *Entity classes for an example. I've added @Expose
-		 * annotation on all attributes which are available in the new
-		 * interfaces which the entities implement.
-		 * 
-		 * I've probably missed something, but look the changes in the
-		 * Apache Pivot code or ask question if there is something you
-		 * are wondering about.
-		 * 
-		 * /Erland
+		/**
+		 * Get all objects of the type that this root handles.
+		 * @return {@link List<T>}, possibly empty
 		 */
-		public abstract List<T> findAll();
+		final synchronized public List<T> findAll() {
+	        return get(genericCollectionQueryType);
+		}
 
-		public T find(String id) {
+		/**
+		 * Get a distinct object of the type that this root handles, identified
+		 * by supplied id.
+		 * 
+		 * @param entityID
+		 * @return T or <code>null</code>
+		 */
+		public T find(String entityID) {
 			// FIXME - cannot open editor from popup menu since we get multiple
 			// instances; each "inflated instance" loads new instances for all
 			// attributes. Need some kind of cache? Or maybe the inflate() copy 
 			// method can handle this? 
 			// See org.socialmusicdiscovery.rcp.content.AbstractObservableEntity.inflate()
-			String distinctPath = getPath()+"/"+id;
-			T result = connect(distinctPath).get(type);
+			String distinctPath = getPath()+"/"+entityID;
+			T result = connect(distinctPath).get(distinctQueryType);
 			return (T) result;
 		}
 		
-		/**
-		 * (As a parent, I find the name of this method quite amusing / Peer) 
-		 */
 		public IObservableList getObservableChildren() {
 			List<T> observableEntities = findAll();
 			return Observables.staticObservableList(observableEntities);
@@ -170,43 +201,22 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		}
 
 		public Class<T> getType() {
-			return type;
+			return distinctQueryType;
 		}
 
 	}
 
-    private class ReleaseRoot extends Root<Release> {
-
-    	public ReleaseRoot() {
-			super("Releases", "/releases", Release.class); //$NON-NLS-1$ //$NON-NLS-2$
-		}
-
-    	@Override
-		synchronized public List<Release> findAll() {
-	        return get(new GenericType<Collection<Release>>() {});
-		}
-
-    }
-
-    private class ArtistRoot extends Root<Artist> {
-
-		public ArtistRoot() {
-			super("Artists", "/artists", Artist.class); //$NON-NLS-1$ //$NON-NLS-2$
-		}
-
-		@Override
-		synchronized public List<Artist> findAll() {
-	        return get(new GenericType<Collection<Artist>>() {});
-		}
-
-    }
 
 	public DataSource(boolean isAutoConnect) {
 		this.isAutoConnect = isAutoConnect;
 	}
 
 	public List<? extends Root> getRoots() {
-		return Arrays.asList((Root) new ReleaseRoot(), new ArtistRoot()); 
+		Root[] roots = {
+			new Root<Release>("Releases", "/releases", Release.class, new GenericType<Collection<Release>>() {}), 
+			new Root<Artist>("Artists", "/artists", Artist.class, new GenericType<Collection<Artist>>() {})
+		};
+		return Arrays.asList(roots); 
 	}
 
 	public Root resolveRoot(Object entity) {

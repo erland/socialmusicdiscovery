@@ -3,7 +3,6 @@ package org.socialmusicdiscovery.rcp.content;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.socialmusicdiscovery.server.business.model.core.Medium;
 import org.socialmusicdiscovery.server.business.model.core.PlayableElement;
 import org.socialmusicdiscovery.server.business.model.core.Recording;
@@ -25,12 +24,6 @@ public class ObservableTrack extends AbstractObservableEntity<Track> implements 
 	@Expose private Recording recording;
 	@Expose private Set<PlayableElement> playableElements = new HashSet<PlayableElement>();
 	@Expose private Release release;
-
-	@Override
-	public IObservableList getObservableChildren() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public Integer getNumber() {
