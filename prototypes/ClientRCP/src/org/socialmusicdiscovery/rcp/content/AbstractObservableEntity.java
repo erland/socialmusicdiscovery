@@ -1,13 +1,10 @@
 package org.socialmusicdiscovery.rcp.content;
 
-import org.apache.commons.beanutils.PropertyUtils;
 import org.eclipse.core.databinding.observable.Observables;
 import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IPersistableElement;
 import org.socialmusicdiscovery.rcp.Activator;
-import org.socialmusicdiscovery.rcp.content.DataSource.Root;
-import org.socialmusicdiscovery.rcp.error.FatalApplicationException;
 import org.socialmusicdiscovery.rcp.error.NotYetImplementedException;
 import org.socialmusicdiscovery.rcp.event.AbstractObservable;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
@@ -57,21 +54,9 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 	 * </p>
 	 */
 	public void inflate() {
-		if (isInflated) {
-			return;
+		if (!isInflated) {
+			isInflated = Activator.getDefault().getDataSource().inflate(this);
 		}
-		DataSource dataSource = Activator.getDefault().getDataSource();
-		Root root = dataSource.resolveRoot(this);
-		SMDIdentity inflated = root.find(getId());
-		try {
-			// TODO Only copy properties declared on interface or by @Expose annotation?
-			// TODO do not create new instances, us cache to re-use already loaded instances? 
-			// See org.socialmusicdiscovery.rcp.content.DataSource.Root.find(String)
-			PropertyUtils.copyProperties(this, inflated);
-		} catch (Exception e) {
-			throw new FatalApplicationException("Failed to inflate instance: "+this, e);  //$NON-NLS-1$
-		}
-		isInflated = true;
 	}
 
 	@Override
