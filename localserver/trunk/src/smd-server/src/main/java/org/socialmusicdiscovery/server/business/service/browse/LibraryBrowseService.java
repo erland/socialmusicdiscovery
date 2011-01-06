@@ -110,7 +110,7 @@ public class LibraryBrowseService {
                 }
                 i++;
             }
-            result.setCount((long) items.size());
+            result.setCount((long) menus.size());
         } else {
             String currentPath = parentPath;
             Menu currentMenu = null;
