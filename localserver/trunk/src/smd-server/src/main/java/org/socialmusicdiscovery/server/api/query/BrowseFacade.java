@@ -48,7 +48,7 @@ public class BrowseFacade {
         }
 
         BrowseService browseService = InjectHelper.instanceWithName(BrowseService.class, object);
-        org.socialmusicdiscovery.server.business.service.browse.Result result = CopyHelper.createDetachedCopy(browseService.findChildren(criteriaList, new ArrayList<String>(), offset, size, childs));
+        org.socialmusicdiscovery.server.business.service.browse.Result result = new CopyHelper().detachedCopy(browseService.findChildren(criteriaList, new ArrayList<String>(), offset, size, childs));
 
         Collection<Result.ResultItem> genericResultItems = new ArrayList<Result.ResultItem>(result.getItems().size());
         Iterator<ResultItem> itemIterator = result.getItems().iterator();
@@ -120,7 +120,7 @@ public class BrowseFacade {
         }
 
         LibraryBrowseService browseService = new LibraryBrowseService();
-        org.socialmusicdiscovery.server.business.service.browse.Result result = CopyHelper.createDetachedCopy(browseService.findChildren(objectId, offset, size, childs));
+        org.socialmusicdiscovery.server.business.service.browse.Result result = new CopyHelper().detachedCopy(browseService.findChildren(objectId, offset, size, childs));
 
         Collection<Result.ResultItem> genericResultItems = new ArrayList<Result.ResultItem>(result.getItems().size());
         Iterator<ResultItem> itemIterator = result.getItems().iterator();

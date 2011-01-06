@@ -23,7 +23,7 @@ public class RecordingSessionFacade extends AbstractCRUDFacade<RecordingSessionE
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Collection<RecordingSessionEntity> search() {
-        return CopyHelper.createDetachedCopy(repository.findAllWithRelations(Arrays.asList("reference"), null));
+        return new CopyHelper().detachedCopy(repository.findAllWithRelations(Arrays.asList("reference"), null));
     }
 
     /**

@@ -28,15 +28,15 @@ public class WorkFacade extends AbstractCRUDFacade<WorkEntity, WorkRepository> {
     @Produces(MediaType.APPLICATION_JSON)
     public Collection<WorkEntity> search(@QueryParam("name") String name, @QueryParam("nameContains") String nameContains, @QueryParam("release") String release, @QueryParam("artist") String artist) {
         if (name != null) {
-            return CopyHelper.createDetachedCopy(repository.findByNameWithRelations(name, Arrays.asList("reference"), null));
+            return new CopyHelper().detachedCopy(repository.findByNameWithRelations(name, Arrays.asList("reference"), null));
         } else if (nameContains != null) {
-            return CopyHelper.createDetachedCopy(repository.findByPartialNameWithRelations(nameContains, Arrays.asList("reference"), null));
+            return new CopyHelper().detachedCopy(repository.findByPartialNameWithRelations(nameContains, Arrays.asList("reference"), null));
         } else if (release != null) {
-            return CopyHelper.createDetachedCopy(repository.findByReleaseWithRelations(release, Arrays.asList("reference"), null));
+            return new CopyHelper().detachedCopy(repository.findByReleaseWithRelations(release, Arrays.asList("reference"), null));
         } else if (artist != null) {
-            return CopyHelper.createDetachedCopy(repository.findByArtistWithRelations(artist, Arrays.asList("reference"), null));
+            return new CopyHelper().detachedCopy(repository.findByArtistWithRelations(artist, Arrays.asList("reference"), null));
         } else {
-            return CopyHelper.createDetachedCopy(repository.findAllWithRelations(Arrays.asList("reference"), null));
+            return new CopyHelper().detachedCopy(repository.findAllWithRelations(Arrays.asList("reference"), null));
         }
     }
 
