@@ -107,9 +107,11 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		public abstract List<T> findAll();
 
 		public T find(String id) {
-			
-//		    Release release = Client.create().resource("http://localhost:9998/releases/" + entity.getId()).accept(MediaType.APPLICATION_JSON).get(Release.class);
-			// TODO use cache
+			// FIXME - cannot open editor from popup menu since we get multiple
+			// instances; each "inflated instance" loads new instances for all
+			// attributes. Need some kind of cache? Or maybe the inflate() copy 
+			// method can handle this? 
+			// See org.socialmusicdiscovery.rcp.content.AbstractObservableEntity.inflate()
 			String distinctPath = getPath()+"/"+id;
 			T result = connect(distinctPath).get(type);
 			return (T) result;
