@@ -38,12 +38,14 @@ public class DataSource extends AbstractObservable implements ModelObject {
 
 	public abstract class Root<T extends SMDIdentity> extends AbstractObservable implements ModelObject {
 
-		private final String name;
-		private final String path;
+		private final String name; // for user presentation
+		private final String path; // for querying server
+		private final Class<T> type; // for querying server
 
-		public Root(String nodeName, String path) {
+		public Root(String nodeName, String path, Class<T> type) {
 			this.name = nodeName;
 			this.path = path;
+			this.type = type;
 		}
 
 		/*
@@ -104,14 +106,23 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		 */
 		public abstract List<T> findAll();
 
-		/**
-		 * (As a parent, I find the name of this method quite amusing) 
-		 */
-		public IObservableList getObservableChildren() {
-			List observableEntities = findAll();
-			return Observables.staticObservableList(observableEntities);
+		public T find(String id) {
+			
+//		    Release release = Client.create().resource("http://localhost:9998/releases/" + entity.getId()).accept(MediaType.APPLICATION_JSON).get(Release.class);
+			// TODO use cache
+			String distinctPath = getPath()+"/"+id;
+			T result = connect(distinctPath).get(type);
+			return (T) result;
 		}
 		
+		/**
+		 * (As a parent, I find the name of this method quite amusing / Peer) 
+		 */
+		public IObservableList getObservableChildren() {
+			List<T> observableEntities = findAll();
+			return Observables.staticObservableList(observableEntities);
+		}
+
 		public String getName() {
 			return name;
 		}
@@ -156,41 +167,37 @@ public class DataSource extends AbstractObservable implements ModelObject {
 			return adapter.isInstance(this) ? this : null;
 		}
 
+		public Class<T> getType() {
+			return type;
+		}
+
 	}
 
     private class ReleaseRoot extends Root<Release> {
 
-		public ReleaseRoot() {
-			super("Releases", "/releases"); //$NON-NLS-1$ //$NON-NLS-2$
+    	public ReleaseRoot() {
+			super("Releases", "/releases", Release.class); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
-		@Override
+    	@Override
 		synchronized public List<Release> findAll() {
 	        return get(new GenericType<Collection<Release>>() {});
 		}
 
-	}
+    }
 
     private class ArtistRoot extends Root<Artist> {
 
 		public ArtistRoot() {
-			super("Artists", "/artists"); //$NON-NLS-1$ //$NON-NLS-2$
+			super("Artists", "/artists", Artist.class); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
 		@Override
 		synchronized public List<Artist> findAll() {
-			try {
-		        GenericType<Collection<Artist>> genericType = new GenericType<Collection<Artist>>() {};
-				List<Artist> collection = get(genericType);
-				return collection;
-			} catch (ClientHandlerException e) {
-				String msg = "Cannot access server: "+getPath(); //$NON-NLS-1$
-				String hint = "Please check configuration settings and make sure the server is running."; //$NON-NLS-1$
-				throw new RecoverableApplicationException(msg, hint, e);
-			}
+	        return get(new GenericType<Collection<Artist>>() {});
 		}
 
-	}
+    }
 
 	public DataSource(boolean isAutoConnect) {
 		this.isAutoConnect = isAutoConnect;
@@ -200,6 +207,15 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		return Arrays.asList((Root) new ReleaseRoot(), new ArtistRoot()); 
 	}
 
+	public Root resolveRoot(Object entity) {
+		for (Root root : getRoots()) {
+			if (root.getType().isInstance(entity)) {
+				return root;
+			}
+		}
+		throw new IllegalArgumentException("Cannot resolve root for unknown element type: "+entity);
+	}
+	
 	private String getServerURI() {
 		String hostName = getServerName();
 		String port = getServerPort();

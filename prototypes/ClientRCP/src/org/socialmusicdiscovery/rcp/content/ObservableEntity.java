@@ -9,7 +9,7 @@ import org.socialmusicdiscovery.server.business.model.SMDIdentity;
  * @author Peer Törngren
  *
  */
-public interface ObservableEntity extends IEditorInput, ModelObject, SMDIdentity {
+public interface ObservableEntity<T extends SMDIdentity> extends IEditorInput, ModelObject, SMDIdentity {
 	
 	String PROP_dirty = "dirty"; //$NON-NLS-1$
 	

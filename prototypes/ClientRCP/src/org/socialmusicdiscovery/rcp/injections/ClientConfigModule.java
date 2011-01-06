@@ -6,12 +6,22 @@ import java.util.Map;
 import org.socialmusicdiscovery.rcp.content.DataSource;
 import org.socialmusicdiscovery.rcp.content.ObservableArtist;
 import org.socialmusicdiscovery.rcp.content.ObservableContributor;
+import org.socialmusicdiscovery.rcp.content.ObservableMedium;
+import org.socialmusicdiscovery.rcp.content.ObservablePerson;
+import org.socialmusicdiscovery.rcp.content.ObservableRecording;
+import org.socialmusicdiscovery.rcp.content.ObservableRecordingSession;
 import org.socialmusicdiscovery.rcp.content.ObservableRelease;
 import org.socialmusicdiscovery.rcp.content.ObservableTrack;
+import org.socialmusicdiscovery.rcp.content.ObservableWork;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
+import org.socialmusicdiscovery.server.business.model.core.Medium;
+import org.socialmusicdiscovery.server.business.model.core.Person;
+import org.socialmusicdiscovery.server.business.model.core.Recording;
+import org.socialmusicdiscovery.server.business.model.core.RecordingSession;
 import org.socialmusicdiscovery.server.business.model.core.Release;
 import org.socialmusicdiscovery.server.business.model.core.Track;
+import org.socialmusicdiscovery.server.business.model.core.Work;
 import org.socialmusicdiscovery.server.support.json.AbstractJSONProvider;
 
 import com.google.inject.AbstractModule;
@@ -42,16 +52,16 @@ public class ClientConfigModule extends AbstractModule {
 			converters.put(Contributor.class, ObservableContributor.class);
 			// converters.put(Credit.class, ObservableCredit.class);
 			// converters.put(Label.class, ObservableLabel.class);
-			// converters.put(Medium.class, ObservableMedium.class);
-			// converters.put(Person.class, ObservablePerson.class);
+			converters.put(Medium.class, ObservableMedium.class);
+			 converters.put(Person.class, ObservablePerson.class);
 			// converters.put(PlayableElement.class, ObservablePlayableElement.class);
-			// converters.put(Recording.class, ObservableRecording.class);
-			// converters.put(RecordingSession.class, ObservableRecordingSession.class);
+			converters.put(Recording.class, ObservableRecording.class);
+			converters.put(RecordingSession.class, ObservableRecordingSession.class);
 			// converters.put(Relation.class, ObservableSMDIdentityReference.class);
 			converters.put(Release.class, ObservableRelease.class);
 			// converters.put(Series.class, ObservableSeries.class);
 			converters.put(Track.class, ObservableTrack.class);
-			// converters.put(Work.class, ObservableWork.class);
+			converters.put(Work.class, ObservableWork.class);
 
 			return converters;
 		}
