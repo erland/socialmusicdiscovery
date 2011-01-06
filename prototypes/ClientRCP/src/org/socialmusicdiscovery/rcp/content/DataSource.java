@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.ws.rs.core.MediaType;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.eclipse.core.databinding.observable.Observables;
 import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.socialmusicdiscovery.rcp.error.FatalApplicationException;
@@ -19,9 +20,7 @@ import org.socialmusicdiscovery.rcp.prefs.ServerConnection;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
 import org.socialmusicdiscovery.server.business.model.core.Release;
-import org.socialmusicdiscovery.server.support.copy.CopyHelper;
 
-import com.google.inject.Exposed;
 import com.google.inject.Inject;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientHandlerException;
@@ -287,7 +286,7 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		try {
 			// TODO do not create new instances, us cache to re-use already loaded instances? 
 			// See org.socialmusicdiscovery.rcp.content.DataSource.Root.find(String)
-			new CopyHelper().mergeInto(shallowEntity, fullEntity, Exposed.class);
+			PropertyUtils.copyProperties(shallowEntity, fullEntity);
 		} catch (Exception e) {
 			throw new FatalApplicationException("Failed to inflate instance: "+shallowEntity, e);  //$NON-NLS-1$
 		}
