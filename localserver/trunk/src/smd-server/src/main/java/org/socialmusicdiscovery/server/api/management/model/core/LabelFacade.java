@@ -26,11 +26,11 @@ public class LabelFacade extends AbstractCRUDFacade<LabelEntity, LabelRepository
     @Produces(MediaType.APPLICATION_JSON)
     public Collection<LabelEntity> search(@QueryParam("name") String name, @QueryParam("nameContains") String nameContains) {
         if (name != null) {
-            return CopyHelper.createDetachedCopy(repository.findByNameWithRelations(name, Arrays.asList("reference"), null));
+            return new CopyHelper().detachedCopy(repository.findByNameWithRelations(name, Arrays.asList("reference"), null));
         } else if (nameContains != null) {
-            return CopyHelper.createDetachedCopy(repository.findByPartialNameWithRelations(nameContains, Arrays.asList("reference"), null));
+            return new CopyHelper().detachedCopy(repository.findByPartialNameWithRelations(nameContains, Arrays.asList("reference"), null));
         } else {
-            return CopyHelper.createDetachedCopy(repository.findAllWithRelations(Arrays.asList("reference"), null));
+            return new CopyHelper().detachedCopy(repository.findAllWithRelations(Arrays.asList("reference"), null));
         }
     }
 
