@@ -4,9 +4,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
 
 import org.socialmusicdiscovery.rcp.error.FatalApplicationException;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
@@ -77,8 +78,17 @@ import com.google.gson.annotations.Expose;
 		}
 	}
 
-	/** Cache is used to ensure that client has only one instance of each server object. */
-	private final HashMap<String, SMDIdentity> cache = new HashMap<String, SMDIdentity>();
+	/**
+	 * Cache is used to ensure that client has only one instance of each server
+	 * object. We use a {@link WeakHashMap} in an attempt to let go of instance
+	 * no longer held by anyone, but this is probably not enough to free up
+	 * resources - as long as the navigator holds the list of root objects, all
+	 * "inflated" objects (and all children and offsprings at any level) will
+	 * most likely live forever. If memory consumption becomes a problem, we may
+	 * have to invent some way to "deflate" objects that are only visible in the
+	 * navigator (perhaps by using some kind of weak link in the navigator?).
+	 */
+	private final Map<String, SMDIdentity> cache = new WeakHashMap<String, SMDIdentity>();
 
  	@SuppressWarnings("unchecked")
 	/* package */ <T extends SMDIdentity> T getOrStore(T serverObjectOrNull) {
