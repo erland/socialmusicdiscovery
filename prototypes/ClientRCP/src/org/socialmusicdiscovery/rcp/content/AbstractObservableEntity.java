@@ -18,7 +18,7 @@ import com.google.gson.annotations.Expose;
  *
  * @param <T>
  */
-public abstract class AbstractObservableEntity<T extends SMDIdentity> extends AbstractObservable implements ObservableEntity {
+public abstract class AbstractObservableEntity<T extends SMDIdentity> extends AbstractObservable implements ObservableEntity<T> {
 	private static final String PROP_id = "id"; //$NON-NLS-1$
 	
 	@Expose

@@ -8,7 +8,6 @@ import java.util.List;
 
 import javax.ws.rs.core.MediaType;
 
-import org.apache.commons.beanutils.PropertyUtils;
 import org.eclipse.core.databinding.observable.Observables;
 import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.socialmusicdiscovery.rcp.error.FatalApplicationException;
@@ -87,7 +86,6 @@ import com.sun.jersey.api.client.config.DefaultClientConfig;
  * /Erland
  * </p>
  * @author Peer Törngren
- * 
  */
 public class DataSource extends AbstractObservable implements ModelObject {
 	
@@ -97,6 +95,8 @@ public class DataSource extends AbstractObservable implements ModelObject {
 	
 	private boolean isConnected = false;
 	private final boolean isAutoConnect;
+
+	private final DataCache cache;
 
 	public class Root<T extends SMDIdentity> extends AbstractObservable implements ModelObject {
 
@@ -132,7 +132,12 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		 * @return {@link List<T>}, possibly empty
 		 */
 		final synchronized public List<T> findAll() {
-	        return get(genericCollectionQueryType);
+	        List<T> result = new ArrayList<T>();
+			for (T serverObject : get(genericCollectionQueryType)) {
+				T clientObject = cache.getOrStore(serverObject);
+				result.add(clientObject);
+			}
+			return result;
 		}
 
 		/**
@@ -208,9 +213,9 @@ public class DataSource extends AbstractObservable implements ModelObject {
 
 	}
 
-
 	public DataSource(boolean isAutoConnect) {
 		this.isAutoConnect = isAutoConnect;
+		this.cache = new DataCache();
 	}
 
 	public List<? extends Root> getRoots() {
@@ -280,13 +285,14 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		return adapter.isInstance(this) ? this : null;
 	}
 
-	public boolean inflate(ObservableEntity shallowEntity) {
+	public <T extends SMDIdentity> boolean inflate(ObservableEntity<T> shallowEntity) {
 		Root root = resolveRoot(shallowEntity);
-		SMDIdentity fullEntity = root.find(shallowEntity.getId());
+		@SuppressWarnings("unchecked")
+		T richEntity = (T) root.find(shallowEntity.getId());
 		try {
-			// TODO do not create new instances, us cache to re-use already loaded instances? 
-			// See org.socialmusicdiscovery.rcp.content.DataSource.Root.find(String)
-			PropertyUtils.copyProperties(shallowEntity, fullEntity);
+			cache.merge(richEntity, shallowEntity);
+//			copyHelper.mergeInto(unInflated, inflated, Exposed.class);
+//			PropertyUtils.copyProperties(unInflated, inflated);
 		} catch (Exception e) {
 			throw new FatalApplicationException("Failed to inflate instance: "+shallowEntity, e);  //$NON-NLS-1$
 		}
