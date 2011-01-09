@@ -86,6 +86,12 @@
             <version>1.6</version>
 
         </dependency>
+        <!-- ANTLR, required for title format parsing -->
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr-runtime</artifactId>
+            <version>3.3</version>
+        </dependency>
     </dependencies>
 
     <repositories>
