@@ -10,7 +10,7 @@ Brief instructions on what you need to do to get it running is available in the 
 = "Roadmap" =
 Well, not really, but a few words on what I think needs to be done to bring this thing out of the prototype folder and let us start widening scope and honing details:
   # (done) _Main menu and popup menus declared thru extension points (not in code)_
-  # (done) _A wrapping layer to make SMD entities observable and "self-inflating"
+  # (done) _A wrapping layer to make SMD entities observable and "self-inflating"_
   # A decent navigator (probably !ExpandBar)
   # Observable label providers in grids
   # Restructured plug-ins (as outlined below)
