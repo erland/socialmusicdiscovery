@@ -1,7 +1,6 @@
 package org.socialmusicdiscovery.rcp.views.navigator;
 
 
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.nebula.widgets.pshelf.PShelf;
 import org.eclipse.nebula.widgets.pshelf.PShelfItem;
 import org.eclipse.swt.SWT;
@@ -9,15 +8,14 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.part.ViewPart;
 import org.socialmusicdiscovery.rcp.content.DataSource;
 
 public class ShelfNavigator extends Composite {
 
 	private PShelf shelf;
 	private PShelfItem itemTree;
-	private PShelfItem other1;
-	private TreeNavigator tree;
-	private PShelfItem other2;
+	private TreeNavigator treeNavigator;
 
 	public ShelfNavigator(Composite parent, int style) {
 		super(parent, style);
@@ -34,18 +32,18 @@ public class ShelfNavigator extends Composite {
 		itemTree = new PShelfItem(shelf, SWT.NONE);
 		itemTree.setText("Tree");
 		itemTree.getBody().setLayout(new FillLayout(SWT.HORIZONTAL));
+		treeNavigator = new TreeNavigator(itemTree.getBody(), SWT.BORDER);
 		
-		tree = new TreeNavigator(itemTree.getBody(), SWT.BORDER);
-		
-		other1 = new PShelfItem(shelf, SWT.NONE);
-		other1.setText("Placeholder 1");
-		other1.getBody().setLayout(new FillLayout(SWT.HORIZONTAL));
-		new PlaceHolder(other1.getBody(), SWT.NONE);
+		createItems(5);
+	}
 
-		other2 = new PShelfItem(shelf, SWT.NONE);
-		other2.setText("Placeholder 2");
-		other2.getBody().setLayout(new FillLayout(SWT.HORIZONTAL));
-		new PlaceHolder(other2.getBody(), SWT.NONE);
+	private void createItems(int size) {
+		for (int i = 0; i < size; i++) {
+			PShelfItem item = new PShelfItem(shelf, SWT.NONE);
+			item.setText("Placeholder #"+i);
+			item.getBody().setLayout(new FillLayout(SWT.HORIZONTAL));
+			new PlaceHolder(item.getBody(), SWT.NONE);
+		}
 	}
 
 	@Override
@@ -54,10 +52,14 @@ public class ShelfNavigator extends Composite {
 	}
 
 	public void setInput(DataSource dataSource) {
-		getTreeViewer().setInput(dataSource);
+		treeNavigator.setInput(dataSource);
 	}
 
-	public TreeViewer getTreeViewer() {
-		return tree.getTreeViewer();
+	public TreeNavigator getTreeNavigator() {
+		return treeNavigator;
+	}
+
+	public void setView(ViewPart view) {
+		treeNavigator.setView(view);
 	}
 }
