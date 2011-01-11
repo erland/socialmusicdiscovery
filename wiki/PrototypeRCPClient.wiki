@@ -14,10 +14,12 @@ Well, not really, but a few words on what I think needs to be done to bring this
   # A decent navigator (probably !ExpandBar)
   # Observable label providers in grids
   # Restructured plug-ins (as outlined below)
+  # Add an option to import from SBS (like the Pivot client)
   # A head-less builder (e.g. Maven or Buckminster)
   # A bootstrap to deploy the basic client (e.g. JWS)
   # An update site where we can upload new versions of the plug-ins
   # Enrich the core editors (Release and Artist)
+  # Create extension points to allow more editors
 
 Effective time, this would all take a couple of weeks or so. Working odd hours around midnight ... I'm not so sure :-(
 
