@@ -11,8 +11,6 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.socialmusicdiscovery.rcp.views.util.OpenListener;
 
@@ -20,9 +18,6 @@ public class ContributorPanel extends Composite {
 
 	private final FormToolkit toolkit = new FormToolkit(Display.getCurrent());
 	private GridTableViewer gridTableViewer;
-	private MenuItem itemAdd;
-	private MenuItem itemEdit;
-	private MenuItem itemDelete;
 
 	/**
 	 * Create the composite.
@@ -54,24 +49,9 @@ public class ContributorPanel extends Composite {
 		gridColumn.setWidth(400);
 		gridColumn.setText("Artist");
 		
-		hookMenu(grid);
 		hookListeners();
 	}
-	public void hookMenu(Grid grid) {
-//		ViewerUtil.hookContextMenu(part, gridTableViewer);
-		Menu menu = new Menu(grid);
-		grid.setMenu(menu);
-		
-		itemAdd = new MenuItem(menu, SWT.NONE);
-		itemAdd.setText("Add ...");
-		
-		itemEdit = new MenuItem(menu, SWT.NONE);
-		itemEdit.setText("Edit ...");
-		
-		itemDelete = new MenuItem(menu, SWT.NONE);
-		itemDelete.setSelection(true);
-		itemDelete.setText("Delete");
-	}
+	
 	private void hookListeners() {
 		// default edit
 		gridTableViewer.addOpenListener(new OpenListener());
