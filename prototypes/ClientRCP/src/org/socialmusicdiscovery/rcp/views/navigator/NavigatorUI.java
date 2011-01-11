@@ -4,59 +4,25 @@ package org.socialmusicdiscovery.rcp.views.navigator;
 import org.eclipse.jface.databinding.viewers.ObservableListTreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.nebula.widgets.pshelf.PShelf;
+import org.eclipse.nebula.widgets.pshelf.PShelfItem;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.ExpandBar;
-import org.eclipse.swt.widgets.ExpandItem;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Tree;
 import org.socialmusicdiscovery.rcp.content.DataSource;
 import org.socialmusicdiscovery.rcp.views.util.DefaultLabelProvider;
 
 public class NavigatorUI extends Composite {
 
-	private final class MyLayoutManager implements Listener {
-	// TODO recalculate heights properly. Need something like a TableColumnLayout?
-    // see http://dev.eclipse.org/viewcvs/viewvc.cgi/org.eclipse.swt.snippets/src/org/eclipse/swt/snippets/Snippet343.java?view=co
-    // see http://stackoverflow.com/questions/586414/why-does-an-swt-composite-sometimes-require-a-call-to-resize-to-layout-correctl
-    // see http://www.eclipsezone.com/eclipse/forums/t76814.html
-//		you can use ExpandItem#setHeight to control how much space the item takes
-//		when it is expand. You can actually change this value on the fly when
-//		other item expands or the widget resizes.
-//		you can use ExpandItem#getHeaderHeight() to get the height of the title.
-//
-//		This snippet forces the item[0] to take up all the available space in the
-//		parent:
-		public void handleEvent(Event e) {
-			getDisplay().asyncExec(new Runnable() {
-				public void run() {
-					ExpandItem[] items = expandBar.getItems();
-					Rectangle area = expandBar.getClientArea();
-					int spacing = expandBar.getSpacing();
-					// area.width -= 2*spacing;
-					int header0 = items[0].getHeaderHeight();
-					int header1 = items[1].getHeaderHeight();
-					area.height -= (items.length + 1) * spacing + header0 + header1;
-					if (items[1].getExpanded()) {
-						area.height -= items[1].getHeight();// + spacing;
-					}
-					items[0].setHeight(area.height);
-				}
-			});
-		}
-	}
-
 	private TreeViewer treeViewer;
-	private ExpandBar expandBar;
-	private ExpandItem itemTree;
-	private ExpandItem itemOther;
 	private Composite otherArea;
 	private Label lblplaceholder;
+	private PShelf shelf;
+	private PShelfItem itemTree;
+	private PShelfItem itemOther;
 
 	public NavigatorUI(Composite parent, int style) {
 		super(parent, style);
@@ -67,29 +33,24 @@ public class NavigatorUI extends Composite {
 		gridLayout.marginWidth = 0;
 		setLayout(gridLayout);
 		
-		expandBar = new ExpandBar(this, SWT.NONE);
-		expandBar.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		shelf = new PShelf(this, SWT.NONE);
+		shelf.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		
-		itemTree = new ExpandItem(expandBar, SWT.NONE);
-		itemTree.setExpanded(true);
-		itemTree.setText("Basic Tree");
-		itemTree.setHeight(300);
+		itemTree = new PShelfItem(shelf, SWT.NONE);
+		itemTree.setText("Tree");
+		itemTree.getBody().setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		treeViewer = new TreeViewer(expandBar, SWT.BORDER);
-		Tree tree = treeViewer.getTree();
-		itemTree.setControl(tree);
+		treeViewer = new TreeViewer(itemTree.getBody(), SWT.BORDER);
+		
+		itemOther = new PShelfItem(shelf, SWT.NONE);
+		itemOther.setText("Other");
 		treeViewer.setSorter(new ViewerSorter());
-		
 		ObservableListTreeContentProvider contentProvider = new ObservableListTreeContentProvider(new NavigatorListFactory(), new NavigatorStructureAdvisor());
 		treeViewer.setContentProvider(contentProvider);
 		treeViewer.setLabelProvider(new DefaultLabelProvider());
-		itemTree.setHeight(-1);
+		itemOther.getBody().setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		itemOther = new ExpandItem(expandBar, SWT.NONE);
-		itemOther.setText("Other View");
-		
-		otherArea = new Composite(expandBar, SWT.NONE);
-		itemOther.setControl(otherArea);
+		otherArea = new Composite(itemOther.getBody(), SWT.NONE);
 		otherArea.setLayout(new GridLayout(1, false));
 		
 		lblplaceholder = new Label(otherArea, SWT.NONE);
@@ -99,16 +60,6 @@ public class NavigatorUI extends Composite {
 		Label todoLabel = new Label(otherArea, SWT.NONE);
 		todoLabel.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
 		todoLabel.setText("TODO: fix layout");
-		itemOther.setHeight(itemOther.getControl().computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
-		
-	    hookLayoutManager();
-	}
-
-	private void hookLayoutManager() {
-		Listener listener = new MyLayoutManager();
-		expandBar.addListener(SWT.Resize, listener);
-		expandBar.addListener(SWT.Expand, listener);
-		expandBar.addListener(SWT.Collapse, listener);
 	}
 
 	@Override

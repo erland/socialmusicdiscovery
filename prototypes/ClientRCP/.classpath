@@ -13,5 +13,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/formattedtext-1.0.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/swt-grouplayout.jar"/>
 	<classpathentry kind="lib" path="lib.imported/smd-server-1.0-SNAPSHOT.jar" sourcepath="/smd-server/src/main/java"/>
+	<classpathentry kind="lib" path="lib/pshelf-1.0.0.jar" sourcepath="pshelf-1.0.0-src.zip"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
