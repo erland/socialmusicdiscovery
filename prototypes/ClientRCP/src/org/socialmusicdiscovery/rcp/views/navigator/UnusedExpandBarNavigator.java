@@ -1,9 +1,7 @@
 package org.socialmusicdiscovery.rcp.views.navigator;
 
 
-import org.eclipse.jface.databinding.viewers.ObservableListTreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
@@ -14,9 +12,7 @@ import org.eclipse.swt.widgets.ExpandBar;
 import org.eclipse.swt.widgets.ExpandItem;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Tree;
 import org.socialmusicdiscovery.rcp.content.DataSource;
-import org.socialmusicdiscovery.rcp.views.util.DefaultLabelProvider;
 
 /**
  * <p>This class is NOT maintained! It is saved as a reference and possible
@@ -55,7 +51,7 @@ import org.socialmusicdiscovery.rcp.views.util.DefaultLabelProvider;
  * @author Peer Törngren
  * 
  */
-public class NavigatorUIWithExpandBar extends Composite {
+public class UnusedExpandBarNavigator extends Composite {
 
 	private final class MyLayoutManager implements Listener {
 	// TODO recalculate heights properly. Need something like a TableColumnLayout?
@@ -88,14 +84,14 @@ public class NavigatorUIWithExpandBar extends Composite {
 		}
 	}
 
-	private TreeViewer treeViewer;
+	private TreeNavigator treeComposite;
 	private ExpandBar expandBar;
 	private ExpandItem itemTree;
 	private ExpandItem itemOther;
 	private Composite otherArea;
 	private Label lblplaceholder;
 
-	public NavigatorUIWithExpandBar(Composite parent, int style) {
+	public UnusedExpandBarNavigator(Composite parent, int style) {
 		super(parent, style);
 		GridLayout gridLayout = new GridLayout(1, false);
 		gridLayout.verticalSpacing = 0;
@@ -110,16 +106,9 @@ public class NavigatorUIWithExpandBar extends Composite {
 		itemTree = new ExpandItem(expandBar, SWT.NONE);
 		itemTree.setExpanded(true);
 		itemTree.setText("Basic Tree");
-		itemTree.setHeight(300);
 		
-		treeViewer = new TreeViewer(expandBar, SWT.BORDER);
-		Tree tree = treeViewer.getTree();
-		itemTree.setControl(tree);
-		treeViewer.setSorter(new ViewerSorter());
-		
-		ObservableListTreeContentProvider contentProvider = new ObservableListTreeContentProvider(new NavigatorListFactory(), new NavigatorStructureAdvisor());
-		treeViewer.setContentProvider(contentProvider);
-		treeViewer.setLabelProvider(new DefaultLabelProvider());
+		treeComposite = new TreeNavigator(expandBar, SWT.BORDER);
+		itemTree.setControl(treeComposite);
 		itemTree.setHeight(-1);
 		
 		itemOther = new ExpandItem(expandBar, SWT.NONE);
@@ -158,6 +147,6 @@ public class NavigatorUIWithExpandBar extends Composite {
 	}
 
 	public TreeViewer getTreeViewer() {
-		return treeViewer;
+		return treeComposite.getTreeViewer();
 	}
 }

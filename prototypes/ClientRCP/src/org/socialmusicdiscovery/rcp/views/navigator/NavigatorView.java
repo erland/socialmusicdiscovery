@@ -25,7 +25,7 @@ public class NavigatorView extends ViewPart {
 	}
 
 	public static final String ID = "org.socialmusicdiscovery.rcp.views.NavigatorView"; //$NON-NLS-1$
-	private NavigatorUI ui;
+	private ShelfNavigator ui;
 
 	public NavigatorView() {
 		Activator.getDefault().getDataSource().addPropertyChangeListener(DataSource.PROP_IS_CONNECTED, new MyDataSourceListener());
@@ -37,13 +37,13 @@ public class NavigatorView extends ViewPart {
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
-		ui = new NavigatorUI(parent, SWT.NONE);
+		ui = new ShelfNavigator(parent, SWT.NONE);
 		hook(ui);
 		createActions();
 		ui.setInput(Activator.getDefault().getDataSource());
 	}
 
-	private void hook(NavigatorUI ui) {
+	private void hook(ShelfNavigator ui) {
 		ViewerUtil.hookContextMenu(this, ui.getTreeViewer());
 		ui.getTreeViewer().addOpenListener(new OpenListener());
 	}
