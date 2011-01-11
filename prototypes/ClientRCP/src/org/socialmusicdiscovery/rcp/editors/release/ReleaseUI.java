@@ -8,9 +8,13 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.databinding.beans.BeanProperties;
 import org.eclipse.core.databinding.beans.BeansObservables;
+import org.eclipse.core.databinding.beans.IBeanValueProperty;
+import org.eclipse.core.databinding.observable.list.WritableList;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.jface.databinding.viewers.ViewerSupport;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.nebula.jface.gridviewer.GridColumnLabelProvider;
@@ -319,17 +323,19 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 		gridViewerTracks.setInput(getModel().getTracks());
 		colMediumNbr.pack();
 		colTrackNumber.pack();
-		setAlbumDataInput();
+		bindAlbumData();
 	}
 
 
-	private void setAlbumDataInput() {
-		Map<String, List<Contributor>> map = getContributorMap(getModel().getContributors());
-		getPerformersPanel().getGridViewer().setInput(map.get(CONTRIBUTOR_TYPE_PERFORMER));
-		getComposersPanel().getGridViewer().setInput(map.get(CONTRIBUTOR_TYPE_COMPOSER));
-		getConductorsPanel().getGridViewer().setInput(map.get(CONTRIBUTOR_TYPE_CONDUCTOR));
+	private void bindAlbumData() {
+		Map<String, List<Contributor>> map = createContributorMap(getModel().getContributors());
+		bindContributor(getPerformersPanel(), map, CONTRIBUTOR_TYPE_PERFORMER);
+		bindContributor(getComposersPanel(), map, CONTRIBUTOR_TYPE_COMPOSER);
+		bindContributor(getConductorsPanel(), map, CONTRIBUTOR_TYPE_CONDUCTOR);
 	}
-	private Map<String, List<Contributor>> getContributorMap(Set<Contributor> contributorSet) {
+
+	// TODO rewrite for data binding; this is a derive map, not properly backed by model object 
+	private Map<String, List<Contributor>> createContributorMap(Set<Contributor> contributorSet) {
 	    Map<String, List<Contributor>> contributors = new HashMap<String, List<Contributor>>();
 	    for (Contributor contributor : contributorSet) {
 	        String type = contributor.getType();
@@ -339,6 +345,25 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 			contributors.get(type).add(contributor);
 	    }
 	    return contributors;
+	}
+
+	private void bindContributor(ContributorPanel panel, Map<String, List<Contributor>> map, String key) {
+		List<Contributor> contributors = safeGet(map, key);
+		
+		GridTableViewer viewer = panel.getGridViewer();
+		WritableList list = new WritableList(contributors, Contributor.class);
+		IBeanValueProperty labelProperty = BeanProperties.value(Contributor.class, "artist.name");
+		
+		ViewerSupport.bind(viewer, list, labelProperty);
+	}
+
+	private List<Contributor> safeGet(Map<String, List<Contributor>> map, String key) {
+		List<Contributor> result = map.get(key);
+		if (result==null) {
+			result = new ArrayList<Contributor>();
+			map.put(key, result);
+		}
+		return result;
 	}
 
 	private static boolean isEmpty(String s) {

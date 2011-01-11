@@ -2,7 +2,6 @@ package org.socialmusicdiscovery.rcp.editors.release;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
-import org.eclipse.nebula.jface.gridviewer.GridViewerColumn;
 import org.eclipse.nebula.widgets.grid.Grid;
 import org.eclipse.nebula.widgets.grid.GridColumn;
 import org.eclipse.swt.SWT;
@@ -14,10 +13,17 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.socialmusicdiscovery.rcp.views.util.OpenListener;
 
+/**
+ * A reusable grid for any type of contributor.
+ * 
+ * @author Peer Törngren
+ *
+ */
 public class ContributorPanel extends Composite {
 
 	private final FormToolkit toolkit = new FormToolkit(Display.getCurrent());
 	private GridTableViewer gridTableViewer;
+	private GridColumn gridColumn;
 
 	/**
 	 * Create the composite.
@@ -42,10 +48,8 @@ public class ContributorPanel extends Composite {
 		grid.setCellSelectionEnabled(true);
 		gridTableViewer.setContentProvider(new ArrayContentProvider());
 		toolkit.paintBordersFor(grid);
-		
-		GridViewerColumn gridViewerColumn = new GridViewerColumn(gridTableViewer, SWT.NONE);
-		gridViewerColumn.setLabelProvider(new ContributorLabelProvider());
-		GridColumn gridColumn = gridViewerColumn.getColumn();
+
+		gridColumn = new GridColumn(grid, SWT.NONE);
 		gridColumn.setWidth(400);
 		gridColumn.setText("Artist");
 		
@@ -59,5 +63,9 @@ public class ContributorPanel extends Composite {
 	
 	public GridTableViewer getGridViewer() {
 		return gridTableViewer;
+	}
+
+	public GridColumn getGridColumn() {
+		return gridColumn;
 	}
 }
