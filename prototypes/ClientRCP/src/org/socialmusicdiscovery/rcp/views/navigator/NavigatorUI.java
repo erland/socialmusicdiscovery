@@ -5,17 +5,51 @@ import org.eclipse.jface.databinding.viewers.ObservableListTreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.ExpandBar;
 import org.eclipse.swt.widgets.ExpandItem;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Tree;
 import org.socialmusicdiscovery.rcp.content.DataSource;
 import org.socialmusicdiscovery.rcp.views.util.DefaultLabelProvider;
 
 public class NavigatorUI extends Composite {
+
+	private final class MyLayoutManager implements Listener {
+	// TODO recalculate heights properly. Need something like a TableColumnLayout?
+    // see http://dev.eclipse.org/viewcvs/viewvc.cgi/org.eclipse.swt.snippets/src/org/eclipse/swt/snippets/Snippet343.java?view=co
+    // see http://stackoverflow.com/questions/586414/why-does-an-swt-composite-sometimes-require-a-call-to-resize-to-layout-correctl
+    // see http://www.eclipsezone.com/eclipse/forums/t76814.html
+//		you can use ExpandItem#setHeight to control how much space the item takes
+//		when it is expand. You can actually change this value on the fly when
+//		other item expands or the widget resizes.
+//		you can use ExpandItem#getHeaderHeight() to get the height of the title.
+//
+//		This snippet forces the item[0] to take up all the available space in the
+//		parent:
+		public void handleEvent(Event e) {
+			getDisplay().asyncExec(new Runnable() {
+				public void run() {
+					ExpandItem[] items = expandBar.getItems();
+					Rectangle area = expandBar.getClientArea();
+					int spacing = expandBar.getSpacing();
+					// area.width -= 2*spacing;
+					int header0 = items[0].getHeaderHeight();
+					int header1 = items[1].getHeaderHeight();
+					area.height -= (items.length + 1) * spacing + header0 + header1;
+					if (items[1].getExpanded()) {
+						area.height -= items[1].getHeight();// + spacing;
+					}
+					items[0].setHeight(area.height);
+				}
+			});
+		}
+	}
 
 	private TreeViewer treeViewer;
 	private ExpandBar expandBar;
@@ -67,41 +101,14 @@ public class NavigatorUI extends Composite {
 		todoLabel.setText("TODO: fix layout");
 		itemOther.setHeight(itemOther.getControl().computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
 		
-	  // TODO add listeners to recalculate heights?
-	  // see http://dev.eclipse.org/viewcvs/viewvc.cgi/org.eclipse.swt.snippets/src/org/eclipse/swt/snippets/Snippet343.java?view=co
-	  // see http://stackoverflow.com/questions/586414/why-does-an-swt-composite-sometimes-require-a-call-to-resize-to-layout-correctl
-	  // see http://www.eclipsezone.com/eclipse/forums/t76814.html
-//		you can use ExpandItem#setHeight to control how much space the item takes
-//		when it is expand. You can actually change this value on the fly when
-//		other item expands or the widget resizes.
-//		you can use ExpandItem#getHeaderHeight() to get the height of the title.
-//
-//		This snippet forces the item[0] to take up all the available space in the
-//		parent:
-//
-//		Listener listener = new Listener() {
-//		public void handleEvent(Event e) {
-//		display.asyncExec(new Runnable() {
-//		public void run () {
-//		ExpandItem[] items = expandBar.getItems();
-//		Rectangle area = expandBar.getClientArea();
-//		int spacing = expandBar.getSpacing();
-//		// area.width -= 2*spacing;
-//		int header0 = items[0].getHeaderHeight();
-//		int header1 = items[1].getHeaderHeight();
-//		area.height -= (items.length + 1)*spacing + header0 + header1;
-//		if (items[1].getExpanded()) {
-//		area.height -= items[1].getHeight();// + spacing;
-//		}
-//		items[0].setHeight(area.height);
-//		}
-//		});
-//		}
-//		};
-//		expandBar.addListener(SWT.Resize, listener);
-//		expandBar.addListener(SWT.Expand, listener);
-//		expandBar.addListener(SWT.Collapse, listener);
+	    hookLayoutManager();
+	}
 
+	private void hookLayoutManager() {
+		Listener listener = new MyLayoutManager();
+		expandBar.addListener(SWT.Resize, listener);
+		expandBar.addListener(SWT.Expand, listener);
+		expandBar.addListener(SWT.Collapse, listener);
 	}
 
 	@Override
