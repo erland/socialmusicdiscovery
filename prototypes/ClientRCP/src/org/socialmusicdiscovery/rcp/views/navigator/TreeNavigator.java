@@ -7,8 +7,11 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.part.ViewPart;
 import org.socialmusicdiscovery.rcp.content.DataSource;
+import org.socialmusicdiscovery.rcp.util.ViewerUtil;
 import org.socialmusicdiscovery.rcp.views.util.DefaultLabelProvider;
+import org.socialmusicdiscovery.rcp.views.util.OpenListener;
 
 /**
  * A classic tree-based browser/navigator for a few traditional (and presumably
@@ -44,5 +47,10 @@ public class TreeNavigator extends Composite {
 
 	public TreeViewer getTreeViewer() {
 		return treeViewer;
+	}
+
+	public void setView(ViewPart view) {
+		ViewerUtil.hookContextMenu(view, treeViewer );
+		treeViewer.addOpenListener(new OpenListener());
 	}
 }
