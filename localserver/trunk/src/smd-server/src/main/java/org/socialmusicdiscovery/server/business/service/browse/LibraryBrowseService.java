@@ -51,7 +51,7 @@ public class LibraryBrowseService {
                 new MenuLevel("Track", "(%object.medium.name|%object.medium.number)||[%object.medium,-]||%object.number||. ||%object.recording.work.parent.name||[%object.recording.work.parent,: ]||%object.recording.work.name"))));
         menus.add(new Menu("releases", "Releases", Arrays.asList(
                 new MenuLevel("Release", "%object.name"),
-                new MenuLevel("Track", "%object.name"))));
+                new MenuLevel("Track", "(%object.medium.name|%object.medium.number)||[%object.medium,-]||%object.number||. ||%object.recording.work.parent.name||[%object.recording.work.parent,: ]||%object.recording.work.name"))));
         menus.add(new Menu("classifications.genres", "Genres", Arrays.asList(
                 new MenuLevel("Classification.genre", "%object.name"),
                 new MenuLevel("Artist", "%object.name"),
