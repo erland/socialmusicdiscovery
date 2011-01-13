@@ -11,8 +11,8 @@ Brief instructions on what you need to do to get it running is available in the 
 Well, not really, but a few words on what I think needs to be done to bring this thing out of the prototype folder and let us start widening scope and honing details:
   # (done) _Main menu and popup menus declared thru extension points (not in code)_
   # (done) _A wrapping layer to make SMD entities observable and "self-inflating"_
-  # A decent navigator (probably !ExpandBar)
-  # Observable label providers in grids
+  # (done) _A decent navigator (probably !ExpandBar, using !PShelf for now)_
+  # (done) _Observable label providers in grids_
   # Restructured plug-ins (as outlined below)
   # Add an option to import from SBS (like the Pivot client)
   # A head-less builder (e.g. Maven or Buckminster)
