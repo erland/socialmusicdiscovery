@@ -13,6 +13,8 @@ Well, not really, but a few words on what I think needs to be done to bring this
   # (done) _A wrapping layer to make SMD entities observable and "self-inflating"_
   # (done) _A decent navigator (probably !ExpandBar, using !PShelf for now)_
   # (done) _Observable label providers in grids_
+  # Dirty status (render in views, enable/disable save command on menus)
+  # Implement save command
   # Restructured plug-ins (as outlined below)
   # Add an option to import from SBS (like the Pivot client)
   # A head-less builder (e.g. Maven or Buckminster)
