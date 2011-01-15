@@ -2,10 +2,10 @@ package org.socialmusicdiscovery.rcp.content;
 
 import org.eclipse.core.databinding.observable.Observables;
 import org.eclipse.core.databinding.observable.list.IObservableList;
+import org.eclipse.core.databinding.observable.list.WritableList;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IPersistableElement;
 import org.socialmusicdiscovery.rcp.Activator;
-import org.socialmusicdiscovery.rcp.error.NotYetImplementedException;
 import org.socialmusicdiscovery.rcp.event.AbstractObservable;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 
@@ -20,6 +20,10 @@ import com.google.gson.annotations.Expose;
  */
 public abstract class AbstractObservableEntity<T extends SMDIdentity> extends AbstractObservable implements ObservableEntity<T> {
 	private static final String PROP_id = "id"; //$NON-NLS-1$
+	private static final String PROP_isDirty = "dirty"; //$NON-NLS-1$
+	
+	private boolean isDirty;
+	private boolean isInflated = false;
 	
 	@Expose
 	private String id;
@@ -27,12 +31,6 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 	@Expose
 	private String name;
 
-	private boolean isInflated = false;
-	
-	public boolean isDirty() {
-		throw new NotYetImplementedException();
-	}
-	
 	@Override
 	public Object getAdapter(Class adapter) {
 		if (adapter.isInstance(this)) {
@@ -112,9 +110,52 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 		firePropertyChange(PROP_name, this.name, this.name = name);
 	}
 
+	public boolean isDirty() {
+		return isDirty;
+	}
+
+	/**
+	 * Mark instance as dirty. Method must be called whenever the persistent state of this instance changes.
+	 * TODO Hook listeners in collections to detect changes made directly to collections (thru {@link WritableList}?) 
+	 * @param isDirty
+	 */
+	public void setDirty(boolean isDirty) {
+		super.firePropertyChange(PROP_isDirty, this.isDirty, this.isDirty = isDirty);
+	}
+
 	@Override
 	public String toString() {
 		return getClass().getSimpleName()+"/'"+getName()+"'";
+	}
+	
+	protected void fireIndexedPropertyChange(String propertyName, int index, boolean oldValue, boolean newValue) {
+		super.fireIndexedPropertyChange(propertyName, index, oldValue, newValue);
+		setDirty(true);
+	}
+
+	protected void fireIndexedPropertyChange(String propertyName, int index, int oldValue, int newValue) {
+		super.fireIndexedPropertyChange(propertyName, index, oldValue, newValue);
+		setDirty(true);
+	}
+
+	protected void fireIndexedPropertyChange(String propertyName, int index, Object oldValue, Object newValue) {
+		super.fireIndexedPropertyChange(propertyName, index, oldValue, newValue);
+		setDirty(true);
+	}
+
+	protected void firePropertyChange(String propertyName, boolean oldValue, boolean newValue) {
+		super.firePropertyChange(propertyName, oldValue, newValue);
+		setDirty(true);
+	}
+
+	protected void firePropertyChange(String propertyName, int oldValue, int newValue) {
+		super.firePropertyChange(propertyName, oldValue, newValue);
+		setDirty(true);
+	}
+
+	protected void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
+		super.firePropertyChange(propertyName, oldValue, newValue);
+		setDirty(true);
 	}
 
 }
