@@ -124,6 +124,18 @@
             <version>1.6</version>
 
         </dependency>
+        
+		<!-- Cling UPnP stack -->
+	  	<dependency>
+	  		<groupId>org.teleal.cling</groupId>
+	  		<artifactId>cling-core</artifactId>
+	  		<version>1.0-beta8</version>
+	  	</dependency>
+	  	<dependency>
+	  		<groupId>org.teleal.cling</groupId>
+	  		<artifactId>cling-support</artifactId>
+	  		<version>1.0-beta8</version>
+	  	</dependency>
 
         <!-- ANTLR, required for title format parsing -->
         <dependency>
@@ -161,6 +173,13 @@
             <url>http://google-gson.googlecode.com/svn/mavenrepo/</url>
             <layout>default</layout>
         </repository>
+    <repository>
+        <id>teleal.org-repo</id>
+        <url>http://teleal.org/m2</url>
+        <snapshots>
+            <enabled>false</enabled>
+        </snapshots>
+    </repository>
     </repositories>
 
     <build>
