@@ -19,6 +19,7 @@ import org.socialmusicdiscovery.rcp.event.AbstractObservable;
 import org.socialmusicdiscovery.rcp.injections.ClientConfigModule;
 import org.socialmusicdiscovery.rcp.prefs.PreferenceConstants;
 import org.socialmusicdiscovery.rcp.prefs.ServerConnection;
+import org.socialmusicdiscovery.rcp.util.JobUtil;
 import org.socialmusicdiscovery.rcp.util.NotYetImplemented;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
@@ -96,24 +97,46 @@ public class DataSource extends AbstractObservable implements ModelObject {
 	private class MySaver implements IRunnableWithProgress {
 
 		private final ObservableEntity[] entities;
+		private Shell shell;
 
-		public MySaver(ObservableEntity[] entities) {
+		public MySaver(Shell shell, ObservableEntity[] entities) {
 			this.entities = entities;
+			this.shell = shell;
 		}
 
 		@Override
 		public void run(IProgressMonitor monitor) {
 			int size = entities.length;
 			monitor.beginTask("Save "+size+" elements", size);
-			for (ObservableEntity e : entities) {
+			for (final ObservableEntity e : entities) {
 				monitor.subTask(e.getName());
-				resolveRoot(e).save(e);
+				saveOnProperThread(e);
 				monitor.worked(1);
 				if (monitor.isCanceled()) {
 					break;
 				}
 			}
 			monitor.done();
+		}
+
+		/**
+		 * Must save on proper thread, owr we eill get invalid thread access
+		 * when firing {@link PropertyChangeEvent}s for the dirty status. Read
+		 * more <a href="http://www.eclipse.org/articles/Article-Concurrency/jobs-api.html">here</a>:<br>
+		 * <i>The code inside the operation is run in a separate thread in order
+		 * to allow the UI to be responsive. This means that any access to UI
+		 * components must be done within a syncExec() or asyncExec() or an
+		 * invalid thread access exception will be thrown by SWT.</i>
+		 * 
+		 * @param toSave
+		 */
+		private void saveOnProperThread(final ObservableEntity toSave) {
+			shell.getDisplay().syncExec(new Runnable() {
+				@Override
+				public void run() {
+					resolveRoot(toSave).save(toSave);					
+				}
+			});
 		}
 
 	}
@@ -327,8 +350,7 @@ public class DataSource extends AbstractObservable implements ModelObject {
 	public void save(Shell shell, IProgressMonitor monitor, ObservableEntity... entities) {
 		assert entities.length>0 : "Must have at least one entity";
 		NotYetImplemented.openDialog(shell, "Sorry, save operation is not yet implemented. Will fake a successful save, but nothing will be written to database.");
-//		JobUtil.run(shell, new MySaver(entities), "Save");  // TODO run in dialog. First fix thread access problem when firing "dirty" event
-		new MySaver(entities).run(monitor);
+		JobUtil.run(shell, new MySaver(shell, entities), "Save "+entities.length+" object(s)");
 	}
 
 	public <T extends SMDIdentity> boolean inflate(ObservableEntity<T> shallowEntity) {
