@@ -6,13 +6,13 @@ import java.beans.PropertyChangeListener;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
+import org.socialmusicdiscovery.rcp.Activator;
 import org.socialmusicdiscovery.rcp.content.AbstractObservableEntity;
 import org.socialmusicdiscovery.rcp.content.ObservableEntity;
 import org.socialmusicdiscovery.rcp.util.TextUtil;
@@ -85,10 +85,7 @@ public abstract class AbstractEditorPart<T extends AbstractObservableEntity, U e
 	}
 	@Override
 	public void doSave(IProgressMonitor monitor) {
-		monitor.beginTask("Saving "+getPartName(), -1);
-		MessageDialog.openWarning(getSite().getShell(), "Not Yet Implemented",
-				"Sorry, save operation is not yet implemented. Will fake a successful save, but nothing will be written to database.");
-		getEntity().setDirty(false);
+		Activator.getDefault().getDataSource().save(getSite().getShell(), monitor, getEntity());
 	}
 
 	/**
@@ -104,12 +101,11 @@ public abstract class AbstractEditorPart<T extends AbstractObservableEntity, U e
 		return false;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
 		setSite(site);
 		setInput(input);
-		hookDirtyStatusListener((T) input);
+		hookDirtyStatusListener(getEntity());
 	}
 
 	private void hookDirtyStatusListener(T entity) {

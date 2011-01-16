@@ -10,12 +10,16 @@ import javax.ws.rs.core.MediaType;
 
 import org.eclipse.core.databinding.observable.Observables;
 import org.eclipse.core.databinding.observable.list.IObservableList;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.swt.widgets.Shell;
 import org.socialmusicdiscovery.rcp.error.FatalApplicationException;
 import org.socialmusicdiscovery.rcp.error.RecoverableApplicationException;
 import org.socialmusicdiscovery.rcp.event.AbstractObservable;
 import org.socialmusicdiscovery.rcp.injections.ClientConfigModule;
 import org.socialmusicdiscovery.rcp.prefs.PreferenceConstants;
 import org.socialmusicdiscovery.rcp.prefs.ServerConnection;
+import org.socialmusicdiscovery.rcp.util.NotYetImplemented;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
 import org.socialmusicdiscovery.server.business.model.core.Release;
@@ -89,6 +93,31 @@ import com.sun.jersey.api.client.config.DefaultClientConfig;
  */
 public class DataSource extends AbstractObservable implements ModelObject {
 	
+	private class MySaver implements IRunnableWithProgress {
+
+		private final ObservableEntity[] entities;
+
+		public MySaver(ObservableEntity[] entities) {
+			this.entities = entities;
+		}
+
+		@Override
+		public void run(IProgressMonitor monitor) {
+			int size = entities.length;
+			monitor.beginTask("Save "+size+" elements", size);
+			for (ObservableEntity e : entities) {
+				monitor.subTask(e.getName());
+				resolveRoot(e).save(e);
+				monitor.worked(1);
+				if (monitor.isCanceled()) {
+					break;
+				}
+			}
+			monitor.done();
+		}
+
+	}
+
 	public static final String PROP_IS_CONNECTED = "isConnected"; //$NON-NLS-1$
 
 	@Inject	ClientConfig config = newClientConfig();  // TODO does not inject?
@@ -211,6 +240,16 @@ public class DataSource extends AbstractObservable implements ModelObject {
 			return distinctQueryType;
 		}
 
+		public void save(ObservableEntity e) {
+			System.out.println("Saving "+e);
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e1) {
+				throw new FatalApplicationException("Ask Peer Törngren what just happened", e1);  //$NON-NLS-1$
+			}
+			e.setDirty(false);
+		}
+
 	}
 
 	public DataSource(boolean isAutoConnect) {
@@ -283,6 +322,13 @@ public class DataSource extends AbstractObservable implements ModelObject {
 	@Override
 	public Object getAdapter(Class adapter) {
 		return adapter.isInstance(this) ? this : null;
+	}
+
+	public void save(Shell shell, IProgressMonitor monitor, ObservableEntity... entities) {
+		assert entities.length>0 : "Must have at least one entity";
+		NotYetImplemented.openDialog(shell, "Sorry, save operation is not yet implemented. Will fake a successful save, but nothing will be written to database.");
+//		JobUtil.run(shell, new MySaver(entities), "Save");  // TODO run in dialog. First fix thread access problem when firing "dirty" event
+		new MySaver(entities).run(monitor);
 	}
 
 	public <T extends SMDIdentity> boolean inflate(ObservableEntity<T> shallowEntity) {
