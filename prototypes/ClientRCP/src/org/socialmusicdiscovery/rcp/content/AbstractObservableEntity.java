@@ -115,10 +115,11 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 	}
 
 	/**
-	 * Mark instance as dirty. Method must be called whenever the persistent state of this instance changes.
+	 * Mark instance as dirty (or not). Method must be called whenever the persistent state of this instance changes.
 	 * TODO Hook listeners in collections to detect changes made directly to collections (thru {@link WritableList}?) 
 	 * @param isDirty
 	 */
+	@Override
 	public void setDirty(boolean isDirty) {
 		super.firePropertyChange(PROP_isDirty, this.isDirty, this.isDirty = isDirty);
 	}

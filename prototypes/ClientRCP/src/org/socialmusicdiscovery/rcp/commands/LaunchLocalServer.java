@@ -9,8 +9,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.socialmusicdiscovery.rcp.Activator;
-import org.socialmusicdiscovery.rcp.error.NotYetImplementedException;
 import org.socialmusicdiscovery.rcp.prefs.PreferenceConstants;
+import org.socialmusicdiscovery.rcp.util.NotYetImplemented;
 
 public class LaunchLocalServer extends AbstractHandler  {
 	public static final String COMMAND_ID = LaunchLocalServer.class.getName();	
@@ -26,7 +26,6 @@ public class LaunchLocalServer extends AbstractHandler  {
 			this.db = db;
 		}
 
-		@SuppressWarnings("unused")
 		@Override
 		protected IStatus run(IProgressMonitor monitor) {
 			String name = "Running default server";
@@ -37,7 +36,7 @@ public class LaunchLocalServer extends AbstractHandler  {
 				}
 				monitor.beginTask(name, IProgressMonitor.UNKNOWN);
 				if (true) {
-					throw new NotYetImplementedException("Cannot yet run local server");
+					NotYetImplemented.openDialog("Cannot yet run local server");
 				}
 //				SMDApplication app = new SMDApplication();
 				while(!monitor.isCanceled()) {
