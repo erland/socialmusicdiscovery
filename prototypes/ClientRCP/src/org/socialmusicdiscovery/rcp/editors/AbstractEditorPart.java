@@ -22,7 +22,6 @@ import org.eclipse.ui.part.EditorPart;
 import org.socialmusicdiscovery.rcp.Activator;
 import org.socialmusicdiscovery.rcp.content.AbstractObservableEntity;
 import org.socialmusicdiscovery.rcp.content.ObservableEntity;
-import org.socialmusicdiscovery.rcp.util.TextUtil;
 import org.socialmusicdiscovery.rcp.util.ViewerUtil;
 import org.socialmusicdiscovery.rcp.views.util.AbstractComposite;
 
@@ -50,34 +49,42 @@ import org.socialmusicdiscovery.rcp.views.util.AbstractComposite;
  */
 public abstract class AbstractEditorPart<T extends AbstractObservableEntity, U extends AbstractComposite<T>> extends EditorPart implements ISaveablePart2 {
 
-	private class MyDirtyStatusListener implements PropertyChangeListener {
+	private class MyModelListener implements PropertyChangeListener {
 		private final T observed;
 
-		private MyDirtyStatusListener(T observed) {
+		private MyModelListener(T observed) {
 			this.observed = observed;
 			this.observed.addPropertyChangeListener(ObservableEntity.PROP_dirty, this);
+			this.observed.addPropertyChangeListener(ObservableEntity.PROP_name, this);
 		}
 
-		public void dispose() {
+		private void dispose() {
 			observed.removePropertyChangeListener(ObservableEntity.PROP_dirty, this);
+			observed.addPropertyChangeListener(ObservableEntity.PROP_name, this);
 		}
 
 		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
-	       firePropertyChange(ISaveablePart2.PROP_DIRTY);
-	       updateOriginal(evt);
+			String propertyName = evt.getPropertyName();
+			if (ObservableEntity.PROP_dirty.equals(propertyName)) {
+		       firePropertyChange(ISaveablePart2.PROP_DIRTY);
+		       updateBackup((Boolean) evt.getNewValue());
+			} else if (ObservableEntity.PROP_name.equals(propertyName)) {
+				updatePartName();
+			} else {
+				throw new IllegalArgumentException("Unexpected property name: "+propertyName); 
+			}
 	    }
 
-		private void updateOriginal(PropertyChangeEvent evt) {
-			Boolean isDirty = (Boolean) evt.getNewValue();
-			   if (!isDirty.booleanValue()) {
-				   original = getEntity().backup();
-			   }
+		private void updateBackup(Boolean isDirty) {
+			if (!isDirty.booleanValue()) {
+				createBackup();
+			}
 		}
 	}
 
 	private U ui;
-	private MyDirtyStatusListener dirtyStatusListener;
+	private MyModelListener modelListener;
 	private AbstractObservableEntity original;
 
 	public AbstractEditorPart() {
@@ -89,7 +96,7 @@ public abstract class AbstractEditorPart<T extends AbstractObservableEntity, U e
 		model.inflate();
 		ui.setModel(model);
 		ui.setPart(this);
-		setPartName(getShortName(model));
+		updatePartName();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -97,8 +104,8 @@ public abstract class AbstractEditorPart<T extends AbstractObservableEntity, U e
 		return (T) getEditorInput();
 	}
 
-	protected String getShortName(T model) {
-		return TextUtil.getShortText(model.getName());
+	private void updatePartName() {
+		setPartName(ui.getModel().getName());
 	}
 
 	@Override
@@ -143,16 +150,16 @@ public abstract class AbstractEditorPart<T extends AbstractObservableEntity, U e
 	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
 		setSite(site);
 		setInput(input);
-		hookDirtyStatusListener(getEntity());
+		hookModelListener(getEntity());
 		this.original = getEntity().backup();
 		assert !original.isDirty() : "Original dirty on entry: "+original;
 	}
 
-	private void hookDirtyStatusListener(T entity) {
-		if (dirtyStatusListener!=null) {
-			dirtyStatusListener.dispose();
+	private void hookModelListener(T entity) {
+		if (modelListener!=null) {
+			modelListener.dispose();
 		}
-		dirtyStatusListener = new MyDirtyStatusListener(entity);
+		modelListener = new MyModelListener(entity);
 	}
 
 	@Override
@@ -180,8 +187,8 @@ public abstract class AbstractEditorPart<T extends AbstractObservableEntity, U e
 
 	@Override
 	public void dispose() {
-		if (dirtyStatusListener!=null) {
-			dirtyStatusListener.dispose();
+		if (modelListener!=null) {
+			modelListener.dispose();
 		}
 		super.dispose();
 	}
@@ -222,6 +229,10 @@ public abstract class AbstractEditorPart<T extends AbstractObservableEntity, U e
 
 	protected void undoAllChanges() {
 		getEntity().restore(original);
+	}
+	
+	protected void createBackup() {
+		original = getEntity().backup();
 	}
 
 	protected Shell getShell() {
