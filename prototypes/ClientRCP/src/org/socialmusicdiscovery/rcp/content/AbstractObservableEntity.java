@@ -1,5 +1,8 @@
 package org.socialmusicdiscovery.rcp.content;
 
+import java.beans.PropertyChangeListener;
+
+import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.observable.Observables;
 import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.databinding.observable.list.WritableList;
@@ -8,15 +11,41 @@ import org.eclipse.ui.IPersistableElement;
 import org.socialmusicdiscovery.rcp.Activator;
 import org.socialmusicdiscovery.rcp.event.AbstractObservable;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
+import org.socialmusicdiscovery.server.support.copy.CopyHelper;
 
 import com.google.gson.annotations.Expose;
 
 /**
- * Work in progress ... you have been warned.
+ * <p>
+ * The root abstraction of all persistent elements that we edit in the client.
+ * Each subclass implements a client-side version of the corresponding server
+ * object, as defined by the interface defined by the class parameter
+ * <code>T</code>. Compared to server objects, these instances are observable in
+ * the sense that the accept {@link PropertyChangeListener}s and preserve stable
+ * collections that can be observed thru the JFace data binding framework (e.g.
+ * thru {@link BeansObservables}).
+ * </p>
+ * 
+ * <p>
+ * <b>Server Interaction</b><br>
+ * The client object will receive and transmit all fields annotated with
+ * {@link Expose}. Objects can be "inflated" from the initial, "shallow" state -
+ * the "shallow" object carries only the information necessary to present it in
+ * UI listings (typically its name). Before opening an editor on the object, it
+ * is "inflated"; the remaining fields are filled from a fully initialized
+ * object that is fetched from the server.
+ * </p>
+ * 
+ * <p>
+ * <b>Editor Features</b><br>
+ * The client object keeps track of its "dirty" status, and fires events when
+ * the state changes. Before opening the instance in an editor, the editor makes
+ * a "backup" of the instance in order to do a "restore" if user aborts changes.
+ * </p>
  * 
  * @author Peer Törngren
- *
- * @param <T>
+ * 
+ * @param <T> the interface the subclass implements
  */
 public abstract class AbstractObservableEntity<T extends SMDIdentity> extends AbstractObservable implements ObservableEntity<T> {
 	private static final String PROP_id = "id"; //$NON-NLS-1$
@@ -113,7 +142,38 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 	public boolean isDirty() {
 		return isDirty;
 	}
+	
+	/**
+	 * Create a backup of the entity. Backup only holds the persistent data.
+	 * @return {@link AbstractObservableEntity}
+	 * @see #restore(AbstractObservableEntity)
+	 */
+	public AbstractObservableEntity backup() {
+		AbstractObservableEntity backup = new CopyHelper().copy(this, Expose.class);
+		assertBackup(backup);
+		return backup;
+	}
 
+	/**
+	 * Restore state from a backup of this entity. Backup only holds the persistent data.
+	 * @see #backup()
+	 */
+	public void restore(AbstractObservableEntity backup) {
+		assertBackup(backup);
+		new CopyHelper().mergeInto(this, backup, Expose.class);
+		setDirty(false);
+	}
+
+	/**
+	 * Assert that backup is a legal clone of this instance.
+	 * @param backup
+	 */
+	private void assertBackup(AbstractObservableEntity backup) {
+		assert backup.getId().endsWith(getId()) : "Bad id: "+backup+". Backup="+backup.getId()+", this="+getId();
+		assert backup.getClass()==getClass() : "Bad class: "+backup+". Backup="+backup.getClass()+", this="+getClass();
+	}
+
+	
 	/**
 	 * Mark instance as dirty (or not). Method must be called whenever the persistent state of this instance changes.
 	 * TODO Hook listeners in collections to detect changes made directly to collections (thru {@link WritableList}?) 

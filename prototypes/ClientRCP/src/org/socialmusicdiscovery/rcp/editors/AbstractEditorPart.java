@@ -6,10 +6,17 @@ import java.beans.PropertyChangeListener;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.ISaveablePart2;
+import org.eclipse.ui.ISaveablesSource;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 import org.socialmusicdiscovery.rcp.Activator;
@@ -19,7 +26,29 @@ import org.socialmusicdiscovery.rcp.util.TextUtil;
 import org.socialmusicdiscovery.rcp.util.ViewerUtil;
 import org.socialmusicdiscovery.rcp.views.util.AbstractComposite;
 
-public abstract class AbstractEditorPart<T extends AbstractObservableEntity, U extends AbstractComposite<T>> extends EditorPart {
+/**
+ * <p>
+ * An abstract implementation of all entity editors. All editors are expected to
+ * extend this class. This class is the hook into the workbench, and holds very
+ * little of the actual UI; it instantiates a root composite and sets the editor
+ * input on thus composite.
+ * </p>
+ * <p>
+ * Design note:<br>
+ * At the moment, the class implements {@link ISaveablePart2} since this was the
+ * simplest/fastest way to implement "abort changes". However, it offers a less
+ * pleasing behavior on exit; user must respond to one prompt for each dirty
+ * editor. We should really implement {@link ISaveablesSource} instead.
+ * </p>
+ * 
+ * @author Peer Törngren
+ * 
+ * @param <T>
+ *            the core interface of the entity we edit
+ * @param <U>
+ *            the main UI we launch in the editor
+ */
+public abstract class AbstractEditorPart<T extends AbstractObservableEntity, U extends AbstractComposite<T>> extends EditorPart implements ISaveablePart2 {
 
 	private class MyDirtyStatusListener implements PropertyChangeListener {
 		private final T observed;
@@ -35,12 +64,21 @@ public abstract class AbstractEditorPart<T extends AbstractObservableEntity, U e
 
 		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
-	       firePropertyChange(PROP_DIRTY);
+	       firePropertyChange(ISaveablePart2.PROP_DIRTY);
+	       updateOriginal(evt);
 	    }
+
+		private void updateOriginal(PropertyChangeEvent evt) {
+			Boolean isDirty = (Boolean) evt.getNewValue();
+			   if (!isDirty.booleanValue()) {
+				   original = getEntity().backup();
+			   }
+		}
 	}
 
 	private U ui;
 	private MyDirtyStatusListener dirtyStatusListener;
+	private AbstractObservableEntity original;
 
 	public AbstractEditorPart() {
 	}
@@ -106,6 +144,8 @@ public abstract class AbstractEditorPart<T extends AbstractObservableEntity, U e
 		setSite(site);
 		setInput(input);
 		hookDirtyStatusListener(getEntity());
+		this.original = getEntity().backup();
+		assert !original.isDirty() : "Original dirty on entry: "+original;
 	}
 
 	private void hookDirtyStatusListener(T entity) {
@@ -127,7 +167,9 @@ public abstract class AbstractEditorPart<T extends AbstractObservableEntity, U e
 
 	@SuppressWarnings("unchecked")
 	protected T getEntity() {
-		return (T) getEditorInput();
+		T entity = (T) getEditorInput().getAdapter(AbstractObservableEntity.class);
+		assert getEditorInput()==null || entity!=null : "Input is not an "+AbstractObservableEntity.class+": "+getEditorInput();
+		return entity;
 	}
 
 	protected void hookContextMenus(Viewer... viewers) {
@@ -137,17 +179,53 @@ public abstract class AbstractEditorPart<T extends AbstractObservableEntity, U e
 	}
 
 	@Override
-	public void createPartControl(Composite parent) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void dispose() {
 		if (dirtyStatusListener!=null) {
 			dirtyStatusListener.dispose();
 		}
 		super.dispose();
+	}
+
+	/**
+	 * TODO allow a single prompt for all dirty editors on exit (as with the default, non {@link ISaveablePart2} behavior)  
+	 *   
+	 * @see ISaveablesSource
+	 */
+	@Override
+	public int promptToSaveOnClose() {
+		String dialogTitle = "Save Entity";
+		Image dialogImage = getDefaultImage();
+		String dialogMessage = "'"+getEntity().getName()+"' has been modified. Save changes?";
+		String[] dialogButtonLabels = { 
+				IDialogConstants.YES_LABEL,
+                IDialogConstants.NO_LABEL,
+                IDialogConstants.CANCEL_LABEL 
+        };
+		
+		MessageDialog dlg = new MessageDialog(getShell(), dialogTitle, dialogImage, dialogMessage , SWT.SHEET, dialogButtonLabels, 0);
+		switch (dlg.open()) {
+		case 0:
+			return ISaveablePart2.YES;
+
+		case 1:
+			undoAllChanges();
+			return ISaveablePart2.NO;
+
+		case 2:
+			return ISaveablePart2.CANCEL;
+
+		default:
+			return ISaveablePart2.DEFAULT; // should not happen
+		}
+//		return ISaveablePart2.DEFAULT;
+	}
+
+	protected void undoAllChanges() {
+		getEntity().restore(original);
+	}
+
+	protected Shell getShell() {
+		return getSite().getShell();
 	}
 
 }
