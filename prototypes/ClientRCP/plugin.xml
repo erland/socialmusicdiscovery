@@ -135,7 +135,31 @@
                   style="push">
             </command>
             <separator
-                  name="sep1"
+                  name="edit-close"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="org.eclipse.ui.file.close"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.eclipse.ui.file.closeAll"
+                  style="push">
+            </command>
+            <separator
+                  name="close-save"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="org.eclipse.ui.file.save"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.eclipse.ui.file.saveAll"
+                  style="push">
+            </command>
+            <separator
+                  name="beforeExit"
                   visible="true">
             </separator>
             <command
