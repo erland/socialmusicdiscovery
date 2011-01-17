@@ -1,6 +1,7 @@
 package org.socialmusicdiscovery.rcp.content;
 
 import java.beans.PropertyChangeListener;
+import java.lang.reflect.Type;
 
 import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.observable.Observables;
@@ -100,14 +101,27 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 
 	@Override
 	public IPersistableElement getPersistable() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getToolTipText() {
-		// TODO add some meaningful info (from subclasses?)
-		return getId()+": "+getName();
+		// TODO externalize, now using raw interface as name
+		String isModified = isDirty() ? " {modified}" : ""; 
+		String typeName = getGenericType().getSimpleName();
+		return "["+typeName+"] "+getName()+isModified ;
+	}
+
+	private Class getGenericType() {
+		for (Type type : getClass().getGenericInterfaces()) {
+			if (type instanceof Class) {
+				Class genericClass = (Class) type;
+				if (SMDIdentity.class.isAssignableFrom(genericClass)) {
+					return genericClass;
+				}
+			}
+		}
+		return getClass(); // emergency exit
 	}
 
 	/**
@@ -161,7 +175,9 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 	public void restore(AbstractObservableEntity backup) {
 		assertBackup(backup);
 		new CopyHelper().mergeInto(this, backup, Expose.class);
-		setDirty(false);
+		// fire dirty AFTER merge to make sure name changes are updated in 
+		// label providers (the copy does not fire any events)
+		setDirty(false); 
 	}
 
 	/**
@@ -190,33 +206,33 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 	}
 	
 	protected void fireIndexedPropertyChange(String propertyName, int index, boolean oldValue, boolean newValue) {
+		setDirty(true); // call before firing "real" change to let tooltip render dirty status
 		super.fireIndexedPropertyChange(propertyName, index, oldValue, newValue);
-		setDirty(true);
 	}
 
 	protected void fireIndexedPropertyChange(String propertyName, int index, int oldValue, int newValue) {
+		setDirty(true); // call before firing "real" change to let tooltip render dirty status
 		super.fireIndexedPropertyChange(propertyName, index, oldValue, newValue);
-		setDirty(true);
 	}
 
 	protected void fireIndexedPropertyChange(String propertyName, int index, Object oldValue, Object newValue) {
+		setDirty(true); // call before firing "real" change to let tooltip render dirty status
 		super.fireIndexedPropertyChange(propertyName, index, oldValue, newValue);
-		setDirty(true);
 	}
 
 	protected void firePropertyChange(String propertyName, boolean oldValue, boolean newValue) {
+		setDirty(true); // call before firing "real" change to let tooltip render dirty status
 		super.firePropertyChange(propertyName, oldValue, newValue);
-		setDirty(true);
 	}
 
 	protected void firePropertyChange(String propertyName, int oldValue, int newValue) {
+		setDirty(true); // call before firing "real" change to let tooltip render dirty status // call before firing "real" change to let tooltip render dirty status
 		super.firePropertyChange(propertyName, oldValue, newValue);
-		setDirty(true);
 	}
 
 	protected void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
+		setDirty(true); // call before firing "real" change to let tooltip render dirty status
 		super.firePropertyChange(propertyName, oldValue, newValue);
-		setDirty(true);
 	}
 
 }
