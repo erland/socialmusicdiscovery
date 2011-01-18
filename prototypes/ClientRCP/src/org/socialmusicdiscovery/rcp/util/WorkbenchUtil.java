@@ -3,13 +3,16 @@ package org.socialmusicdiscovery.rcp.util;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
@@ -141,8 +144,26 @@ public final class WorkbenchUtil {
 	public static Object open(ExecutionEvent event) {
 		ISelection selection = HandlerUtil.getCurrentSelection(event);
 		Object[] selected = ViewerUtil.getSelectedObjects(selection);
-		WorkbenchUtil.openAll(selected);
+		openAll(selected);
 		return null;
+	}
+
+	public static Set<IEditorReference> findActiveEditorsInAnyWorkbenchWindow(IEditorInput editorInput) {
+		try {
+			Set<IEditorReference> result = new HashSet<IEditorReference>();
+			for (IWorkbenchWindow w : PlatformUI.getWorkbench().getWorkbenchWindows()) {
+				for (IWorkbenchPage p : w.getPages()) {
+					for (IEditorReference ref : p.getEditorReferences()) {
+						if (editorInput==ref.getEditorInput()) {
+							result.add(ref);
+						}
+					}
+				}
+			}
+			return result;
+		} catch (PartInitException e) {
+			throw new FatalApplicationException("Could not find open editors for input: "+editorInput, e);  //$NON-NLS-1$
+		}
 	}
 
 }
