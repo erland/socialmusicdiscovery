@@ -132,7 +132,8 @@ public abstract class AbstractEditorPart<T extends AbstractObservableEntity, U e
 	@Override
 	public void doSave(IProgressMonitor monitor) {
 		DataSource dataSource = Activator.getDefault().getDataSource();
-		if (dataSource.persist(getShell(), getEntity())) {
+		boolean isPersistedOK = dataSource.persist(getShell(), getEntity());
+		if (isPersistedOK) {
 			monitor.worked(1);
 		} else {
 			monitor.setCanceled(true);
