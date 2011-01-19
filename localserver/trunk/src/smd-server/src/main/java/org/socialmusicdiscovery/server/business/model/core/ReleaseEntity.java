@@ -42,7 +42,7 @@ public class ReleaseEntity extends AbstractSMDIdentityEntity implements Release 
     private Set<Contributor> contributors = new HashSet<Contributor>();
 
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "id")
-    private Set<ReleaseSearchRelationEntity> searchRelations;
+    private Set<ReleaseSearchRelationEntity> searchRelations = new HashSet<ReleaseSearchRelationEntity>();
 
     public Date getDate() {
         return date;
