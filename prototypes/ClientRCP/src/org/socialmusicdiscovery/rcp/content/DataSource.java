@@ -11,16 +11,17 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.core.databinding.observable.Observables;
 import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Shell;
 import org.socialmusicdiscovery.rcp.error.FatalApplicationException;
 import org.socialmusicdiscovery.rcp.error.RecoverableApplicationException;
+import org.socialmusicdiscovery.rcp.error.ExtendedErrorDialog;
 import org.socialmusicdiscovery.rcp.event.AbstractObservable;
 import org.socialmusicdiscovery.rcp.injections.ClientConfigModule;
 import org.socialmusicdiscovery.rcp.prefs.PreferenceConstants;
 import org.socialmusicdiscovery.rcp.prefs.ServerConnection;
 import org.socialmusicdiscovery.rcp.util.JobUtil;
+import org.socialmusicdiscovery.rcp.util.TextUtil;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
 import org.socialmusicdiscovery.server.business.model.core.Release;
@@ -93,7 +94,6 @@ import com.sun.jersey.api.client.config.DefaultClientConfig;
  * @author Peer Törngren
  */
 public class DataSource extends AbstractObservable implements ModelObject {
-	
 	private class MyPersistor implements IRunnableWithProgress {
 
 		private final ObservableEntity[] entities;
@@ -137,25 +137,20 @@ public class DataSource extends AbstractObservable implements ModelObject {
 			Runnable runnable = new Runnable() {
 				@Override
 				public void run() {
+					Root root = resolveRoot(entity);
 					try {
-						resolveRoot(entity).persist(entity);
+						root.persist(entity);
 					} catch (Exception e) {
-						// errors must be handle in UI thread if we want to show a dialog 
-						int kind = MessageDialog.ERROR;
-						String title = "Save error";
-						String msg = entity.getName() + "\n\nCould not save changes.\nServer: "+getServerURI();
-						String[] buttons = { "Retry", "Ignore", "Cancel" };
-						MessageDialog dialog = new MessageDialog(shell, title, null, msg, kind, buttons, 0);
-//						ErrorDialog.openError(shell, title, msg, new OperationStatus(OperationStatus.ERROR, Activator.PLUGIN_ID, 1, msg, e));
+						ExtendedErrorDialog dialog = createErrorDialog(root, entity, e); 
 						switch (dialog.open()) {
-						case 0: // retry
+						case ExtendedErrorDialog.RETRY_BUTTON:
 							run(); 
 							break;
 							
-						case 1: // skip
+						case ExtendedErrorDialog.IGNORE_BUTTON:
 							break;
 
-						case 2: // cancel
+						case ExtendedErrorDialog.CANCEL_BUTTON:
 							throw new RuntimeException(e);  // CAUGHT BELOW
 
 						default:
@@ -163,6 +158,7 @@ public class DataSource extends AbstractObservable implements ModelObject {
 						}
 					}
 				}
+
 			};
 			
 			// kludge: run and catch our own exception to return a result
@@ -172,6 +168,16 @@ public class DataSource extends AbstractObservable implements ModelObject {
 			} catch (RuntimeException e) { // THROWN ABOVE
 				return false;
 			}
+		}
+
+		private ExtendedErrorDialog createErrorDialog(Root root, ObservableEntity entity, Exception e) {
+			String type = TextUtil.getText(root.getType());
+			String task = "Save "+type;
+			String problem = "Could not save changed entity:\n"+entity.getName();
+			String reason = "Server reported an error ("+getServerURI()+")";
+//			RuntimeException e1 = new RuntimeException("Could not save id '"+entity.getId()+"'", e);
+			ExtendedErrorDialog dialog = new ExtendedErrorDialog(shell, task, problem, reason, e);
+			return dialog;
 		}
 
 	}

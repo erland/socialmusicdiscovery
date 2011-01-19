@@ -1,5 +1,7 @@
 package org.socialmusicdiscovery.rcp.util;
 
+import org.socialmusicdiscovery.server.business.model.SMDIdentity;
+
 public class TextUtil {
 
 	private TextUtil() {}
@@ -11,6 +13,17 @@ public class TextUtil {
 			return head+"..."+tail;
 		}
 		return text;
+	}
+
+	/**
+	 * Get a human readable text for supplied class.
+	 * Class is expected to be a subtype of {@link SMDIdentity}.
+	 * @param type
+	 * @return String
+	 */
+	public static String getText(Class type) {
+		// TODO externalize, now using raw interface as name
+		return type.getSimpleName();
 	}
 
 }
