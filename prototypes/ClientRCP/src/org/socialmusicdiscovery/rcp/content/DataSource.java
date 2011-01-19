@@ -11,6 +11,7 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.core.databinding.observable.Observables;
 import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Shell;
 import org.socialmusicdiscovery.rcp.error.FatalApplicationException;
@@ -109,10 +110,12 @@ public class DataSource extends AbstractObservable implements ModelObject {
 			monitor.beginTask("Save "+size+" elements", size);
 			for (final ObservableEntity e : entities) {
 				monitor.subTask(e.getName());
-				persistOnProperThread(e);
+				if (!persistOnProperThread(e)) {
+					monitor.setCanceled(true);
+				}
 				monitor.worked(1);
 				if (monitor.isCanceled()) {
-					break;
+					return;
 				}
 			}
 			monitor.done();
@@ -129,13 +132,46 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		 * 
 		 * @param entity
 		 */
-		private void persistOnProperThread(final ObservableEntity entity) {
-			shell.getDisplay().syncExec(new Runnable() {
+		private boolean persistOnProperThread(final ObservableEntity entity) {
+			// create a runnable to do the actual job
+			Runnable runnable = new Runnable() {
 				@Override
 				public void run() {
-					resolveRoot(entity).persist(entity);					
+					try {
+						resolveRoot(entity).persist(entity);
+					} catch (Exception e) {
+						// errors must be handle in UI thread if we want to show a dialog 
+						int kind = MessageDialog.ERROR;
+						String title = "Save error";
+						String msg = entity.getName() + "\n\nCould not save changes.\nServer: "+getServerURI();
+						String[] buttons = { "Retry", "Ignore", "Cancel" };
+						MessageDialog dialog = new MessageDialog(shell, title, null, msg, kind, buttons, 0);
+//						ErrorDialog.openError(shell, title, msg, new OperationStatus(OperationStatus.ERROR, Activator.PLUGIN_ID, 1, msg, e));
+						switch (dialog.open()) {
+						case 0: // retry
+							run(); 
+							break;
+							
+						case 1: // skip
+							break;
+
+						case 2: // cancel
+							throw new RuntimeException(e);  // CAUGHT BELOW
+
+						default:
+							throw new IllegalStateException(e);
+						}
+					}
 				}
-			});
+			};
+			
+			// kludge: run and catch our own exception to return a result
+			try {
+				shell.getDisplay().syncExec(runnable);
+				return true;
+			} catch (RuntimeException e) { // THROWN ABOVE
+				return false;
+			}
 		}
 
 	}
@@ -307,7 +343,8 @@ public class DataSource extends AbstractObservable implements ModelObject {
 			assert entity.isDirty() : "Attempt to save unchanged entity: "+entity;
 			assert cache.contains(entity) : "Updating uncached entity - should have been inflated and cached before editing: "+entity;
 			
-			resource(getPath(entity.getId())).type(MediaType.APPLICATION_JSON).put(getType(), entity);
+			String entityPath = getPath(entity.getId());
+			resource(entityPath).type(MediaType.APPLICATION_JSON).put(getType(), entity);
 			entity.setDirty(false);
 			
 			assert !entity.isDirty() : "Still dirty after save: "+entity;
@@ -321,7 +358,8 @@ public class DataSource extends AbstractObservable implements ModelObject {
 			assert entity.getId()!=null && entity.getId().trim().length()>0 : "No ID: "+entity;
 			assert cache.contains(entity) : "Deleting uncached entity - should have been cached when read: "+entity;
 			
-			resource(getPath(entity.getId())).type(MediaType.APPLICATION_JSON).delete();
+			String entityPath = getPath(entity.getId());
+			resource(entityPath).type(MediaType.APPLICATION_JSON).delete();
 			cache.delete(entity);
 			
 			assert !cache.contains(entity) : "Cache not updated - entity still present: "+entity;
@@ -410,9 +448,19 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		return adapter.isInstance(this) ? this : null;
 	}
 
-	public void persist(Shell shell, IProgressMonitor monitor, ObservableEntity... entities) {
+	/**
+	 * Save changes.
+	 * @param shell
+	 * @param entities
+	 * @return <code>true</code> if saved OK, <code>false</code> if not
+	 */
+	public boolean persist(Shell shell, ObservableEntity... entities) {
 		assert entities.length>0 : "Must have at least one entity";
-		JobUtil.run(shell, new MyPersistor(shell, entities), "Save "+entities.length+" object(s)");
+		if (entities.length==1) {
+			return new MyPersistor(shell, entities).persistOnProperThread(entities[0]);
+		} else {
+			return JobUtil.run(shell, new MyPersistor(shell, entities), "Save "+entities.length+" object(s)");
+		}
 	}
 
 	public <T extends SMDIdentity> boolean inflate(ObservableEntity<T> shallowEntity) {

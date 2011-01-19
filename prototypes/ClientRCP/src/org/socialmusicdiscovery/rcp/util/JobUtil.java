@@ -21,8 +21,9 @@ public class JobUtil {
 	 * @param shell
 	 * @param runnable
 	 * @param dialogTitle
+	 * @return <code>true</code> if job finished ok, <code>false</code> if not (e.g. user cancelled)
 	 */
-	public static void run(Shell shell, IRunnableWithProgress runnable, String dialogTitle) {
+	public static boolean run(Shell shell, IRunnableWithProgress runnable, String dialogTitle) {
 		ProgressMonitorDialog dialog = new ProgressMonitorDialog(shell);
 		try {
 			dialog.create();
@@ -30,11 +31,13 @@ public class JobUtil {
 			dialog.run(true, true, runnable);
 			if (dialog.getProgressMonitor().isCanceled()) {
 				MessageDialog.openInformation(shell, dialogTitle+" cancelled", "Operation was cancelled");
+				return false;
 			}
 		} catch (InvocationTargetException e) {
 			throw new FatalApplicationException(dialogTitle, e);
 		} catch (InterruptedException e) {
 			throw new FatalApplicationException(dialogTitle, e);
 		}
+		return true;
 	}
 }

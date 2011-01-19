@@ -21,6 +21,18 @@ public class Util {
 		return set;
 	}
 
+	/**
+	 * Internal convenience. Use for debugging/development only.
+	 * @param secondsNotMilliseconds
+	 */
+	public static void sleep(int secondsNotMilliseconds) {
+		try {
+			Thread.sleep(secondsNotMilliseconds*1000);
+		} catch (InterruptedException e) {
+			throw new RuntimeException("Interrupted", e);  //$NON-NLS-1$
+		}
+	}
+
 //	public static Set asSet(Object... elements) {
 //		Set set = new HashSet();
 //		for (Object element : elements) {
