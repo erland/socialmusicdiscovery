@@ -88,8 +88,29 @@ public class SMDApplication {
         }
         new SMDApplication();
     }
+    
+	public void shutdown() throws InterruptedException {
+		
+        for (MediaImportStatus module : mediaImportManager.getRunningModules()) {
+            mediaImportManager.abortImport(module.getModule());
+        }
+        mediaImportService.shutdown();
+        if (!mediaImportService.awaitTermination(10, TimeUnit.SECONDS)) {
+            mediaImportService.shutdownNow();
+        }
+        // Initialize all activated plugins
+        pluginManager.stopAll();
 
+        if (em != null && em.isOpen()) {
+            em.close();
+        }
+        if (emFactory != null && emFactory.isOpen()) {
+            emFactory.close();
+        }
+	}
+	
     public SMDApplication() {
+
         try {
             DatabaseProvider provider = null;
             String database = InjectHelper.instanceWithName(String.class, "org.socialmusicdiscovery.server.database");
@@ -112,6 +133,25 @@ public class SMDApplication {
 
             InjectHelper.injectMembers(this);
 
+            // Add shutdown hook to exit cleanly after receiving a CTRL-C (untested)
+			Runtime.getRuntime().addShutdownHook(new Thread() {
+				@Override
+				public void run() {
+					try {
+						System.out.println("\n\nShutdown hook triggered:\n");
+						// if factory is still open, shutdown haven't been called
+						if(emFactory.isOpen()) {
+							System.out.println("Doing gracefull shutdown...");
+							SMDApplication.this.shutdown();
+						} else {
+							System.out.println("nothing to do\n");
+						}
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			});
+
             // Initialize all installed plugins
             pluginManager.startAll();
 
@@ -122,22 +162,8 @@ public class SMDApplication {
 
             System.out.println("\n\nExiting...\n");
 
-            for (MediaImportStatus module : mediaImportManager.getRunningModules()) {
-                mediaImportManager.abortImport(module.getModule());
-            }
-            mediaImportService.shutdown();
-            if (!mediaImportService.awaitTermination(10, TimeUnit.SECONDS)) {
-                mediaImportService.shutdownNow();
-            }
-            // Initialize all activated plugins
-            pluginManager.stopAll();
+            this.shutdown();
 
-            if (em != null && em.isOpen()) {
-                em.close();
-            }
-            if (emFactory != null && emFactory.isOpen()) {
-                emFactory.close();
-            }
             provider.stop();
         } catch (Exception ex) {
             ex.printStackTrace();
