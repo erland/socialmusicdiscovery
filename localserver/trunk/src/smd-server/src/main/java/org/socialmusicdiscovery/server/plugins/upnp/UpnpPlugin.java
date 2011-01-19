@@ -23,7 +23,9 @@ import org.teleal.cling.model.types.UDN;
 import org.teleal.cling.support.connectionmanager.ConnectionManagerService;
 
 public class UpnpPlugin extends AbstractPlugin implements Runnable {
-
+	
+	final UpnpService upnpService =  new UpnpServiceImpl();
+	
 	@Override
 	public boolean start() throws PluginException {
 
@@ -39,6 +41,7 @@ public class UpnpPlugin extends AbstractPlugin implements Runnable {
 
 	@Override
 	public void stop() throws PluginException {
+		upnpService.shutdown();
 		System.err.println("UPnP plugin was stopped");
 		super.stop();
 	}
@@ -47,14 +50,12 @@ public class UpnpPlugin extends AbstractPlugin implements Runnable {
 		// Logger.getLogger(org.teleal.cling.transport.spi.DatagramIO.class.getPackage().getName()).setLevel(Level.FINEST);
 		try {
 
-			final UpnpService upnpService = new UpnpServiceImpl();
-
-			Runtime.getRuntime().addShutdownHook(new Thread() {
-				@Override
-				public void run() {
-					upnpService.shutdown();
-				}
-			});
+//			Runtime.getRuntime().addShutdownHook(new Thread() {
+//				@Override
+//				public void run() {
+//					upnpService.shutdown();
+//				}
+//			});
 
 			// Add the bound local device to the registry
 			LocalDevice ld = createDevice();

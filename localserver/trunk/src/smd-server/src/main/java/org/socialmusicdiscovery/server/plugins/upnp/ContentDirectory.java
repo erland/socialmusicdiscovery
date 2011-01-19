@@ -169,6 +169,7 @@ public class ContentDirectory extends AbstractContentDirectoryService  {
 		
 		String smdObjectID = null;
 		Integer smdMaxItems;
+		List<String> filters = this.filterStringToList(filter);
 		
 		// if objectID is 0, the client asks for root menu (null value for SMD)
 		if(objectID.equals("0")) {
@@ -193,6 +194,7 @@ public class ContentDirectory extends AbstractContentDirectoryService  {
 		MusicTrack upnpTrack= null;
 		
 		for(ResultItem<?> browsedItem: browsedContent.getItems()) {
+			
 			if(browsedItem.getType().equals("Folder")) {
 				upnpContainer = new SmdFolder( (ResultItem<String>)browsedItem);
 				upnpContainer.setChildCount(browseService.findChildren(browsedItem.getId(), null, null, false).getCount().intValue());
@@ -223,40 +225,8 @@ public class ContentDirectory extends AbstractContentDirectoryService  {
 				upnpContainer.setChildCount(browseService.findChildren(classificationItem.getId(), null, null, false).getCount().intValue());
 				
 			} else if (browsedItem.getType().equals("Track") ) {
+				upnpTrack = getUpnpMusicTrackFromSmdTrackEntity((ResultItem<TrackEntity>)browsedItem, objectID, filters);
 				
-				ResultItem<TrackEntity> trackItem = (ResultItem<TrackEntity>) browsedItem;
-				upnpTrack = new org.teleal.cling.support.model.item.MusicTrack();
-				Res upnpResource = new Res();
-				
-				upnpTrack.setId(objectID+"/"+trackItem.getId());
-				upnpTrack.setClazz(new org.teleal.cling.support.model.DIDLObject.Class("object.item.audioItem.musicTrack"));
-				upnpTrack.setTitle(trackItem.getName());
-				upnpTrack.setRefID(trackItem.getId());
-// work name used instead of trackname... TODO: check which is better / always working (trackname returns url encoded string)  
-//					.setTitle(trackItem.getItem().getRecording().getWork().getName());
-
-				upnpTrack.setCreator(trackItem.getItem().getRecording().getContributors().iterator().next().getArtist().getName());
-				List<PersonWithRole> contributors = new ArrayList<PersonWithRole>();  
-				//upnpTrack.setArtists()
-				
-				upnpTrack.setAlbum(trackItem.getItem().getRelease().getName());
-				
-				for(Contributor contributor: trackItem.getItem().getRecording().getContributors()) {
-					contributors.add(new PersonWithRole(contributor.getArtist().getName(),
-							contributor.getType()));
-					
-				}
-				upnpTrack.setArtists(contributors.toArray(new PersonWithRole[0]));
-				
-				upnpResource.setProtocolInfo(new ProtocolInfo("*:*:*:*"));
-				if(trackItem.getItem().getPlayableElements().size() != 1 ) {
-					// TODO: handle track items with multiple playable elements
-					System.err.println("Track "+trackItem.getName()+" ("+trackItem.getId()+") has "+
-							trackItem.getItem().getPlayableElements().size()+
-							" playable elements item, no support yet for ");
-				}
-				upnpResource.setValue(trackItem.getItem().getPlayableElements().iterator().next().getUri());
-				upnpTrack.addResource(upnpResource);
 			}else {
 				System.err.println("TYPE: "+browsedItem.getType());
 			}
@@ -275,6 +245,102 @@ public class ContentDirectory extends AbstractContentDirectoryService  {
 		return new BrowseResult(new DIDLParser().generate(didl), browsedContent.getItems().size(), browsedContent.getCount().intValue());
 	}
 	
+    public static List<String> filterStringToList(String s) {
+    	
+    	List<String> list = new ArrayList<String>();
+        if (s == null || s.length() == 0) return list;
+        
+        String[] filters= s.split(",");
+        for (String filter : filters) {
+            list.add(filter.trim());
+        }
+        return list;
+    }
+ 
+    /**
+     * wantedProperty tells whether or not a given property is to be returned
+     * example 
+     * 	wantedProperty("upnp:class", "*") => true
+     * 	wantedProperty("dc:creator", "upnp:class,dc:creator") => true
+     * 	wantedProperty("dc:creator", "upnp:class") => false
+     *
+     * @param property		Name of the property 
+     * @param filter 		Filter string
+     * @return Boolean that tells if the property has to be returned
+     */
+    private boolean wantedProperty(String property, List<String> filters ) {
+    	if(filters.size() == 0 ) return false;
+    	for(String filter: filters) {
+    		if( filter.equals("*") || filter.equals(property) ) {
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
+    /**
+     * Create a UPnP MusicTrack object from an SMD Track entity
+     * @param trackResultItem	smd item object
+     * @param parentId			parent object id
+     * @param filters			list of elements to be returned
+     * @return
+     */
+    private MusicTrack getUpnpMusicTrackFromSmdTrackEntity(ResultItem<TrackEntity> trackResultItem, String parentId, List<String> filters) {
+
+    	MusicTrack upnpTrack = new MusicTrack();
+    	TrackEntity trackItem = trackResultItem.getItem();
+    	
+		// Mandatory elements:
+		upnpTrack.setId(parentId+"/"+trackResultItem.getId());
+		upnpTrack.setRefID(trackResultItem.getId());
+		upnpTrack.setTitle(trackResultItem.getName());
+
+
+		if(wantedProperty("dc:creator", filters)) {
+			upnpTrack.setCreator(trackItem.getRecording().getContributors().iterator().next().getArtist().getName());
+		}
+		if(wantedProperty("upnp:album", filters)) {		
+			upnpTrack.setAlbum(trackItem.getRelease().getName());
+		}
+		if(wantedProperty("upnp:originalTrackNumber", filters)) {
+			upnpTrack.setOriginalTrackNumber(trackItem.getNumber());
+		}
+		if(wantedProperty("dc:date", filters)) {
+			// TODO: verigy date nullity 
+			// upnpTrack.setDate(trackItem.getRelease().getDate().toString());
+		}
+		if(wantedProperty("upnp:artists", filters)) {
+			//upnpTrack.setArtists()
+			List<PersonWithRole> contributors = new ArrayList<PersonWithRole>();  		
+		
+			for(Contributor contributor: trackItem.getRecording().getContributors()) {
+				contributors.add(new PersonWithRole(contributor.getArtist().getName(),
+						contributor.getType()));
+				
+			}
+			upnpTrack.setArtists(contributors.toArray(new PersonWithRole[0]));
+		}
+		
+		if(wantedProperty("res", filters)) {		
+			Res upnpResource = new Res();
+			upnpResource.setProtocolInfo(new ProtocolInfo("*:*:*:*"));
+			if(trackResultItem.getItem().getPlayableElements().size() != 1 ) {
+				// TODO: handle track items with multiple playable elements
+				System.err.println("Track "+trackResultItem.getName()+" ("+trackResultItem.getId()+") has "+
+						trackItem.getPlayableElements().size()+
+						" playable elements item, no support yet for ");
+			}
+			upnpResource.setValue(trackItem.getPlayableElements().iterator().next().getUri());
+			upnpTrack.addResource(upnpResource);
+		}
+		return upnpTrack;
+
+// unnecessary, initialized by constructor
+//		upnpTrack.setClazz(new org.teleal.cling.support.model.DIDLObject.Class("object.item.audioItem.musicTrack"));
+
+//work name used instead of trackname... TODO: check which is better / always working (trackname returns url encoded string)  
+//			.setTitle(trackItem.getItem().getRecording().getWork().getName());
+    }
 
 	
 	@Override
