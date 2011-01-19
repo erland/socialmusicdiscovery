@@ -14,7 +14,7 @@ Well, not really, but a few words on what I think needs to be done to bring this
   # (done) _A decent navigator (probably !ExpandBar, using !PShelf for now)_
   # (done) _Observable label providers in grids_
   # (done) _Dirty status (render in views, enable/disable save command on menus)_
-  # Implement save command
+  # (done) _Implement save command (only 'update', 'new' and 'delete' not yet supported)_
   # Restructured plug-ins (as outlined below)
   # Add an option to import from SBS (like the Pivot client)
   # A head-less builder (e.g. Maven or Buckminster)
