@@ -11,6 +11,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IPersistableElement;
 import org.socialmusicdiscovery.rcp.Activator;
 import org.socialmusicdiscovery.rcp.event.AbstractObservable;
+import org.socialmusicdiscovery.rcp.util.TextUtil;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.support.copy.CopyHelper;
 
@@ -106,9 +107,8 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 
 	@Override
 	public String getToolTipText() {
-		// TODO externalize, now using raw interface as name
 		String isModified = isDirty() ? " {modified}" : ""; 
-		String typeName = getGenericType().getSimpleName();
+		String typeName = TextUtil.getText(getGenericType());
 		return "["+typeName+"] "+getName()+isModified ;
 	}
 
