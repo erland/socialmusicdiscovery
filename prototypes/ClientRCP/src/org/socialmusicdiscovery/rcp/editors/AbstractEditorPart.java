@@ -19,6 +19,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 import org.socialmusicdiscovery.rcp.Activator;
 import org.socialmusicdiscovery.rcp.content.AbstractObservableEntity;
+import org.socialmusicdiscovery.rcp.content.DataSource;
 import org.socialmusicdiscovery.rcp.content.ObservableEntity;
 import org.socialmusicdiscovery.rcp.util.ViewerUtil;
 import org.socialmusicdiscovery.rcp.util.WorkbenchUtil;
@@ -127,9 +128,15 @@ public abstract class AbstractEditorPart<T extends AbstractObservableEntity, U e
 	protected IMenuManager getMenuManager() {
 		return getEditorSite().getActionBars().getMenuManager();
 	}
+	
 	@Override
 	public void doSave(IProgressMonitor monitor) {
-		Activator.getDefault().getDataSource().persist(getSite().getShell(), monitor, getEntity());
+		DataSource dataSource = Activator.getDefault().getDataSource();
+		if (dataSource.persist(getShell(), getEntity())) {
+			monitor.worked(1);
+		} else {
+			monitor.setCanceled(true);
+		}
 	}
 
 	/**
