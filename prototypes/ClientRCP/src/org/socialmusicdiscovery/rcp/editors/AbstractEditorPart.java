@@ -129,7 +129,7 @@ public abstract class AbstractEditorPart<T extends AbstractObservableEntity, U e
 	}
 	@Override
 	public void doSave(IProgressMonitor monitor) {
-		Activator.getDefault().getDataSource().save(getSite().getShell(), monitor, getEntity());
+		Activator.getDefault().getDataSource().persist(getSite().getShell(), monitor, getEntity());
 	}
 
 	/**

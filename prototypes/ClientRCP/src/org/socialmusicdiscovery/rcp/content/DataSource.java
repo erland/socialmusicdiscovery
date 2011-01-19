@@ -20,7 +20,6 @@ import org.socialmusicdiscovery.rcp.injections.ClientConfigModule;
 import org.socialmusicdiscovery.rcp.prefs.PreferenceConstants;
 import org.socialmusicdiscovery.rcp.prefs.ServerConnection;
 import org.socialmusicdiscovery.rcp.util.JobUtil;
-import org.socialmusicdiscovery.rcp.util.NotYetImplemented;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
 import org.socialmusicdiscovery.server.business.model.core.Release;
@@ -29,7 +28,7 @@ import com.google.inject.Inject;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientHandlerException;
 import com.sun.jersey.api.client.GenericType;
-import com.sun.jersey.api.client.WebResource.Builder;
+import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 
@@ -94,12 +93,12 @@ import com.sun.jersey.api.client.config.DefaultClientConfig;
  */
 public class DataSource extends AbstractObservable implements ModelObject {
 	
-	private class MySaver implements IRunnableWithProgress {
+	private class MyPersistor implements IRunnableWithProgress {
 
 		private final ObservableEntity[] entities;
 		private Shell shell;
 
-		public MySaver(Shell shell, ObservableEntity[] entities) {
+		public MyPersistor(Shell shell, ObservableEntity[] entities) {
 			this.entities = entities;
 			this.shell = shell;
 		}
@@ -110,7 +109,7 @@ public class DataSource extends AbstractObservable implements ModelObject {
 			monitor.beginTask("Save "+size+" elements", size);
 			for (final ObservableEntity e : entities) {
 				monitor.subTask(e.getName());
-				saveOnProperThread(e);
+				persistOnProperThread(e);
 				monitor.worked(1);
 				if (monitor.isCanceled()) {
 					break;
@@ -120,7 +119,7 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		}
 
 		/**
-		 * Must save on proper thread, owr we eill get invalid thread access
+		 * Must store on proper thread, or we will get invalid thread access
 		 * when firing {@link PropertyChangeEvent}s for the dirty status. Read
 		 * more <a href="http://www.eclipse.org/articles/Article-Concurrency/jobs-api.html">here</a>:<br>
 		 * <i>The code inside the operation is run in a separate thread in order
@@ -128,13 +127,13 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		 * components must be done within a syncExec() or asyncExec() or an
 		 * invalid thread access exception will be thrown by SWT.</i>
 		 * 
-		 * @param toSave
+		 * @param entity
 		 */
-		private void saveOnProperThread(final ObservableEntity toSave) {
+		private void persistOnProperThread(final ObservableEntity entity) {
 			shell.getDisplay().syncExec(new Runnable() {
 				@Override
 				public void run() {
-					resolveRoot(toSave).save(toSave);					
+					resolveRoot(entity).persist(entity);					
 				}
 			});
 		}
@@ -192,24 +191,6 @@ public class DataSource extends AbstractObservable implements ModelObject {
 			return result;
 		}
 
-		/**
-		 * Get a distinct object of the type that this root handles, identified
-		 * by supplied id.
-		 * 
-		 * @param entityID
-		 * @return T or <code>null</code>
-		 */
-		public T find(String entityID) {
-			// FIXME - cannot open editor from popup menu since we get multiple
-			// instances; each "inflated instance" loads new instances for all
-			// attributes. Need some kind of cache? Or maybe the inflate() copy 
-			// method can handle this? 
-			// See org.socialmusicdiscovery.rcp.content.AbstractObservableEntity.inflate()
-			String distinctPath = getPath()+"/"+entityID;
-			T result = connect(distinctPath).get(distinctQueryType);
-			return (T) result;
-		}
-		
 		public IObservableList getObservableChildren() {
 			List<T> observableEntities = findAll();
 			return Observables.staticObservableList(observableEntities);
@@ -224,14 +205,26 @@ public class DataSource extends AbstractObservable implements ModelObject {
 			return getPath();
 		}
 
+		/**
+		 * Get path for this root (all instances of this type share this path).
+		 * 
+		 * @return String
+		 * @see #getType()
+		 */
 		protected String getPath() {
 			return getServerURI()+path;
 		}
 
-		protected Builder root() {
-			return connect(getPath());
+		/**
+		 * Get path for a specific instance persisted under/by this root.
+		 * @param id
+		 * @return String
+		 * @see #getPath()
+		 */
+		protected String getPath(String id) {
+			return getPath()+"/"+id;
 		}
-
+		
 		/**
 		 * If connected (or set to autoconnect), check number of children (would 
 		 * really want a server-supported call. e.g. based on a DB "count"?).
@@ -244,7 +237,7 @@ public class DataSource extends AbstractObservable implements ModelObject {
 
 		protected List<T> get(GenericType<Collection<T>> genericType) {
 			try {
-				Collection<T> collection = root().get(genericType);
+				Collection<T> collection = Client.create(config).resource(getPath()).accept(MediaType.APPLICATION_JSON).get(genericType);
 				isConnected = true;
 				return new ArrayList<T>(collection);
 			} catch (ClientHandlerException e) {
@@ -263,14 +256,83 @@ public class DataSource extends AbstractObservable implements ModelObject {
 			return distinctQueryType;
 		}
 
-		public void save(ObservableEntity e) {
-			System.out.println("Saving "+e);
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e1) {
-				throw new FatalApplicationException("Ask Peer Törngren what just happened", e1);  //$NON-NLS-1$
+		/**
+		 * Update persistent store; Create, Update or Delete supplied entity
+		 * depending on its lifecycle state. 
+		 * 
+		 * @param entity
+		 */
+		private void persist(ObservableEntity entity) {
+			if (isNew(entity)) {
+				create(entity);
+			} else if (isDeleted(entity)) {
+				delete(entity);
+			} else {
+				update(entity);
 			}
-			e.setDirty(false);
+		}
+
+		/**
+		 * CRUD: <b>C</b>reate
+		 * @param entity
+		 */
+		private void create(ObservableEntity entity) {
+			T echo = resource(getPath()).type(MediaType.APPLICATION_JSON).post(getType(), entity);
+			entity.setId(echo.getId());
+			entity.setDirty(false);
+			cache.add(entity);
+			
+			assert !entity.isDirty() : "Still dirty after save: "+entity;
+			assert !isNew(entity) : "Still new after save: "+entity;
+			assert echo.getId().equals(entity.getId()) : "Bad post, id corrupted: "+entity+"!="+echo.getId();
+			assert cache.contains(entity) : "Cache not updated - entity not found: "+entity;
+		}
+
+		/**
+		 * CRUD: <b>R</b>ead
+		 * @param id
+		 * @return T
+		 */
+		private T read(String id) {
+			T result = resource(getPath(id)).accept(MediaType.APPLICATION_JSON).get(distinctQueryType);
+			return (T) result;
+		}
+		
+		/**
+		 * CRUD: <b>U</b>pdate
+		 * @param entity
+		 */
+		private void update(ObservableEntity entity) {
+			assert entity.getId()!=null && entity.getId().trim().length()>0 : "No ID: "+entity;
+			assert entity.isDirty() : "Attempt to save unchanged entity: "+entity;
+			assert cache.contains(entity) : "Updating uncached entity - should have been inflated and cached before editing: "+entity;
+			
+			resource(getPath(entity.getId())).type(MediaType.APPLICATION_JSON).put(getType(), entity);
+			entity.setDirty(false);
+			
+			assert !entity.isDirty() : "Still dirty after save: "+entity;
+		}
+
+		/**
+		 * CRUD: <b>D</b>elete
+		 * @param entity
+		 */
+		private void delete(ObservableEntity entity) {
+			assert entity.getId()!=null && entity.getId().trim().length()>0 : "No ID: "+entity;
+			assert cache.contains(entity) : "Deleting uncached entity - should have been cached when read: "+entity;
+			
+			resource(getPath(entity.getId())).type(MediaType.APPLICATION_JSON).delete();
+			cache.delete(entity);
+			
+			assert !cache.contains(entity) : "Cache not updated - entity still present: "+entity;
+		}
+
+		private boolean isDeleted(ObservableEntity entity) {
+			return false; // FIXME implement delete status! How
+		}
+
+		private boolean isNew(ObservableEntity entity) {
+			return entity.getId()==null;
 		}
 
 	}
@@ -311,13 +373,14 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		return ServerConnection.getString(PreferenceConstants.P_HOSTNAME);
 	}
 	
-	protected Builder connect(String p) {
-		return Client.create(config).resource(p).accept(MediaType.APPLICATION_JSON);
-	}
-
 	public boolean isConnected() {
 		return isConnected;
 	}
+
+	private WebResource resource(String path) {
+		return Client.create(config).resource(path);
+	}
+
 
 	private void setConnected(boolean isConnected) {
 		firePropertyChange(PROP_IS_CONNECTED, this.isConnected, this.isConnected = isConnected);
@@ -347,16 +410,15 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		return adapter.isInstance(this) ? this : null;
 	}
 
-	public void save(Shell shell, IProgressMonitor monitor, ObservableEntity... entities) {
+	public void persist(Shell shell, IProgressMonitor monitor, ObservableEntity... entities) {
 		assert entities.length>0 : "Must have at least one entity";
-		NotYetImplemented.openDialog(shell, "Sorry, save operation is not yet implemented. Will fake a successful save, but nothing will be written to database.");
-		JobUtil.run(shell, new MySaver(shell, entities), "Save "+entities.length+" object(s)");
+		JobUtil.run(shell, new MyPersistor(shell, entities), "Save "+entities.length+" object(s)");
 	}
 
 	public <T extends SMDIdentity> boolean inflate(ObservableEntity<T> shallowEntity) {
 		Root root = resolveRoot(shallowEntity);
 		@SuppressWarnings("unchecked")
-		T richEntity = (T) root.find(shallowEntity.getId());
+		T richEntity = (T) root.read(shallowEntity.getId());
 		try {
 			cache.merge(richEntity, shallowEntity);
 //			copyHelper.mergeInto(unInflated, inflated, Exposed.class);

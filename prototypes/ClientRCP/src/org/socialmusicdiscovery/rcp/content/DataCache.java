@@ -90,6 +90,12 @@ import com.google.gson.annotations.Expose;
 	 */
 	private final Map<String, SMDIdentity> cache = new WeakHashMap<String, SMDIdentity>();
 
+	/* Internal, use primarily for assertions (not only by this class) */
+	/* package */ <T extends SMDIdentity> boolean contains(T anObject) {
+		String key = anObject.getId();
+		return cache.containsKey(key) && cache.get(key)==anObject;
+	}
+	
  	@SuppressWarnings("unchecked")
 	/* package */ <T extends SMDIdentity> T getOrStore(T serverObjectOrNull) {
     	if (serverObjectOrNull==null) {
@@ -107,11 +113,21 @@ import com.google.gson.annotations.Expose;
     	return (T) cache.get(key);
     }
   
-    /* package */  <T extends SMDIdentity> void merge(T serverObject, ObservableEntity<T> clientObject) {
+    /* package */ <T extends SMDIdentity> void merge(T serverObject, ObservableEntity<T> clientObject) {
 		MyAnnotatedFieldFilter filter = new MyAnnotatedFieldFilter();
 		deepMerge(serverObject, clientObject, filter);
 	}
 
+    /* package */ void add(ObservableEntity entity) {
+    	assert !cache.containsKey(entity.getId()) : "Entity already cached: " + entity;
+    	cache.put(entity.getId(), entity);
+	}
+
+    /* package */  void delete(ObservableEntity entity) {
+    	assert contains(entity) : "Entity not cached: " + entity;
+    	cache.remove(entity.getId());
+	}
+    
 	private <T extends SMDIdentity> void deepMerge(T from, ObservableEntity<T> to, FieldFilter filter) {
 		for (Field f : getFields(to, filter)) {
 			try {
@@ -210,4 +226,5 @@ import com.google.gson.annotations.Expose;
         }
         return fields;
 	}
+
 }
