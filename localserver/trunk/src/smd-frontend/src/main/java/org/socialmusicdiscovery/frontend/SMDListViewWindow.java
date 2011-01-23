@@ -182,7 +182,7 @@ public class SMDListViewWindow extends Window implements Bindable {
             browserMap.put("Track", new AbstractBrowser<Track>(TrackEntity.class) {
                 @Override
                 public TableViewItem getTableViewItem(Track track) {
-                    return new TableViewItem(track.getId(), "(%object.medium.name|%object.medium.number)||[%object.medium,-]||%object.number||. ||%object.recording.work.parent.name||[%object.recording.work.parent,: ]||%object.recording.work.name", track);
+                    return new TableViewItem(track.getId(), "(%object.medium.name|%object.medium.number)||[%object.medium,-]||%object.number||. ||%object.recording.works.parent.name||[%object.recording.works.parent,: ]||%object.recording.works.name", track);
                 }
             });
 

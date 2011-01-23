@@ -435,7 +435,7 @@ public class ContentDirectory extends AbstractContentDirectoryService  {
 				upnpTrack.setId(smdTrack.getId());
 				upnpTrack.setParentID(smdTrack.getRelease().getId());
 				upnpTrack.setClazz(new org.teleal.cling.support.model.DIDLObject.Class("object.item.audioItem.musicTrack"));
-				upnpTrack.setTitle(smdTrack.getRecording().getWork().getName());
+				upnpTrack.setTitle(smdTrack.getRecording().getWorks().iterator().next().getName());
 				//work name used instead of trackname... TODO: check which is better / always working (trackname returns url encoded string)  
 				//				.setTitle(trackItem.getName());
 

@@ -31,6 +31,7 @@ public class TrackEntity extends AbstractSMDIdentityEntity implements Track {
 
     @ManyToOne(targetEntity = ReleaseEntity.class)
     @JoinColumn(name = "release_id")
+    @Expose
     private Release release;
 
     public Integer getNumber() {

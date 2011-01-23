@@ -14,7 +14,6 @@ public abstract class AbstractJPASMDIdentityRepository<E extends AbstractSMDIden
 	public void create(E entity) {
         if(entity.getReference()==null || entity.getReference().getId() == null) {
             entity.setReference(SMDIdentityReferenceEntity.forEntity(entity));
-            entityManager.persist(entity.getReference());
         }
         super.create(entity);
     }
@@ -22,14 +21,11 @@ public abstract class AbstractJPASMDIdentityRepository<E extends AbstractSMDIden
     public E merge(E entity) {
         if(entity.getReference()==null || entity.getReference().getId() == null) {
             entity.setReference(SMDIdentityReferenceEntity.forEntity(entity));
-            entityManager.merge(entity.getReference());
         }
         return super.merge(entity);
     }
 
 	public void remove(E entity) {
-        SMDIdentityReference reference = entity.getReference();
         super.remove(entity);
-        entityManager.remove(reference);
     }
 }

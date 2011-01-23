@@ -1,6 +1,9 @@
 package org.socialmusicdiscovery.server.api.management.model.core;
 
+import com.google.gson.annotations.Expose;
+import com.google.inject.Inject;
 import org.socialmusicdiscovery.server.api.management.model.AbstractCRUDFacade;
+import org.socialmusicdiscovery.server.business.logic.TransactionManager;
 import org.socialmusicdiscovery.server.business.model.core.WorkEntity;
 import org.socialmusicdiscovery.server.business.repository.core.WorkRepository;
 import org.socialmusicdiscovery.server.support.copy.CopyHelper;
@@ -15,6 +18,8 @@ import java.util.Collection;
  */
 @Path("/works")
 public class WorkFacade extends AbstractCRUDFacade<WorkEntity, WorkRepository> {
+    @Inject
+    private TransactionManager transactionManager;
     /**
      * Search for work matching the search criterias
      *
@@ -28,15 +33,15 @@ public class WorkFacade extends AbstractCRUDFacade<WorkEntity, WorkRepository> {
     @Produces(MediaType.APPLICATION_JSON)
     public Collection<WorkEntity> search(@QueryParam("name") String name, @QueryParam("nameContains") String nameContains, @QueryParam("release") String release, @QueryParam("artist") String artist) {
         if (name != null) {
-            return new CopyHelper().detachedCopy(repository.findByNameWithRelations(name, Arrays.asList("reference"), null));
+            return new CopyHelper().detachedCopy(repository.findByNameWithRelations(name, Arrays.asList("reference"), null), Expose.class);
         } else if (nameContains != null) {
-            return new CopyHelper().detachedCopy(repository.findByPartialNameWithRelations(nameContains, Arrays.asList("reference"), null));
+            return new CopyHelper().detachedCopy(repository.findByPartialNameWithRelations(nameContains, Arrays.asList("reference"), null), Expose.class);
         } else if (release != null) {
-            return new CopyHelper().detachedCopy(repository.findByReleaseWithRelations(release, Arrays.asList("reference"), null));
+            return new CopyHelper().detachedCopy(repository.findByReleaseWithRelations(release, Arrays.asList("reference"), null), Expose.class);
         } else if (artist != null) {
-            return new CopyHelper().detachedCopy(repository.findByArtistWithRelations(artist, Arrays.asList("reference"), null));
+            return new CopyHelper().detachedCopy(repository.findByArtistWithRelations(artist, Arrays.asList("reference"), null), Expose.class);
         } else {
-            return new CopyHelper().detachedCopy(repository.findAllWithRelations(Arrays.asList("reference"), null));
+            return new CopyHelper().detachedCopy(repository.findAllWithRelations(Arrays.asList("reference"), null), Expose.class);
         }
     }
 
@@ -50,7 +55,7 @@ public class WorkFacade extends AbstractCRUDFacade<WorkEntity, WorkRepository> {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
     public WorkEntity get(@PathParam("id") String id) {
-        return super.getEntity(id);
+        return new CopyHelper().copy(super.getEntity(id), Expose.class);
     }
 
     /**
@@ -63,7 +68,15 @@ public class WorkFacade extends AbstractCRUDFacade<WorkEntity, WorkRepository> {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public WorkEntity create(WorkEntity work) {
-        return super.createEntity(work);
+        try {
+            transactionManager.begin();
+            return new CopyHelper().copy(super.createEntity(work), Expose.class);
+        }catch (RuntimeException e) {
+            transactionManager.setRollbackOnly();
+            throw e;
+        }finally {
+            transactionManager.end();
+        }
     }
 
     /**
@@ -78,7 +91,15 @@ public class WorkFacade extends AbstractCRUDFacade<WorkEntity, WorkRepository> {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
     public WorkEntity update(@PathParam("id") String id, WorkEntity work) {
-        return super.updateEntity(id, work);
+        try {
+            transactionManager.begin();
+            return new CopyHelper().copy(super.updateEntity(id, work), Expose.class);
+        }catch (RuntimeException e) {
+            transactionManager.setRollbackOnly();
+            throw e;
+        }finally {
+            transactionManager.end();
+        }
     }
 
     /**
@@ -90,6 +111,14 @@ public class WorkFacade extends AbstractCRUDFacade<WorkEntity, WorkRepository> {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
     public void delete(@PathParam("id") String id) {
-        super.deleteEntity(id);
+        try {
+            transactionManager.begin();
+            super.deleteEntity(id);
+        }catch (RuntimeException e) {
+            transactionManager.setRollbackOnly();
+            throw e;
+        }finally {
+            transactionManager.end();
+        }
     }
 }

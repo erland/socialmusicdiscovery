@@ -1,6 +1,9 @@
 package org.socialmusicdiscovery.server.api.management.model.core;
 
+import com.google.gson.annotations.Expose;
+import com.google.inject.Inject;
 import org.socialmusicdiscovery.server.api.management.model.AbstractCRUDFacade;
+import org.socialmusicdiscovery.server.business.logic.TransactionManager;
 import org.socialmusicdiscovery.server.business.model.core.RecordingSessionEntity;
 import org.socialmusicdiscovery.server.business.repository.core.RecordingSessionRepository;
 import org.socialmusicdiscovery.server.support.copy.CopyHelper;
@@ -15,6 +18,8 @@ import java.util.Collection;
  */
 @Path("/recordingsessions")
 public class RecordingSessionFacade extends AbstractCRUDFacade<RecordingSessionEntity, RecordingSessionRepository> {
+    @Inject
+    private TransactionManager transactionManager;
     /**
      * Search for recordings sessions
      *
@@ -23,7 +28,7 @@ public class RecordingSessionFacade extends AbstractCRUDFacade<RecordingSessionE
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Collection<RecordingSessionEntity> search() {
-        return new CopyHelper().detachedCopy(repository.findAllWithRelations(Arrays.asList("reference"), null));
+        return new CopyHelper().detachedCopy(repository.findAllWithRelations(Arrays.asList("reference"), null), Expose.class);
     }
 
     /**
@@ -36,7 +41,7 @@ public class RecordingSessionFacade extends AbstractCRUDFacade<RecordingSessionE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
     public RecordingSessionEntity get(@PathParam("id") String id) {
-        return super.getEntity(id);
+        return new CopyHelper().copy(super.getEntity(id), Expose.class);
     }
 
     /**
@@ -49,7 +54,15 @@ public class RecordingSessionFacade extends AbstractCRUDFacade<RecordingSessionE
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public RecordingSessionEntity create(RecordingSessionEntity recordingSession) {
-        return super.createEntity(recordingSession);
+        try {
+            transactionManager.begin();
+            return new CopyHelper().copy(super.createEntity(recordingSession), Expose.class);
+        }catch (RuntimeException e) {
+            transactionManager.setRollbackOnly();
+            throw e;
+        }finally {
+            transactionManager.end();
+        }
     }
 
     /**
@@ -64,7 +77,15 @@ public class RecordingSessionFacade extends AbstractCRUDFacade<RecordingSessionE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
     public RecordingSessionEntity update(@PathParam("id") String id, RecordingSessionEntity recordingSession) {
-        return super.updateEntity(id, recordingSession);
+        try {
+            transactionManager.begin();
+            return new CopyHelper().copy(super.updateEntity(id, recordingSession), Expose.class);
+        }catch (RuntimeException e) {
+            transactionManager.setRollbackOnly();
+            throw e;
+        }finally {
+            transactionManager.end();
+        }
     }
 
     /**
@@ -76,6 +97,14 @@ public class RecordingSessionFacade extends AbstractCRUDFacade<RecordingSessionE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
     public void delete(@PathParam("id") String id) {
-        super.deleteEntity(id);
+        try {
+            transactionManager.begin();
+            super.deleteEntity(id);
+        }catch (RuntimeException e) {
+            transactionManager.setRollbackOnly();
+            throw e;
+        }finally {
+            transactionManager.end();
+        }
     }
 }

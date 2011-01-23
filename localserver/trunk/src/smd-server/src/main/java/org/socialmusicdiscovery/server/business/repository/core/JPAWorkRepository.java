@@ -46,10 +46,39 @@ public class JPAWorkRepository extends AbstractJPASMDIdentityRepository<WorkEnti
         query.setParameter("artist", artistId);
         return query.getResultList();
     }
-    public void remove(WorkEntity entity) {
-        for (Contributor contributor : entity.getContributors()) {
-            contributorRepository.remove((ContributorEntity)contributor);
+    @Override
+    public void create(WorkEntity entity) {
+        if (entity.getParent() != null) {
+            if(!entityManager.contains(entity.getParent())) {
+                entity.setParent(findById(entity.getParent().getId()));
+            }
         }
+        for (Contributor contributor : entity.getContributors()) {
+            if(!entityManager.contains(contributor)) {
+                contributorRepository.create((ContributorEntity) contributor);
+            }
+        }
+        super.create(entity);
+    }
+
+    @Override
+    public WorkEntity merge(WorkEntity entity) {
+        if (entity.getParent() != null) {
+            if(!entityManager.contains(entity.getParent())) {
+                entity.setParent(findById(entity.getParent().getId()));
+            }
+        }
+        for (Contributor contributor : entity.getContributors()) {
+            if(!entityManager.contains(contributor)) {
+                contributorRepository.merge((ContributorEntity) contributor);
+            }
+        }
+        return super.merge(entity);
+    }
+
+
+    @Override
+    public void remove(WorkEntity entity) {
         entityManager.createQuery("DELETE from RecordingWorkSearchRelationEntity where reference=:id").setParameter("id",entity.getId()).executeUpdate();
         entityManager.createQuery("DELETE from ReleaseSearchRelationEntity where reference=:id").setParameter("id",entity.getId()).executeUpdate();
 

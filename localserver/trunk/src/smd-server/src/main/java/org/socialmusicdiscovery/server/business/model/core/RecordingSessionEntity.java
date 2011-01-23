@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import org.socialmusicdiscovery.server.business.model.AbstractSMDIdentityEntity;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -17,7 +18,7 @@ import java.util.Set;
 public class RecordingSessionEntity extends AbstractSMDIdentityEntity implements RecordingSession {
     @Expose
     private Date date;
-    @OneToMany(targetEntity = ContributorEntity.class)
+    @OneToMany(targetEntity = ContributorEntity.class, cascade = {CascadeType.ALL})
     @JoinColumn(name = "session_id")
     @Expose
     private Set<Contributor> contributors = new HashSet<Contributor>();

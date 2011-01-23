@@ -35,8 +35,12 @@
         <loadData tableName="recordings"
                   file="org/socialmusicdiscovery/server/database/sampledata/thebodyguard/recordings.csv">
             <column header="id" type="STRING"/>
-            <column header="work_id" type="STRING"/>
             <column header="name" type="STRING"/>
+        </loadData>
+        <loadData tableName="recording_works"
+                  file="org/socialmusicdiscovery/server/database/sampledata/thebodyguard/recording_works.csv">
+            <column header="recording_id" type="STRING"/>
+            <column header="work_id" type="STRING"/>
         </loadData>
         <loadData tableName="tracks" file="org/socialmusicdiscovery/server/database/sampledata/thebodyguard/tracks.csv">
             <column header="id" type="STRING"/>

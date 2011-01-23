@@ -12,7 +12,7 @@ public abstract class AbstractSMDIdentityEntity implements SMDIdentity {
     @Expose
     private String id;
 
-    @OneToOne(targetEntity = SMDIdentityReferenceEntity.class, optional = false)
+    @OneToOne(targetEntity = SMDIdentityReferenceEntity.class, optional = false, cascade = {CascadeType.ALL})
     @JoinColumn(name = "id")
     private SMDIdentityReference reference;
 

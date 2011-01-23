@@ -170,7 +170,7 @@ public abstract class AbstractBrowseService {
                 query.setMaxResults(maxItems);
             }
             List<T> items = query.getResultList();
-            Collection<ResultItem<T>> resultItems = new ArrayList<ResultItem<T>>(items.size());
+            List<ResultItem<T>> resultItems = new ArrayList<ResultItem<T>>(items.size());
             result.setItems(resultItems);
             if (maxItems == null) {
                 result.setCount((long) items.size());

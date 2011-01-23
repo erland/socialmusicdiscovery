@@ -156,9 +156,14 @@ public class SampleCreator {
     protected void addRecording(Map<String, List<String>> result, String id, String workId, String name) {
         if (result.get("recordings") == null) {
             result.put("recordings", new ArrayList<String>(Arrays.asList(
-                    "id,name,work_id")));
+                    "id,name")));
         }
-        result.get("recordings").add(id + ",NULL,\"" + workId + "\"");
+        result.get("recordings").add(id + ",NULL");
+        if (result.get("recording_works") == null) {
+            result.put("recording_works", new ArrayList<String>(Arrays.asList(
+                    "recording_id,work_id")));
+        }
+        result.get("recording_works").add(id + ",\"" + workId + "\"");
         addSMDIdentityReference(result, id, SMDIdentityReferenceEntity.typeForClass(RecordingEntity.class));
     }
 

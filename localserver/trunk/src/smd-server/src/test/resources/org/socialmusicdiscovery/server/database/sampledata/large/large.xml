@@ -26,8 +26,12 @@
         <loadData tableName="recordings"
                   file="org/socialmusicdiscovery/server/database/sampledata/large/recordings.csv">
             <column header="id" type="STRING"/>
-            <column header="work_id" type="STRING"/>
             <column header="name" type="STRING"/>
+        </loadData>
+        <loadData tableName="recording_works"
+                  file="org/socialmusicdiscovery/server/database/sampledata/large/recording_works.csv">
+            <column header="recording_id" type="STRING"/>
+            <column header="work_id" type="STRING"/>
         </loadData>
         <loadData tableName="mediums"
                   file="org/socialmusicdiscovery/server/database/sampledata/large/mediums.csv">

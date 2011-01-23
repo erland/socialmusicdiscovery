@@ -31,6 +31,7 @@ import com.google.gson.annotations.Expose;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 public class Result {
@@ -122,7 +123,7 @@ public class Result {
     }
 
     @Expose
-    private Collection<ResultItem> items;
+    private List<ResultItem> items;
     @Expose
     private Long totalSize;
     @Expose
@@ -133,7 +134,7 @@ public class Result {
     public Result() {
     }
 
-    public Result(Collection<ResultItem> items, Long totalSize, Long offset, Long size) {
+    public Result(List<ResultItem> items, Long totalSize, Long offset, Long size) {
         this.items = items;
         this.totalSize = totalSize;
         this.offset = offset;

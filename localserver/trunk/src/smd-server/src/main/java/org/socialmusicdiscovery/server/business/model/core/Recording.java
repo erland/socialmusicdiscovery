@@ -22,7 +22,7 @@ public interface Recording extends SMDIdentity {
 
     void setContributors(Set<Contributor> contributors);
 
-    Work getWork();
+    Set<Work> getWorks();
 
-    void setWork(Work work);
+    void setWorks(Set<Work> works);
 }

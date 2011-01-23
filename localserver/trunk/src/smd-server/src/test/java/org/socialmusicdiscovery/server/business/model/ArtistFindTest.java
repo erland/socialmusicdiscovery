@@ -97,7 +97,7 @@ public class ArtistFindTest extends BaseTestCase {
         artists = artistRepository.findByReleaseWithRelations(release.getId(),null,null);
         assert artists.size()==16;
 
-        artists = artistRepository.findByWorkWithRelations(release.getTracks().get(0).getRecording().getWork().getId(),null,null);
+        artists = artistRepository.findByWorkWithRelations(release.getTracks().get(0).getRecording().getWorks().iterator().next().getId(),null,null);
         assert artists.size()==3;
     }
 }
