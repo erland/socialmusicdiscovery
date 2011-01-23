@@ -132,16 +132,20 @@ public class EditTrackWindow extends Window implements Bindable {
             trackNumberTextInput.setText(track.getNumber().toString());
         }
         recordingNameTextInput.setText(track.getRecording().getName());
-        if (track.getRecording().getWork() != null) {
-            workNameTextInput.setText(track.getRecording().getWork().getName());
+        Work work = null;
+        if (track.getRecording().getWorks() != null && track.getRecording().getWorks().size()>0) {
+            work = track.getRecording().getWorks().iterator().next();
+        }
+        if (work != null) {
+            workNameTextInput.setText(work.getName());
         }
         if (track.getRecording().getDate() != null) {
             recordingYearTextInput.setText(DATE_FORMAT_DATE.format(this.track.getRecording().getDate()));
         }
 
         Set<Contributor> contributors = new HashSet<Contributor>(track.getRecording().getContributors());
-        if (track.getRecording().getWork() != null) {
-            contributors.addAll(track.getRecording().getWork().getContributors());
+        if (work != null) {
+            contributors.addAll(work.getContributors());
         }
         updateContributors(contributors);
 

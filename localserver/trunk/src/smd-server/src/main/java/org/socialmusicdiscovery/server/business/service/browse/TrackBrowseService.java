@@ -14,7 +14,7 @@ public class TrackBrowseService extends AbstractBrowseService implements BrowseS
             setExclusionQueryParameters(query, criteriaList);
             setQueryParameters(objectType, query, criteriaList);
         } else {
-            query = entityManager.createQuery("SELECT distinct e from " + entity.getSimpleName() + " as e JOIN FETCH e.recording as r JOIN FETCH r.work LEFT JOIN FETCH e.medium as m " + (orderBy != null ? " order by " + orderBy : ""));
+            query = entityManager.createQuery("SELECT distinct e from " + entity.getSimpleName() + " as e JOIN FETCH e.recording as r LEFT JOIN FETCH e.medium as m " + (orderBy != null ? " order by " + orderBy : ""));
         }
         return query;
     }

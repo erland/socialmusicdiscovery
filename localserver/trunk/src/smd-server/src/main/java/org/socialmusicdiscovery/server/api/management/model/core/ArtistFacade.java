@@ -1,6 +1,9 @@
 package org.socialmusicdiscovery.server.api.management.model.core;
 
+import com.google.gson.annotations.Expose;
+import com.google.inject.Inject;
 import org.socialmusicdiscovery.server.api.management.model.AbstractCRUDFacade;
+import org.socialmusicdiscovery.server.business.logic.TransactionManager;
 import org.socialmusicdiscovery.server.business.model.core.ArtistEntity;
 import org.socialmusicdiscovery.server.business.repository.core.ArtistRepository;
 import org.socialmusicdiscovery.server.support.copy.CopyHelper;
@@ -15,6 +18,8 @@ import java.util.Collection;
  */
 @Path("/artists")
 public class ArtistFacade extends AbstractCRUDFacade<ArtistEntity, ArtistRepository> {
+    @Inject
+    private TransactionManager transactionManager;
     /**
      * Search for artists matching the specified search criterias
      *
@@ -28,15 +33,15 @@ public class ArtistFacade extends AbstractCRUDFacade<ArtistEntity, ArtistReposit
     @Produces(MediaType.APPLICATION_JSON)
     public Collection<ArtistEntity> search(@QueryParam("name") String name, @QueryParam("nameContains") String nameContains, @QueryParam("release") String release, @QueryParam("work") String work) {
         if (name != null) {
-            return new CopyHelper().detachedCopy(repository.findByNameWithRelations(name, Arrays.asList("reference"), null));
+            return new CopyHelper().detachedCopy(repository.findByNameWithRelations(name, Arrays.asList("reference"), null), Expose.class);
         } else if (nameContains != null) {
-            return new CopyHelper().detachedCopy(repository.findByPartialNameWithRelations(nameContains, Arrays.asList("reference"), null));
+            return new CopyHelper().detachedCopy(repository.findByPartialNameWithRelations(nameContains, Arrays.asList("reference"), null), Expose.class);
         } else if (release != null) {
-            return new CopyHelper().detachedCopy(repository.findByReleaseWithRelations(release, Arrays.asList("reference"), null));
+            return new CopyHelper().detachedCopy(repository.findByReleaseWithRelations(release, Arrays.asList("reference"), null), Expose.class);
         } else if (work != null) {
-            return new CopyHelper().detachedCopy(repository.findByWorkWithRelations(work, Arrays.asList("reference"), null));
+            return new CopyHelper().detachedCopy(repository.findByWorkWithRelations(work, Arrays.asList("reference"), null), Expose.class);
         } else {
-            return new CopyHelper().detachedCopy(repository.findAllWithRelations(Arrays.asList("reference"), null));
+            return new CopyHelper().detachedCopy(repository.findAllWithRelations(Arrays.asList("reference"), null), Expose.class);
         }
     }
 
@@ -50,7 +55,7 @@ public class ArtistFacade extends AbstractCRUDFacade<ArtistEntity, ArtistReposit
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
     public ArtistEntity get(@PathParam("id") String id) {
-        return super.getEntity(id);
+        return new CopyHelper().copy(super.getEntity(id), Expose.class);
     }
 
     /**
@@ -63,7 +68,15 @@ public class ArtistFacade extends AbstractCRUDFacade<ArtistEntity, ArtistReposit
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public ArtistEntity create(ArtistEntity artist) {
-        return super.createEntity(artist);
+        try {
+            transactionManager.begin();
+            return new CopyHelper().copy(super.createEntity(artist), Expose.class);
+        }catch (RuntimeException e) {
+            transactionManager.setRollbackOnly();
+            throw e;
+        }finally {
+            transactionManager.end();
+        }
     }
 
     /**
@@ -78,7 +91,15 @@ public class ArtistFacade extends AbstractCRUDFacade<ArtistEntity, ArtistReposit
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
     public ArtistEntity update(@PathParam("id") String id, ArtistEntity artist) {
-        return super.updateEntity(id, artist);
+        try {
+            transactionManager.begin();
+            return new CopyHelper().copy(super.updateEntity(id, artist), Expose.class);
+        }catch (RuntimeException e) {
+            transactionManager.setRollbackOnly();
+            throw e;
+        }finally {
+            transactionManager.end();
+        }
     }
 
     /**
@@ -90,6 +111,14 @@ public class ArtistFacade extends AbstractCRUDFacade<ArtistEntity, ArtistReposit
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
     public void delete(@PathParam("id") String id) {
-        super.deleteEntity(id);
+        try {
+            transactionManager.begin();
+            super.deleteEntity(id);
+        }catch (RuntimeException e) {
+            transactionManager.setRollbackOnly();
+            throw e;
+        }finally {
+            transactionManager.end();
+        }
     }
 }

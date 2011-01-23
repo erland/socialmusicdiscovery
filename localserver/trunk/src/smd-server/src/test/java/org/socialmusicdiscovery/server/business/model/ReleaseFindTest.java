@@ -132,7 +132,7 @@ public class ReleaseFindTest extends BaseTestCase {
         assert releases.size()==1;
         assert releases.iterator().next().getName().equals("The Bodyguard (Original Soundtrack Album)");
 
-        Work work = releases.iterator().next().getTracks().get(0).getRecording().getWork();
+        Work work = releases.iterator().next().getTracks().get(0).getRecording().getWorks().iterator().next();
 
         releases = releaseRepository.findByWorkWithRelations(work.getId(),null,null);
         assert releases.size()==1;

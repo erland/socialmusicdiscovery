@@ -26,7 +26,7 @@ public class WorkEntity extends AbstractSMDIdentityEntity implements Work {
     @Expose
     private Work parent;
 
-    @OneToMany(targetEntity = ContributorEntity.class)
+    @OneToMany(targetEntity = ContributorEntity.class, cascade = {CascadeType.ALL})
     @JoinColumn(name = "work_id")
     @Expose
     private Set<Contributor> contributors = new HashSet<Contributor>();

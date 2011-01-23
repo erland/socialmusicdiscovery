@@ -74,12 +74,20 @@ public abstract class AbstractJPAEntityRepository<K, E> implements EntityReposit
         queryString.append("select ").append(distinct).append(entityName).append(" from ").append(entityClass.getSimpleName()).append(" as e");
         if(mandatoryRelations != null) {
             for (String relation : mandatoryRelations) {
-                queryString.append(" JOIN FETCH ").append(entityName).append(".").append(relation);
+                if(relation.contains(".")) {
+                    queryString.append(" JOIN FETCH ").append(relation).append(" as ").append(relation.substring(relation.indexOf(".")+1));
+                }else {
+                    queryString.append(" JOIN FETCH ").append(entityName).append(".").append(relation).append(" as ").append(relation);
+                }
             }
         }
         if(optionalRelations != null) {
             for (String relation : optionalRelations) {
-                queryString.append(" LEFT JOIN FETCH ").append(entityName).append(".").append(relation);
+                if(relation.contains(".")) {
+                    queryString.append(" LEFT JOIN FETCH ").append(relation).append(" as ").append(relation.substring(relation.indexOf(".")+1));
+                }else {
+                    queryString.append(" LEFT JOIN FETCH ").append(entityName).append(".").append(relation).append(" as ").append(relation);
+                }
             }
         }
         return queryString.toString();

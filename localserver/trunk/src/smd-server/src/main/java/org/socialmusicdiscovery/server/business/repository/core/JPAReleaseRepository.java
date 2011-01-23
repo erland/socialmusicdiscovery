@@ -1,6 +1,7 @@
 package org.socialmusicdiscovery.server.business.repository.core;
 
 import com.google.inject.Inject;
+import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
 import org.socialmusicdiscovery.server.business.model.core.*;
 import org.socialmusicdiscovery.server.business.repository.AbstractJPASMDIdentityRepository;
 
@@ -12,13 +13,17 @@ public class JPAReleaseRepository extends AbstractJPASMDIdentityRepository<Relea
     private ContributorRepository contributorRepository;
     private TrackRepository trackRepository;
     private MediumRepository mediumRepository;
+    private LabelRepository labelRepository;
+    private ArtistRepository artistRepository;
 
     @Inject
-    public JPAReleaseRepository(EntityManager em, ContributorRepository contributorRepository, TrackRepository trackRepository, MediumRepository mediumRepository) {
+    public JPAReleaseRepository(EntityManager em, ContributorRepository contributorRepository, TrackRepository trackRepository, MediumRepository mediumRepository, LabelRepository labelRepository, ArtistRepository artistRepository) {
         super(em);
         this.contributorRepository = contributorRepository;
         this.trackRepository = trackRepository;
         this.mediumRepository = mediumRepository;
+        this.labelRepository = labelRepository;
+        this.artistRepository = artistRepository;
     }
 
     public Collection<ReleaseEntity> findByName(String name) {
@@ -48,16 +53,55 @@ public class JPAReleaseRepository extends AbstractJPASMDIdentityRepository<Relea
         query.setParameter("work", workId);
         return query.getResultList();
     }
-    public void remove(ReleaseEntity entity) {
-        for (Contributor contributor : entity.getContributors()) {
-            contributorRepository.remove((ContributorEntity)contributor);
+
+    @Override
+    public void create(ReleaseEntity entity) {
+        if (entity.getLabel() != null) {
+            if(!entityManager.contains(entity.getLabel())) {
+                entity.setLabel(labelRepository.findById(entity.getLabel().getId()));
+            }
         }
+        for (Medium medium : entity.getMediums()) {
+            if(!entityManager.contains(medium)) {
+                if(((MediumEntity)medium).getReference()==null || entity.getReference().getId() == null) {
+                    ((MediumEntity)medium).setReference(SMDIdentityReferenceEntity.forEntity(medium));
+                }
+            }
+        }
+        for (Contributor contributor : entity.getContributors()) {
+            if(!entityManager.contains(contributor)) {
+                contributorRepository.create((ContributorEntity) contributor);
+            }
+        }
+        super.create(entity);
+    }
+
+    @Override
+    public ReleaseEntity merge(ReleaseEntity entity) {
+        if (entity.getLabel() != null) {
+            if(!entityManager.contains(entity.getLabel())) {
+                entity.setLabel(labelRepository.findById(entity.getLabel().getId()));
+            }
+        }
+        for (Medium medium : entity.getMediums()) {
+            if(!entityManager.contains(medium)) {
+                mediumRepository.merge((MediumEntity) medium);
+            }
+        }
+        for (Contributor contributor : entity.getContributors()) {
+            if(!entityManager.contains(contributor)) {
+                contributorRepository.merge((ContributorEntity) contributor);
+            }
+        }
+        return super.merge(entity);
+    }
+
+    @Override
+    public void remove(ReleaseEntity entity) {
+        entityManager.refresh(entity);
         for (Track track : entity.getTracks()) {
             track.setRelease(null);
             trackRepository.remove((TrackEntity)track);
-        }
-        for (Medium medium : entity.getMediums()) {
-            mediumRepository.remove((MediumEntity)medium);
         }
         entity.getSearchRelations().clear();
         entityManager.createQuery("DELETE from RecordingReleaseSearchRelationEntity where reference=:id").setParameter("id",entity.getId()).executeUpdate();

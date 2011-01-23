@@ -40,10 +40,27 @@ public class JPARecordingSessionRepository extends AbstractJPASMDIdentityReposit
     }
 
     @Override
-    public void remove(RecordingSessionEntity entity) {
+    public void create(RecordingSessionEntity entity) {
         for (Contributor contributor : entity.getContributors()) {
-            contributorRepository.remove((ContributorEntity)contributor);
+            if(!entityManager.contains(contributor)) {
+                contributorRepository.create((ContributorEntity) contributor);
+            }
         }
+        super.create(entity);
+    }
+
+    @Override
+    public RecordingSessionEntity merge(RecordingSessionEntity entity) {
+        for (Contributor contributor : entity.getContributors()) {
+            if(!entityManager.contains(contributor)) {
+                contributorRepository.merge((ContributorEntity) contributor);
+            }
+        }
+        return super.merge(entity);
+    }
+
+    @Override
+    public void remove(RecordingSessionEntity entity) {
         for (Recording recording : entity.getRecordings()) {
             recordingRepository.remove((RecordingEntity)recording);
         }

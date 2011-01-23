@@ -21,6 +21,12 @@ public class ContributorEntity extends AbstractSMDIdentityEntity implements Cont
     @Expose
     private Artist artist;
 
+    public ContributorEntity() {}
+    public ContributorEntity(Artist artist, String type) {
+        setArtist(artist);
+        setType(type);
+    }
+
     public String getType() {
         return type;
     }

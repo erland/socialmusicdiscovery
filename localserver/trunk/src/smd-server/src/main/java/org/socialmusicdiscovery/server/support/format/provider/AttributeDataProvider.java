@@ -87,6 +87,14 @@ public class AttributeDataProvider implements DataProvider {
                 field.setAccessible(true);
                 try {
                     value = field.get(value);
+                    if(Collection.class.isAssignableFrom(field.getType())) {
+                        Iterator it = ((Collection)value).iterator();
+                        if(it.hasNext()) {
+                            value = it.next();
+                        }else {
+                            value = null;
+                        }
+                    }
                 } catch (IllegalAccessException e) {
                     e.printStackTrace(System.err);
                     value = null;

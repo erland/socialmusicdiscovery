@@ -15,10 +15,7 @@ import org.apache.pivot.wtk.*;
 import org.apache.pivot.wtkx.Bindable;
 import org.apache.pivot.wtkx.WTKX;
 import org.apache.pivot.wtkx.WTKXSerializer;
-import org.socialmusicdiscovery.server.business.model.core.Artist;
-import org.socialmusicdiscovery.server.business.model.core.Contributor;
-import org.socialmusicdiscovery.server.business.model.core.Release;
-import org.socialmusicdiscovery.server.business.model.core.Track;
+import org.socialmusicdiscovery.server.business.model.core.*;
 
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
@@ -144,6 +141,7 @@ public class EditReleaseWindow extends Window implements Bindable {
 
     public void open(Display display, Window owner, Release release) {
         release = Client.create(config).resource("http://" + SMDSERVER + ":" + SMDSERVERPORT + "/releases/" + release.getId()).accept(MediaType.APPLICATION_JSON).get(Release.class);
+        release.setTracks(new java.util.ArrayList<Track>(Client.create(config).resource("http://" + SMDSERVER + ":" + SMDSERVERPORT + "/tracks?release=" + release.getId()).accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<Track>>() {})));
         this.release = release;
 
         cancelButton.getButtonPressListeners().add(new ButtonPressListener() {
@@ -311,18 +309,23 @@ public class EditReleaseWindow extends Window implements Bindable {
                     trackData.number = track.getNumber().toString();
                 }
             }
+            Work work = null;
+            if (track.getRecording().getWorks() != null && track.getRecording().getWorks().size()>0) {
+                work = track.getRecording().getWorks().iterator().next();
+            }
+
             if (track.getRecording().getName() != null) {
                 trackData.title = track.getRecording().getName();
-            } else if (track.getRecording().getWork() != null) {
-                if(track.getRecording().getWork().getParent() != null) {
-                    trackData.title = track.getRecording().getWork().getParent().getName()+": "+track.getRecording().getWork().getName();
+            } else if (work != null) {
+                if(work.getParent() != null) {
+                    trackData.title = work.getParent().getName()+": "+work.getName();
                 }else {
-                    trackData.title = track.getRecording().getWork().getName();
+                    trackData.title = work.getName();
                 }
             }
             Set<Contributor> contributorSet = new HashSet<Contributor>(track.getRecording().getContributors());
-            if (track.getRecording().getWork() != null) {
-                contributorSet.addAll(track.getRecording().getWork().getContributors());
+            if (work != null) {
+                contributorSet.addAll(work.getContributors());
             }
             Map<String, StringBuilder> contributors = getContributorMap(contributorSet);
             if (contributors.get("composer") != null) {

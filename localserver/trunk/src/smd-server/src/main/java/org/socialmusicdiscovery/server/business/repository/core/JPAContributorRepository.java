@@ -9,8 +9,13 @@ import javax.persistence.Query;
 import java.util.Collection;
 
 public class JPAContributorRepository extends AbstractJPASMDIdentityRepository<ContributorEntity> implements ContributorRepository {
+    private ArtistRepository artistRepository;
+
     @Inject
-    public JPAContributorRepository(EntityManager em) {super(em);}
+    public JPAContributorRepository(EntityManager em, ArtistRepository artistRepository) {
+        super(em);
+        this.artistRepository = artistRepository;
+    }
 
     public Collection<ContributorEntity> findByArtistWithRelations(String artistId, Collection<String> mandatoryRelations, Collection<String> optionalRelations) {
         Query query = entityManager.createQuery(queryStringFor("e", mandatoryRelations, optionalRelations, true) + " JOIN e.artist as a WHERE a.id=:artist");
@@ -39,4 +44,24 @@ public class JPAContributorRepository extends AbstractJPASMDIdentityRepository<C
         return query.getResultList();
 
     }
+    @Override
+    public void create(ContributorEntity entity) {
+        if (entity.getArtist() != null) {
+            if(!entityManager.contains(entity.getArtist())) {
+                entity.setArtist(artistRepository.findById(entity.getArtist().getId()));
+            }
+        }
+        super.create(entity);
+    }
+
+    @Override
+    public ContributorEntity merge(ContributorEntity entity) {
+        if (entity.getArtist() != null) {
+            if(!entityManager.contains(entity.getArtist())) {
+                entity.setArtist(artistRepository.findById(entity.getArtist().getId()));
+            }
+        }
+        return super.merge(entity);
+    }
+
 }

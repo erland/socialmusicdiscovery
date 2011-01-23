@@ -160,64 +160,65 @@ public class SearchRelationPostProcessor implements PostProcessor {
         aggregatedContributors.addAll(recordingContributors);
         aggregatedContributors.addAll(sessionContributors);
         aggregatedRecordings.add(recording);
-        Work work = recording.getWork();
         Set<Contributor> aggregatedWorkContributors = new HashSet<Contributor>();
         Set<ClassificationEntity> aggregatedWorkClassifications = new HashSet<ClassificationEntity>();
         Set<Work> works = new HashSet<Work>();
-        while (work != null) {
-            works.add(work);
-            Set<SearchRelationEntity> workSearchRelations = new HashSet<SearchRelationEntity>();
-            Set<Contributor> workContributors = work.getContributors();
-            aggregatedWorkContributors.addAll(workContributors);
-            aggregatedContributors.addAll(workContributors);
-            aggregatedWorks.add(work);
+        for (Work work : recording.getWorks()) {
+            while (work != null) {
+                works.add(work);
+                Set<SearchRelationEntity> workSearchRelations = new HashSet<SearchRelationEntity>();
+                Set<Contributor> workContributors = work.getContributors();
+                aggregatedWorkContributors.addAll(workContributors);
+                aggregatedContributors.addAll(workContributors);
+                aggregatedWorks.add(work);
 
-            Collection<ClassificationEntity> workClassifications = classificationRepository.findByReference(work.getId());
-            aggregatedClassifications.addAll(workClassifications);
-            aggregatedWorkClassifications.addAll(workClassifications);
+                Collection<ClassificationEntity> workClassifications = classificationRepository.findByReference(work.getId());
+                aggregatedClassifications.addAll(workClassifications);
+                aggregatedWorkClassifications.addAll(workClassifications);
 
-            // Add relations for contributors directly related to this work
-            for (Contributor contributor : workContributors) {
-                for (Work workOrPart : works) {
-                    addContributor(null, contributor, workOrPart, null);
-                }
-            }
-
-            // Add relations for contributors related to a recording session which contains this work
-            // If there are contributors of the same role defined directly on the recording or work, the contributors on the recording session with this role is ignored
-            for (Contributor contributor : sessionContributors) {
-                if (!containsRole(workContributors, contributor.getType()) &&
-                        !containsRole(recordingContributors, contributor.getType())) {
+                // Add relations for contributors directly related to this work
+                for (Contributor contributor : workContributors) {
                     for (Work workOrPart : works) {
                         addContributor(null, contributor, workOrPart, null);
                     }
                 }
-            }
 
-            // Add relations for contributors related to a recording which contains this work
-            // If there are contributors of the same role defined directly on the work, the contributors on the recording with this role is ignored
-            for (Contributor contributor : recordingContributors) {
-                if (!containsRole(workContributors, contributor.getType())) {
-                    addContributor(null, contributor, work, null);
+                // Add relations for contributors related to a recording session which contains this work
+                // If there are contributors of the same role defined directly on the recording or work, the contributors on the recording session with this role is ignored
+                for (Contributor contributor : sessionContributors) {
+                    if (!containsRole(workContributors, contributor.getType()) &&
+                            !containsRole(recordingContributors, contributor.getType())) {
+                        for (Work workOrPart : works) {
+                            addContributor(null, contributor, workOrPart, null);
+                        }
+                    }
                 }
-            }
 
-            // Add relations for contributors related to a release which contains this work
-            // If there are contributors of the same role defined directly on the recording, session or work, the contributors on the release with this role is ignored
-            for (Contributor contributor : releaseContributors) {
-                if (!containsRole(workContributors, contributor.getType()) &&
-                        !containsRole(recordingContributors, contributor.getType()) &&
-                        !containsRole(sessionContributors, contributor.getType())) {
-                    addContributor(null, contributor, work, null);
+                // Add relations for contributors related to a recording which contains this work
+                // If there are contributors of the same role defined directly on the work, the contributors on the recording with this role is ignored
+                for (Contributor contributor : recordingContributors) {
+                    if (!containsRole(workContributors, contributor.getType())) {
+                        addContributor(null, contributor, work, null);
+                    }
                 }
-            }
 
-            recordingSearchRelations.add(new RecordingWorkSearchRelationEntity(recording, work));
-            for (SearchRelationEntity relation : workSearchRelations) {
-                // Need to use merge because a work can be part of multiple releases
-                entityManager.merge(relation);
+                // Add relations for contributors related to a release which contains this work
+                // If there are contributors of the same role defined directly on the recording, session or work, the contributors on the release with this role is ignored
+                for (Contributor contributor : releaseContributors) {
+                    if (!containsRole(workContributors, contributor.getType()) &&
+                            !containsRole(recordingContributors, contributor.getType()) &&
+                            !containsRole(sessionContributors, contributor.getType())) {
+                        addContributor(null, contributor, work, null);
+                    }
+                }
+
+                recordingSearchRelations.add(new RecordingWorkSearchRelationEntity(recording, work));
+                for (SearchRelationEntity relation : workSearchRelations) {
+                    // Need to use merge because a work can be part of multiple releases
+                    entityManager.merge(relation);
+                }
+                work = work.getParent();
             }
-            work = work.getParent();
         }
         aggregatedTrackContributors.addAll(aggregatedWorkContributors);
 

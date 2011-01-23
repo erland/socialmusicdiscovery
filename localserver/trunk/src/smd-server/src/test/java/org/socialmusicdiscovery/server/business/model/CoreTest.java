@@ -73,7 +73,7 @@ public class CoreTest extends BaseTestCase {
     private void printTracks(List<Track> tracks, String prefix) {
         for (Track track : tracks) {
             Recording recording = track.getRecording();
-            Work work = recording.getWork();
+            Work work = recording.getWorks().iterator().next();
 
             System.out.println(prefix + track.getNumber() + ". " + work.getName());
             for (Contributor contributor : recording.getContributors()) {
@@ -120,7 +120,7 @@ public class CoreTest extends BaseTestCase {
             workRepository.create(work);
 
             RecordingEntity recording = new RecordingEntity();
-            recording.setWork(work);
+            recording.getWorks().add(work);
             recordingRepository.create(recording);
 
             ContributorEntity contributorWhitneyHouston= new ContributorEntity();
@@ -437,7 +437,7 @@ public class CoreTest extends BaseTestCase {
             if(track.getNumber().equals(1)) {
                 trackForRecording = track;
                 recordingForWork=track.getRecording();
-                work = recordingForWork.getWork();
+                work = recordingForWork.getWorks().iterator().next();
             }
         }
         assert trackForRecording != null;
@@ -482,7 +482,7 @@ public class CoreTest extends BaseTestCase {
             if(track.getNumber().equals(1)) {
                 trackForRecording = track;
                 recordingForWork=track.getRecording();
-                work = recordingForWork.getWork();
+                work = recordingForWork.getWorks().iterator().next();
             }
         }
         assert trackForRecording != null;
@@ -508,7 +508,7 @@ public class CoreTest extends BaseTestCase {
             if(track.getNumber().equals(1)) {
                 trackForRecording = track;
                 recordingForWork=track.getRecording();
-                work = recordingForWork.getWork();
+                work = recordingForWork.getWorks().iterator().next();
             }
         }
         assert recordingForWork == null;

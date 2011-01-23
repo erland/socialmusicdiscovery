@@ -285,7 +285,7 @@ public class SqueezeboxServer implements MediaImporter {
 
                 // Create a Recording entity represented by the Work and various Contributors
                 RecordingEntity recording = new RecordingEntity();
-                recording.setWork(work);
+                recording.getWorks().add(work);
 
                 Set<Contributor> albumArtistContributors = getContributorsForTag(tags.get(TagData.ALBUMARTIST), Contributor.PERFORMER);
                 Set<Contributor> artistContributors = getContributorsForTag(tags.get(TagData.ARTIST), Contributor.PERFORMER);

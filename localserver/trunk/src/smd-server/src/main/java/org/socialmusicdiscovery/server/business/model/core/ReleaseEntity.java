@@ -20,7 +20,7 @@ public class ReleaseEntity extends AbstractSMDIdentityEntity implements Release 
     @JoinColumn(name = "label_id")
     @Expose
     private Label label;
-    @OneToMany(targetEntity = MediumEntity.class)
+    @OneToMany(targetEntity = MediumEntity.class, cascade = {CascadeType.ALL})
     @OrderBy("number, name")
     @JoinColumn(name = "release_id", nullable = false)
     @Expose
@@ -28,7 +28,6 @@ public class ReleaseEntity extends AbstractSMDIdentityEntity implements Release 
     @OneToMany(targetEntity = TrackEntity.class)
     @JoinColumn(name = "release_id")
     @OrderBy("number")
-    @Expose
     private List<Track> tracks = new ArrayList<Track>();
     @ManyToMany(targetEntity = RecordingSessionEntity.class)
     @JoinTable(name = "release_recording_sessions",
@@ -36,7 +35,7 @@ public class ReleaseEntity extends AbstractSMDIdentityEntity implements Release 
             inverseJoinColumns = @JoinColumn(name = "session_id"))
     @Expose
     private Set<RecordingSession> recordingSessions = new HashSet<RecordingSession>();
-    @OneToMany(targetEntity = ContributorEntity.class)
+    @OneToMany(targetEntity = ContributorEntity.class, cascade = {CascadeType.ALL})
     @JoinColumn(name = "release_id")
     @Expose
     private Set<Contributor> contributors = new HashSet<Contributor>();

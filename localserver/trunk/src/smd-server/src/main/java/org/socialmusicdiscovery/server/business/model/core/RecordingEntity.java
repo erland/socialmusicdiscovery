@@ -22,31 +22,33 @@ public class RecordingEntity extends AbstractSMDIdentityEntity implements Record
     @JoinColumn(name = "mixof_id")
     @Expose
     private Recording mixOf;
-    @OneToMany(targetEntity = ContributorEntity.class)
+    @OneToMany(targetEntity = ContributorEntity.class, cascade = {CascadeType.ALL})
     @JoinColumn(name = "recording_id")
     @Expose
     private Set<Contributor> contributors = new HashSet<Contributor>();
-    @ManyToOne(targetEntity = WorkEntity.class, optional = false)
-    @JoinColumn(name = "work_id")
+    @ManyToMany(targetEntity = WorkEntity.class, fetch = FetchType.EAGER)
+    @JoinTable(name = "recording_works",
+            joinColumns = @JoinColumn(name = "recording_id"),
+            inverseJoinColumns = @JoinColumn(name = "work_id"))
     @Expose
-    private Work work;
+    private Set<Work> works = new HashSet<Work>();
 
     @ManyToOne(targetEntity = RecordingSessionEntity.class)
     @JoinColumn(name = "session_id")
     private RecordingSession recordingSession;
 
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "id")
-    private Set<RecordingLabelSearchRelationEntity> labelSearchRelations;
+    private Set<RecordingLabelSearchRelationEntity> labelSearchRelations = new HashSet<RecordingLabelSearchRelationEntity>();
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "id")
-    private Set<RecordingReleaseSearchRelationEntity> releaseSearchRelations;
+    private Set<RecordingReleaseSearchRelationEntity> releaseSearchRelations = new HashSet<RecordingReleaseSearchRelationEntity>();
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "id")
-    private Set<RecordingTrackSearchRelationEntity> trackSearchRelations;
+    private Set<RecordingTrackSearchRelationEntity> trackSearchRelations = new HashSet<RecordingTrackSearchRelationEntity>();
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "id")
-    private Set<RecordingWorkSearchRelationEntity> workSearchRelations;
+    private Set<RecordingWorkSearchRelationEntity> workSearchRelations = new HashSet<RecordingWorkSearchRelationEntity>();
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "id")
-    private Set<RecordingArtistSearchRelationEntity> artistSearchRelations;
+    private Set<RecordingArtistSearchRelationEntity> artistSearchRelations = new HashSet<RecordingArtistSearchRelationEntity>();
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "id")
-    private Set<RecordingClassificationSearchRelationEntity> classificationSearchRelations;
+    private Set<RecordingClassificationSearchRelationEntity> classificationSearchRelations = new HashSet<RecordingClassificationSearchRelationEntity>();
 
     public String getName() {
         return name;
@@ -80,12 +82,12 @@ public class RecordingEntity extends AbstractSMDIdentityEntity implements Record
         this.contributors = contributors;
     }
 
-    public Work getWork() {
-        return work;
+    public Set<Work> getWorks() {
+        return works;
     }
 
-    public void setWork(Work work) {
-        this.work = work;
+    public void setWorks(Set<Work> works) {
+        this.works = works;
     }
 
     public Set<SearchRelationEntity> getSearchRelations() {

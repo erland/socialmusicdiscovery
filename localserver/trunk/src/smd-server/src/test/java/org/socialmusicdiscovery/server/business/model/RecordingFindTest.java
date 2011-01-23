@@ -90,11 +90,11 @@ public class RecordingFindTest extends BaseTestCase {
         assert recordings.size()==4;
         Recording recording = recordings.iterator().next();
         assert !((PersistentCollection) recording.getContributors()).wasInitialized();
-        assert recording.getWork().getName().equals("I Will Always Love You");
+        assert recording.getWorks().iterator().next().getName().equals("I Will Always Love You");
         assert recording.getContributors().size()==2;
 
         em.clear();
-        recordings = recordingRepository.findAllWithRelations(Arrays.asList("work"), Arrays.asList("contributors"));
+        recordings = recordingRepository.findAllWithRelations(Arrays.asList("works"), Arrays.asList("contributors"));
         assert recordings.size()==4;
         recording = recordings.iterator().next();
         assert ((PersistentCollection) recording.getContributors()).wasInitialized();

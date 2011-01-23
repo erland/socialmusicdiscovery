@@ -4,6 +4,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
+import org.socialmusicdiscovery.server.business.logic.TransactionManager;
 import org.socialmusicdiscovery.server.business.logic.injections.database.DatabaseProvider;
 
 import javax.persistence.EntityManager;
@@ -47,5 +48,42 @@ public class JPAModule extends AbstractModule {
           ENTITY_MANAGER_CACHE.set(entityManager = entityManagerFactory.createEntityManager());
         }
         return entityManager;
+    }
+
+    @Provides
+    public TransactionManager provideTransactionManager(final EntityManagerFactory entityManagerFactory) {
+        return new TransactionManager() {
+            @Override
+            public void begin() {
+                EntityManager entityManager = ENTITY_MANAGER_CACHE.get();
+                if(entityManager==null) {
+                    entityManager = entityManagerFactory.createEntityManager();
+                }
+                entityManager.clear();
+                entityManager.getTransaction().begin();
+                ENTITY_MANAGER_CACHE.set(entityManager);
+            }
+
+            @Override
+            public void end() {
+                EntityManager entityManager = ENTITY_MANAGER_CACHE.get();
+                ENTITY_MANAGER_CACHE.remove();
+                if(entityManager!=null) {
+                    if(entityManager.getTransaction().getRollbackOnly()) {
+                        entityManager.getTransaction().rollback();
+                    }else {
+                        entityManager.getTransaction().commit();
+                    }
+                }
+            }
+
+            @Override
+            public void setRollbackOnly() {
+                EntityManager entityManager = ENTITY_MANAGER_CACHE.get();
+                if(entityManager!=null) {
+                    entityManager.getTransaction().setRollbackOnly();
+                }
+            }
+        };
     }
 }

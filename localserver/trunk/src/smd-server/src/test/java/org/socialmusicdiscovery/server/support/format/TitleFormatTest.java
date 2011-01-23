@@ -83,13 +83,13 @@ public class TitleFormatTest extends BaseTestCase {
 
     @Test
     public void testTrack() throws Exception {
-        TitleFormat parser = new TitleFormat("(%object.medium.name|%object.medium.number)||[%object.medium,-]||%object.number||. ||%object.recording.work.parent.name||[%object.recording.work.parent,: ]||%object.recording.work.name");
+        TitleFormat parser = new TitleFormat("(%object.medium.name|%object.medium.number)||[%object.medium,-]||%object.number||. ||%object.recording.works.parent.name||[%object.recording.works.parent,: ]||%object.recording.works.name");
 
         TrackEntity track1 = new TrackEntity();
         track1.setNumber(5);
         track1.setRecording(new RecordingEntity());
-        track1.getRecording().setWork(new WorkEntity());
-        track1.getRecording().getWork().setName("Work 2");
+        track1.getRecording().getWorks().add(new WorkEntity());
+        track1.getRecording().getWorks().iterator().next().setName("Work 2");
         assert parser.format(track1).equals("5. Work 2");
 
         TrackEntity track2 = new TrackEntity();
@@ -97,10 +97,10 @@ public class TitleFormatTest extends BaseTestCase {
         track2.setMedium(new MediumEntity());
         track2.getMedium().setNumber(1);
         track2.setRecording(new RecordingEntity());
-        track2.getRecording().setWork(new WorkEntity());
-        track2.getRecording().getWork().setName("Part 1");
-        track2.getRecording().getWork().setParent(new WorkEntity());
-        track2.getRecording().getWork().getParent().setName("Work 3");
+        track2.getRecording().getWorks().add(new WorkEntity());
+        track2.getRecording().getWorks().iterator().next().setName("Part 1");
+        track2.getRecording().getWorks().iterator().next().setParent(new WorkEntity());
+        track2.getRecording().getWorks().iterator().next().getParent().setName("Work 3");
         assert parser.format(track2).equals("1-9. Work 3: Part 1");
 
         TrackEntity track3 = new TrackEntity();
@@ -108,10 +108,10 @@ public class TitleFormatTest extends BaseTestCase {
         track3.setMedium(new MediumEntity());
         track3.getMedium().setName("A");
         track3.setRecording(new RecordingEntity());
-        track3.getRecording().setWork(new WorkEntity());
-        track3.getRecording().getWork().setName("Part 1");
-        track3.getRecording().getWork().setParent(new WorkEntity());
-        track3.getRecording().getWork().getParent().setName("Work 4");
+        track3.getRecording().getWorks().add(new WorkEntity());
+        track3.getRecording().getWorks().iterator().next().setName("Part 1");
+        track3.getRecording().getWorks().iterator().next().setParent(new WorkEntity());
+        track3.getRecording().getWorks().iterator().next().getParent().setName("Work 4");
         assert parser.format(track3).equals("A-13. Work 4: Part 1");
     }
 }

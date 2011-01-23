@@ -29,17 +29,18 @@ package org.socialmusicdiscovery.server.business.service.browse;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class Result<T> {
     private Long count;
-    private Collection<ResultItem<T>> items;
+    private List<ResultItem<T>> items;
 
     public Result() {
         count = 0L;
         items = new ArrayList<ResultItem<T>>();
     }
 
-    public Result(Long count, Collection<ResultItem<T>> items) {
+    public Result(Long count, List<ResultItem<T>> items) {
         this.count = count;
         this.items = items;
     }
@@ -56,7 +57,7 @@ public class Result<T> {
         return items;
     }
 
-    public void setItems(Collection<ResultItem<T>> items) {
+    public void setItems(List<ResultItem<T>> items) {
         this.items = items;
     }
 }

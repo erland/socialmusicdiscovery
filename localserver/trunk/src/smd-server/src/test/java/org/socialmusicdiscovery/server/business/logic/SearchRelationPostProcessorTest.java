@@ -66,7 +66,7 @@ public class SearchRelationPostProcessorTest extends BaseTestCase {
         Track track = release.getTracks().get(0);
         Recording recording = track.getRecording();
         Collection<Contributor> recordingContributors = recording.getContributors();
-        Work work = recording.getWork();
+        Work work = recording.getWorks().iterator().next();
         Collection<Contributor> workContributors = work.getContributors();
         Collection<Artist> artists = new HashSet<Artist>();
         Collection<Person> persons = new HashSet<Person>();

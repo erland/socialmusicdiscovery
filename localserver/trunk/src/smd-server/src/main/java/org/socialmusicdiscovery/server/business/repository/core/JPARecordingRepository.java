@@ -12,11 +12,13 @@ import java.util.Collection;
 
 public class JPARecordingRepository extends AbstractJPASMDIdentityRepository<RecordingEntity> implements RecordingRepository {
     ContributorRepository contributorRepository;
+    WorkRepository workRepository;
 
     @Inject
-    public JPARecordingRepository(EntityManager em, ContributorRepository contributorRepository) {
+    public JPARecordingRepository(EntityManager em, ContributorRepository contributorRepository, WorkRepository workRepository) {
         super(em);
         this.contributorRepository = contributorRepository;
+        this.workRepository = workRepository;
     }
 
     public Collection<RecordingEntity> findByName(String name) {
@@ -34,10 +36,38 @@ public class JPARecordingRepository extends AbstractJPASMDIdentityRepository<Rec
         query.setParameter("name","%"+name.toLowerCase()+"%");
         return query.getResultList();
     }
-    public void remove(RecordingEntity entity) {
-        for (Contributor contributor : entity.getContributors()) {
-            contributorRepository.remove((ContributorEntity)contributor);
+    @Override
+    public void create(RecordingEntity entity) {
+        if (entity.getMixOf() != null) {
+            if(!entityManager.contains(entity.getMixOf())) {
+                entity.setMixOf(findById(entity.getMixOf().getId()));
+            }
         }
+        for (Contributor contributor : entity.getContributors()) {
+            if(!entityManager.contains(contributor)) {
+                contributorRepository.create((ContributorEntity) contributor);
+            }
+        }
+        super.create(entity);
+    }
+
+    @Override
+    public RecordingEntity merge(RecordingEntity entity) {
+        if (entity.getMixOf() != null) {
+            if(!entityManager.contains(entity.getMixOf())) {
+                entity.setMixOf(findById(entity.getMixOf().getId()));
+            }
+        }
+        for (Contributor contributor : entity.getContributors()) {
+            if(!entityManager.contains(contributor)) {
+                contributorRepository.merge((ContributorEntity) contributor);
+            }
+        }
+        return super.merge(entity);
+    }
+
+    @Override
+    public void remove(RecordingEntity entity) {
         entity.getLabelSearchRelations().clear();
         entity.getReleaseSearchRelations().clear();
         entity.getTrackSearchRelations().clear();

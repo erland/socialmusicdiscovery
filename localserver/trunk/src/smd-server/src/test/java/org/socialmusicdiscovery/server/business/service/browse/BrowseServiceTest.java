@@ -159,7 +159,7 @@ public class BrowseServiceTest extends BaseTestCase {
             }
             assert foundArtist;
             assert foundWork;
-            if (trackResultItem.getItem().getRecording().getWork().getName().equals("Axel F")) {
+            if (trackResultItem.getItem().getRecording().getWorks().iterator().next().getName().equals("Axel F")) {
                 assert !foundRelease;
                 assert !foundLabel;
             } else {
@@ -193,7 +193,7 @@ public class BrowseServiceTest extends BaseTestCase {
         assert result.getItems().size() == 1;
         assert result.getCount() == 1;
 
-        assert result.getItems().iterator().next().getItem().getRecording().getWork().getName().equals("I Will Always Love You");
+        assert result.getItems().iterator().next().getItem().getRecording().getWorks().iterator().next().getName().equals("I Will Always Love You");
         for (ResultItem<Track> releaseResultItem : result.getItems()) {
             assert releaseResultItem.getChildItems() != null;
             assert releaseResultItem.getChildItems().size() > 0;
@@ -223,7 +223,7 @@ public class BrowseServiceTest extends BaseTestCase {
         ), new ArrayList<String>(), null, null, true);
         assert result.getItems().size() == 1;
         assert result.getCount() == 1;
-        assert result.getItems().iterator().next().getItem().getRecording().getWork().getName().equals("Queen Of The Night");
+        assert result.getItems().iterator().next().getItem().getRecording().getWorks().iterator().next().getName().equals("Queen Of The Night");
 
         for (ResultItem<Track> releaseResultItem : result.getItems()) {
             assert releaseResultItem.getChildItems() != null;

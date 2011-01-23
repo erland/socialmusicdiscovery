@@ -124,76 +124,138 @@ public class SqueezeboxServerTest extends BaseTestCase {
             ));
             squeezeboxServer.importNewPlayableElement(trackData);
 
+            trackData = new TrackData();
+            trackData.setFile("/music/Joe's Garage Act I/The Central Scrutinizer.flac");
+            trackData.setFormat("flc");
+            trackData.setSmdID("10000000000000000000000000000001-00000000-00000000");
+            trackData.setUrl("file://" + trackData.getFile());
+            trackData.setTags(Arrays.asList(
+                    new TagData(TagData.ALBUM, "Joe's Garage Act I"),
+                    new TagData(TagData.TITLE, "The Central Scrutinizer"),
+                    new TagData(TagData.TRACKNUM, "1"),
+                    new TagData(TagData.DISC,"A"),
+                    new TagData(TagData.ARTIST, "Frank Zappa"),
+                    new TagData(TagData.ARTIST, "Ike Willis")
+            ));
+            squeezeboxServer.importNewPlayableElement(trackData);
+
+            trackData = new TrackData();
+            trackData.setFile("/music/Joe's Garage Act I/Joe's Garage.flac");
+            trackData.setFormat("flc");
+            trackData.setSmdID("10000000000000000000000000000002-00000000-00000000");
+            trackData.setUrl("file://" + trackData.getFile());
+            trackData.setTags(Arrays.asList(
+                    new TagData(TagData.ALBUM, "Joe's Garage Act I"),
+                    new TagData(TagData.TITLE, "Joe's Garage"),
+                    new TagData(TagData.TRACKNUM, "2"),
+                    new TagData(TagData.DISC,"A"),
+                    new TagData(TagData.ARTIST, "Frank Zappa"),
+                    new TagData(TagData.ARTIST, "Ike Willis")
+            ));
+            squeezeboxServer.importNewPlayableElement(trackData);
+
+            trackData = new TrackData();
+            trackData.setFile("/music/Joe's Garage Act I/Wet T-Shirt Nite.flac");
+            trackData.setFormat("flc");
+            trackData.setSmdID("20000000000000000000000000000001-00000000-00000000");
+            trackData.setUrl("file://" + trackData.getFile());
+            trackData.setTags(Arrays.asList(
+                    new TagData(TagData.ALBUM, "Joe's Garage Act I"),
+                    new TagData(TagData.TITLE, "Wet T-Shirt Nite"),
+                    new TagData(TagData.TRACKNUM, "1"),
+                    new TagData(TagData.DISC,"B"),
+                    new TagData(TagData.ARTIST, "Frank Zappa"),
+                    new TagData(TagData.ARTIST, "Ike Willis")
+            ));
+            squeezeboxServer.importNewPlayableElement(trackData);
+
             Collection<ReleaseEntity> releases = releaseRepository.findAll();
             assert releases != null;
-            assert releases.size() == 1;
+            assert releases.size() == 2;
 
-            Release release = releases.iterator().next();
-            assert release != null;
-
-            assert release.getTracks() != null;
-            assert release.getTracks().size() == 4;
-            assert release.getContributors().size() == 1;
-
-            for (Track track : release.getTracks()) {
-                assert track.getNumber() != null;
-                assert track.getRecording() != null;
-                assert track.getRecording().getWork() != null;
-
-                if (track.getNumber().equals(1)) {
-                    assert track.getRecording().getWork().getName().equals("I Will Always Love You");
-                    assert track.getRecording().getContributors().size() == 1;
-                    assert track.getRecording().getWork().getContributors().size() == 1;
-                } else if (track.getNumber().equals(5)) {
-                    assert track.getRecording().getWork().getName().equals("Queen Of The Night");
-                    assert track.getRecording().getContributors().size() == 0;
-                    assert track.getRecording().getWork().getContributors().size() == 4;
-                } else if (track.getNumber().equals(9)) {
-                    assert track.getRecording().getWork().getName().equals("It's Gonna Be A Lovely Day");
-                    assert track.getRecording().getContributors().size() == 1;
-                    assert track.getRecording().getWork().getContributors().size() == 5;
-                } else if (track.getNumber().equals(13)) {
-                    assert track.getRecording().getWork().getName().equals("Theme From The Bodyguard");
-                    assert track.getRecording().getContributors().size() == 2;
-                    assert track.getRecording().getWork().getContributors().size() == 1;
-                } else {
-                    assert false;
-                }
-            }
-
-            GlobalIdentity identity = globalIdentityRepository.findBySourceAndEntity(GlobalIdentity.SOURCE_MUSICBRAINZ, release);
-            assert identity != null;
-            assert identity.getUri().equals("11cafb9e-5fbc-49c7-b920-4ff754e03e93");
-
-            identity = globalIdentityRepository.findBySourceAndEntity(GlobalIdentity.SOURCE_MUSICBRAINZ, release.getContributors().iterator().next().getArtist());
-            assert identity != null;
-            assert identity.getUri().equals("0307edfc-437c-4b48-8700-80680e66a228");
-
-            for (Track track : release.getTracks()) {
-                if (track.getNumber().equals(1)) {
-                    identity = globalIdentityRepository.findBySourceAndEntity(GlobalIdentity.SOURCE_MUSICBRAINZ, track);
-                    assert identity != null;
-                    assert identity.getUri().equals("86cf33ac-5b7b-401b-9188-608bb2752063");
-                } else if (track.getNumber().equals(5)) {
-                    identity = globalIdentityRepository.findBySourceAndEntity(GlobalIdentity.SOURCE_MUSICBRAINZ, track);
-                    assert identity != null;
-                    assert identity.getUri().equals("bdd8624a-d0ac-480f-8fe5-253bd99b7d3f");
-                } else if (track.getNumber().equals(9)) {
-                    identity = globalIdentityRepository.findBySourceAndEntity(GlobalIdentity.SOURCE_MUSICBRAINZ, track);
-                    assert identity != null;
-                    assert identity.getUri().equals("f2ba4ef6-7017-4b93-9176-c079ed0a97e9");
-                    identity = globalIdentityRepository.findBySourceAndEntity(GlobalIdentity.SOURCE_MUSICBRAINZ, track.getRecording().getContributors().iterator().next().getArtist());
-                    assert identity != null;
-                    assert identity.getUri().equals("95eeac68-0305-41b1-b4f6-ab6594ee21c6");
-                } else if (track.getNumber().equals(13)) {
-                    identity = globalIdentityRepository.findBySourceAndEntity(GlobalIdentity.SOURCE_MUSICBRAINZ, track);
-                    assert identity != null;
-                    assert identity.getUri().equals("c3af5bb7-5711-495e-8fae-af8d730497cd");
+            for (ReleaseEntity release : releases) {
+                if(release.getName().equals("Joe's Garage Act I")) {
+                    validateJoesGarageAct(release);
+                }else {
+                    validateTheBodyguard(release);
                 }
             }
 
         } finally {
-            em.getTransaction().commit();
+            if(em.getTransaction().getRollbackOnly()) {
+                em.getTransaction().rollback();
+            }else {
+                em.getTransaction().commit();
+            }
+        }
+    }
+    void validateJoesGarageAct(Release release) {
+        assert release.getTracks() != null;
+        assert release.getTracks().size() == 3;
+        assert release.getMediums() != null;
+        assert release.getMediums().size() == 2;
+    }
+    void validateTheBodyguard(Release release) {
+        assert release.getTracks() != null;
+        assert release.getTracks().size() == 4;
+        assert release.getContributors().size() == 1;
+
+        for (Track track : release.getTracks()) {
+            assert track.getNumber() != null;
+            assert track.getRecording() != null;
+            assert track.getRecording().getWorks() != null;
+            assert track.getRecording().getWorks().size()==1;
+
+            if (track.getNumber().equals(1)) {
+                assert track.getRecording().getWorks().iterator().next().getName().equals("I Will Always Love You");
+                assert track.getRecording().getContributors().size() == 1;
+                assert track.getRecording().getWorks().iterator().next().getContributors().size() == 1;
+            } else if (track.getNumber().equals(5)) {
+                assert track.getRecording().getWorks().iterator().next().getName().equals("Queen Of The Night");
+                assert track.getRecording().getContributors().size() == 0;
+                assert track.getRecording().getWorks().iterator().next().getContributors().size() == 4;
+            } else if (track.getNumber().equals(9)) {
+                assert track.getRecording().getWorks().iterator().next().getName().equals("It's Gonna Be A Lovely Day");
+                assert track.getRecording().getContributors().size() == 1;
+                assert track.getRecording().getWorks().iterator().next().getContributors().size() == 5;
+            } else if (track.getNumber().equals(13)) {
+                assert track.getRecording().getWorks().iterator().next().getName().equals("Theme From The Bodyguard");
+                assert track.getRecording().getContributors().size() == 2;
+                assert track.getRecording().getWorks().iterator().next().getContributors().size() == 1;
+            } else {
+                assert false;
+            }
+        }
+
+        GlobalIdentity identity = globalIdentityRepository.findBySourceAndEntity(GlobalIdentity.SOURCE_MUSICBRAINZ, release);
+        assert identity != null;
+        assert identity.getUri().equals("11cafb9e-5fbc-49c7-b920-4ff754e03e93");
+
+        identity = globalIdentityRepository.findBySourceAndEntity(GlobalIdentity.SOURCE_MUSICBRAINZ, release.getContributors().iterator().next().getArtist());
+        assert identity != null;
+        assert identity.getUri().equals("0307edfc-437c-4b48-8700-80680e66a228");
+
+        for (Track track : release.getTracks()) {
+            if (track.getNumber().equals(1)) {
+                identity = globalIdentityRepository.findBySourceAndEntity(GlobalIdentity.SOURCE_MUSICBRAINZ, track);
+                assert identity != null;
+                assert identity.getUri().equals("86cf33ac-5b7b-401b-9188-608bb2752063");
+            } else if (track.getNumber().equals(5)) {
+                identity = globalIdentityRepository.findBySourceAndEntity(GlobalIdentity.SOURCE_MUSICBRAINZ, track);
+                assert identity != null;
+                assert identity.getUri().equals("bdd8624a-d0ac-480f-8fe5-253bd99b7d3f");
+            } else if (track.getNumber().equals(9)) {
+                identity = globalIdentityRepository.findBySourceAndEntity(GlobalIdentity.SOURCE_MUSICBRAINZ, track);
+                assert identity != null;
+                assert identity.getUri().equals("f2ba4ef6-7017-4b93-9176-c079ed0a97e9");
+                identity = globalIdentityRepository.findBySourceAndEntity(GlobalIdentity.SOURCE_MUSICBRAINZ, track.getRecording().getContributors().iterator().next().getArtist());
+                assert identity != null;
+                assert identity.getUri().equals("95eeac68-0305-41b1-b4f6-ab6594ee21c6");
+            } else if (track.getNumber().equals(13)) {
+                identity = globalIdentityRepository.findBySourceAndEntity(GlobalIdentity.SOURCE_MUSICBRAINZ, track);
+                assert identity != null;
+                assert identity.getUri().equals("c3af5bb7-5711-495e-8fae-af8d730497cd");
+            }
         }
     }
 }
