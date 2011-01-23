@@ -70,3 +70,9 @@ Some brief and preliminary thoughts on the design principles for the RCP client.
   * Eclipse Integration for Apache Maven (IAM)
     * http://www.eclipse.org/iam 
     * Update site: http://q4e.googlecode.com/svn/trunk/updatesite-iam
+
+  * Build and Deploy
+    * Building (Eclipsepedia): http://wiki.eclipse.org/Building
+    * Eclipse PDE Build - Tutorial: http://www.vogella.de/articles/EclipsePDEBuild/article.html
+    * Equinox/p2: http://wiki.eclipse.org/Equinox/p2
+    * Buckminster: http://www.eclipse.org/buckminster/
