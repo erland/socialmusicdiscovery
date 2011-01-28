@@ -7,6 +7,7 @@ import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
@@ -17,6 +18,7 @@ import org.eclipse.ui.ISaveablePart2;
 import org.eclipse.ui.ISaveablesSource;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
+import org.eclipse.ui.services.IEvaluationService;
 import org.socialmusicdiscovery.rcp.Activator;
 import org.socialmusicdiscovery.rcp.content.AbstractObservableEntity;
 import org.socialmusicdiscovery.rcp.content.DataSource;
@@ -186,6 +188,16 @@ public abstract class AbstractEditorPart<T extends AbstractObservableEntity, U e
 		return entity;
 	}
 
+	/**
+	 * Subclasses are expected to call this method from
+	 * {@link #createPartControl(Composite)} in order to register supplied
+	 * viewers as {@link ISelectionProvider}s for the Command framework and
+	 * {@link IEvaluationService}. This allows the service to enable/disable
+	 * commands and popup menus when the selections in the supplied viewers
+	 * change.
+	 * 
+	 * @param viewers
+	 */
 	protected void hookContextMenus(Viewer... viewers) {
 		for (Viewer v : viewers) {
 			ViewerUtil.hookContextMenu(this, v);
