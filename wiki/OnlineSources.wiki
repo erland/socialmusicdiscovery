@@ -192,4 +192,6 @@ This section contains online streaming sources that would be interesting to inte
     * http://wiki.acoustid.org/wiki/Chromaprint
     * Automatic identification of music and retrieval of Musicbrainz tags. 
     * The project is in an early stage but this should be very interesting to integrate
-  * 
+  * *LastFM fingerprint*
+    * https://github.com/lastfm/Fingerprinter
+    * Fingerprint library that works towards LastFM
