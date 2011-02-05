@@ -1,6 +1,7 @@
 package org.socialmusicdiscovery.rcp.editors.release;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -41,12 +42,18 @@ import org.socialmusicdiscovery.rcp.views.util.AbstractComposite;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
 import org.socialmusicdiscovery.server.business.model.core.Recording;
 import org.socialmusicdiscovery.server.business.model.core.Track;
+import org.socialmusicdiscovery.server.business.model.core.Work;
 
 public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 
 	private static final String CONTRIBUTOR_TYPE_CONDUCTOR = "conductor";
 	private static final String CONTRIBUTOR_TYPE_COMPOSER = "composer";
 	private static final String CONTRIBUTOR_TYPE_PERFORMER = "performer";
+	
+	// use to separate name fragments, e.g. to compile names of many Work into name of 1 Recording
+	// TODO make user configurable?
+	private static final String COMPOSITE_NAME_SEPARATOR = "/"; 
+	
 	private abstract class MyAbstractTrackLabelProvider extends GridColumnLabelProvider {
 		@Override
 		public void update(ViewerCell cell) {
@@ -100,8 +107,8 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 			Recording recording = track.getRecording();
 			if (recording!=null) {
 				name = recording.getName();
-				if (isEmpty(name) && recording.getWork()!=null) {
-					name = recording.getWork().getName();
+				if (isEmpty(name) && hasWork(recording)) {
+					name = resolveName(recording.getWorks());
 				}
 			}
 			return name;
@@ -118,14 +125,24 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 		
 		@Override
 		protected Object getCellValue(Track track) {
-            Set<Contributor> contributorSet = new HashSet<Contributor>(track.getRecording().getContributors());
-            if (track.getRecording().getWork() != null) {
-                contributorSet.addAll(track.getRecording().getWork().getContributors());
+            Recording recording = track.getRecording();
+			Set<Contributor> contributorSet = new HashSet<Contributor>(recording.getContributors());
+            if (hasWork(recording)) {
+                contributorSet.addAll(compileContributors(recording));
             }
             Map<String, StringBuilder> contributors = getContributorMap(contributorSet);
             return contributors.get(contributionType);
 		}
-	    private Map<String, StringBuilder> getContributorMap(Set<Contributor> contributorSet) {
+		
+	    private Collection<? extends Contributor> compileContributors(Recording recording) {
+	    	Set<Contributor> contributors = new HashSet<Contributor>();
+	    	for (Work w : recording.getWorks()) {
+				contributors.addAll(w.getContributors());
+			}
+			return contributors;
+		}
+
+		private Map<String, StringBuilder> getContributorMap(Set<Contributor> contributorSet) {
 	        Map<String, StringBuilder> contributors = new HashMap<String, StringBuilder>();
 	        for (Contributor contributor : contributorSet) {
 	            if (!contributors.containsKey(contributor.getType())) {
@@ -380,6 +397,21 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 	}
 	public GridTableViewer getGridViewerTracks() {
 		return gridViewerTracks;
+	}
+
+	protected boolean hasWork(Recording recording) {
+		return !recording.getWorks().isEmpty();
+	}
+
+	protected String resolveName(Set<Work> set) {
+		StringBuilder sb = new StringBuilder();
+		for (Work work : set) {
+			if (sb.length()>0) {
+				sb.append(COMPOSITE_NAME_SEPARATOR);
+			}
+			sb.append(work.getName());
+		}
+		return sb.toString();
 	}
 
 	/**

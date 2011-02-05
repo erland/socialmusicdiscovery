@@ -15,12 +15,12 @@ public class ObservableRecording extends AbstractObservableEntity<Recording> imp
 	public static final String PROP_date = "date";
 	public static final String PROP_mixOf = "mixOf";
 	public static final String PROP_contributors = "contributors";
-	public static final String PROP_work = "work";
+	public static final String PROP_works = "works";
 	
 	@Expose private Date date;
 	@Expose private Recording mixOf;
 	@Expose private Set<Contributor> contributors = new HashSet<Contributor>();
-	@Expose private Work work;
+	@Expose private Set<Work> works = new HashSet<Work>();
 
 	@Override
 	public Date getDate() {
@@ -38,25 +38,28 @@ public class ObservableRecording extends AbstractObservableEntity<Recording> imp
 	}
 
 	@Override
-	public Work getWork() {
-		return work;
+	public Set<Work> getWorks() {
+		return works;
 	}
 
+	@Override
 	public void setDate(Date date) {
 		firePropertyChange(PROP_date, this.date, this.date = date);
 	}
 
+	@Override
 	public void setMixOf(Recording mixOf) {
 		firePropertyChange(PROP_mixOf, this.mixOf, this.mixOf = mixOf);
 	}
 
+	@Override
 	public void setContributors(Set<Contributor> contributors) {
 		firePropertyChange(PROP_contributors, this.contributors, this.contributors = contributors);
 	}
 
-	public void setWork(Work work) {
-		firePropertyChange(PROP_work, this.work, this.work = work);
+	@Override
+	public void setWorks(Set<Work> works) {
+		firePropertyChange(PROP_works, this.works, this.works = works);
 	}
-
 
 }
