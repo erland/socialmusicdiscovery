@@ -3,8 +3,18 @@ Some VERY brief notes on how to setup and run the RCP prototype client.
 To Build and Run: 
 1. Install Eclipse 3.6 for RCP developers: http://www.eclipse.org/downloads/packages/eclipse-rcp-and-rap-developers/heliossr1
 2. Check out and build SMD code as described elsewhere
-3. Launch client: right-click 'smd-rcp.product.launch (<your OS>)' - 'Run As ...' - 'smd-rcp.product'
+3. Copy the generated .jar into "imported.lib" in the RCP client source code structure 
+   Example: copy <your build output directory>\smd-server-1.0-SNAPSHOT.jar <your project root>\smd-rcp\lib.imported
+4. Launch client: right-click 'smd-rcp.product.launch (<your OS>)' - 'Run As ...' - 'smd-rcp.product'
 
+To update the server code:
+Ideally, update the server code and install the new .jar (step 3 above). 
+In practice, you may have some problems getting Eclipse to understand that you have updated the server jar. 
+If "refresh" and "clean build" doesn't help:
+	- use Eclipse to physically delete the file
+    - copy the jar again (step 3 above)
+    - do a refresh
+      
 To work on UI: 
 - Install SWT Designer (part of WindowBuilder PRO): http://code.google.com/javadevtools/wbpro/installation/updatesite_3.6.html
   (update site: http://dl.google.com/eclipse/inst/d2wbpro/latest/3.6) - you probably need to ignore one security warning.
