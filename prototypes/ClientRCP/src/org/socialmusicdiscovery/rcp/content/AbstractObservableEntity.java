@@ -73,7 +73,8 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 	/**
 	 * <p>
 	 * Load remaining data by fetching the 'full' object from the server. If all
-	 * data is already loaded, method does nothing.
+	 * data is already loaded, method does nothing. Subclass must not override 
+	 * this method, but can add specific behavior by overriding {@link #postInflate()}. 
 	 * </p>
 	 * <p>
 	 * Rationale: when an object is first fetched from the server, it is only
@@ -82,10 +83,23 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 	 * edit the object, we fetch the remaining data from the server.
 	 * </p>
 	 */
-	public void inflate() {
+	public final void inflate() {
 		if (!isInflated) {
-			isInflated = Activator.getDefault().getDataSource().inflate(this);
+			isInflated = getDataSource().inflate(this);
+			postInflate();
 		}
+	}
+
+	/**
+	 * Do any post-processing after basic inflate.
+	 * This method is called after {@link #inflate()}, 
+	 * if the instance was inflated. Default method does 
+	 * nothing, subclasses should override as necessary, 
+	 * typically to load any properties not loaded by the 
+	 * default infaltion.  
+	 */
+	protected void postInflate() {
+		// no-op
 	}
 
 	@Override
@@ -110,6 +124,14 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 		String isModified = isDirty() ? " {modified}" : ""; 
 		String typeName = TextUtil.getText(getGenericType());
 		return "["+typeName+"] "+getName()+isModified ;
+	}
+
+	/**
+	 * Convenience method for subclasses. 
+	 * @return {@link DataSource}
+	 */
+	protected DataSource getDataSource() {
+		return Activator.getDefault().getDataSource();
 	}
 
 	private Class getGenericType() {
