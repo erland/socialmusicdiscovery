@@ -12,6 +12,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.eclipse.core.databinding.observable.Observables;
 import org.eclipse.core.databinding.observable.list.IObservableList;
+import org.eclipse.core.databinding.observable.list.WritableList;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Shell;
@@ -204,10 +205,13 @@ public class DataSource extends AbstractObservable implements ModelObject {
 	 */
 	public class Root<T extends SMDIdentity> extends AbstractObservable implements ModelObject {
 
+//		private static final String PROP_children = "children";
+		
 		private final String name; // for user presentation
 		private final String path; // for querying server
 		private final Class<T> distinctQueryType; // for querying server
 		private GenericType<Collection<T>> genericCollectionQueryType;
+		private List<ObservableEntity<T>> children;
 
 		/**
 		 * Private constructor, roots should only be instantiated from this
@@ -235,7 +239,7 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		 * Get all objects of the type that this root handles.
 		 * @return {@link List<T>}, possibly empty
 		 */
-		final public synchronized <O extends AbstractObservableEntity<T>> List<O> findAll() {
+		final public synchronized <O extends ObservableEntity<T>> List<O> findAll() {
 	        List<O> result = new ArrayList<O>();
 			for (T serverObject : get(genericCollectionQueryType)) {
 				O clientObject = getOrStore(serverObject);
@@ -244,7 +248,7 @@ public class DataSource extends AbstractObservable implements ModelObject {
 			return result;
 		}
 
-		final public synchronized <O extends AbstractObservableEntity<T>> Collection<O> findAll(SMDIdentity entity) {
+		final public synchronized <O extends ObservableEntity<T>> Collection<O> findAll(SMDIdentity entity) {
 			WebResource resource = Client.create(config).resource(getQueryPath(entity));
 			Collection<T> collection = resource.accept(MediaType.APPLICATION_JSON).get(genericCollectionQueryType);
 
@@ -257,14 +261,35 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		}
 		// TODO fix generics, eliminate warning
 		@SuppressWarnings("unchecked")
-		private <O extends AbstractObservableEntity<T>> O getOrStore(T serverObject) {
+		private <O extends ObservableEntity<T>> O getOrStore(T serverObject) {
 			return (O) cache.getOrStore(serverObject);
 		}
 
+		/**
+		 * Preliminary code, not sure how we want to handle add/delete if
+		 * children (we don't do that yet). Do we want a {@link WritableList} to
+		 * modify directly, or an observable list that listens to changes made
+		 * thru PJO setters?
+		 */
 		public IObservableList getObservableChildren() {
-			// TODO - should maintain a dynamic list - not return a static list
-			return Observables.staticObservableList(findAll());
+			if (children==null) {
+				children = findAll();
+			}
+//			return PojoObservables.observeList(this, PROP_children);
+			return new WritableList(children, getType());
 		}
+
+//		public List<ObservableEntity<T>> getChildren() {
+//			return children;
+//		}
+
+//		public void setChildren(List<ObservableEntity<T>> children) {
+//			// TODO abstract, pull up
+//			List<ObservableEntity<T>> old = new ArrayList<ObservableEntity<T>>(this.children);
+//			this.children.clear();
+//			this.children.addAll(children);
+//			firePropertyChange(PROP_children, old, children);
+//		}
 
 		public String getName() {
 			return name;
