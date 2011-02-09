@@ -4,7 +4,9 @@ import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.ws.rs.core.MediaType;
 
@@ -13,9 +15,9 @@ import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Shell;
+import org.socialmusicdiscovery.rcp.error.ExtendedErrorDialog;
 import org.socialmusicdiscovery.rcp.error.FatalApplicationException;
 import org.socialmusicdiscovery.rcp.error.RecoverableApplicationException;
-import org.socialmusicdiscovery.rcp.error.ExtendedErrorDialog;
 import org.socialmusicdiscovery.rcp.event.AbstractObservable;
 import org.socialmusicdiscovery.rcp.injections.ClientConfigModule;
 import org.socialmusicdiscovery.rcp.prefs.PreferenceConstants;
@@ -25,6 +27,7 @@ import org.socialmusicdiscovery.rcp.util.TextUtil;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
 import org.socialmusicdiscovery.server.business.model.core.Release;
+import org.socialmusicdiscovery.server.business.model.core.Track;
 
 import com.google.inject.Inject;
 import com.sun.jersey.api.client.Client;
@@ -191,6 +194,14 @@ public class DataSource extends AbstractObservable implements ModelObject {
 
 	private final DataCache cache;
 
+	private List<Root<? extends SMDIdentity>> roots;
+
+	/**
+	 * @author Peer Törngren
+	 *
+	 * @param <T> the common entity interface that this instance operates on
+	 * @param <U> the client-side observable type that this instance returns on queries
+	 */
 	public class Root<T extends SMDIdentity> extends AbstractObservable implements ModelObject {
 
 		private final String name; // for user presentation
@@ -209,7 +220,7 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		 * @param queryPath
 		 *            for server query (see {@link #getPath()})
 		 * @param distinctElementQueryType
-		 *            for server query (see {@link #find(String)})
+		 *            for server query (see {@link #findAll(String)})
 		 * @param genericCollectionQueryType
 		 *            for server query (see {@link #findAll()})
 		 */
@@ -224,18 +235,35 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		 * Get all objects of the type that this root handles.
 		 * @return {@link List<T>}, possibly empty
 		 */
-		final synchronized public List<T> findAll() {
-	        List<T> result = new ArrayList<T>();
+		final public synchronized <O extends AbstractObservableEntity<T>> List<O> findAll() {
+	        List<O> result = new ArrayList<O>();
 			for (T serverObject : get(genericCollectionQueryType)) {
-				T clientObject = cache.getOrStore(serverObject);
+				O clientObject = getOrStore(serverObject);
 				result.add(clientObject);
 			}
 			return result;
 		}
 
+		final public synchronized <O extends AbstractObservableEntity<T>> Collection<O> findAll(SMDIdentity entity) {
+			WebResource resource = Client.create(config).resource(getQueryPath(entity));
+			Collection<T> collection = resource.accept(MediaType.APPLICATION_JSON).get(genericCollectionQueryType);
+
+			List<O> result = new ArrayList<O>();
+			for (T serverObject : collection) {
+				O clientObject = getOrStore(serverObject);
+				result.add(clientObject);
+			}
+			return result;
+		}
+		// TODO fix generics, eliminate warning
+		@SuppressWarnings("unchecked")
+		private <O extends AbstractObservableEntity<T>> O getOrStore(T serverObject) {
+			return (O) cache.getOrStore(serverObject);
+		}
+
 		public IObservableList getObservableChildren() {
-			List<T> observableEntities = findAll();
-			return Observables.staticObservableList(observableEntities);
+			// TODO - should maintain a dynamic list - not return a static list
+			return Observables.staticObservableList(findAll());
 		}
 
 		public String getName() {
@@ -263,9 +291,22 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		 * @return String
 		 * @see #getPath()
 		 */
-		protected String getPath(String id) {
-			return getPath()+"/"+id;
+		protected String getInstancePath(String id) {
+			return getPath()+"/"+id; //$NON-NLS-1$
 		}
+
+		/**
+		 * Get path for querying instances with relations to a specific instance.
+		 * @param entity
+		 * @see #getPath()
+		 */
+		private String getQueryPath(SMDIdentity entity) {
+			// does this work? Probably not for long .. 
+			String queryType = resolveRoot(entity).getType().getSimpleName().toLowerCase(); // e.g. "release" 
+			String result = getPath() + "?" + queryType + "=" + entity.getId(); //$NON-NLS-1$ //$NON-NLS-2$
+			return result;
+		}
+
 		
 		/**
 		 * If connected (or set to autoconnect), check number of children (would 
@@ -336,7 +377,7 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		 * @return T
 		 */
 		private T read(String id) {
-			T result = resource(getPath(id)).accept(MediaType.APPLICATION_JSON).get(distinctQueryType);
+			T result = resource(getInstancePath(id)).accept(MediaType.APPLICATION_JSON).get(distinctQueryType);
 			return (T) result;
 		}
 		
@@ -349,7 +390,7 @@ public class DataSource extends AbstractObservable implements ModelObject {
 			assert entity.isDirty() : "Attempt to save unchanged entity: "+entity;
 			assert cache.contains(entity) : "Updating uncached entity - should have been inflated and cached before editing: "+entity;
 			
-			String entityPath = getPath(entity.getId());
+			String entityPath = getInstancePath(entity.getId());
 			resource(entityPath).type(MediaType.APPLICATION_JSON).put(getType(), entity);
 			entity.setDirty(false);
 			
@@ -364,7 +405,7 @@ public class DataSource extends AbstractObservable implements ModelObject {
 			assert entity.getId()!=null && entity.getId().trim().length()>0 : "No ID: "+entity;
 			assert cache.contains(entity) : "Deleting uncached entity - should have been cached when read: "+entity;
 			
-			String entityPath = getPath(entity.getId());
+			String entityPath = getInstancePath(entity.getId());
 			resource(entityPath).type(MediaType.APPLICATION_JSON).delete();
 			cache.delete(entity);
 			
@@ -386,21 +427,67 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		this.cache = new DataCache();
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<? extends Root> getRoots() {
-		Root[] roots = {
-			new Root<Release>("Releases", "/releases", Release.class, new GenericType<Collection<Release>>() {}), 
-			new Root<Artist>("Artists", "/artists", Artist.class, new GenericType<Collection<Artist>>() {})
-		};
-		return Arrays.asList(roots); 
+		if (roots == null) {
+			roots = Arrays.asList(
+				new Root<Release>("Releases", "/releases", Release.class, new GenericType<Collection<Release>>() {} ), 
+				new Root<Artist>("Artists", "/artists", Artist.class, new GenericType<Collection<Artist>>() {} ), 
+				new Root<Track>("Tracks", "/tracks", Track.class, new GenericType<Collection<Track>>() {} )
+			);
+		}
+		return roots;
 	}
 
-	public Root resolveRoot(Object entity) {
+	/**
+	 * Find the {@link Root} for the supplied entity. Fail if no matching root is found. 
+	 * @param entity
+	 * @return Root
+	 */
+	@SuppressWarnings("unchecked")
+	public <T extends SMDIdentity> Root<T> resolveRoot(T entity) {
+		// if number of roots grow, we should probably use a Map<Class, Root> 
 		for (Root root : getRoots()) {
 			if (root.getType().isInstance(entity)) {
 				return root;
 			}
 		}
-		throw new IllegalArgumentException("Cannot resolve root for unknown element type: "+entity);
+		throw new IllegalArgumentException("Cannot resolve root for instance: "+entity);
+	}
+
+	/**
+	 * Find the {@link Root}s for the supplied types. 
+	 * 
+	 * @param requestedTypes
+	 * @return List<Root>, possibly empty
+	 */
+	private List resolveRoots(Class<? extends SMDIdentity>... requestedTypes) {
+		Set<Root> matches = new HashSet<Root>();
+		for (Root prospect : getRoots()) {
+			for (Class requestedType : requestedTypes) {
+				if (prospect.getType().equals(requestedType)) {
+					matches.add(prospect);
+				}
+			}
+		}
+		return new ArrayList<Root>(matches);
+	}
+
+	/**
+	 * Find the {@link Root} for the supplied entity type. Fail if no matching
+	 * root is found.
+	 * 
+	 * @param entity
+	 * @return Root
+	 */
+	@SuppressWarnings("unchecked")
+	public <T extends SMDIdentity> Root<T> resolveRoot(Class<T> type) {
+		for (Root root : getRoots()) {
+			if (root.getType().isAssignableFrom(type)) {
+				return root;
+			}
+		}
+		throw new IllegalArgumentException("Cannot resolve root for type: "+type);
 	}
 	
 	private String getServerURI() {
@@ -442,11 +529,14 @@ public class DataSource extends AbstractObservable implements ModelObject {
 	}
 
 	/**
-	 * The collection of roots does not change.
+	 * The collection of roots is static - at least for the foreseeable future.
+	 * We may want to dynamically add repositories and thus discover new roots. 
+	 * If/when that happens, this code must be changed.  
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public IObservableList getObservableChildren() {
-		return Observables.staticObservableList(getRoots());
+		return Observables.staticObservableList(resolveRoots(Artist.class, Release.class));
 	}
 
 	@Override
@@ -482,7 +572,7 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		}
 		return true;
 	}
-
+	
 	public static ClientConfig newClientConfig() {
 		ClientConfig clientConfig = new DefaultClientConfig();
 		clientConfig.getClasses().add(ClientConfigModule.JSONProvider.class);

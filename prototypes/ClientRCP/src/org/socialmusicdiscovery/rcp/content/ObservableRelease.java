@@ -1,11 +1,13 @@
 package org.socialmusicdiscovery.rcp.content;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.socialmusicdiscovery.rcp.content.DataSource.Root;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
 import org.socialmusicdiscovery.server.business.model.core.Label;
 import org.socialmusicdiscovery.server.business.model.core.Medium;
@@ -47,6 +49,22 @@ public class ObservableRelease extends AbstractObservableEntity<Release> impleme
 		return date;
 	}
 
+	/**
+	 * Tracks are not loaded during basic inflate; since not all {@link Track}s
+	 * belong to a {@link Release}, we need to query for the {@link Track}s. And
+	 * since the {@link Track}s do not have names, we need to inflate the
+	 * tracks. And we also want the track numbers etc.
+	 */
+	@Override
+	public void postInflate() {
+		Root<Track> trackRoot = getDataSource().resolveRoot(Track.class);
+		Collection<ObservableTrack> allTracks = trackRoot.findAll(this);
+		for (ObservableTrack track : allTracks) {
+			track.inflate();
+		}
+		tracks.addAll(allTracks);
+	}
+	
 	@Override
 	public Label getLabel() {
 		return label;
@@ -95,4 +113,5 @@ public class ObservableRelease extends AbstractObservableEntity<Release> impleme
 	public void setContributors(Set<Contributor> contributors) {
 		firePropertyChange(PROP_contributors, this.contributors, this.contributors = contributors);
 	}
+
 }
