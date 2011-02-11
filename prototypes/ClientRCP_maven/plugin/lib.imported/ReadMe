@@ -1,0 +1,7 @@
+A directory with "dynamic" libs, i.e. copied into this location (manually or by automatic build)rather than checked in to the source control system.
+In time, the build system will dot this. For now, you need to have your own way of making this happen.
+
+At the time of writing, what you need to do is to build the SMD server jar and place it (or a copy of it) in this directory. 
+After this, you need to refresh the project to make sure Eclipse picks up the new version of the .jar.
+
+Do NOT check in any files except this file in this directory! 
