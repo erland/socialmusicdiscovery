@@ -15,5 +15,6 @@
         <module>smd-server</module>
         <module>smd-frontend</module>
 	<module>smd-plugin</module>
+	<module>bundles</module>
     </modules>
 </project>
