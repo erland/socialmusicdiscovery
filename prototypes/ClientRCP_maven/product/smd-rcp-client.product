@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="SMD CLient Product" uid="smd-client-product" id="smd-rcp-client-plugin.smd_client_product" application="smd-client-application" version="1.0.0" useFeatures="true" includeLaunchers="true">
+<product name="SMD CLient Product" uid="smd-rcp-client-plugin.product" id="smd-rcp-client-plugin.product" application="smd-rcp-client-plugin.application" version="1.0.0" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
