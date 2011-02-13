@@ -22,5 +22,79 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+   <plugin
+         id="org.socialmusicdiscovery.smd-server-client-osgi"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.gson"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.inject"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="javax.ws.rs.jsr311-api"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.sun.jersey.jersey-client"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.sun.jersey.jersey-core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.springsource.org.aopalliance"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.ui.intro"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.ui.forms"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+ org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.ui.intro,
+ org.eclipse.ui.forms,
+ org.eclipse.swt,
+ org.eclipse.core.databinding;bundle-version="1.3.100",
+ org.eclipse.core.databinding.beans;bundle-version="1.2.100",
+ org.eclipse.core.databinding.observable;bundle-version="1.3.0",
+ org.eclipse.core.databinding.property;bundle-version="1.3.0",
+ org.eclipse.jface.databinding;bundle-version="1.4.0",
+ org.eclipse.core.expressions;bundle-version="3.4.200",
 
 </feature>

@@ -23,7 +23,7 @@
          id="product"
          point="org.eclipse.core.runtime.products">
       <product
-            application="smd-rcp.application"
+            application="smd-rcp-client-plugin.application"
             name="%product.name">
          <property
                name="windowImages"
@@ -39,7 +39,7 @@
       </intro>
       <introProductBinding
             introId="smdrcp.intro"
-            productId="smd-rcp.product">
+            productId="smd-rcp-client-plugin.product">
       </introProductBinding>
    </extension>
    <extension

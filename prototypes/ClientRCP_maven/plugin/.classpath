@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="lib/commons-logging/commons-logging-1.1.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/commons-beanutils-1.8.3.jar" sourcepath="lib/commons-beanutils-1.8.3-sources.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
@@ -12,7 +10,14 @@
 	<classpathentry exported="true" kind="lib" path="lib/datechooser-1.0.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/formattedtext-1.0.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/swt-grouplayout.jar"/>
-	<classpathentry kind="lib" path="lib.imported/smd-server-1.0-SNAPSHOT.jar" sourcepath="/smd-server/src/main/java"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-beanutils-1.8.3.jar" sourcepath="lib/commons-beanutils-1.8.3-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-logging/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/pshelf-1.0.0.jar" sourcepath="pshelf-1.0.0-src.zip"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry exported="true" kind="lib" path="target/dependencies/smd-server-client-osgi-1.0-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="lib" path="target/dependencies/jsr311-api-1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="target/dependencies/jersey-client-1.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="target/dependencies/jersey-core-1.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="target/dependencies/guice-2.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="target/dependencies/gson-1.6.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
 </classpath>
