@@ -52,6 +52,7 @@
     <module>feature</module>
     <module>product</module>
     <module>dependencies</module>
+    <module>site</module>
   </modules>
 
   <build>
