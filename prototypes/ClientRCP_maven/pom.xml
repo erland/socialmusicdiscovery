@@ -48,11 +48,11 @@
   </repositories>
 
   <modules>
-    <module>plugin</module>
-    <module>feature</module>
-    <module>product</module>
-    <module>dependencies</module>
-    <module>site</module>
+    <module>smd-rcp-client-plugin</module>
+    <module>smd-rcp-client-feature</module>
+    <module>smd-rcp-client</module>
+    <module>smd-rcp-client-dependencies</module>
+    <module>smd-rcp-client-site</module>
   </modules>
 
   <build>
