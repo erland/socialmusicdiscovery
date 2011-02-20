@@ -95,10 +95,21 @@ public abstract class AbstractEditorPart<T extends AbstractObservableEntity, U e
 	public void createPartControl(Composite parent, U ui) {
 		this.ui = ui;
 		T model = resolveModel();
-		model.inflate();
+		inflate(model);
 		ui.setModel(model);
 		ui.setPart(this);
 		updatePartName();
+	}
+
+	/**
+	 * If necessary, "inflate" the model object by filling all properties.
+	 * Subclasses may override or extend as necessary, the default
+	 * implementation calls {@link AbstractObservableEntity#inflate()}.
+	 * 
+	 * @param model
+	 */
+	protected void inflate(T model) {
+		model.inflate();
 	}
 
 	@SuppressWarnings("unchecked")
