@@ -91,13 +91,14 @@ import com.google.gson.annotations.Expose;
 	private final Map<String, SMDIdentity> cache = new WeakHashMap<String, SMDIdentity>();
 
 	/* Internal, use primarily for assertions (not only by this class) */
-	/* package */ <T extends SMDIdentity> boolean contains(T anObject) {
+	/* package */ boolean contains(SMDIdentity anObject) {
 		String key = anObject.getId();
 		return cache.containsKey(key) && cache.get(key)==anObject;
 	}
 	
- 	@SuppressWarnings("unchecked")
-	/* package */ <T extends SMDIdentity> T getOrStore(T serverObjectOrNull) {
+	// TODO fix generics, eliminate warning
+	/* package */ @SuppressWarnings("unchecked")
+	<T extends SMDIdentity> AbstractObservableEntity<T> getOrStore(T serverObjectOrNull) {
     	if (serverObjectOrNull==null) {
     		return null;
     	}
@@ -106,11 +107,17 @@ import com.google.gson.annotations.Expose;
     	String key = serverObjectOrNull.getId();
 		if (cache.get(key)==null) {
     		cache.put(key, serverObjectOrNull);
-			ObservableEntity cachedObject = (ObservableEntity) serverObjectOrNull;
-			// recursively replace all contained entities with cached values, or update cache with these values 
-    		deepMerge(cachedObject, cachedObject, new MyEntityFieldFilter());
+			ObservableEntity<T> cachedObject = (ObservableEntity<T>) serverObjectOrNull;
+			// Recursively replace all referenced entities with cached values,
+			// or update cache with these new values. Note: this is really just
+			// a trick to replace all references in a recently fetched server
+			// object with cached value if we have it; it reads each reference
+			// from itself and writes back either the same value or a cached
+			// equivalence. Check the details of the method:
+			// 		copyField(Field, SMDIdentity, ObservableEntity)
+    		deepMerge(serverObjectOrNull, cachedObject, new MyEntityFieldFilter());
     	}
-    	return (T) cache.get(key);
+    	return (AbstractObservableEntity<T>) cache.get(key);
     }
   
     /* package */ <T extends SMDIdentity> void merge(T serverObject, ObservableEntity<T> clientObject) {
