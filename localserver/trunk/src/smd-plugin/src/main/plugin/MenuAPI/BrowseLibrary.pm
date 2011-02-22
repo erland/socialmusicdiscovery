@@ -1,4 +1,4 @@
-#   Copyright 2010, Social Music Discovery project
+#   Copyright 2010-2011, Social Music Discovery project
 #   All rights reserved.
 #
 #   Redistribution and use in source and binary forms, with or without
