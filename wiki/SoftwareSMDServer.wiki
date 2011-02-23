@@ -76,7 +76,7 @@ There are a number of different types of browse interfaces which are supported b
   See the [SoftwareSMDServerGenericBrowseAPI separate description] of this interface for more information and sample usage.
 
   * *Server defined browse structure*
-  A fixed browse structure is defined on the server side and the client will be able to browse into an object and get a list of its childs. The type of childs under a specific object is defined on the server side.
+  A fixed browse structure is defined on the server side and the client will be able to browse into an object and get a list of its childs. The type of childs under a specific object is defined on the server side. For more information about this interface, see [SoftwareSMDServerLibraryBrowseAPI the separate page dedicated to it]
 
   * *UPnP interface*
   A UPnP interface which makes it possible for a generic UPnP client to connect and browse the menus provided by the "Server defined browse structure" described above. For more information regarding the UPnP interface, see its [UPnPNotes separate description]
