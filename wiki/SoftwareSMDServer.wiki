@@ -73,6 +73,7 @@ There are a number of different types of browse interfaces which are supported b
   Allows flexible browsing to browse all objects in any order and any hierarchy level. The server doesn't offer a predefined structure, instead it's the responsibility of the client to limit which hierarchies/objects to show. The client will typically specify either to:
    * Get a list of available child types under a specific object
    * Get a list of all childs of a specific type under a specific object
+  See the [SoftwareSMDServerGenericBrowseAPI separate description] of this interface for more information and sample usage.
 
   * *Server defined browse structure*
   A fixed browse structure is defined on the server side and the client will be able to browse into an object and get a list of its childs. The type of childs under a specific object is defined on the server side.
