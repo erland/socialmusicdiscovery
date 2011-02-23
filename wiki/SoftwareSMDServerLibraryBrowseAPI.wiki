@@ -1,0 +1,170 @@
+#summary Description of SMD Server library browse API
+
+= Overview =
+The library browse API is based on a RESTful web service using JSON although you can also use it directly with Java if you implement a SMD Server plugin. 
+
+The interface consists of a single operation which accessed using a HTTP *GET* operation, the returned data will be limited to the bare minimum to be able to display the returned object and it will also contain a pre-formatted text which is suitable for display.
+
+To try the API, you need a HTTP client that can issue GET HTTP actions. One example of this is the Firefox add-on called *"Poster"* which is freely available and makes it possible to send all these request without doing any development, but since GET is used by all web browsers you can also just use a standard web browser.
+
+The difference between this library browse API and the [SoftwareSMDServerLibraryBrowseAPI generic browse API] is that the library browse API doesn't allow you to specify what kind of object to get, this is all pre-defined in the server. At the moment, this configuration is hard coded in the code but the plan is to make the menu structure configurable by the user. If you like to get a list of a specific type of objects, you should use the [SoftwareSMDServerLibraryBrowseAPI generic browse API] instead of the library browse API. The idea is that the library browse API will be used by thin simple clients while more advanced clients probably want to be in control and take advantage of the more flexible browsing in the [SoftwareSMDServerLibraryBrowseAPI generic browse API].
+
+The browse interface supports to get a list of available objects under a specific object in the menu hierarchy
+
+The general url for this request looks like this:
+{{{
+http://localhost:9998/browse/library/<object1>/<object2>/<object3>?offset=<offset>&size=<size>&childs=<true|false>
+}}}
+Where the different parameters are:
+  * *object* - Object identity to browse into
+  * *offset* - Skips this number of objects in the beginning of the browse result
+  * *size* - Only return this number of objects
+  * *childs*
+   * true - Available child object types including counters will be returned for each object in the result
+   * false (default) - No information about child objects are returned
+
+The purpose of the "size" and "offset" attributes is to make it possible to get the browse result in chunks, for example first get the first 100 items and then display these and in the background get the next items in the browse result.
+
+In the result, you will get a number of specific parameters which might not be self explained:
+  * id - The identity of the object, this is used in the url when browsing into the object
+  * type - The type of object
+  * name - The pre-formatted display string that represents the object
+  * item - The actual object data, this looks different for different type of objects
+
+Some sample requests follows below:
+  * *List all top level menus*
+    {{{
+http://localhost:9998/browse/library
+    }}}
+  Where the result looks something like this:
+    {{{
+{
+  "items": [
+    {
+      "id": "artists",
+      "name": "Artists",
+      "type": "Folder",
+      "item": "Artists"
+    },
+    {
+      "id": "artists.composers",
+      "name": "Composers",
+      "type": "Folder",
+      "item": "Composers"
+    },
+    {
+      "id": "artists.conductors",
+      "name": "Conductors",
+      "type": "Folder",
+      "item": "Conductors"
+    },
+    {
+      "id": "releases",
+      "name": "Releases",
+      "type": "Folder",
+      "item": "Releases"
+    },
+    {
+      "id": "classifications.genres",
+      "name": "Genres",
+      "type": "Folder",
+      "item": "Genres"
+    },
+    {
+      "id": "classifications.styles",
+      "name": "Styles",
+      "type": "Folder",
+      "item": "Styles"
+    },
+    {
+      "id": "classifications.moods",
+      "name": "Moods",
+      "type": "Folder",
+      "item": "Moods"
+    }
+  ],
+  "totalSize": 7,
+  "offset": 0,
+  "size": 7
+}
+    }}}
+  * *Browse into Conductors*
+    {{{
+http://localhost:9998/browse/library/artists.conductors
+    }}}
+  Where the result looks something like this:
+    {{{
+{
+  "items": [
+    {
+      "id": "Artist.conductor:dc0c674b-fb42-4cce-93f3-16f082b2d859",
+      "name": "David Zinman",
+      "type": "Artist",
+      "item": {
+        "name": "David Zinman",
+        "person": {
+          "name": "David Zinman",
+          "id": "fe95b544-00c1-4b97-b037-df1a55db3c72"
+        },
+        "id": "dc0c674b-fb42-4cce-93f3-16f082b2d859"
+      }
+    },
+    {
+      "id": "Artist.conductor:5efa8fda-dd53-4c3c-9789-f8d9676fd2d4",
+      "name": "Ricky Minor",
+      "type": "Artist",
+      "item": {
+        "name": "Ricky Minor",
+        "person": {
+          "name": "Ricky Minor",
+          "id": "d0b593bc-d6cf-40d9-aa6a-27eb2d42952d"
+        },
+        "id": "5efa8fda-dd53-4c3c-9789-f8d9676fd2d4"
+      }
+    },
+    {
+      "id": "Artist.conductor:715c8b0e-1798-4b2c-be84-7e54f7d060c0",
+      "name": "William Ross",
+      "type": "Artist",
+      "item": {
+        "name": "William Ross",
+        "person": {
+          "name": "William Ross",
+          "id": "75e4978d-d5ac-4095-a553-241343886bf8"
+        },
+        "id": "715c8b0e-1798-4b2c-be84-7e54f7d060c0"
+      }
+    }
+  ],
+  "totalSize": 3,
+  "offset": 0,
+  "size": 3
+}
+    }}}
+  * *Browse into the conductor David Zinman*
+    {{{
+http://localhost:9998/browse/library/artists.conductors/Artist.conductor:dc0c674b-fb42-4cce-93f3-16f082b2d859
+    }}}
+  Where the result looks something like this:
+    {{{
+{
+  "items": [
+    {
+      "id": "Release:3c6f7b2f-a258-4803-a1b4-176f3752edc5",
+      "name": "Beethoven: Violin Concerto; Bernstein / Hahn, Zinman",
+      "type": "Release",
+      "item": {
+        "name": "Beethoven: Violin Concerto; Bernstein / Hahn, Zinman",
+        "label": {
+          "name": "Sony",
+          "id": "54f2640c-a3dd-4dc7-8962-c67cf162b979"
+        },
+        "id": "3c6f7b2f-a258-4803-a1b4-176f3752edc5"
+      }
+    }
+  ],
+  "totalSize": 1,
+  "offset": 0,
+  "size": 1
+}
+    }}}
