@@ -1,0 +1,221 @@
+#summary Description of SMD Server generic browse API
+
+= Overview =
+The generic browse API is based on a RESTful web service using JSON although you can also use it directly with Java if you implement a SMD Server plugin. The sections below describes the available requests. 
+
+All operations is accessed using a HTTP *GET* operation, the returned data will be limited to the bare minimum to be able to display the returned object.
+
+The interface contains two type of operations:
+  * Request list of object matching a browse criteria
+  * Request list of object types matching a browse criteria
+
+
+For testing the API, you need a HTTP client that can issue GET HTTP actions. One example of this is the Firefox add-on called *"Poster"* which is freely available and makes it possible to send all these request without doing any development, but since GET is used by all web browsers you can also just use a standard web browser.
+
+= Requesting list of object types =
+The browse interface supports to get a list of available object types that matches a certain browse criteria.
+
+The general url for this request looks like this:
+{{{
+http://localhost:9998/browse?criteria=<criteria1>&criteria=<criteria2>&counters=<true|false>
+}}}
+Where the different parameters are:
+  * *criteria* - A browse criteria which should be used to filter the result, for example:
+   * "criteria=Artist:8b22bc81-882d-4250-8a78-d74ffb10c48f" - will limit the result to objects which are related to the artist with the specified identity
+  * *counters*
+   * true - A counter will be returned for each object type indicating number of available matching instances of that kind of objects
+   * false (default) - Only the name of the object type will be returned
+
+So some real world samples:
+  * *Get available type of objects in database*
+    {{{
+http://localhost:9998/browse
+    }}}
+  Where the result looks something like this:
+    {{{
+[
+  {
+    "id": "Release"
+  },
+  {
+    "id": "Artist.conductor"
+  },
+  {
+    "id": "Artist.performer"
+  },
+  {
+    "id": "Artist.composer"
+  },
+  {
+    "id": "Work"
+  },
+  {
+    "id": "Label"
+  },
+  {
+    "id": "Track"
+  }
+]
+    }}}
+  * *Get available type of objects in database with counters*
+    {{{
+http://localhost:9998/browse?counters=true
+    }}}
+  Where the result looks something like this:
+    {{{
+[
+  {
+    "id": "Release",
+    "count": 6
+  },
+  {
+    "id": "Artist.conductor",
+    "count": 3
+  },
+  {
+    "id": "Artist.performer",
+    "count": 14
+  },
+  {
+    "id": "Artist.composer",
+    "count": 18
+  },
+  {
+    "id": "Work",
+    "count": 44
+  },
+  {
+    "id": "Label",
+    "count": 2
+  },
+  {
+    "id": "Track",
+    "count": 59
+  }
+]
+    }}}
+
+= Requesting list of matching objects =
+The browse interface supports to get a list of available objects of a certain type that matches the browse criterias.
+
+The general url for this request looks like this:
+{{{
+http://localhost:9998/browse/<objecttype>?criteria=<criteria1>&criteria=<criteria2>&offset=<offset>&size=<size>&childs=<true|false>
+}}}
+Where the different parameters are:
+  * *object* - Type of objects to get
+  * *criteria* - A browse criteria which should be used to filter the result, for example:
+   * "criteria=Artist:8b22bc81-882d-4250-8a78-d74ffb10c48f" - will limit the result to objects which are related to the artist with the specified identity
+  * *offset* - Skips this number of objects in the beginning of the browse result
+  * *size* - Only return this number of objects
+  * *childs*
+   * true - Available child object types including counters will be returned for each object in the result
+   * false (default) - No information about child objects are returned
+
+The purpose of the "size" and "offset" attributes is to make it possible to get the browse result in chunks, for example first get the first 100 items and then display these and in the background get the next items in the browse result.
+
+So some real world samples:
+  * *Get all labels*
+    {{{
+http://localhost:9998/browse/Label
+    }}}
+  Where the result looks something like this:
+    {{{
+{
+  "items": [
+    {
+      "item": {
+        "name": "Arista",
+        "id": "68d09343-e179-4caa-bce3-98b752ba2e85"
+      }
+    },
+    {
+      "item": {
+        "name": "Sony",
+        "id": "54f2640c-a3dd-4dc7-8962-c67cf162b979"
+      }
+    }
+  ],
+  "totalSize": 2,
+  "offset": 0,
+  "size": 2
+}
+    }}}
+  * *Get all labels with child information*
+    {{{
+http://localhost:9998/browse/Label?childs=true
+    }}}
+  Where the result looks something like this:
+    {{{
+{
+  "items": [
+    {
+      "childItems": [
+        {
+          "id": "Release",
+          "count": 1
+        },
+        {
+          "id": "Artist.performer",
+          "count": 3
+        },
+        {
+          "id": "Artist.conductor",
+          "count": 2
+        },
+        {
+          "id": "Artist.composer",
+          "count": 12
+        },
+        {
+          "id": "Work",
+          "count": 4
+        },
+        {
+          "id": "Track",
+          "count": 4
+        }
+      ],
+      "item": {
+        "name": "Arista",
+        "id": "68d09343-e179-4caa-bce3-98b752ba2e85"
+      }
+    },
+    {
+      "childItems": [
+        {
+          "id": "Release",
+          "count": 1
+        },
+        {
+          "id": "Artist.performer",
+          "count": 2
+        },
+        {
+          "id": "Artist.conductor",
+          "count": 1
+        },
+        {
+          "id": "Artist.composer",
+          "count": 2
+        },
+        {
+          "id": "Work",
+          "count": 10
+        },
+        {
+          "id": "Track",
+          "count": 8
+        }
+      ],
+      "item": {
+        "name": "Sony",
+        "id": "54f2640c-a3dd-4dc7-8962-c67cf162b979"
+      }
+    }
+  ],
+  "totalSize": 2,
+  "offset": 0,
+  "size": 2
+}
+    }}}
