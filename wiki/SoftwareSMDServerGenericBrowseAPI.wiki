@@ -10,7 +10,7 @@ The interface contains two type of operations:
   * Request list of object types matching a browse criteria
 
 
-For testing the API, you need a HTTP client that can issue GET HTTP actions. One example of this is the Firefox add-on called *"Poster"* which is freely available and makes it possible to send all these request without doing any development, but since GET is used by all web browsers you can also just use a standard web browser.
+To try the API, you need a HTTP client that can issue GET HTTP actions. One example of this is the Firefox add-on called *"Poster"* which is freely available and makes it possible to send all these request without doing any development, but since GET is used by all web browsers you can also just use a standard web browser.
 
 = Requesting list of object types =
 The browse interface supports to get a list of available object types that matches a certain browse criteria.
@@ -91,6 +91,39 @@ http://localhost:9998/browse?counters=true
   {
     "id": "Track",
     "count": 59
+  }
+]
+    }}}
+  * *Get available type of objects which are related to a specific composer*
+    {{{
+http://localhost:9998/browse?criteria=Artist.composer:6997e310-eae8-4d4b-b07e-79197a072648&counters=true
+    }}}
+  Where the result looks something like this:
+    {{{
+[
+  {
+    "id": "Release",
+    "count": 1
+  },
+  {
+    "id": "Artist.performer",
+    "count": 1
+  },
+  {
+    "id": "Artist.composer",
+    "count": 3
+  },
+  {
+    "id": "Work",
+    "count": 1
+  },
+  {
+    "id": "Label",
+    "count": 1
+  },
+  {
+    "id": "Track",
+    "count": 1
   }
 ]
     }}}
@@ -211,6 +244,40 @@ http://localhost:9998/browse/Label?childs=true
       "item": {
         "name": "Sony",
         "id": "54f2640c-a3dd-4dc7-8962-c67cf162b979"
+      }
+    }
+  ],
+  "totalSize": 2,
+  "offset": 0,
+  "size": 2
+}
+    }}}
+  * *Get all conductors which performs on a certain release(album) released by a certain label*
+    {{{
+http://localhost:9998/browse/Artist.conductor?criteria=Label:68d09343-e179-4caa-bce3-98b752ba2e85&criteria=Release:ad96235a-1c79-4802-b0eb-db5882bfaee5
+    }}}
+  Where the result looks something like this:
+    {{{
+{
+  "items": [
+    {
+      "item": {
+        "name": "Ricky Minor",
+        "person": {
+          "name": "Ricky Minor",
+          "id": "d0b593bc-d6cf-40d9-aa6a-27eb2d42952d"
+        },
+        "id": "5efa8fda-dd53-4c3c-9789-f8d9676fd2d4"
+      }
+    },
+    {
+      "item": {
+        "name": "William Ross",
+        "person": {
+          "name": "William Ross",
+          "id": "75e4978d-d5ac-4095-a553-241343886bf8"
+        },
+        "id": "715c8b0e-1798-4b2c-be84-7e54f7d060c0"
       }
     }
   ],
