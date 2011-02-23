@@ -11,8 +11,10 @@ The svn source code tree is divided in the following structure to be able to con
        * *smd-server* - [SoftwareSMDServer SMD Server] (https://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server)
        * *smd-frontend* - [SoftwareSMDFrontend SMD Frontend] (https://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-frontend)
        * *smd-plugin* - [SoftwarePlugin SMD Plugin] (https://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-plugin)
+       * *bundles* - (OSGi bundles needed for RCP client and other Eclipse projects) (https://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/bundles)
    * *prototypes* (https://socialmusicdiscovery.googlecode.com/svn/prototypes) 
      * Create your a sub directory under the "prototypes" directory if you like to commit some prototyping project which we haven't decided if it should be part of the official release yet. We shouldn't need to have any "trunk", "tags", "branches" structure under each prototype directory but we can decide for each prototype what's needed.
+     * *RCP Client* (https://socialmusicdiscovery.googlecode.com/svn/prototypes/ClientRCP_maven)
    * *tools* (https://socialmusicdiscovery.googlecode.com/svn/tools)
      * Create a sub directory under the "tools" directory for external tools, for example the unique ID verification tool would be suitable to commit here, the directory should have its own "trunk", "branches", "tags" directories to make it possible to manage different releases later on, for example:
      * *uniqueidverifier*
