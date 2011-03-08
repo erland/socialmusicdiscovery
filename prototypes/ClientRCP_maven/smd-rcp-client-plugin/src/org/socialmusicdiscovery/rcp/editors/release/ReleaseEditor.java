@@ -45,9 +45,7 @@ public class ReleaseEditor extends AbstractEditorPart<ObservableRelease, Release
 	private void hookContextMenus() {
 		hookContextMenus(
 			getUI().getGridViewerTracks(),
-			getUI().getPerformersPanel().getGridViewer(),
-			getUI().getComposersPanel().getGridViewer(),
-			getUI().getConductorsPanel().getGridViewer()
+			getUI().getArtistPanel().getGridViewer()
 		);
 	}
 

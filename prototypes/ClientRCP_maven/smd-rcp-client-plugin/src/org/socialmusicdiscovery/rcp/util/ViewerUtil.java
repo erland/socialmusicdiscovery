@@ -32,8 +32,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.databinding.beans.IBeanValueProperty;
+import org.eclipse.core.databinding.observable.list.WritableList;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.databinding.viewers.ViewerSupport;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -41,7 +44,10 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.OpenEvent;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.nebula.jface.gridviewer.GridViewerColumn;
+import org.eclipse.nebula.widgets.grid.GridColumn;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
@@ -185,6 +191,39 @@ public class ViewerUtil {
 			throw new IllegalStateException("More than ine selected element: "+selection.toList());
 		}
 		return selection.getFirstElement();
+	}
+
+	/**
+	 * Convenience method to allow passing properties as varargs.
+	 * @param viewer
+	 * @param list
+	 * @param properties
+	 */
+	public static void bind(StructuredViewer viewer, WritableList list, IBeanValueProperty... properties) {
+		ViewerSupport.bind(viewer, list, properties);
+	}
+
+	public static int resolveColumnIndex(GridViewerColumn gvc) {
+		// TODO must be a better way?
+		int columnIndex = 0;
+		GridColumn column = gvc.getColumn();
+		for (GridColumn c : column.getParent().getColumns()) {
+			if (c==column) {
+				break;
+			}
+			columnIndex++;
+		}
+		return columnIndex;
+	}
+
+	/**
+	 * @param roleGVC
+	 * @param artistGVC
+	 */
+	public static void hookSorter(GridViewerColumn... gvcs) {
+		for (GridViewerColumn gvc : gvcs) {
+			new GridViewerColumnComparator(gvc);
+		}
 	}
 	
 }
