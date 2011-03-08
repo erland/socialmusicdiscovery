@@ -195,3 +195,8 @@ This section contains online streaming sources that would be interesting to inte
   * *LastFM fingerprint*
     * https://github.com/lastfm/Fingerprinter
     * Fingerprint library that works towards LastFM
+
+  * *Million Song Dataset*
+    * http://labrosa.ee.columbia.edu/millionsong/
+    * Huge dataset with downloadable metadata as SQLite databases
+    * Not sure if we can use it for anything but it sounds interesting
