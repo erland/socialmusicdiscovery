@@ -29,6 +29,7 @@ package org.socialmusicdiscovery.rcp.editors.release;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
+import org.eclipse.nebula.jface.gridviewer.GridViewerColumn;
 import org.eclipse.nebula.widgets.grid.Grid;
 import org.eclipse.nebula.widgets.grid.GridColumn;
 import org.eclipse.swt.SWT;
@@ -38,6 +39,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.socialmusicdiscovery.rcp.util.ViewerUtil;
 import org.socialmusicdiscovery.rcp.views.util.OpenListener;
 
 /**
@@ -50,7 +52,10 @@ public class ContributorPanel extends Composite {
 
 	private final FormToolkit toolkit = new FormToolkit(Display.getCurrent());
 	private GridTableViewer gridTableViewer;
-	private GridColumn gridColumn;
+	private GridColumn roleColumn;
+	private GridViewerColumn roleGVC;
+	private GridColumn artistColumn;
+	private GridViewerColumn artistGVC;
 
 	/**
 	 * Create the composite.
@@ -75,10 +80,18 @@ public class ContributorPanel extends Composite {
 		grid.setCellSelectionEnabled(true);
 		gridTableViewer.setContentProvider(new ArrayContentProvider());
 		toolkit.paintBordersFor(grid);
-
-		gridColumn = new GridColumn(grid, SWT.NONE);
-		gridColumn.setWidth(400);
-		gridColumn.setText("Artist");
+		
+		roleGVC = new GridViewerColumn(gridTableViewer, SWT.NONE);
+		roleColumn = roleGVC.getColumn();
+		roleColumn.setMoveable(true);
+		roleColumn.setWidth(100);
+		roleColumn.setText("Role");
+		
+		artistGVC = new GridViewerColumn(gridTableViewer, SWT.NONE);
+		artistColumn = artistGVC.getColumn();
+		artistColumn.setMoveable(true);
+		artistColumn.setWidth(400);
+		artistColumn.setText("Artist");
 		
 		hookListeners();
 	}
@@ -86,13 +99,17 @@ public class ContributorPanel extends Composite {
 	private void hookListeners() {
 		// default edit
 		gridTableViewer.addOpenListener(new OpenListener());
+		ViewerUtil.hookSorter(roleGVC, artistGVC);
 	}
 	
 	public GridTableViewer getGridViewer() {
 		return gridTableViewer;
 	}
 
-	public GridColumn getGridColumn() {
-		return gridColumn;
+	public GridViewerColumn getRoleGVC() {
+		return roleGVC;
+	}
+	public GridViewerColumn getArtistGVC() {
+		return artistGVC;
 	}
 }

@@ -27,11 +27,9 @@
 
 package org.socialmusicdiscovery.rcp.editors.release;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -42,7 +40,6 @@ import org.eclipse.core.databinding.beans.IBeanValueProperty;
 import org.eclipse.core.databinding.observable.list.WritableList;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.SWTObservables;
-import org.eclipse.jface.databinding.viewers.ViewerSupport;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.nebula.jface.gridviewer.GridColumnLabelProvider;
@@ -65,6 +62,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.socialmusicdiscovery.rcp.content.ObservableRelease;
+import org.socialmusicdiscovery.rcp.util.ViewerUtil;
 import org.socialmusicdiscovery.rcp.views.util.AbstractComposite;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
 import org.socialmusicdiscovery.server.business.model.core.Recording;
@@ -192,8 +190,6 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 	protected Section sectionAlbumData;
 	protected Composite compositeAlbumData;
 	protected CTabFolder tabFolderAlbumData;
-	protected CTabItem tabItemComposers;
-	protected CTabItem tabItemConductors;
 	protected Grid gridTracks;
 	private GridTableViewer gridViewerTracks;
 	protected GridColumn colTrackNumber;
@@ -202,7 +198,7 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 	private GridViewerColumn gvcTitle;
 	protected GridColumn colPerformer;
 	private GridViewerColumn gvcPerformer;
-	protected CTabItem tabItemPerformers;
+	protected CTabItem tabItemArtists;
 	private Section sctnTracks;
 	private Composite gridContainer;
 	private GridColumn colComposer;
@@ -210,9 +206,7 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 	private GridColumn colConductor;
 	private GridViewerColumn gvcConductor;
 	private GridColumnGroup groupContributors;
-	private ContributorPanel performersPanel;
-	private ContributorPanel composersPanel;
-	private ContributorPanel conductorsPanel;
+	private ContributorPanel artistPanel;
 	private GridColumn colMediumNbr;
 	private GridViewerColumn gvcMediumNbr;
 	private GridColumnGroup groupNumbers;
@@ -326,34 +320,19 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 		formToolkit.adapt(tabFolderAlbumData);
 		formToolkit.paintBordersFor(tabFolderAlbumData);
 		
-		tabItemPerformers = new CTabItem(tabFolderAlbumData, SWT.NONE);
-		tabItemPerformers.setText("Performer(s)");
+		tabItemArtists = new CTabItem(tabFolderAlbumData, SWT.NONE);
+		tabItemArtists.setText("Artist(s)");
 		
-		performersPanel = new ContributorPanel(tabFolderAlbumData, SWT.NONE);
-		tabItemPerformers.setControl(performersPanel);
-		formToolkit.paintBordersFor(performersPanel);
-		
-		
-		tabItemComposers = new CTabItem(tabFolderAlbumData, SWT.NONE);
-		tabItemComposers.setText("Composer(s)");
-		
-		composersPanel = new ContributorPanel(tabFolderAlbumData, SWT.NONE);
-		tabItemComposers.setControl(composersPanel);
-		formToolkit.paintBordersFor(composersPanel);
-		
-		tabItemConductors = new CTabItem(tabFolderAlbumData, SWT.NONE);
-		tabItemConductors.setText("Conductor(s)");
-		
-		conductorsPanel = new ContributorPanel(tabFolderAlbumData, SWT.NONE);
-		tabItemConductors.setControl(conductorsPanel);
-		formToolkit.paintBordersFor(conductorsPanel);
+		artistPanel = new ContributorPanel(tabFolderAlbumData, SWT.NONE);
+		tabItemArtists.setControl(artistPanel);
+		formToolkit.paintBordersFor(artistPanel);
 
 		initStatic();
 		}
 
 	private void initStatic() {
 		gridViewerTracks.setContentProvider(new ArrayContentProvider());
-		tabFolderAlbumData.setSelection(tabItemPerformers);
+		tabFolderAlbumData.setSelection(tabItemArtists);
 		
 	}
 
@@ -372,55 +351,23 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 
 
 	private void bindAlbumData() {
-		Map<String, List<Contributor>> map = createContributorMap(getModel().getContributors());
-		bindContributor(getPerformersPanel(), map, CONTRIBUTOR_TYPE_PERFORMER);
-		bindContributor(getComposersPanel(), map, CONTRIBUTOR_TYPE_COMPOSER);
-		bindContributor(getConductorsPanel(), map, CONTRIBUTOR_TYPE_CONDUCTOR);
+		bindAlbumArtists();
 	}
 
-	// TODO rewrite for data binding; this is a derive map, not properly backed by model object 
-	private Map<String, List<Contributor>> createContributorMap(Set<Contributor> contributorSet) {
-	    Map<String, List<Contributor>> contributors = new HashMap<String, List<Contributor>>();
-	    for (Contributor contributor : contributorSet) {
-	        String type = contributor.getType();
-			if (!contributors.containsKey(type)) {
-	            contributors.put(type, new ArrayList<Contributor>());
-	        }
-			contributors.get(type).add(contributor);
-	    }
-	    return contributors;
-	}
-
-	private void bindContributor(ContributorPanel panel, Map<String, List<Contributor>> map, String key) {
-		List<Contributor> contributors = safeGet(map, key);
+	private void bindAlbumArtists() {
+		WritableList list = new WritableList(getModel().getContributors(), Contributor.class);
+		IBeanValueProperty roleProperty = BeanProperties.value(Contributor.class, "type");
+		IBeanValueProperty artistProperty = BeanProperties.value(Contributor.class, "artist.name");
 		
-		GridTableViewer viewer = panel.getGridViewer();
-		WritableList list = new WritableList(contributors, Contributor.class);
-		IBeanValueProperty labelProperty = BeanProperties.value(Contributor.class, "artist.name");
-		
-		ViewerSupport.bind(viewer, list, labelProperty);
-	}
-
-	private List<Contributor> safeGet(Map<String, List<Contributor>> map, String key) {
-		List<Contributor> result = map.get(key);
-		if (result==null) {
-			result = new ArrayList<Contributor>();
-			map.put(key, result);
-		}
-		return result;
+		ViewerUtil.bind(getArtistPanel().getGridViewer(), list, roleProperty, artistProperty);
 	}
 
 	private static boolean isEmpty(String s) {
 		return s==null || s.trim().length()<1;
 	}
-	public ContributorPanel getPerformersPanel() {
-		return performersPanel;
-	}
-	public ContributorPanel getConductorsPanel() {
-		return conductorsPanel;
-	}
-	public ContributorPanel getComposersPanel() {
-		return composersPanel;
+	
+	public ContributorPanel getArtistPanel() {
+		return artistPanel;
 	}
 	public GridTableViewer getGridViewerTracks() {
 		return gridViewerTracks;
