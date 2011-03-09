@@ -43,15 +43,30 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 
 /**
- * Sorts specified column when column header is clicked. Default sorter uses label provider 
- * assigned by {@link ViewerUtil#bind(org.eclipse.jface.viewers.StructuredViewer, org.eclipse.core.databinding.observable.list.WritableList, org.eclipse.core.databinding.beans.IBeanValueProperty...)} 
+ * <p>
+ * Sorts specified column when column header is clicked. Default sorter uses
+ * label provider assigned by
+ * {@link ViewerUtil#bind(org.eclipse.jface.viewers.StructuredViewer, org.eclipse.core.databinding.observable.list.WritableList, org.eclipse.core.databinding.beans.IBeanValueProperty...)}
  * or the default {@link Policy#getComparator()}.
+ * </p>
  * 
- * TODO keep track of previous comparators to allow sorting on several columns.
- *   
+ * <p>
+ * Keeps track of previous comparators to allow sorting on several columns; if
+ * first sorting on column A and then on column B, the sort order of A will
+ * apply if sorting on B renders 0 (no difference). Only the primary sort column
+ * is indicated in UI. If sorting is turned off, all history is gone.
+ * </p>
+ * 
  * @author Peer Törngren
  */
 public class GridViewerColumnComparator extends ViewerComparator implements SelectionListener {
+
+	private static class VoidComparator extends ViewerComparator {
+		@Override
+		public int compare(Viewer viewer, Object e1, Object e2) {
+			return 0;
+		}
+	}
 
 	private static class MyTableLabelProviderComparator implements Comparator {
 
@@ -83,6 +98,7 @@ public class GridViewerColumnComparator extends ViewerComparator implements Sele
 	
 	private Comparator comparator; // lazy init since we may register this instance before the label provider
 	private int currentSortOrder = NO_SORT;
+	private ViewerComparator subSorter = new VoidComparator();
 	
 	/**
 	 * Constructor for default sorter.
@@ -116,7 +132,10 @@ public class GridViewerColumnComparator extends ViewerComparator implements Sele
 	@SuppressWarnings("unchecked")
 	@Override
 	public int compare(Viewer viewer, Object e1, Object e2) {
-		return currentSortOrder * getComparator().compare(e1, e2);
+		assert subSorter!=this : "Self is subsorter: "+this;
+		int primarySort = currentSortOrder * getComparator().compare(e1, e2);
+		int finalSort = primarySort==0 ? subSorter.compare(viewer, e1, e2) : primarySort;
+		return finalSort ;
 	}
 
 	@Override
@@ -128,11 +147,100 @@ public class GridViewerColumnComparator extends ViewerComparator implements Sele
 	}
 	
 	private void changeSortOrder() {
-		int sortOrder = viewer.getComparator() == this ? getNextSortOrder() : ASCENDING;
-		setSortOrder(sortOrder);
+		boolean isInitialSort = viewer.getComparator() != this;
+		int sortOrder = isInitialSort ? ASCENDING : getNextSortOrder(currentSortOrder);
+		
+		currentSortOrder = sortOrder;
+		if (sortOrder == NO_SORT ) {
+			setNoSortOrder();
+		} else {
+			setSortOrder(sortOrder);
+		}
 	}
 
-	private int getNextSortOrder() {
+	private void setNoSortOrder() {
+		setPrimarySortColumn(null, SWT.NONE);
+		viewer.setComparator(null);
+		clearSubSorter();
+	}
+
+	private void setSortOrder(int newSortOrder) {
+		int swtSortOrder = newSortOrder==ASCENDING ? SWT.UP: SWT.DOWN;
+		setPrimarySortColumn(column, swtSortOrder);
+
+		ViewerComparator currentSorter = viewer.getComparator();
+		if (currentSorter == this) {
+			viewer.refresh();
+		} else {
+			if (currentSorter!=null) {
+				subSorter = currentSorter;
+				breakSubSorterLoop();
+			}
+			viewer.setComparator(this); // AFTER setting subsorter - sorting is done when comparator is set 
+		}
+	}
+
+	private void setPrimarySortColumn(GridColumn primarySortColumnOrNull, int swtSortOrder) {
+		Grid parent = column.getParent();
+		GridColumn oldSortColumn = (GridColumn) parent.getData(PRIMARY_SORT_COLUMN_KEY);
+		parent.setData(PRIMARY_SORT_COLUMN_KEY, primarySortColumnOrNull);
+		
+		if (oldSortColumn!=null) {
+			oldSortColumn.setSort(NO_SORT);
+		}
+		
+		// after reset - if it's the same column ...
+		if (primarySortColumnOrNull!=null) {
+			primarySortColumnOrNull.setSort(swtSortOrder);
+		}
+		
+	}
+
+	/**
+	 * Avoid infinite loops if user sorts on same columns several times -
+	 * recursively traverse chain of sub-sorters and break on first occurrence of
+	 * this instance. Elegant? No. Works? Yes.
+	 * 
+	 */
+	private void breakSubSorterLoop() {
+		GridViewerColumnComparator loopPoint = findSubsorter(this);
+		if (loopPoint!=null) {
+			loopPoint.clearSubSorter();
+		}
+	}
+
+	/**
+	 * Recursively traverse chain of subsorters and break on first occurrence of
+	 * this instance (first sorter that uses this instance as subsorter).
+	 * 
+	 * @param sorter or <code>null</code>
+	 */
+	private GridViewerColumnComparator findSubsorter(Object sorter) {
+		if (sorter instanceof GridViewerColumnComparator) {
+			GridViewerColumnComparator gvcc = (GridViewerColumnComparator) sorter;
+			ViewerComparator suspectSubSorter = gvcc.subSorter;
+			return suspectSubSorter==this ? gvcc : findSubsorter(suspectSubSorter); 
+		}
+		return null;
+	}
+	
+	/**
+	 * Reset the subsorter. 
+	 */
+	private void clearSubSorter() {
+		subSorter = new VoidComparator();
+	}
+
+	private static Comparator resolveComparator(GridViewerColumn gvc) {
+		IBaseLabelProvider lp = gvc.getViewer().getLabelProvider();
+		if (lp instanceof ITableLabelProvider) {
+			int columnIndex = ViewerUtil.resolveColumnIndex(gvc);
+			return new MyTableLabelProviderComparator((ITableLabelProvider) lp, columnIndex);
+		}
+		return Policy.getComparator(); // emergency: default comparator will probably not work as expected 
+	}
+
+	private static int getNextSortOrder(int currentSortOrder) {
 		switch (currentSortOrder) {
 		case ASCENDING:
 			return DESCENDING;
@@ -145,40 +253,5 @@ public class GridViewerColumnComparator extends ViewerComparator implements Sele
 		}
 	}
 
-	private void setSortOrder(int newSortOrder) {
-		if (newSortOrder == NO_SORT ) {
-			setPrimarySortColumn(null);
-			column.setSort(SWT.NONE);
-			viewer.setComparator(null);
-		} else {
-			setPrimarySortColumn(column);
-			currentSortOrder = newSortOrder;
-			int swtSortOrder = newSortOrder==ASCENDING ? SWT.UP: SWT.DOWN;
-			column.setSort(swtSortOrder);
-			if (viewer.getComparator() == this) {
-				viewer.refresh();
-			} else {
-				viewer.setComparator(this);
-			}
-		}
-	}
-
-	private void setPrimarySortColumn(GridColumn columnOrNull) {
-		Grid parent = column.getParent();
-		GridColumn old = (GridColumn) parent.getData(PRIMARY_SORT_COLUMN_KEY);
-		if (old!=null) {
-			old.setSort(NO_SORT);
-		}
-		parent.setData(PRIMARY_SORT_COLUMN_KEY, columnOrNull);
-	}
-	
-	private Comparator resolveComparator(GridViewerColumn gvc) {
-		IBaseLabelProvider lp = gvc.getViewer().getLabelProvider();
-		if (lp instanceof ITableLabelProvider) {
-			int columnIndex = ViewerUtil.resolveColumnIndex(gvc);
-			return new MyTableLabelProviderComparator((ITableLabelProvider) lp, columnIndex);
-		}
-		return Policy.getComparator(); // emergency: default comparator will probably not work as expected 
-	}
 
 }
