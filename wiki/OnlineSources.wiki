@@ -181,7 +181,11 @@ This section contains online streaming sources that would be interesting to inte
     * http://www.apple.com/itunes/affiliates/resources/documentation/itunes-store-web-service-search-api.html
     * 30 seconds previews are available without having to use iTunes, this could possibly be useful.
     * AMG ID to iTunes ID mapping are available, this could possibly be useful to be able to open a web browser towards AMG web site
-  *   
+  * *7digital*
+    * Music store and previews and meta data
+    * Have API which is free for non commercial usage
+    * http://developer.7digital.net/
+  * 
 
 = Other sites/tools which is of interest =
   * *tuneglue*
