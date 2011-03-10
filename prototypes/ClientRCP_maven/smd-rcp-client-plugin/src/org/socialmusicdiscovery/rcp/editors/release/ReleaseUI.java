@@ -28,6 +28,7 @@
 package org.socialmusicdiscovery.rcp.editors.release;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -62,9 +63,11 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.socialmusicdiscovery.rcp.content.ObservableRelease;
+import org.socialmusicdiscovery.rcp.util.Util;
 import org.socialmusicdiscovery.rcp.util.ViewerUtil;
 import org.socialmusicdiscovery.rcp.views.util.AbstractComposite;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
+import org.socialmusicdiscovery.server.business.model.core.Medium;
 import org.socialmusicdiscovery.server.business.model.core.Recording;
 import org.socialmusicdiscovery.server.business.model.core.Track;
 import org.socialmusicdiscovery.server.business.model.core.Work;
@@ -80,6 +83,7 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 	private static final String COMPOSITE_NAME_SEPARATOR = "/"; 
 	
 	private abstract class MyAbstractTrackLabelProvider extends GridColumnLabelProvider {
+		
 		@Override
 		public void update(ViewerCell cell) {
 			super.update(cell);
@@ -91,37 +95,35 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 
 		protected abstract Object getCellValue(Track element);
 	}
-	private final class MyTrackNumberLabelProvider extends MyAbstractTrackLabelProvider {
+	
+	private final class MyTrackNumberLabelProvider extends MyAbstractTrackLabelProvider implements Comparator<Track> {
 		@Override
 		protected Object getCellValue(Track track) {
 			return track.getNumber();
 		}
+
+		@Override
+		public int compare(Track t1, Track t2) {
+			return Util.compare(t1.getNumber(), t2.getNumber());
+		}
 	}
-	private class MyTrackMediumNumberLabelProvider extends MyAbstractTrackLabelProvider  {
+	
+	private class MyTrackMediumNumberLabelProvider extends MyAbstractTrackLabelProvider implements Comparator<Track> {
 		@Override
 		protected Object getCellValue(Track track) {
-//			List<Medium> media = release.getMediums();
-//			int i=0;
-//			for (Medium medium : media) {
-//				i++;
-//				List<Track> tracks = medium.getTracks();
-//				if (contains(tracks, track)) {
-//					return Integer.valueOf(i);
-//				}
-//			}
-			return null;
+			return getNumber(track);
 		}
 
-//		private boolean contains(Collection<? extends SMDIdentity> members, SMDIdentity prospect) {
-//			// THIS DOES NOT WORK - we really want the same instances ...
-//			for (SMDIdentity e : members) {
-//				if (e.getReference().equals(prospect.getReference())) {
-//					return true;
-//				}
-//			}
-//			return false;
-//		}
+		@Override
+		public int compare(Track t1, Track t2) {
+			return Util.compare(getNumber(t1), getNumber(t2));
+		}
 
+		private Integer getNumber(Track t) {
+			Medium m = t.getMedium();
+			return m==null ? null : m.getNumber();
+			
+		}
 	}
 
 
@@ -257,7 +259,7 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 		groupNumbers.setText("Index");
 		
 		colMediumNbr = new GridColumn(groupNumbers, SWT.RIGHT);
-		colMediumNbr.setVisible(false);
+		colMediumNbr.setVisible(true);
 		colMediumNbr.setSummary(false);
 		colMediumNbr.setSort(SWT.UP);
 		colMediumNbr.setWidth(100);

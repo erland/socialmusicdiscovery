@@ -27,6 +27,7 @@
 
 package org.socialmusicdiscovery.rcp.util;
 
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -36,7 +37,7 @@ import java.util.Set;
  * @author Peer Törngren
  *
  */
-public class Util {
+public final class Util {
 
 	private Util() {}
 
@@ -60,12 +61,22 @@ public class Util {
 		}
 	}
 
-//	public static Set asSet(Object... elements) {
-//		Set set = new HashSet();
-//		for (Object element : elements) {
-//			set.add(element);
-//		}
-//		return set;
-//	}
-
+	/**
+	 * Convenience method to compare two {@link Comparable} objects, respecting
+	 * that either one (or both) may be <code>null</code>.
+	 * 
+	 * @param c1
+	 * @param c2
+	 * @return int
+	 * @see Comparator
+	 */
+	@SuppressWarnings("unchecked")
+	public static int compare(Comparable c1, Comparable c2) {
+		if (c1==null) {
+			return c2==null ? 0 : -1;
+		} else if (c2==null) {
+			return 1;
+		}
+		return c1.compareTo(c2);
+	}
 }
