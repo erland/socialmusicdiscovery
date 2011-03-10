@@ -1,3 +1,3 @@
-id,name
-025b2afc-65b4-49dc-b561-da3d83a7ea85,Frank Zappa
-9c78c981-cbda-4612-aa95-72a940dfab58,Ike Willis
+id,name,last_updated,last_updated_by
+025b2afc-65b4-49dc-b561-da3d83a7ea85,Frank Zappa,2010-10-01,testdataloader
+9c78c981-cbda-4612-aa95-72a940dfab58,Ike Willis,2010-10-01,testdataloader

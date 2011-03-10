@@ -39,6 +39,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 
 /**
  * Provides functionality to create, update, delete and find a specific work
@@ -97,6 +98,8 @@ public class WorkFacade extends AbstractCRUDFacade<WorkEntity, WorkRepository> {
     public WorkEntity create(WorkEntity work) {
         try {
             transactionManager.begin();
+            work.setLastUpdated(new Date());
+            work.setLastUpdatedBy(super.CHANGED_BY);
             return new CopyHelper().copy(super.createEntity(work), Expose.class);
         }catch (RuntimeException e) {
             transactionManager.setRollbackOnly();
@@ -120,6 +123,8 @@ public class WorkFacade extends AbstractCRUDFacade<WorkEntity, WorkRepository> {
     public WorkEntity update(@PathParam("id") String id, WorkEntity work) {
         try {
             transactionManager.begin();
+            work.setLastUpdated(new Date());
+            work.setLastUpdatedBy(super.CHANGED_BY);
             return new CopyHelper().copy(super.updateEntity(id, work), Expose.class);
         }catch (RuntimeException e) {
             transactionManager.setRollbackOnly();

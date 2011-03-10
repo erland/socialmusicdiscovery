@@ -30,27 +30,27 @@ package org.socialmusicdiscovery.server.business.model.subjective;
 import com.google.gson.annotations.Expose;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.socialmusicdiscovery.server.business.model.AbstractSMDIdentityEntity;
+import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.Date;
 
 @javax.persistence.Entity
 @Table(name = "relations")
-@IdClass(RelationEntity.class)
-public class RelationEntity implements Serializable, Relation {
-    @Id
+@SMDIdentityReferenceEntity.ReferenceType(type = Relation.class)
+public class RelationEntity extends AbstractSMDIdentityEntity implements Relation {
     @Expose
     private String type;
 
-    @Id
     @Column(name = "from_id", length = 36)
     @Expose
     private String fromId;
 
-    @Id
     @Column(name = "to_id", length = 36)
     @Expose
     private String toId;

@@ -1,2 +1,2 @@
-id,release_id,recording_id,number
-171b848e-d72f-4880-ba71-74e9b5191b81,NULL,558591a2-28c9-47fe-a3f3-98e9510bc477,NULL
+id,release_id,recording_id,number,last_updated,last_updated_by
+171b848e-d72f-4880-ba71-74e9b5191b81,NULL,558591a2-28c9-47fe-a3f3-98e9510bc477,NULL,2010-10-01,testdataloader

@@ -12,29 +12,39 @@
                   file="org/socialmusicdiscovery/server/database/sampledata/alanparson_theturnofafriendlycard/releases.csv">
             <column header="id" type="STRING"/>
             <column header="name" type="STRING"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
         </loadData>
         <loadData tableName="persons"
                   file="org/socialmusicdiscovery/server/database/sampledata/alanparson_theturnofafriendlycard/persons.csv">
             <column header="id" type="STRING"/>
             <column header="name" type="STRING"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
         </loadData>
         <loadData tableName="artists"
                   file="org/socialmusicdiscovery/server/database/sampledata/alanparson_theturnofafriendlycard/artists.csv">
             <column header="id" type="STRING"/>
             <column header="name" type="STRING"/>
             <column header="person_id" type="STRING"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
         </loadData>
         <loadData tableName="works"
                   file="org/socialmusicdiscovery/server/database/sampledata/alanparson_theturnofafriendlycard/works.csv">
             <column header="id" type="STRING"/>
             <column header="name" type="STRING"/>
             <column header="parent_id" type="STRING"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
         </loadData>
         <loadData tableName="recording_sessions"
                   file="org/socialmusicdiscovery/server/database/sampledata/alanparson_theturnofafriendlycard/recording_sessions.csv">
             <column header="id" type="STRING"/>
             <column header="recording_id" type="STRING"/>
             <column header="work_id" type="STRING"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
         </loadData>
         <loadData tableName="release_recording_sessions"
                   file="org/socialmusicdiscovery/server/database/sampledata/alanparson_theturnofafriendlycard/release_recording_sessions.csv">
@@ -45,6 +55,8 @@
                   file="org/socialmusicdiscovery/server/database/sampledata/alanparson_theturnofafriendlycard/recordings.csv">
             <column header="id" type="STRING"/>
             <column header="name" type="STRING"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
         </loadData>
         <loadData tableName="recording_works"
                   file="org/socialmusicdiscovery/server/database/sampledata/alanparson_theturnofafriendlycard/recording_works.csv">
@@ -58,6 +70,8 @@
             <column header="recording_id" type="STRING"/>
             <column header="medium_id" type="STRING"/>
             <column header="number" type="NUMERIC"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
         </loadData>
         <loadData tableName="contributors"
                   file="org/socialmusicdiscovery/server/database/sampledata/alanparson_theturnofafriendlycard/contributors.csv">
@@ -67,6 +81,8 @@
             <column header="recording_id" type="STRING"/>
             <column header="work_id" type="STRING"/>
             <column header="type" type="STRING"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
         </loadData>
     </changeSet>
 </databaseChangeLog>

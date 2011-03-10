@@ -45,6 +45,8 @@ public abstract class AbstractCRUDFacade<E extends SMDIdentity, R extends Entity
     @Inject
     private TransactionManager transactionManager;
 
+    protected final String CHANGED_BY = "smd";
+
     protected EntityManager getEntityManager() {
         return em;
     }

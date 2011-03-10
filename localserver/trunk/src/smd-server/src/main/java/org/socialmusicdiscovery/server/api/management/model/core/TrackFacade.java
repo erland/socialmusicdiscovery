@@ -39,6 +39,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 
 /**
  * Provides functionality to create, update, delete and find a specific track
@@ -100,6 +101,8 @@ public class TrackFacade extends AbstractCRUDFacade<TrackEntity, TrackRepository
     public TrackEntity create(TrackEntity track) {
         try {
             transactionManager.begin();
+            track.setLastUpdated(new Date());
+            track.setLastUpdatedBy(super.CHANGED_BY);
             return new CopyHelper().copy(super.createEntity(track), Expose.class);
         }catch (RuntimeException e) {
             transactionManager.setRollbackOnly();
@@ -123,6 +126,8 @@ public class TrackFacade extends AbstractCRUDFacade<TrackEntity, TrackRepository
     public TrackEntity update(@PathParam("id") String id, TrackEntity track) {
         try {
             transactionManager.begin();
+            track.setLastUpdated(new Date());
+            track.setLastUpdatedBy(super.CHANGED_BY);
             return new CopyHelper().copy(super.updateEntity(id, track), Expose.class);
         }catch (RuntimeException e) {
             transactionManager.setRollbackOnly();

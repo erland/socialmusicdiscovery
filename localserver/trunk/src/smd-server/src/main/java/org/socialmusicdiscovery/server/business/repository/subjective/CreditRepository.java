@@ -31,10 +31,11 @@ import com.google.inject.ImplementedBy;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.model.subjective.CreditEntity;
 import org.socialmusicdiscovery.server.business.repository.EntityRepository;
+import org.socialmusicdiscovery.server.business.repository.SMDIdentityRepository;
 
 import java.util.Collection;
 
 @ImplementedBy(JPACreditRepository.class)
-public interface CreditRepository extends EntityRepository<CreditEntity, CreditEntity> {
+public interface CreditRepository extends SMDIdentityRepository<CreditEntity> {
     Collection<CreditEntity> findCreditsForReleaseRecordingWork(SMDIdentity releaseRecordingWorkId);
 }

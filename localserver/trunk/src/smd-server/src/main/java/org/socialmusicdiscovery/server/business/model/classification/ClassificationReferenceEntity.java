@@ -33,57 +33,21 @@ import org.socialmusicdiscovery.server.business.model.SMDIdentityReference;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 @javax.persistence.Entity
-@Table(name = "classifications")
-@SMDIdentityReferenceEntity.ReferenceType(type = Classification.class)
-public class ClassificationEntity extends AbstractSMDIdentityEntity implements Classification {
-    @Column(nullable = false)
+@Table(name = "classification_references")
+@SMDIdentityReferenceEntity.ReferenceType(type = ClassificationReference.class)
+public class ClassificationReferenceEntity extends AbstractSMDIdentityEntity implements ClassificationReference {
     @Expose
-    private String type;
-    @Column(nullable = false)
-    @Expose
-    private String name;
-    @OneToMany(targetEntity = ClassificationEntity.class, orphanRemoval = true)
-    @JoinColumn(name = "parent_id")
-    @Expose
-    private Set<Classification> childs = new HashSet<Classification>();
+    @ManyToOne(targetEntity = SMDIdentityReferenceEntity.class, fetch = FetchType.EAGER)
+    @JoinColumn(name = "reference_to_id", nullable = false)
+    private SMDIdentityReference referenceTo;
 
-    @OneToMany(targetEntity = ClassificationReferenceEntity.class)
-    @JoinColumn(name = "classification_id", nullable = true)
-    private Set<ClassificationReference> references = new HashSet<ClassificationReference>();
-
-    public String getType() {
-        return type;
+    public SMDIdentityReference getReferenceTo() {
+        return referenceTo;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Set<Classification> getChilds() {
-        return childs;
-    }
-
-    public void setChilds(Set<Classification> childs) {
-        this.childs = childs;
-    }
-
-    public Set<ClassificationReference> getReferences() {
-        return references;
-    }
-
-    public void setReferences(Set<ClassificationReference> references) {
-        this.references = references;
+    public void setReferenceTo(SMDIdentityReference referenceTo) {
+        this.referenceTo = referenceTo;
     }
 }

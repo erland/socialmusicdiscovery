@@ -12,16 +12,22 @@
                   file="org/socialmusicdiscovery/server/database/sampledata/crazyfrog_axelf/artists.csv">
             <column header="id" type="STRING"/>
             <column header="name" type="STRING"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
         </loadData>
         <loadData tableName="works"
                   file="org/socialmusicdiscovery/server/database/sampledata/crazyfrog_axelf/works.csv">
             <column header="id" type="STRING"/>
             <column header="name" type="STRING"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
         </loadData>
         <loadData tableName="recordings"
                   file="org/socialmusicdiscovery/server/database/sampledata/crazyfrog_axelf/recordings.csv">
             <column header="id" type="STRING"/>
             <column header="name" type="STRING"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
         </loadData>
         <loadData tableName="recording_works"
                   file="org/socialmusicdiscovery/server/database/sampledata/crazyfrog_axelf/recording_works.csv">
@@ -34,6 +40,8 @@
             <column header="release_id" type="STRING"/>
             <column header="recording_id" type="STRING"/>
             <column header="number" type="NUMERIC"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
         </loadData>
         <loadData tableName="contributors"
                   file="org/socialmusicdiscovery/server/database/sampledata/crazyfrog_axelf/contributors.csv">
@@ -43,6 +51,8 @@
             <column header="work_id" type="STRING"/>
             <column header="release_id" type="STRING"/>
             <column header="type" type="STRING"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
         </loadData>
     </changeSet>
 </databaseChangeLog>

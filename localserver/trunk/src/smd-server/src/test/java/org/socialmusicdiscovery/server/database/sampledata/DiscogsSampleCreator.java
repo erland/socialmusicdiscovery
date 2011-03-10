@@ -335,4 +335,13 @@ public class DiscogsSampleCreator extends SampleCreator {
             }
         }
     }
+
+    @Override
+    protected String getChangedBy() {
+        return "discogs";
+    }
+    @Override
+    protected String getChangedTime() {
+        return "2011-01-01T00:00:00";
+    }
 }

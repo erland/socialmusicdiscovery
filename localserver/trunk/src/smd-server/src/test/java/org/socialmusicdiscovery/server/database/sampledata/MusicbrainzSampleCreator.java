@@ -50,7 +50,7 @@ public class MusicbrainzSampleCreator extends SampleCreator {
     public void importRelease() throws Exception {
         Map<String, List<String>> result = new HashMap<String, List<String>>();
         importRelease(result, "11cafb9e-5fbc-49c7-b920-4ff754e03e93");
-        printCollectedData(result);
+        printCollectedDataAsDbUnit(result);
     }
 
     /**
@@ -110,5 +110,15 @@ public class MusicbrainzSampleCreator extends SampleCreator {
                 }
             }
         }
+    }
+
+    @Override
+    protected String getChangedBy() {
+        return "musicbrainz";
+    }
+
+    @Override
+    protected String getChangedTime() {
+        return "2011-01-01T00:00:00";
     }
 }

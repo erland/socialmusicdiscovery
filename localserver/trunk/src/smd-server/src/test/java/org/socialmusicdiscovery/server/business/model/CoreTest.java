@@ -37,6 +37,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -129,18 +130,22 @@ public class CoreTest extends BaseTestCase {
             ReleaseEntity release = new ReleaseEntity();
             release.setName("The Bodyguard (Original Soundtrack Album)");
             release.setDate(DATE_FORMAT.parse("1992"));
+            setLastChanged(release);
             releaseRepository.create(release);
 
             WorkEntity work = new WorkEntity();
             work.setName("I Will Always Love You");
+            setLastChanged(work);
             workRepository.create(work);
 
             ContributorEntity contributorDollyParton = new ContributorEntity();
             contributorDollyParton.setType("composer");
             ArtistEntity artistDollyParton = new ArtistEntity();
             artistDollyParton.setName("Dolly Parton");
+            setLastChanged(artistDollyParton);
             artistRepository.create(artistDollyParton);
             contributorDollyParton.setArtist(artistDollyParton);
+            setLastChanged(contributorDollyParton);
             contributorRepository.create(contributorDollyParton);
 
             work.getContributors().add(contributorDollyParton);
@@ -148,22 +153,27 @@ public class CoreTest extends BaseTestCase {
 
             RecordingEntity recording = new RecordingEntity();
             recording.getWorks().add(work);
+            setLastChanged(recording);
             recordingRepository.create(recording);
 
             ContributorEntity contributorWhitneyHouston= new ContributorEntity();
             contributorWhitneyHouston.setType("artist");
             ArtistEntity artistWhitneyHouston= new ArtistEntity();
             artistWhitneyHouston.setName("Whitney Houston");
+            setLastChanged(artistWhitneyHouston);
             artistRepository.create(artistWhitneyHouston);
             contributorWhitneyHouston.setArtist(artistWhitneyHouston);
+            setLastChanged(contributorWhitneyHouston);
             contributorRepository.create(contributorWhitneyHouston);
 
             ContributorEntity contributorRickyMinor= new ContributorEntity();
             contributorRickyMinor.setType("conductor");
             ArtistEntity artistRickyMinor= new ArtistEntity();
             artistRickyMinor.setName("Ricky Minor");
+            setLastChanged(artistRickyMinor);
             artistRepository.create(artistRickyMinor);
             contributorRickyMinor.setArtist(artistRickyMinor);
+            setLastChanged(contributorRickyMinor);
             contributorRepository.create(contributorRickyMinor);
 
             recording.getContributors().addAll(Arrays.asList(contributorWhitneyHouston,contributorRickyMinor));
@@ -172,6 +182,7 @@ public class CoreTest extends BaseTestCase {
             TrackEntity track = new TrackEntity();
             track.setNumber(1);
             track.setRecording(recording);
+            setLastChanged(track);
             trackRepository.create(track);
 
             release.setTracks(Arrays.asList((Track)track));
@@ -188,20 +199,28 @@ public class CoreTest extends BaseTestCase {
 
         printRelease(release);
 
+        assert ((ReleaseEntity)release).getLastUpdated() != null;
+        assert ((ReleaseEntity)release).getLastUpdatedBy() != null;
         assert(release.getName().equals("The Bodyguard (Original Soundtrack Album)"));
         assert(DATE_FORMAT.format(release.getDate()).equals("1992"));
         assert(release.getTracks() != null);
         assert(release.getTracks().size() == 1);
         Track track = release.getTracks().iterator().next();
         assert(track.getNumber().equals(1));
+        assert ((TrackEntity)track).getLastUpdated() != null;
+        assert ((TrackEntity)track).getLastUpdatedBy() != null;
         assert(track.getRecording() != null);
         assert(track.getRecording().getContributors() != null);
         assert(track.getRecording().getContributors().size()==2);
+        assert ((RecordingEntity)track.getRecording()).getLastUpdated() != null;
+        assert ((RecordingEntity)track.getRecording()).getLastUpdatedBy() != null;
         Iterator<Contributor> iterator = track.getRecording().getContributors().iterator();
         Contributor contributor1 = iterator.next();
         assert(contributor1.getType() != null);
         assert(contributor1.getArtist() != null);
         assert(contributor1.getType().equals("conductor") || contributor1.getType().equals("artist"));
+        assert ((ContributorEntity)contributor1).getLastUpdated() != null;
+        assert ((ContributorEntity)contributor1).getLastUpdatedBy() != null;
         if(contributor1.getType().equals("conductor")) {
             assert(contributor1.getArtist() != null);
             assert(contributor1.getArtist().getName().equals("Ricky Minor"));
@@ -210,6 +229,8 @@ public class CoreTest extends BaseTestCase {
             assert(contributor2.getType().equals("artist"));
             assert(contributor2.getArtist() != null);
             assert(contributor2.getArtist().getName().equals("Whitney Houston"));
+            assert ((ContributorEntity)contributor2).getLastUpdated() != null;
+            assert ((ContributorEntity)contributor2).getLastUpdatedBy() != null;
         }else {
             assert(contributor1.getArtist() != null);
             assert(contributor1.getArtist().getName().equals("Whitney Houston"));
@@ -218,6 +239,8 @@ public class CoreTest extends BaseTestCase {
             assert(contributor2.getType().equals("conductor"));
             assert(contributor2.getArtist() != null);
             assert(contributor2.getArtist().getName().equals("Ricky Minor"));
+            assert ((ContributorEntity)contributor2).getLastUpdated() != null;
+            assert ((ContributorEntity)contributor2).getLastUpdatedBy() != null;
         }
         em.getTransaction().commit();
     }
@@ -542,5 +565,10 @@ public class CoreTest extends BaseTestCase {
         assert trackForRecording == null;
         assert work == null;
         em.getTransaction().commit();
+    }
+
+    private void setLastChanged(AbstractSMDIdentityEntity entity) {
+        entity.setLastUpdated(new Date());
+        entity.setLastUpdatedBy("JUnit");
     }
 }

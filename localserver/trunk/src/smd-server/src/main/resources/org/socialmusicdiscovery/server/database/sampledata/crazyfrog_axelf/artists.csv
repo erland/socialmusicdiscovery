@@ -1,2 +1,2 @@
-id,person_id,name
-af1d3ce5-c955-40ac-8cd1-15c481a5c07e,NULL,Crazy Frog
+id,person_id,name,last_updated,last_updated_by
+af1d3ce5-c955-40ac-8cd1-15c481a5c07e,NULL,Crazy Frog,2010-10-01,testdataloader

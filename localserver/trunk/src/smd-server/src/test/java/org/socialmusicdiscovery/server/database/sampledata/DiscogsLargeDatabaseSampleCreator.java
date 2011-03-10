@@ -373,4 +373,13 @@ public class DiscogsLargeDatabaseSampleCreator extends SampleCreator {
         }
         return path;
     }
+
+    @Override
+    protected String getChangedBy() {
+        return "discogs";
+    }
+    @Override
+    protected String getChangedTime() {
+        return "2011-01-01T00:00:00";
+    }
 }

@@ -27,7 +27,9 @@
 
 package org.socialmusicdiscovery.server.business.model.subjective;
 
-public interface Credit {
+import org.socialmusicdiscovery.server.business.model.SMDIdentity;
+
+public interface Credit extends SMDIdentity {
     String getType();
 
     void setType(String type);

@@ -12,31 +12,43 @@
                   file="org/socialmusicdiscovery/server/database/sampledata/beethoven_bernstein/labels.csv">
             <column header="id" type="STRING"/>
             <column header="name" type="STRING"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
         </loadData>
         <loadData tableName="releases"
                   file="org/socialmusicdiscovery/server/database/sampledata/beethoven_bernstein/releases.csv">
             <column header="id" type="STRING"/>
             <column header="name" type="STRING"/>
             <column header="label_id" type="STRING"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
         </loadData>
         <loadData tableName="persons"
                   file="org/socialmusicdiscovery/server/database/sampledata/beethoven_bernstein/persons.csv">
             <column header="id" type="STRING"/>
             <column header="name" type="STRING"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
         </loadData>
         <loadData tableName="artists"
                   file="org/socialmusicdiscovery/server/database/sampledata/beethoven_bernstein/artists.csv">
             <column header="id" type="STRING"/>
             <column header="name" type="STRING"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
         </loadData>
         <loadData tableName="works"
                   file="org/socialmusicdiscovery/server/database/sampledata/beethoven_bernstein/works.csv">
             <column header="id" type="STRING"/>
             <column header="name" type="STRING"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
         </loadData>
         <loadData tableName="recording_sessions"
                   file="org/socialmusicdiscovery/server/database/sampledata/beethoven_bernstein/recording_sessions.csv">
             <column header="id" type="STRING"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
         </loadData>
         <loadData tableName="release_recording_sessions"
                   file="org/socialmusicdiscovery/server/database/sampledata/beethoven_bernstein/release_recording_sessions.csv">
@@ -48,6 +60,8 @@
             <column header="id" type="STRING"/>
             <column header="session_id" type="STRING"/>
             <column header="name" type="STRING"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
         </loadData>
         <loadData tableName="recording_works"
                   file="org/socialmusicdiscovery/server/database/sampledata/beethoven_bernstein/recording_works.csv">
@@ -60,6 +74,8 @@
             <column header="release_id" type="STRING"/>
             <column header="recording_id" type="STRING"/>
             <column header="number" type="NUMERIC"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
         </loadData>
         <loadData tableName="contributors"
                   file="org/socialmusicdiscovery/server/database/sampledata/beethoven_bernstein/contributors.csv">
@@ -70,6 +86,8 @@
             <column header="release_id" type="STRING"/>
             <column header="session_id" type="STRING"/>
             <column header="type" type="STRING"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
         </loadData>
     </changeSet>
 </databaseChangeLog>

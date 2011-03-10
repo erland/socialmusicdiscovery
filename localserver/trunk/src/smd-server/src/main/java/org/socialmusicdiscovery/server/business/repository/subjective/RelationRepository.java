@@ -31,11 +31,12 @@ import com.google.inject.ImplementedBy;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReference;
 import org.socialmusicdiscovery.server.business.model.subjective.RelationEntity;
 import org.socialmusicdiscovery.server.business.repository.EntityRepository;
+import org.socialmusicdiscovery.server.business.repository.SMDIdentityRepository;
 
 import java.util.Collection;
 
 @ImplementedBy(JPARelationRepository.class)
-public interface RelationRepository extends EntityRepository<RelationEntity, RelationEntity> {
+public interface RelationRepository extends SMDIdentityRepository<RelationEntity> {
     Collection<RelationEntity> findRelationsFrom(SMDIdentityReference reference);
     Collection<RelationEntity> findRelationsFrom(SMDIdentityReference reference, Class relatedTo);
     Collection<RelationEntity> findRelationsTo(SMDIdentityReference reference);

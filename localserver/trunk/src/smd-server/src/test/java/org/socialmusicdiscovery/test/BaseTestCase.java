@@ -44,6 +44,7 @@ import org.socialmusicdiscovery.server.business.logic.InjectHelper;
 import org.socialmusicdiscovery.server.business.logic.injections.database.DatabaseProvider;
 import org.socialmusicdiscovery.server.business.repository.GlobalIdentityRepository;
 import org.socialmusicdiscovery.server.business.repository.SMDIdentityReferenceRepository;
+import org.socialmusicdiscovery.server.business.repository.classification.ClassificationReferenceRepository;
 import org.socialmusicdiscovery.server.business.repository.classification.ClassificationRepository;
 import org.socialmusicdiscovery.server.business.repository.core.*;
 import org.socialmusicdiscovery.server.business.repository.subjective.CreditRepository;
@@ -81,6 +82,8 @@ public class BaseTestCase {
     protected GlobalIdentityRepository globalIdentityRepository;
     @Inject
     protected ClassificationRepository classificationRepository;
+    @Inject
+    protected ClassificationReferenceRepository classificationReferenceRepository;
     @Inject
     protected CreditRepository creditRepository;
     @Inject

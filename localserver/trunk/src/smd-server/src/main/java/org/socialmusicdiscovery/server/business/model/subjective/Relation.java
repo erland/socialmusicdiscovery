@@ -27,7 +27,9 @@
 
 package org.socialmusicdiscovery.server.business.model.subjective;
 
-public interface Relation {
+import org.socialmusicdiscovery.server.business.model.SMDIdentity;
+
+public interface Relation extends SMDIdentity {
     String getType();
 
     void setType(String type);

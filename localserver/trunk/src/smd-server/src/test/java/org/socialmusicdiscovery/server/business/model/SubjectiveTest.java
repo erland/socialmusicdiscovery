@@ -38,6 +38,7 @@ import org.testng.annotations.Test;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.Date;
 
 public class SubjectiveTest extends BaseTestCase {
     @BeforeTest
@@ -68,6 +69,8 @@ public class SubjectiveTest extends BaseTestCase {
             credit.setArtistPersonId(artist.getId());
             credit.setReleaseRecordingWorkId(release.getId());
             credit.setType("Important contributor");
+            credit.setLastUpdated(new Date());
+            credit.setLastUpdatedBy("JUnit");
             creditRepository.create(credit);
 
             Collection<CreditEntity> credits = creditRepository.findCreditsForReleaseRecordingWork(release);
@@ -76,6 +79,8 @@ public class SubjectiveTest extends BaseTestCase {
 
             credit = credits.iterator().next();
             assert credit != null;
+            assert credit.getLastUpdated() != null;
+            assert credit.getLastUpdatedBy() != null;
             assert credit.getType().equals("Important contributor");
 
             artist = artistRepository.findById(credit.getArtistPersonId());
@@ -110,24 +115,32 @@ public class SubjectiveTest extends BaseTestCase {
             relation.setFromId(artist.getId());
             relation.setToId(person.getId());
             relation.setType("In real life");
+            relation.setLastUpdated(new Date());
+            relation.setLastUpdatedBy("JUnit");
             relationRepository.create(relation);
 
             relation = new RelationEntity();
             relation.setFromId(artist2.getId());
             relation.setToId(person2.getId());
             relation.setType("In real life");
+            relation.setLastUpdated(new Date());
+            relation.setLastUpdatedBy("JUnit");
             relationRepository.create(relation);
 
             relation = new RelationEntity();
             relation.setFromId(artist3.getId());
             relation.setToId(artist.getId());
             relation.setType("Composer for");
+            relation.setLastUpdated(new Date());
+            relation.setLastUpdatedBy("JUnit");
             relationRepository.create(relation);
 
             relation = new RelationEntity();
             relation.setFromId(artist.getId());
             relation.setToId(artist2.getId());
             relation.setType("Friend to");
+            relation.setLastUpdated(new Date());
+            relation.setLastUpdatedBy("JUnit");
             relationRepository.create(relation);
 
             Collection<RelationEntity> relations = relationRepository.findRelationsFrom(SMDIdentityReferenceEntity.forEntity(artist));
@@ -140,6 +153,8 @@ public class SubjectiveTest extends BaseTestCase {
 
             relation = relations.iterator().next();
             assert relation != null;
+            assert relation.getLastUpdated() != null;
+            assert relation.getLastUpdatedBy() != null;
             assert relation.getType().equals("In real life");
 
             SMDIdentityReference fromReference = smdIdentityReferenceRepository.findById(relation.getFromId());

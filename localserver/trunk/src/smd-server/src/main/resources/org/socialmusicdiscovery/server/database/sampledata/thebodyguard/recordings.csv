@@ -1,5 +1,5 @@
-id,name
-c2bc63e2-2715-4a7b-88d7-373279eef68e,NULL
-0e193ea5-190a-4a52-b3c6-28ba81e463fb,NULL
-6508da73-0817-49a8-99ec-5be35608f388,NULL
-8f426aa1-f616-47e1-bd1f-96deada00999,NULL
+id,name,last_updated,last_updated_by
+c2bc63e2-2715-4a7b-88d7-373279eef68e,NULL,2010-10-01,testdataloader
+0e193ea5-190a-4a52-b3c6-28ba81e463fb,NULL,2010-10-01,testdataloader
+6508da73-0817-49a8-99ec-5be35608f388,NULL,2010-10-01,testdataloader
+8f426aa1-f616-47e1-bd1f-96deada00999,NULL,2010-10-01,testdataloader

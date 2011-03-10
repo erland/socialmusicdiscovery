@@ -90,6 +90,12 @@ public class JPAReleaseRepository extends AbstractJPASMDIdentityRepository<Relea
         }
         for (Medium medium : entity.getMediums()) {
             if(!entityManager.contains(medium)) {
+                if(((MediumEntity)medium).getLastUpdated()==null) {
+                    ((MediumEntity)medium).setLastUpdated(entity.getLastUpdated());
+                }
+                if(((MediumEntity)medium).getLastUpdatedBy()==null) {
+                    ((MediumEntity)medium).setLastUpdatedBy(entity.getLastUpdatedBy());
+                }
                 if(((MediumEntity)medium).getReference()==null || entity.getReference().getId() == null) {
                     ((MediumEntity)medium).setReference(SMDIdentityReferenceEntity.forEntity(medium));
                 }
@@ -97,6 +103,12 @@ public class JPAReleaseRepository extends AbstractJPASMDIdentityRepository<Relea
         }
         for (Contributor contributor : entity.getContributors()) {
             if(!entityManager.contains(contributor)) {
+                if(((ContributorEntity)contributor).getLastUpdated()==null) {
+                    ((ContributorEntity)contributor).setLastUpdated(entity.getLastUpdated());
+                }
+                if(((ContributorEntity)contributor).getLastUpdatedBy()==null) {
+                    ((ContributorEntity)contributor).setLastUpdatedBy(entity.getLastUpdatedBy());
+                }
                 contributorRepository.create((ContributorEntity) contributor);
             }
         }
@@ -112,11 +124,23 @@ public class JPAReleaseRepository extends AbstractJPASMDIdentityRepository<Relea
         }
         for (Medium medium : entity.getMediums()) {
             if(!entityManager.contains(medium)) {
+                if(((MediumEntity)medium).getLastUpdated()==null) {
+                    ((MediumEntity)medium).setLastUpdated(entity.getLastUpdated());
+                }
+                if(((MediumEntity)medium).getLastUpdatedBy()==null) {
+                    ((MediumEntity)medium).setLastUpdatedBy(entity.getLastUpdatedBy());
+                }
                 mediumRepository.merge((MediumEntity) medium);
             }
         }
         for (Contributor contributor : entity.getContributors()) {
             if(!entityManager.contains(contributor)) {
+                if(((ContributorEntity)contributor).getLastUpdated()==null) {
+                    ((ContributorEntity)contributor).setLastUpdated(entity.getLastUpdated());
+                }
+                if(((ContributorEntity)contributor).getLastUpdatedBy()==null) {
+                    ((ContributorEntity)contributor).setLastUpdatedBy(entity.getLastUpdatedBy());
+                }
                 contributorRepository.merge((ContributorEntity) contributor);
             }
         }
@@ -133,7 +157,7 @@ public class JPAReleaseRepository extends AbstractJPASMDIdentityRepository<Relea
         entity.getSearchRelations().clear();
         entityManager.createQuery("DELETE from RecordingReleaseSearchRelationEntity where reference=:id").setParameter("id",entity.getId()).executeUpdate();
 
-        entityManager.createNativeQuery("DELETE from classification_references where reference_id=:id").setParameter("id",entity.getId()).executeUpdate();
+        entityManager.createNativeQuery("DELETE from classification_references where reference_to_id=:id").setParameter("id",entity.getId()).executeUpdate();
         super.remove(entity);
     }
 

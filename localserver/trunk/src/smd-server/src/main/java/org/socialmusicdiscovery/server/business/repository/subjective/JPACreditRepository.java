@@ -31,12 +31,13 @@ import com.google.inject.Inject;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.model.subjective.CreditEntity;
 import org.socialmusicdiscovery.server.business.repository.AbstractJPAEntityRepository;
+import org.socialmusicdiscovery.server.business.repository.AbstractJPASMDIdentityRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.util.Collection;
 
-public class JPACreditRepository extends AbstractJPAEntityRepository<CreditEntity, CreditEntity> implements CreditRepository {
+public class JPACreditRepository extends AbstractJPASMDIdentityRepository<CreditEntity> implements CreditRepository {
     @Inject
     public JPACreditRepository(EntityManager em) {super(em);}
 
