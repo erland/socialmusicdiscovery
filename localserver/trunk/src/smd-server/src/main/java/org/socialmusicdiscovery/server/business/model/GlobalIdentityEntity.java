@@ -33,6 +33,7 @@ import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import java.util.Date;
 import java.util.UUID;
 
 @javax.persistence.Entity
@@ -52,6 +53,12 @@ public class GlobalIdentityEntity implements GlobalIdentity {
     @Column(name = "entityid", nullable = false)
     @Expose
     private String entityId;
+
+    @Column(name = "last_updated", nullable = false)
+    private Date lastUpdated;
+
+    @Column(name = "last_updated_by", nullable = false)
+    private String lastUpdatedBy;
 
     public GlobalIdentityEntity() {
         id = UUID.randomUUID().toString();
@@ -87,6 +94,22 @@ public class GlobalIdentityEntity implements GlobalIdentity {
 
     public void setEntityId(String entityId) {
         this.entityId = entityId;
+    }
+
+    public Date getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(Date lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
+    public String getLastUpdatedBy() {
+        return lastUpdatedBy;
+    }
+
+    public void setLastUpdatedBy(String lastUpdatedBy) {
+        this.lastUpdatedBy = lastUpdatedBy;
     }
 
     @Override

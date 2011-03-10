@@ -25,31 +25,12 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.server.business.model.classification;
+package org.socialmusicdiscovery.server.business.repository.classification;
 
-import org.socialmusicdiscovery.server.business.model.SMDIdentity;
-import org.socialmusicdiscovery.server.business.model.SMDIdentityReference;
+import com.google.inject.ImplementedBy;
+import org.socialmusicdiscovery.server.business.model.classification.ClassificationReferenceEntity;
+import org.socialmusicdiscovery.server.business.repository.SMDIdentityRepository;
 
-import java.util.Set;
-
-public interface Classification extends SMDIdentity {
-    final static String GENRE = "genre";
-    final static String MOOD = "mood";
-    final static String STYLE = "style";
-
-    String getType();
-
-    void setType(String type);
-
-    String getName();
-
-    void setName(String name);
-
-    Set<Classification> getChilds();
-
-    void setChilds(Set<Classification> childs);
-
-    Set<ClassificationReference> getReferences();
-
-    void setReferences(Set<ClassificationReference> references);
+@ImplementedBy(JPAClassificationReferenceRepository.class)
+public interface ClassificationReferenceRepository extends SMDIdentityRepository<ClassificationReferenceEntity> {
 }

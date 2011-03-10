@@ -39,6 +39,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 
 /**
  * Provides functionality to create, update, delete and find a specific label
@@ -91,6 +92,8 @@ public class LabelFacade extends AbstractCRUDFacade<LabelEntity, LabelRepository
     public LabelEntity create(LabelEntity label) {
         try {
             transactionManager.begin();
+            label.setLastUpdated(new Date());
+            label.setLastUpdatedBy(super.CHANGED_BY);
             return new CopyHelper().copy(super.createEntity(label), Expose.class);
         }catch (RuntimeException e) {
             transactionManager.setRollbackOnly();
@@ -114,6 +117,8 @@ public class LabelFacade extends AbstractCRUDFacade<LabelEntity, LabelRepository
     public LabelEntity update(@PathParam("id") String id, LabelEntity label) {
         try {
             transactionManager.begin();
+            label.setLastUpdated(new Date());
+            label.setLastUpdatedBy(super.CHANGED_BY);
             return new CopyHelper().copy(super.updateEntity(id, label), Expose.class);
         }catch (RuntimeException e) {
             transactionManager.setRollbackOnly();

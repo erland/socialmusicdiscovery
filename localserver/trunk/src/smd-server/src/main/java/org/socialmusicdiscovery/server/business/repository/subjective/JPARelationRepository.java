@@ -31,12 +31,13 @@ import com.google.inject.Inject;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReference;
 import org.socialmusicdiscovery.server.business.model.subjective.RelationEntity;
 import org.socialmusicdiscovery.server.business.repository.AbstractJPAEntityRepository;
+import org.socialmusicdiscovery.server.business.repository.AbstractJPASMDIdentityRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.util.Collection;
 
-public class JPARelationRepository extends AbstractJPAEntityRepository<RelationEntity, RelationEntity> implements RelationRepository {
+public class JPARelationRepository extends AbstractJPASMDIdentityRepository<RelationEntity> implements RelationRepository {
     @Inject
     public JPARelationRepository(EntityManager em) {super(em);}
 

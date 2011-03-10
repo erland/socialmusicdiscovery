@@ -30,27 +30,27 @@ package org.socialmusicdiscovery.server.business.model.subjective;
 import com.google.gson.annotations.Expose;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.socialmusicdiscovery.server.business.model.AbstractSMDIdentityEntity;
+import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.Date;
 
 @javax.persistence.Entity
 @Table(name = "credits")
-@IdClass(CreditEntity.class)
-public class CreditEntity implements Serializable, Credit {
-    @Id
+@SMDIdentityReferenceEntity.ReferenceType(type = Credit.class)
+public class CreditEntity extends AbstractSMDIdentityEntity implements Credit {
     @Expose
     private String type;
 
-    @Id
     @Column(name = "artist_person_id", length = 36)
     @Expose
     private String artistPersonId;
 
-    @Id
     @Column(name = "release_recording_work_id", length = 36)
     @Expose
     private String releaseRecordingWorkId;

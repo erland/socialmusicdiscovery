@@ -37,6 +37,7 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import java.lang.reflect.Method;
+import java.util.Date;
 
 public class GlobalIdentityTest extends BaseTestCase {
     @BeforeTest
@@ -67,12 +68,16 @@ public class GlobalIdentityTest extends BaseTestCase {
             identity.setSource(GlobalIdentity.SOURCE_MUSICBRAINZ);
             identity.setEntityId(artist.getId());
             identity.setUri("0307edfc-437c-4b48-8700-80680e66a228");
+            identity.setLastUpdated(new Date());
+            identity.setLastUpdatedBy("JUnit");
             globalIdentityRepository.create(identity);
 
             identity = new GlobalIdentityEntity();
             identity.setSource(GlobalIdentity.SOURCE_MUSICBRAINZ);
             identity.setEntityId(release.getId());
             identity.setUri("11cafb9e-5fbc-49c7-b920-4ff754e03e93");
+            identity.setLastUpdated(new Date());
+            identity.setLastUpdatedBy("JUnit");
             globalIdentityRepository.create(identity);
 
             int identifiedTracks = 0;
@@ -80,6 +85,8 @@ public class GlobalIdentityTest extends BaseTestCase {
                 identity = new GlobalIdentityEntity();
                 identity.setSource(GlobalIdentity.SOURCE_MUSICBRAINZ);
                 identity.setEntityId(track.getId());
+                identity.setLastUpdated(new Date());
+                identity.setLastUpdatedBy("JUnit");
                 if (track.getNumber().equals(1)) {
                     identity.setUri("86cf33ac-5b7b-401b-9188-608bb2752063");
                 } else if (track.getNumber().equals(5)) {
@@ -99,31 +106,43 @@ public class GlobalIdentityTest extends BaseTestCase {
             identity = globalIdentityRepository.findBySourceAndEntity(GlobalIdentity.SOURCE_MUSICBRAINZ, artist);
             assert identity != null;
             assert identity.getUri().equals("0307edfc-437c-4b48-8700-80680e66a228");
+            assert identity.getLastUpdated() != null;
+            assert identity.getLastUpdatedBy() != null;
 
             identity = globalIdentityRepository.findBySourceAndEntity(GlobalIdentity.SOURCE_MUSICBRAINZ, release);
             assert identity != null;
             assert identity.getUri().equals("11cafb9e-5fbc-49c7-b920-4ff754e03e93");
+            assert identity.getLastUpdated() != null;
+            assert identity.getLastUpdatedBy() != null;
 
             for (Track track : release.getTracks()) {
                 if (track.getNumber().equals(1)) {
                     identity = globalIdentityRepository.findBySourceAndEntity(GlobalIdentity.SOURCE_MUSICBRAINZ, track);
                     assert identity != null;
                     assert identity.getUri().equals("86cf33ac-5b7b-401b-9188-608bb2752063");
+                    assert identity.getLastUpdated() != null;
+                    assert identity.getLastUpdatedBy() != null;
                     identifiedTracks--;
                 } else if (track.getNumber().equals(5)) {
                     identity = globalIdentityRepository.findBySourceAndEntity(GlobalIdentity.SOURCE_MUSICBRAINZ, track);
                     assert identity != null;
                     assert identity.getUri().equals("bdd8624a-d0ac-480f-8fe5-253bd99b7d3f");
+                    assert identity.getLastUpdated() != null;
+                    assert identity.getLastUpdatedBy() != null;
                     identifiedTracks--;
                 } else if (track.getNumber().equals(9)) {
                     identity = globalIdentityRepository.findBySourceAndEntity(GlobalIdentity.SOURCE_MUSICBRAINZ, track);
                     assert identity != null;
                     assert identity.getUri().equals("f2ba4ef6-7017-4b93-9176-c079ed0a97e9");
+                    assert identity.getLastUpdated() != null;
+                    assert identity.getLastUpdatedBy() != null;
                     identifiedTracks--;
                 } else if (track.getNumber().equals(13)) {
                     identity = globalIdentityRepository.findBySourceAndEntity(GlobalIdentity.SOURCE_MUSICBRAINZ, track);
                     assert identity != null;
                     assert identity.getUri().equals("c3af5bb7-5711-495e-8fae-af8d730497cd");
+                    assert identity.getLastUpdated() != null;
+                    assert identity.getLastUpdatedBy() != null;
                     identifiedTracks--;
                 }
             }

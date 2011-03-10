@@ -11,31 +11,43 @@
         <loadData tableName="labels" file="org/socialmusicdiscovery/server/database/sampledata/thebodyguard/labels.csv">
             <column header="id" type="STRING"/>
             <column header="name" type="STRING"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
         </loadData>
         <loadData tableName="releases"
                   file="org/socialmusicdiscovery/server/database/sampledata/thebodyguard/releases.csv">
             <column header="id" type="STRING"/>
             <column header="name" type="STRING"/>
             <column header="label_id" type="STRING"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
         </loadData>
         <loadData tableName="persons"
                   file="org/socialmusicdiscovery/server/database/sampledata/thebodyguard/persons.csv">
             <column header="id" type="STRING"/>
             <column header="name" type="STRING"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
         </loadData>
         <loadData tableName="artists"
                   file="org/socialmusicdiscovery/server/database/sampledata/thebodyguard/artists.csv">
             <column header="id" type="STRING"/>
             <column header="name" type="STRING"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
         </loadData>
         <loadData tableName="works" file="org/socialmusicdiscovery/server/database/sampledata/thebodyguard/works.csv">
             <column header="id" type="STRING"/>
             <column header="name" type="STRING"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
         </loadData>
         <loadData tableName="recordings"
                   file="org/socialmusicdiscovery/server/database/sampledata/thebodyguard/recordings.csv">
             <column header="id" type="STRING"/>
             <column header="name" type="STRING"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
         </loadData>
         <loadData tableName="recording_works"
                   file="org/socialmusicdiscovery/server/database/sampledata/thebodyguard/recording_works.csv">
@@ -47,6 +59,8 @@
             <column header="release_id" type="STRING"/>
             <column header="recording_id" type="STRING"/>
             <column header="number" type="NUMERIC"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
         </loadData>
         <loadData tableName="contributors"
                   file="org/socialmusicdiscovery/server/database/sampledata/thebodyguard/contributors.csv">
@@ -56,6 +70,8 @@
             <column header="work_id" type="STRING"/>
             <column header="release_id" type="STRING"/>
             <column header="type" type="STRING"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
         </loadData>
     </changeSet>
 </databaseChangeLog>

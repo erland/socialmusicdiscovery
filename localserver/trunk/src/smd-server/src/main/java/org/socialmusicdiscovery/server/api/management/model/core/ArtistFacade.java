@@ -39,6 +39,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 
 /**
  * Provides functionality to create, update, delete and find a specific artist
@@ -97,6 +98,8 @@ public class ArtistFacade extends AbstractCRUDFacade<ArtistEntity, ArtistReposit
     public ArtistEntity create(ArtistEntity artist) {
         try {
             transactionManager.begin();
+            artist.setLastUpdated(new Date());
+            artist.setLastUpdatedBy(super.CHANGED_BY);
             return new CopyHelper().copy(super.createEntity(artist), Expose.class);
         }catch (RuntimeException e) {
             transactionManager.setRollbackOnly();
@@ -120,6 +123,8 @@ public class ArtistFacade extends AbstractCRUDFacade<ArtistEntity, ArtistReposit
     public ArtistEntity update(@PathParam("id") String id, ArtistEntity artist) {
         try {
             transactionManager.begin();
+            artist.setLastUpdated(new Date());
+            artist.setLastUpdatedBy(super.CHANGED_BY);
             return new CopyHelper().copy(super.updateEntity(id, artist), Expose.class);
         }catch (RuntimeException e) {
             transactionManager.setRollbackOnly();

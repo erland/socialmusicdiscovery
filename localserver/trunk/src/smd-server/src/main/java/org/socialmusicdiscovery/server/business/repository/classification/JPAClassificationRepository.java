@@ -29,6 +29,8 @@ package org.socialmusicdiscovery.server.business.repository.classification;
 
 import com.google.inject.Inject;
 import org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity;
+import org.socialmusicdiscovery.server.business.model.classification.ClassificationReference;
+import org.socialmusicdiscovery.server.business.model.classification.ClassificationReferenceEntity;
 import org.socialmusicdiscovery.server.business.repository.AbstractJPASMDIdentityRepository;
 
 import javax.persistence.EntityManager;
@@ -36,8 +38,13 @@ import javax.persistence.Query;
 import java.util.Collection;
 
 public class JPAClassificationRepository extends AbstractJPASMDIdentityRepository<ClassificationEntity> implements ClassificationRepository {
+    private ClassificationReferenceRepository classificationReferenceRepository;
+
     @Inject
-    public JPAClassificationRepository(EntityManager em) {super(em);}
+    public JPAClassificationRepository(EntityManager em, ClassificationReferenceRepository classificationReferenceRepository) {
+        super(em);
+        this.classificationReferenceRepository = classificationReferenceRepository;
+    }
 
     public Collection<ClassificationEntity> findByNameAndType(String name, String type) {
         Query query = entityManager.createQuery("from ClassificationEntity where name=:name and type=:type");
@@ -47,15 +54,56 @@ public class JPAClassificationRepository extends AbstractJPASMDIdentityRepositor
     }
 
     public Collection<ClassificationEntity> findByReference(String reference) {
-        Query query = entityManager.createQuery("select e from ClassificationEntity as e JOIN e.references as r where r.id=:reference");
+        Query query = entityManager.createQuery("select e from ClassificationEntity as e JOIN e.references as r JOIN r.referenceTo as ref where ref.id=:reference");
         query.setParameter("reference",reference);
         return query.getResultList();
     }
 
     public Collection<ClassificationEntity> findByTypeAndReference(String type, String reference) {
-        Query query = entityManager.createQuery("from ClassificationEntity JOIN references as r where r.type=:type and r.id=:reference");
+        Query query = entityManager.createQuery("from ClassificationEntity JOIN references as r JOIN r.referenceTo as ref where ref.type=:type and ref.id=:reference");
         query.setParameter("type",type);
         query.setParameter("reference",reference);
         return query.getResultList();
+    }
+
+    @Override
+    public void create(ClassificationEntity entity) {
+        for (ClassificationReference classificationReference : entity.getReferences()) {
+            if(!entityManager.contains(classificationReference)) {
+                if(((ClassificationReferenceEntity)classificationReference).getLastUpdated()==null) {
+                    ((ClassificationReferenceEntity)classificationReference).setLastUpdated(entity.getLastUpdated());
+                }
+                if(((ClassificationReferenceEntity)classificationReference).getLastUpdatedBy()==null) {
+                    ((ClassificationReferenceEntity)classificationReference).setLastUpdatedBy(entity.getLastUpdatedBy());
+                }
+                classificationReferenceRepository.create((ClassificationReferenceEntity) classificationReference);
+            }
+        }
+
+        super.create(entity);
+    }
+
+    @Override
+    public ClassificationEntity merge(ClassificationEntity entity) {
+        for (ClassificationReference classificationReference : entity.getReferences()) {
+            if(!entityManager.contains(classificationReference)) {
+                if(((ClassificationReferenceEntity)classificationReference).getLastUpdated()==null) {
+                    ((ClassificationReferenceEntity)classificationReference).setLastUpdated(entity.getLastUpdated());
+                }
+                if(((ClassificationReferenceEntity)classificationReference).getLastUpdatedBy()==null) {
+                    ((ClassificationReferenceEntity)classificationReference).setLastUpdatedBy(entity.getLastUpdatedBy());
+                }
+                classificationReferenceRepository.merge((ClassificationReferenceEntity) classificationReference);
+            }
+        }
+        return super.merge(entity);
+    }
+
+    @Override
+    public void remove(ClassificationEntity entity) {
+        entityManager.refresh(entity);
+        entityManager.createNativeQuery("DELETE from classification_references where classification_id=:id").setParameter("id",entity.getId()).executeUpdate();
+
+        super.remove(entity);
     }
 }

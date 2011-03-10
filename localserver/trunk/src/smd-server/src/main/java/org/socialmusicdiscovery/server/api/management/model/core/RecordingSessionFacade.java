@@ -39,6 +39,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 
 /**
  * Provides functionality to create, update, delete and find a specific recording session
@@ -83,6 +84,8 @@ public class RecordingSessionFacade extends AbstractCRUDFacade<RecordingSessionE
     public RecordingSessionEntity create(RecordingSessionEntity recordingSession) {
         try {
             transactionManager.begin();
+            recordingSession.setLastUpdated(new Date());
+            recordingSession.setLastUpdatedBy(super.CHANGED_BY);
             return new CopyHelper().copy(super.createEntity(recordingSession), Expose.class);
         }catch (RuntimeException e) {
             transactionManager.setRollbackOnly();
@@ -106,6 +109,8 @@ public class RecordingSessionFacade extends AbstractCRUDFacade<RecordingSessionE
     public RecordingSessionEntity update(@PathParam("id") String id, RecordingSessionEntity recordingSession) {
         try {
             transactionManager.begin();
+            recordingSession.setLastUpdated(new Date());
+            recordingSession.setLastUpdatedBy(super.CHANGED_BY);
             return new CopyHelper().copy(super.updateEntity(id, recordingSession), Expose.class);
         }catch (RuntimeException e) {
             transactionManager.setRollbackOnly();

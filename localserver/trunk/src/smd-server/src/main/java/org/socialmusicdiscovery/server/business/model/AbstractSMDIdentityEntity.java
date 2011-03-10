@@ -30,6 +30,7 @@ package org.socialmusicdiscovery.server.business.model;
 import com.google.gson.annotations.Expose;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.UUID;
 
 @MappedSuperclass
@@ -42,6 +43,12 @@ public abstract class AbstractSMDIdentityEntity implements SMDIdentity {
     @OneToOne(targetEntity = SMDIdentityReferenceEntity.class, optional = false, cascade = {CascadeType.ALL})
     @JoinColumn(name = "id")
     private SMDIdentityReference reference;
+
+    @Column(name = "last_updated", nullable = false)
+    private Date lastUpdated;
+
+    @Column(name = "last_updated_by", nullable = false)
+    private String lastUpdatedBy;
 
     public AbstractSMDIdentityEntity() {
         id = UUID.randomUUID().toString();
@@ -61,6 +68,22 @@ public abstract class AbstractSMDIdentityEntity implements SMDIdentity {
 
     public void setReference(SMDIdentityReference reference) {
         this.reference = reference;
+    }
+
+    public Date getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(Date lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
+    public String getLastUpdatedBy() {
+        return lastUpdatedBy;
+    }
+
+    public void setLastUpdatedBy(String lastUpdatedBy) {
+        this.lastUpdatedBy = lastUpdatedBy;
     }
 
     @Override

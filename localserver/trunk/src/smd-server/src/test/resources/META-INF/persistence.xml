@@ -22,6 +22,7 @@
         <class>org.socialmusicdiscovery.server.business.model.subjective.SeriesEntity</class>
 
         <class>org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.classification.ClassificationReferenceEntity</class>
 
         <class>org.socialmusicdiscovery.server.business.model.GlobalIdentityEntity</class>
 

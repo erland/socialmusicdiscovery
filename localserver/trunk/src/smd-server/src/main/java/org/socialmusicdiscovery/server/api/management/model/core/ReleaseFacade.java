@@ -39,6 +39,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 
 /**
  * Provides functionality to create, update, delete and find a specific release
@@ -98,6 +99,8 @@ public class ReleaseFacade extends AbstractCRUDFacade<ReleaseEntity, ReleaseRepo
     public ReleaseEntity create(ReleaseEntity release) {
         try {
             transactionManager.begin();
+            release.setLastUpdated(new Date());
+            release.setLastUpdatedBy(super.CHANGED_BY);
             return new CopyHelper().copy(super.createEntity(release), Expose.class);
         }catch (RuntimeException e) {
             transactionManager.setRollbackOnly();
@@ -121,6 +124,8 @@ public class ReleaseFacade extends AbstractCRUDFacade<ReleaseEntity, ReleaseRepo
     public ReleaseEntity update(@PathParam("id") String id, ReleaseEntity release) {
         try {
             transactionManager.begin();
+            release.setLastUpdated(new Date());
+            release.setLastUpdatedBy(super.CHANGED_BY);
             return new CopyHelper().copy(super.updateEntity(id, release), Expose.class);
         }catch (RuntimeException e) {
             transactionManager.setRollbackOnly();

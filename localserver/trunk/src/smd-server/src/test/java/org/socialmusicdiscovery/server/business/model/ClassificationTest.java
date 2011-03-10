@@ -29,6 +29,8 @@ package org.socialmusicdiscovery.server.business.model;
 
 import org.socialmusicdiscovery.server.business.model.classification.Classification;
 import org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity;
+import org.socialmusicdiscovery.server.business.model.classification.ClassificationReference;
+import org.socialmusicdiscovery.server.business.model.classification.ClassificationReferenceEntity;
 import org.socialmusicdiscovery.server.business.model.core.Release;
 import org.socialmusicdiscovery.server.business.model.core.Track;
 import org.socialmusicdiscovery.test.BaseTestCase;
@@ -39,6 +41,7 @@ import org.testng.annotations.Test;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.Date;
 
 public class ClassificationTest extends BaseTestCase {
     @BeforeTest
@@ -67,29 +70,43 @@ public class ClassificationTest extends BaseTestCase {
             ClassificationEntity classification = new ClassificationEntity();
             classification.setName("Pop");
             classification.setType(Classification.GENRE);
-            classification.getReferences().add(SMDIdentityReferenceEntity.forEntity(release));
-            classificationRepository.create(classification);
+            ClassificationReferenceEntity classificationReference = new ClassificationReferenceEntity();
+            classificationReference.setReferenceTo(SMDIdentityReferenceEntity.forEntity(release));
+            classificationReference.setLastUpdated(new Date());
+            classificationReference.setLastUpdatedBy("JUnit");
+            classification.getReferences().add(classificationReference);
+            classification.setLastUpdated(new Date());
+            classification.setLastUpdatedBy("JUnit");
 
             for (Track track : release.getTracks()) {
-                classification.getReferences().add(SMDIdentityReferenceEntity.forEntity(track));
+                classificationReference = new ClassificationReferenceEntity();
+                classificationReference.setReferenceTo(SMDIdentityReferenceEntity.forEntity(track));
+                classificationReference.setLastUpdated(new Date());
+                classificationReference.setLastUpdatedBy("JUnit");
+                classification.getReferences().add(classificationReference);
             }
+            classificationRepository.create(classification);
 
             Collection<ClassificationEntity> classifications = classificationRepository.findByNameAndType("Pop", Classification.GENRE);
             assert classifications != null;
             assert classifications.size() == 1;
             classification = classifications.iterator().next();
-            Collection<SMDIdentityReference> references = classification.getReferences();
+            assert classification.getLastUpdated() != null;
+            assert classification.getLastUpdatedBy() != null;
+            Collection<ClassificationReference> references = classification.getReferences();
             assert references != null;
             assert references.size() == 5;
             int releaseMatches = 0;
             int trackMatches = 0;
-            for (SMDIdentityReference reference : references) {
-                if (reference.getId().equals(release.getId())) {
+            for (ClassificationReference reference : references) {
+                assert ((ClassificationReferenceEntity)reference).getLastUpdated()!=null;
+                assert ((ClassificationReferenceEntity)reference).getLastUpdatedBy()!=null;
+                if (reference.getReferenceTo().getId().equals(release.getId())) {
                     releaseMatches++;
                     continue;
                 } else {
                     for (Track track : release.getTracks()) {
-                        if (reference.getId().equals(track.getId())) {
+                        if (reference.getReferenceTo().getId().equals(track.getId())) {
                             trackMatches++;
                             continue;
                         }

@@ -39,6 +39,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 
 /**
  * Provides functionality to create, update, delete and find a specific person
@@ -91,6 +92,8 @@ public class PersonFacade extends AbstractCRUDFacade<PersonEntity, PersonReposit
     public PersonEntity create(PersonEntity person) {
         try {
             transactionManager.begin();
+            person.setLastUpdated(new Date());
+            person.setLastUpdatedBy(super.CHANGED_BY);
             return new CopyHelper().copy(super.createEntity(person), Expose.class);
         }catch (RuntimeException e) {
             transactionManager.setRollbackOnly();
@@ -114,6 +117,8 @@ public class PersonFacade extends AbstractCRUDFacade<PersonEntity, PersonReposit
     public PersonEntity update(@PathParam("id") String id, PersonEntity person) {
         try {
             transactionManager.begin();
+            person.setLastUpdated(new Date());
+            person.setLastUpdatedBy(super.CHANGED_BY);
             return new CopyHelper().copy(super.updateEntity(id, person), Expose.class);
         }catch (RuntimeException e) {
             transactionManager.setRollbackOnly();
