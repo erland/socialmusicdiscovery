@@ -25,7 +25,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.rcp.editors.release;
+package org.socialmusicdiscovery.rcp.editors.widgets;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
