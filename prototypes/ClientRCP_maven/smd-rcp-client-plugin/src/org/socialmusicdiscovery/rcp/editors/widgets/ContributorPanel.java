@@ -27,6 +27,11 @@
 
 package org.socialmusicdiscovery.rcp.editors.widgets;
 
+import java.util.Set;
+
+import org.eclipse.core.databinding.beans.BeanProperties;
+import org.eclipse.core.databinding.beans.IBeanValueProperty;
+import org.eclipse.core.databinding.observable.list.WritableList;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
 import org.eclipse.nebula.jface.gridviewer.GridViewerColumn;
@@ -39,14 +44,18 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.socialmusicdiscovery.rcp.editors.release.ReleaseUI;
 import org.socialmusicdiscovery.rcp.util.ViewerUtil;
 import org.socialmusicdiscovery.rcp.views.util.OpenListener;
+import org.socialmusicdiscovery.server.business.model.core.Contributor;
 
 /**
- * A reusable grid for any type of contributor.
+ * A reusable grid composite for maintaining any type of contributors in any
+ * type of context. Caller must supply a list of {@link Contributor}s to use as
+ * input (see {@link #bindContributors(Set)}).
  * 
  * @author Peer Törngren
- *
+ * 
  */
 public class ContributorPanel extends Composite {
 
@@ -102,6 +111,14 @@ public class ContributorPanel extends Composite {
 		ViewerUtil.hookSorter(roleGVC, artistGVC);
 	}
 	
+	public void bindContributors(Set<Contributor> contributors) {
+		WritableList list = new WritableList(contributors, Contributor.class);
+		IBeanValueProperty roleProperty = BeanProperties.value(Contributor.class, "type");
+		IBeanValueProperty artistProperty = BeanProperties.value(Contributor.class, "artist.name");
+		
+		ViewerUtil.bind(gridTableViewer, list, roleProperty, artistProperty);
+	}
+	
 	public GridTableViewer getGridViewer() {
 		return gridTableViewer;
 	}
@@ -112,4 +129,5 @@ public class ContributorPanel extends Composite {
 	public GridViewerColumn getArtistGVC() {
 		return artistGVC;
 	}
+
 }
