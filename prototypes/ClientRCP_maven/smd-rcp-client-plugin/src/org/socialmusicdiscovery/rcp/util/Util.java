@@ -79,4 +79,24 @@ public final class Util {
 		}
 		return c1.compareTo(c2);
 	}
+	
+	/**
+	 * Convenience method to check for <code>null</code> or empty string.
+	 * @param s
+	 * @return <code>true</code> if string is <code>null</code> or has no non-blank character
+	 * @see #isSet(String)
+	 */
+	public static boolean isEmpty(String s) {
+		return s==null || s.trim().isEmpty();
+	}
+	
+	/**
+	 * Convenience method to check for a string with at least one significant character.
+	 * @param s
+	 * @return <code>true</code> if string is not <code>null</code> and has at least 1 non-blank character
+	 * @see #isEmpty(String)
+	 */
+	public static boolean isSet(String s) {
+		return !isEmpty(s);
+	}
 }
