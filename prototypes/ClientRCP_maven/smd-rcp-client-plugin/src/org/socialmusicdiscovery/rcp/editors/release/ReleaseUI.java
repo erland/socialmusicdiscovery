@@ -35,10 +35,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.databinding.DataBindingContext;
-import org.eclipse.core.databinding.beans.BeanProperties;
 import org.eclipse.core.databinding.beans.BeansObservables;
-import org.eclipse.core.databinding.beans.IBeanValueProperty;
-import org.eclipse.core.databinding.observable.list.WritableList;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -65,7 +62,6 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.socialmusicdiscovery.rcp.content.ObservableRelease;
 import org.socialmusicdiscovery.rcp.editors.widgets.ContributorPanel;
 import org.socialmusicdiscovery.rcp.util.Util;
-import org.socialmusicdiscovery.rcp.util.ViewerUtil;
 import org.socialmusicdiscovery.rcp.views.util.AbstractComposite;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
 import org.socialmusicdiscovery.server.business.model.core.Medium;
@@ -349,21 +345,9 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 		gridViewerTracks.setInput(getModel().getTracks());
 		colMediumNbr.pack();
 		colTrackNumber.pack();
-		bindAlbumData();
+		artistPanel.bindContributors(getModel().getContributors());
 	}
 
-
-	private void bindAlbumData() {
-		bindAlbumArtists();
-	}
-
-	private void bindAlbumArtists() {
-		WritableList list = new WritableList(getModel().getContributors(), Contributor.class);
-		IBeanValueProperty roleProperty = BeanProperties.value(Contributor.class, "type");
-		IBeanValueProperty artistProperty = BeanProperties.value(Contributor.class, "artist.name");
-		
-		ViewerUtil.bind(getArtistPanel().getGridViewer(), list, roleProperty, artistProperty);
-	}
 
 	private static boolean isEmpty(String s) {
 		return s==null || s.trim().length()<1;
