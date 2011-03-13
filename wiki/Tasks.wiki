@@ -8,6 +8,7 @@ This page contains lists of open tasks that needs to be investigated, documented
   * [http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=Type%3DAnalyze Analysis/Investigation tasks which initially doesn't require any programming]
   * [http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=Component%3DDocs  Documentation tasks]
   * [http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=Component%3DModels  Visual Paradigm model tasks]
+  * [http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=Component%3DGraphics  Graphics related tasks (icons, buttons, user interface prototypes)]
   * Java
     * [http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=Component%3DUI-RCPClient RCP Client related tasks]
     * [http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=Component%3DUPnP UPnP related tasks]
