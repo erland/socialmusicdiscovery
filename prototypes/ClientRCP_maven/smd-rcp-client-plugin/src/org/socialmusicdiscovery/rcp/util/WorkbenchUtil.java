@@ -51,11 +51,14 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.services.IEvaluationService;
 import org.socialmusicdiscovery.rcp.content.ObservableArtist;
+import org.socialmusicdiscovery.rcp.content.ObservableRecording;
 import org.socialmusicdiscovery.rcp.content.ObservableRelease;
 import org.socialmusicdiscovery.rcp.editors.artist.ArtistEditor;
+import org.socialmusicdiscovery.rcp.editors.recording.RecordingEditor;
 import org.socialmusicdiscovery.rcp.editors.release.ReleaseEditor;
 import org.socialmusicdiscovery.rcp.error.FatalApplicationException;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
+import org.socialmusicdiscovery.server.business.model.core.Track;
 
 public final class WorkbenchUtil {
 
@@ -65,6 +68,7 @@ public final class WorkbenchUtil {
 	static {
 		editors.put(ObservableArtist.class, ArtistEditor.ID);
 		editors.put(ObservableRelease.class, ReleaseEditor.ID);
+		editors.put(ObservableRecording.class, RecordingEditor.ID);
 	}
 
 	private WorkbenchUtil() { } // static util
@@ -143,8 +147,10 @@ public final class WorkbenchUtil {
 
 	private static IEditorInput resolveEditableElement(Object element) {
 		if (element instanceof Contributor) {
-			Contributor c = (Contributor) element;
-			return resolveEditableElement(c.getArtist());
+			return resolveEditableElement(((Contributor) element).getArtist());
+		}
+		if (element instanceof Track) {
+			return resolveEditableElement(((Track) element).getRecording());
 		}
 		if (element instanceof IEditorInput) {
 			return (IEditorInput) element;
@@ -158,7 +164,8 @@ public final class WorkbenchUtil {
 
 	private static String resolveEditorId(Object element) {
 		// TODO this will need to be made much more robust, we cannot depend on the base class
-		// the editor should probably declare an interface that it can handle 
+		// the editor should probably declare an interface that it can handle, perhaps 
+		// thru a contentTypeId referring to the extensions of org.eclipse.core.contenttype.contentTypes
 		return element==null ? null : editors.get(element.getClass());
 	}
 

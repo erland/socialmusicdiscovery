@@ -145,7 +145,12 @@ public abstract class AbstractEditorPart<T extends AbstractObservableEntity, U e
 	}
 
 	private void updatePartName() {
-		setPartName(ui.getModel().getName());
+		setPartName(getModelName());
+	}
+
+	protected String getModelName() {
+		String name = ui.getModel().getName();
+		return name==null ? "?" : name;
 	}
 
 	@Override
