@@ -15,13 +15,13 @@ Well, not really, but a few words on what I think needs to be done to bring this
   # (done) _Observable label providers in grids_
   # (done) _Dirty status (render in views, enable/disable save command on menus)_
   # (done) _Implement save command (only 'update', 'new' and 'delete' not yet supported)_
-  # Restructured plug-ins (as outlined below)
-  # Add an option to import from SBS (like the Pivot client)
-  # A head-less builder (e.g. Maven or Buckminster)
-  # A bootstrap to deploy the basic client (e.g. JWS)
-  # An update site where we can upload new versions of the plug-ins
-  # Enrich the core editors (Release and Artist)
-  # Create extension points to allow more editors
+  # [http://code.google.com/p/socialmusicdiscovery/issues/detail?id=8 Restructured plug-ins (as outlined below)]
+  # [http://code.google.com/p/socialmusicdiscovery/issues/detail?id=2 Add an option to import from SBS (like the Pivot client)]
+  # (done) _[http://code.google.com/p/socialmusicdiscovery/issues/detail?id=7 A head-less builder (e.g. Maven or Buckminster)]_
+  # [http://code.google.com/p/socialmusicdiscovery/issues/detail?id=4 A bootstrap to deploy the basic client (e.g. JWS)]
+  # [http://code.google.com/p/socialmusicdiscovery/issues/detail?id=3 An update site where we can upload new versions of the plug-ins]
+  # [http://code.google.com/p/socialmusicdiscovery/issues/detail?id=5 Enrich the core editors (Release and Artist)]
+  # [http://code.google.com/p/socialmusicdiscovery/issues/detail?id=6 Create extension points to allow more editors]
 
 Effective time, this would all take a couple of weeks or so. Working odd hours around midnight ... I'm not so sure :-(
 
