@@ -17,7 +17,10 @@ This page contains lists of open tasks that needs to be investigated, documented
     * [http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=Component%3DPerl-Plugin Perl related tasks]
   * [http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=Component%3DFixed Finished tasks which requires testing]
 
-If you are missing a task, you can [http://code.google.com/p/socialmusicdiscovery/issues/entry register a new one]
+If you are missing a task, you can register a new one:
+  * [http://code.google.com/p/socialmusicdiscovery/issues/entry?template=Implementation%20or%20documentation%20task Register new implementation or documentation task]
+  * [http://code.google.com/p/socialmusicdiscovery/issues/entry?template=Investigation%20task Register new investigation task]
+
 
 = Subscribe on task changes =
 All task changes will be mailed to the following Google Group, so if you like to get mails whenever a new task is added or when a task changes state or gets a new comment, subscribe the the following Google Group mailing list
