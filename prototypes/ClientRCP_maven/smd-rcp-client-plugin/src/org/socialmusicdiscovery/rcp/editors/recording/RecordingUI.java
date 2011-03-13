@@ -38,6 +38,7 @@ import org.eclipse.nebula.widgets.grid.GridColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -80,7 +81,6 @@ public class RecordingUI extends AbstractComposite<ObservableRecording> {
 	private GridTableViewer gridViewerTracks;
 	private ContributorPanel artistPanel;
 	private Label nameLabel;
-	private Label tracksLabel;
 	private Section sctnRecordingData;
 	private Grid tracksGrid;
 	private GridTableViewer tracksViewer;
@@ -107,6 +107,8 @@ public class RecordingUI extends AbstractComposite<ObservableRecording> {
 	private ContributorPanel sessionArtistPanel;
 	private Text sessionText;
 	private Label lblWarningThis;
+	private Section sctnTracks;
+	private Composite tracksArea;
 
 	/**
 	 * Create the composite.
@@ -147,14 +149,22 @@ public class RecordingUI extends AbstractComposite<ObservableRecording> {
 		derivedName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		formToolkit.adapt(derivedName, true, true);
 		
-		tracksLabel = new Label(scrldfrmRecording.getBody(), SWT.NONE);
-		formToolkit.adapt(tracksLabel, true, true);
-		tracksLabel.setText("Tracks");
+		sctnTracks = formToolkit.createSection(scrldfrmRecording.getBody(), Section.EXPANDED | Section.TITLE_BAR);
+		GridData gd_sctnTracks = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+		gd_sctnTracks.heightHint = 96;
+		sctnTracks.setLayoutData(gd_sctnTracks);
+		formToolkit.paintBordersFor(sctnTracks);
+		sctnTracks.setText("Tracks");
 		
-		tracksViewer = new GridTableViewer(scrldfrmRecording.getBody(), SWT.BORDER);
+		tracksArea = formToolkit.createComposite(sctnTracks, SWT.NONE);
+		formToolkit.paintBordersFor(tracksArea);
+		sctnTracks.setClient(tracksArea);
+		tracksArea.setLayout(new FillLayout(SWT.VERTICAL));
+		
+		tracksViewer = new GridTableViewer(tracksArea, SWT.BORDER);
 		tracksGrid = tracksViewer.getGrid();
+		tracksGrid.setCellSelectionEnabled(true);
 		tracksGrid.setHeaderVisible(true);
-		tracksGrid.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		formToolkit.paintBordersFor(tracksGrid);
 		
 		releaseGVC = new GridViewerColumn(tracksViewer, SWT.NONE);
@@ -173,6 +183,7 @@ public class RecordingUI extends AbstractComposite<ObservableRecording> {
 		trackNumberColumn.setText("Track #");
 		
 		sctnRecordingData = formToolkit.createSection(scrldfrmRecording.getBody(), Section.TWISTIE | Section.TITLE_BAR);
+		sctnRecordingData.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		formToolkit.paintBordersFor(sctnRecordingData);
 		sctnRecordingData.setText("Recording Data");
 		sctnRecordingData.setExpanded(true);
