@@ -27,9 +27,12 @@
 
 package org.socialmusicdiscovery.rcp.util;
 
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.socialmusicdiscovery.server.business.model.core.Work;
 
 /**
  * Some general utilities.
@@ -39,6 +42,10 @@ import java.util.Set;
  */
 public final class Util {
 
+	// use to separate name fragments, e.g. to compile names of many Work into name of 1 Recording
+	// TODO make user configurable?
+	private static final String COMPOSITE_NAME_SEPARATOR = "/"; 
+	
 	private Util() {}
 
 	public static <T> Set<T> asSet(T... elements) {
@@ -99,4 +106,21 @@ public final class Util {
 	public static boolean isSet(String s) {
 		return !isEmpty(s);
 	}
+
+	/**
+	 * Create a composite names from supplied elements.
+	 * @param works
+	 * @return a composite name
+	 */
+	public static String composeName(Collection<Work> objects) {
+		StringBuilder sb = new StringBuilder();
+		for (Work o : objects) {
+			if (sb.length()>0) {
+				sb.append(COMPOSITE_NAME_SEPARATOR);
+			}
+			sb.append(o.getName());
+		}
+		return sb.toString();
+	}
+
 }

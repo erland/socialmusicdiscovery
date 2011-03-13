@@ -54,6 +54,7 @@ import org.socialmusicdiscovery.rcp.util.JobUtil;
 import org.socialmusicdiscovery.rcp.util.TextUtil;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
+import org.socialmusicdiscovery.server.business.model.core.Recording;
 import org.socialmusicdiscovery.server.business.model.core.Release;
 import org.socialmusicdiscovery.server.business.model.core.Track;
 
@@ -483,8 +484,9 @@ public class DataSource extends AbstractObservable implements ModelObject {
 	public List<? extends Root> getRoots() {
 		if (roots == null) {
 			roots = Arrays.asList(
-				new Root<Release>("Releases", "/releases", Release.class, new GenericType<Collection<Release>>() {} ), 
 				new Root<Artist>("Artists", "/artists", Artist.class, new GenericType<Collection<Artist>>() {} ), 
+				new Root<Recording>("Recordings", "/recordings", Recording.class, new GenericType<Collection<Recording>>() {} ),
+				new Root<Release>("Releases", "/releases", Release.class, new GenericType<Collection<Release>>() {} ), 
 				new Root<Track>("Tracks", "/tracks", Track.class, new GenericType<Collection<Track>>() {} )
 			);
 		}

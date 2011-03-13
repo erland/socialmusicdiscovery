@@ -75,10 +75,6 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 	private static final String CONTRIBUTOR_TYPE_COMPOSER = "composer";
 	private static final String CONTRIBUTOR_TYPE_PERFORMER = "performer";
 	
-	// use to separate name fragments, e.g. to compile names of many Work into name of 1 Recording
-	// TODO make user configurable?
-	private static final String COMPOSITE_NAME_SEPARATOR = "/"; 
-	
 	private abstract class MyAbstractTrackLabelProvider extends GridColumnLabelProvider {
 		
 		@Override
@@ -132,12 +128,11 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 			if (recording!=null) {
 				name = recording.getName();
 				if (isEmpty(name) && hasWork(recording)) {
-					name = resolveName(recording.getWorks());
+					name = Util.composeName(recording.getWorks());
 				}
 			}
 			return name;
 		}
-
 	}
 
 	private class MyTrackContributorLabelProvider extends MyAbstractTrackLabelProvider {
@@ -362,17 +357,6 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 
 	protected boolean hasWork(Recording recording) {
 		return !recording.getWorks().isEmpty();
-	}
-
-	protected String resolveName(Set<Work> set) {
-		StringBuilder sb = new StringBuilder();
-		for (Work work : set) {
-			if (sb.length()>0) {
-				sb.append(COMPOSITE_NAME_SEPARATOR);
-			}
-			sb.append(work.getName());
-		}
-		return sb.toString();
 	}
 
 	/**

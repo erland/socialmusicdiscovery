@@ -106,4 +106,27 @@ public abstract class AbstractObservable implements Observable {
 	protected void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
 		pcs.firePropertyChange(propertyName, oldValue, newValue);
 	}
+
+	/**
+	 * Fire {@link PropertyChangeEvent}s for all supplied property names. No old
+	 * or new values are sent.
+	 * 
+	 * @param propertyNames
+	 */
+	protected void firePropertyChange(String... propertyNames) {
+		for (String propertyName : propertyNames) {
+			firePropertyChange(propertyName);
+		}
+	}
+
+	/**
+	 * Fire {@link PropertyChangeEvent} for supplied property name. No old or
+	 * new value is sent.
+	 * 
+	 * @param propertyName
+	 */
+	protected void firePropertyChange(String propertyName) {
+		PropertyChangeEvent e = new PropertyChangeEvent(this, propertyName, null, null);
+		pcs.firePropertyChange(e);
+	}
 }

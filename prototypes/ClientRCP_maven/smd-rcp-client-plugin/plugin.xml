@@ -86,6 +86,12 @@
             id="org.socialmusicdiscovery.rcp.editors.release.ReleaseEditor"
             name="%editor.release.name">
       </editor>
+      <editor
+            class="org.socialmusicdiscovery.rcp.editors.recording.RecordingEditor"
+            default="false"
+            id="org.socialmusicdiscovery.rcp.editors.recording.RecordingEditor"
+            name="%editor.recording.name">
+      </editor>
    </extension>
    <extension
          id="org.socialmusicdiscovery.rcp.prefs"
