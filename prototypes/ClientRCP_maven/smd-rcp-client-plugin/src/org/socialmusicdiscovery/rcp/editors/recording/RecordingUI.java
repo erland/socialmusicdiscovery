@@ -76,14 +76,8 @@ public class RecordingUI extends AbstractComposite<ObservableRecording> {
 
 	private Text nameText;
 	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
-	protected ScrolledForm scrldfrmRecording;
-	protected Text text;
-	protected Section sectionAlbumData;
-	protected Composite compositeAlbumData;
-	protected CTabFolder tabFolderAlbumData;
-	protected Grid gridTracks;
+	private ScrolledForm scrldfrmRecording;
 	private GridTableViewer gridViewerTracks;
-	protected GridColumn colTrackNumber;
 	private ContributorPanel artistPanel;
 	private Label nameLabel;
 	private Label tracksLabel;
@@ -101,16 +95,15 @@ public class RecordingUI extends AbstractComposite<ObservableRecording> {
 	private CTabFolder tabFolder;
 	private CTabItem artistTab;
 	private CTabItem workTab;
-	private ContributorPanel contributorPanel;
-	private Grid grid;
-	private GridTableViewer gridTableViewer;
+	private Grid workGrid;
+	private GridTableViewer workGridViewer;
 	private GridColumn workColumn;
 	private GridViewerColumn workGVC;
 	private GridColumn workIndexColumn;
 	private GridViewerColumn workIndexGVC;
 	private CTabItem sessionTab;
 	private Link sessionLink;
-	private Composite composite;
+	private Composite sessionComposite;
 	private ContributorPanel sessionArtistPanel;
 	private Text sessionText;
 	private Label lblWarningThis;
@@ -193,25 +186,25 @@ public class RecordingUI extends AbstractComposite<ObservableRecording> {
 		artistTab = new CTabItem(tabFolder, SWT.NONE);
 		artistTab.setText("Artist(s)");
 		
-		contributorPanel = new ContributorPanel(tabFolder, SWT.NONE);
-		artistTab.setControl(contributorPanel);
-		formToolkit.paintBordersFor(contributorPanel);
+		artistPanel = new ContributorPanel(tabFolder, SWT.NONE);
+		artistTab.setControl(artistPanel);
+		formToolkit.paintBordersFor(artistPanel);
 		
 		workTab = new CTabItem(tabFolder, SWT.NONE);
 		workTab.setText("Work");
 		
-		gridTableViewer = new GridTableViewer(tabFolder, SWT.BORDER);
-		grid = gridTableViewer.getGrid();
-		grid.setHeaderVisible(true);
-		workTab.setControl(grid);
-		formToolkit.paintBordersFor(grid);
+		workGridViewer = new GridTableViewer(tabFolder, SWT.BORDER);
+		workGrid = workGridViewer.getGrid();
+		workGrid.setHeaderVisible(true);
+		workTab.setControl(workGrid);
+		formToolkit.paintBordersFor(workGrid);
 		
-		workIndexGVC = new GridViewerColumn(gridTableViewer, SWT.NONE);
+		workIndexGVC = new GridViewerColumn(workGridViewer, SWT.NONE);
 		workIndexColumn = workIndexGVC.getColumn();
 		workIndexColumn.setWidth(100);
 		workIndexColumn.setText("Index");
 		
-		workGVC = new GridViewerColumn(gridTableViewer, SWT.NONE);
+		workGVC = new GridViewerColumn(workGridViewer, SWT.NONE);
 		workColumn = workGVC.getColumn();
 		workColumn.setWidth(400);
 		workColumn.setText("Work");
@@ -219,19 +212,19 @@ public class RecordingUI extends AbstractComposite<ObservableRecording> {
 		sessionTab = new CTabItem(tabFolder, SWT.NONE);
 		sessionTab.setText("Session");
 		
-		composite = new Composite(tabFolder, SWT.NONE);
-		sessionTab.setControl(composite);
-		formToolkit.paintBordersFor(composite);
-		composite.setLayout(new GridLayout(1, false));
+		sessionComposite = new Composite(tabFolder, SWT.NONE);
+		sessionTab.setControl(sessionComposite);
+		formToolkit.paintBordersFor(sessionComposite);
+		sessionComposite.setLayout(new GridLayout(1, false));
 		
-		sessionLink = new Link(composite, SWT.NONE);
+		sessionLink = new Link(sessionComposite, SWT.NONE);
 		sessionLink.setText("<a>Recording Session</a> (optional)");
 		
-		sessionText = new Text(composite, SWT.BORDER | SWT.READ_ONLY);
+		sessionText = new Text(sessionComposite, SWT.BORDER | SWT.READ_ONLY);
 		sessionText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		formToolkit.adapt(sessionText, true, true);
 		
-		sessionArtistPanel = new ContributorPanel(composite, SWT.NONE);
+		sessionArtistPanel = new ContributorPanel(sessionComposite, SWT.NONE);
 		
 		}
 
@@ -242,7 +235,7 @@ public class RecordingUI extends AbstractComposite<ObservableRecording> {
 
 	@Override
 	public void afterSetModel(ObservableRecording track) {
-//		getArtistPanel().bindContributors(getModel().getContributors());
+		getArtistPanel().bindContributors(getModel().getContributors());
 //		bindWorkPanel();
 //		bindSessionPanel();
 	}
@@ -270,8 +263,8 @@ public class RecordingUI extends AbstractComposite<ObservableRecording> {
 	public ContributorPanel getSessionArtistPanel() {
 		return sessionArtistPanel;
 	}
-	public GridTableViewer getGridTableViewer() {
-		return gridTableViewer;
+	public GridTableViewer getWorkGridViewer() {
+		return workGridViewer;
 	}
 	public GridViewerColumn getWorkIndexGVC() {
 		return workIndexGVC;
