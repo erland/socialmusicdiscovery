@@ -42,12 +42,12 @@ If you like to subscribe to changes on an individual task, just check the "star"
   * *Abandoning a task*
     * If you have started to work on a task but realize that you don't have the time or knowledge to do it, just add any comments of what you have done so far empty the "owner" field to make it clear that anyone else can work on it instead.
   * *Testing tasks*
-    * Anyone can pick tasks among [http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=Component%3DFixed those that needs testing], verify it and change its state to "Verified" when verified that it works or "Reopened" if it doesn't work.
+    * Anyone can pick tasks among [http://code.google.com/p/socialmusicdiscovery/issues/list?can=1&q=Component%3DFixed those that needs testing], verify it and change its state to "Verified" when verified that it works or "Reopened" if it doesn't work.
 = Status usage =
   * *[http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=status%3ANew New]*: A new issues which we haven't decided to do yet
   * *[http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=status%3AAccepted Accepted]*: Default initial state, indicates that anyone can start working on the issue
-  * *[http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=status%3AFixed Fixed]*: Issues has been implemented and/or documented depending if it affects code or documentation
-  * *[http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=status%3AVerified Verified]*: If you have verified that an issue someone else has implemented works in your environment
+  * *[http://code.google.com/p/socialmusicdiscovery/issues/list?can=1&q=status%3AFixed Fixed]*: Issues has been implemented and/or documented depending if it affects code or documentation
+  * *[http://code.google.com/p/socialmusicdiscovery/issues/list?can=1&q=status%3AVerified Verified]*: If you have verified that an issue someone else has implemented works in your environment
   * *[http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=status%3AReopened Reopened]*: An issue which has been fixed but failed verification
 
 = Milestone usage =
