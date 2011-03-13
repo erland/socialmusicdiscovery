@@ -1,0 +1,37 @@
+#summary Different lists of open tasks
+
+= Introduction =
+
+This pages contains lists of open tasks that needs to be investigated, documented, implemented or tested.
+
+  * [http://code.google.com/p/socialmusicdiscovery/issues/list?can=2 All open tasks]
+  * [http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=Type%3DAnalyze Analysis/Investigation tasks which initially doesn't require any programming]
+  * [http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=Component%3DDocs  Documentation tasks]
+  * [http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=Component%3DModels  Visual Paradigm model tasks]
+  * Java
+    * [http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=Component%3DUI-RCPClient RCP Client related tasks]
+    * [http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=Component%3DUPnP UPnP related tasks]
+    * [http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=Component%3DAPI API related tasks]
+    * [http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=Component%3DPersistence Database related tasks]
+  * Perl
+    * [http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=Component%3DPerl-Plugin Perl related tasks]
+  * [http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=Component%3DFixed Finished tasks which requires testing]
+
+If you are missing a task, you can [http://code.google.com/p/socialmusicdiscovery/issues/entry register a new one]
+
+= Subscribe on task changes =
+All task changes will be mailed to the following Google Group, so if you like to get mails whenever a new task is added or when a task changes state or gets a new comment, subscribe the the following Google Group mailing list
+[http://groups.google.com/group/socialmusicdiscovery-issues socialmusicdiscovery-issues]
+
+If you like to subscribe to changes on an individual task, just check the "star" icon beside it.
+
+= Status usage =
+  * *[http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=status%3ANew New]*: A new issues which we haven't decided to do yet
+  * *[http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=status%3AAccepted Accepted]*: Default initial state, indicates that anyone can start working on the issue
+  * *[http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=status%3AFixed Fixed]*: Issues has been implemented and/or documented depending if it affects code or documentation
+  * *[http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=status%3AVerified Verified]*: If you have verified that an issue someone else has implemented works in your environment
+
+= Milestone usage =
+  * *[http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=Milestone%3DRelease-Alpha Release-Alpha]* - Tasks which needs to be finished before we can introduce some alpha testers outside the project team
+  * *[http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=Milestone%3DRelease1.0 Release1.0]* - Tasks which needs to be finished before we can make an initial official release
+  * *[http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=Milestone%3DFuture Future]* - Tasks which doesn't have to be included in the initial release
