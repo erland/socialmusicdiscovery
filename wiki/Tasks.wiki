@@ -15,7 +15,7 @@ This page contains lists of open tasks that needs to be investigated, documented
     * [http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=Component%3DPersistence Database related tasks]
   * Perl
     * [http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=Component%3DPerl-Plugin Perl related tasks]
-  * [http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=status%3AFixed Finished tasks which requires testing]
+  * [http://code.google.com/p/socialmusicdiscovery/issues/list?can=1&q=status%3AFixed Finished tasks which requires testing]
 
 If you are missing a task, you can register a new one:
   * [http://code.google.com/p/socialmusicdiscovery/issues/entry?template=Implementation%20or%20documentation%20task Register new implementation or documentation task]
