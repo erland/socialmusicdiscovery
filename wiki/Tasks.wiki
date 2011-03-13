@@ -1,8 +1,8 @@
 #summary Different lists of open tasks
 
-= Introduction =
+= Open tasks =
 
-This pages contains lists of open tasks that needs to be investigated, documented, implemented or tested.
+This page contains lists of open tasks that needs to be investigated, documented, implemented or tested.
 
   * [http://code.google.com/p/socialmusicdiscovery/issues/list?can=2 All open tasks]
   * [http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=Type%3DAnalyze Analysis/Investigation tasks which initially doesn't require any programming]
