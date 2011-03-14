@@ -28,6 +28,7 @@
 package org.socialmusicdiscovery.rcp.util;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -217,12 +218,23 @@ public class ViewerUtil {
 	}
 
 	/**
-	 * @param roleGVC
-	 * @param artistGVC
+	 * Hook default sorting on supplied columns.
+	 * @param gvcs
 	 */
 	public static void hookSorter(GridViewerColumn... gvcs) {
 		for (GridViewerColumn gvc : gvcs) {
 			new GridViewerColumnComparator(gvc);
+		}
+	}
+
+	/**
+	 * Hook sorting on supplied columns using supplied comparator.
+	 * @param omparator
+	 * @param gvcs
+	 */
+	public static void hookSorter(Comparator comparator, GridViewerColumn... gvcs) {
+		for (GridViewerColumn gvc : gvcs) {
+			new GridViewerColumnComparator(gvc, comparator);
 		}
 	}
 	

@@ -276,6 +276,12 @@ public class DataSource extends AbstractObservable implements ModelObject {
 			return result;
 		}
 
+		/**
+		 * Find all objects that this root handles that have a relation to the supplied entity. 
+		 * @param <O>
+		 * @param entity
+		 * @return Collection, possibly empty 
+		 */
 		final public synchronized <O extends ObservableEntity<T>> Collection<O> findAll(SMDIdentity entity) {
 			WebResource resource = Client.create(config).resource(getQueryPath(entity));
 			Collection<T> collection = resource.accept(MediaType.APPLICATION_JSON).get(genericCollectionQueryType);

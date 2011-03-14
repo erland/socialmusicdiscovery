@@ -27,6 +27,13 @@
 
 package org.socialmusicdiscovery.rcp.FIX.ME;
 
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.socialmusicdiscovery.rcp.content.ObservableRecording;
+import org.socialmusicdiscovery.rcp.content.ObservableTrack;
+
 
 /**
  * A dummy class to hold stuff that needs fixing. Just to not forget about it.
@@ -37,4 +44,20 @@ package org.socialmusicdiscovery.rcp.FIX.ME;
 public class FixMe {
 
 	private FixMe() {}
+
+	/**
+	 * How do we query the root for tracks that relate to a recording?
+	 * @param tracks
+	 * @param observableRecording
+	 * @return {@link List} of {@link ObservableTrack}s for supplied {@link ObservableRecording}
+	 */
+	public static List<ObservableTrack> select(Collection<ObservableTrack> tracks, ObservableRecording observableRecording) {
+		List<ObservableTrack> matches = new LinkedList<ObservableTrack>();
+		for (ObservableTrack t: tracks) {
+			if (t.getRecording()==observableRecording) {
+				matches.add(t);
+			}
+		}
+		return matches;
+	}
 }

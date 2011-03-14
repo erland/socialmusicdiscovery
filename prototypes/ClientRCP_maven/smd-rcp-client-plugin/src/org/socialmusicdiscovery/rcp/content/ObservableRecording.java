@@ -29,8 +29,10 @@ package org.socialmusicdiscovery.rcp.content;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.databinding.beans.BeansObservables;
@@ -42,9 +44,12 @@ import org.eclipse.core.databinding.observable.set.SetChangeEvent;
 import org.eclipse.core.databinding.observable.value.IValueChangeListener;
 import org.eclipse.core.databinding.observable.value.ValueChangeEvent;
 import org.eclipse.ui.IEditorInput;
+import org.socialmusicdiscovery.rcp.FIX.ME.FixMe;
+import org.socialmusicdiscovery.rcp.content.DataSource.Root;
 import org.socialmusicdiscovery.rcp.util.Util;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
 import org.socialmusicdiscovery.server.business.model.core.Recording;
+import org.socialmusicdiscovery.server.business.model.core.Track;
 import org.socialmusicdiscovery.server.business.model.core.Work;
 
 import com.google.gson.annotations.Expose;
@@ -234,5 +239,12 @@ public class ObservableRecording extends AbstractObservableEntity<Recording> imp
 	
 	private String resolveDerivedName() {
 		return Util.composeName(getWorks());
+	}
+
+	public List<ObservableTrack> getTracks() {
+		// FIXME - proper query + stable list that can be shared and/or jointly maintained with ObservableRelease   
+		Root<Track> root = getDataSource().resolveRoot(Track.class);
+		Collection<ObservableTrack> tracks = root.findAll(this);
+		return FixMe.select(tracks, this);
 	}
 }
