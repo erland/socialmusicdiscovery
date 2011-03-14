@@ -45,6 +45,7 @@ import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.util.Util;
 import org.eclipse.jface.viewers.ColumnLayoutData;
 import org.eclipse.jface.viewers.ColumnPixelData;
+import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.nebula.widgets.grid.Grid;
 import org.eclipse.nebula.widgets.grid.GridColumn;
 import org.eclipse.swt.widgets.Composite;
@@ -96,6 +97,17 @@ public class GridTableColumnLayout extends AbstractColumnLayout {
 		if (!IS_GTK || g.getColumn(g.getColumnCount() - 1) != gColumn) {
 			gColumn.setData(LAYOUT_DATA, new ColumnPixelData(gColumn.getWidth()));
 			layout(g.getParent(), true);
+		}
+	}
+	
+	/**
+	 * Assign relative weights based on current widths. 
+	 * @param grid
+	 */
+	public void computeWeights(Grid grid) {
+		for (GridColumn c : grid.getColumns()) {
+			ColumnWeightData cwd = new ColumnWeightData(c.getWidth());
+			setColumnData(c, cwd);
 		}
 	}
 }
