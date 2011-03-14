@@ -317,7 +317,7 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 		tabItemArtists = new CTabItem(tabFolderAlbumData, SWT.NONE);
 		tabItemArtists.setText("Artist(s)");
 		
-		artistPanel = new ContributorPanel(tabFolderAlbumData, SWT.NONE);
+		artistPanel = new ContributorPanel(tabFolderAlbumData, true);
 		tabItemArtists.setControl(artistPanel);
 		formToolkit.paintBordersFor(artistPanel);
 
