@@ -91,6 +91,12 @@ public class JPATrackRepository extends AbstractJPASMDIdentityRepository<TrackEn
         return query.getResultList();
     }
 
+    public Collection<TrackEntity> findByRecordingWithRelations(String recordingId, Collection<String> mandatoryRelations, Collection<String> optionalRelations) {
+        Query query = entityManager.createQuery(queryStringFor("e", mandatoryRelations, optionalRelations, true) + " JOIN e.recording as recording WHERE recording.id=:recording");
+        query.setParameter("recording", recordingId);
+        return query.getResultList();
+    }
+
     @Override
     public void create(TrackEntity entity) {
         if(entity.getRelease() != null) {
