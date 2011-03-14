@@ -40,10 +40,10 @@ import org.eclipse.nebula.widgets.grid.GridColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.socialmusicdiscovery.rcp.grid.GridTableColumnLayout;
 import org.socialmusicdiscovery.rcp.util.ViewerUtil;
 import org.socialmusicdiscovery.rcp.views.util.OpenListener;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
@@ -64,6 +64,7 @@ public class ContributorPanel extends Composite {
 	private GridViewerColumn roleGVC;
 	private GridColumn artistColumn;
 	private GridViewerColumn artistGVC;
+	private GridTableColumnLayout gridTableColumnLayout;
 
 	/**
 	 * Create the composite.
@@ -79,7 +80,8 @@ public class ContributorPanel extends Composite {
 		});
 		toolkit.adapt(this);
 		toolkit.paintBordersFor(this);
-		setLayout(new FillLayout(SWT.HORIZONTAL));
+		gridTableColumnLayout = new GridTableColumnLayout();
+		setLayout(gridTableColumnLayout);
 		
 		gridTableViewer = new GridTableViewer(this, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI);
 		Grid grid = gridTableViewer.getGrid();
@@ -102,6 +104,7 @@ public class ContributorPanel extends Composite {
 		artistColumn.setText("Artist");
 		
 		hookListeners();
+		gridTableColumnLayout.computeWeights(gridTableViewer.getGrid());
 	}
 	
 	private void hookListeners() {
