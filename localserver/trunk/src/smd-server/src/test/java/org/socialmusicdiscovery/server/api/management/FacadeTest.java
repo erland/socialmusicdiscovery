@@ -442,6 +442,20 @@ public class FacadeTest extends BaseTestCase {
         }
         assert found;
 
+        tracks = Client.create(config).resource(HOSTURL+"/tracks?recording="+recording.getId()+"WRONG").accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<Track>>() {});
+        assert tracks.size()==0;
+
+        tracks = Client.create(config).resource(HOSTURL+"/tracks?recording="+recording.getId()).accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<Track>>() {});
+        assert tracks !=null;
+        assert tracks.size()>0;
+        found = false;
+        for (Track track : tracks) {
+            if(track.getId().equals(t.getId())) {
+                found = true;
+            }
+        }
+        assert found;
+
         Client.create(config).resource(HOSTURL+"/tracks/"+t.getId()).accept(MediaType.APPLICATION_JSON).delete();
         Client.create(config).resource(HOSTURL+"/recordings/"+recording.getId()).accept(MediaType.APPLICATION_JSON).delete();
         Client.create(config).resource(HOSTURL+"/works/"+w.getId()).accept(MediaType.APPLICATION_JSON).delete();

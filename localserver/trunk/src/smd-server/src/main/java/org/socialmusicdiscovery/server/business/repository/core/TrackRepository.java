@@ -46,4 +46,6 @@ public interface TrackRepository extends SMDIdentityRepository<TrackEntity> {
     Collection<TrackEntity> findByArtistWithRelations(String artistId, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
 
     Collection<TrackEntity> findByWorkWithRelations(String workId, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
+
+    Collection<TrackEntity> findByRecordingWithRelations(String recordingId, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
 }
