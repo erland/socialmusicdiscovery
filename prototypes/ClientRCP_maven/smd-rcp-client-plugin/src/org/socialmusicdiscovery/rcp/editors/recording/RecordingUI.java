@@ -27,8 +27,13 @@
 
 package org.socialmusicdiscovery.rcp.editors.recording;
 
+import java.util.Comparator;
+
 import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.databinding.beans.BeanProperties;
 import org.eclipse.core.databinding.beans.BeansObservables;
+import org.eclipse.core.databinding.beans.IBeanValueProperty;
+import org.eclipse.core.databinding.observable.list.WritableList;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
@@ -50,30 +55,35 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.socialmusicdiscovery.rcp.content.ObservableRecording;
+import org.socialmusicdiscovery.rcp.content.ObservableTrack;
 import org.socialmusicdiscovery.rcp.editors.widgets.ContributorPanel;
+import org.socialmusicdiscovery.rcp.util.Util;
+import org.socialmusicdiscovery.rcp.util.ViewerUtil;
 import org.socialmusicdiscovery.rcp.views.util.AbstractComposite;
+import org.socialmusicdiscovery.server.business.model.core.Medium;
+import org.socialmusicdiscovery.server.business.model.core.Track;
 
 public class RecordingUI extends AbstractComposite<ObservableRecording> {
 
-//	private final class MyTrackNumberComparator implements Comparator<Track> {
-//		@Override
-//		public int compare(Track t1, Track t2) {
-//			return Util.compare(t1.getNumber(), t2.getNumber());
-//		}
-//	}
-//	
-//	private class MyTrackMediumNumberComparator implements Comparator<Track> {
-//		@Override
-//		public int compare(Track t1, Track t2) {
-//			return Util.compare(getNumber(t1), getNumber(t2));
-//		}
-//
-//		private Integer getNumber(Track t) {
-//			Medium m = t.getMedium();
-//			return m==null ? null : m.getNumber();
-//			
-//		}
-//	}
+	private final class MyTrackNumberComparator implements Comparator<Track> {
+		@Override
+		public int compare(Track t1, Track t2) {
+			return Util.compare(t1.getNumber(), t2.getNumber());
+		}
+	}
+	
+	private class MyTrackMediumNumberComparator implements Comparator<Track> {
+		@Override
+		public int compare(Track t1, Track t2) {
+			return Util.compare(getNumber(t1), getNumber(t2));
+		}
+
+		private Integer getNumber(Track t) {
+			Medium m = t.getMedium();
+			return m==null ? null : m.getNumber();
+			
+		}
+	}
 
 	private Text nameText;
 	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
@@ -161,7 +171,7 @@ public class RecordingUI extends AbstractComposite<ObservableRecording> {
 		sctnTracks.setClient(tracksArea);
 		tracksArea.setLayout(new FillLayout(SWT.VERTICAL));
 		
-		tracksViewer = new GridTableViewer(tracksArea, SWT.BORDER);
+		tracksViewer = new GridTableViewer(tracksArea, SWT.BORDER | SWT.V_SCROLL);
 		tracksGrid = tracksViewer.getGrid();
 		tracksGrid.setCellSelectionEnabled(true);
 		tracksGrid.setHeaderVisible(true);
@@ -169,16 +179,19 @@ public class RecordingUI extends AbstractComposite<ObservableRecording> {
 		
 		releaseGVC = new GridViewerColumn(tracksViewer, SWT.NONE);
 		releaseColumn = releaseGVC.getColumn();
+		releaseColumn.setMoveable(true);
 		releaseColumn.setWidth(200);
 		releaseColumn.setText("Release");
 		
 		mediumNumberGVC = new GridViewerColumn(tracksViewer, SWT.NONE);
 		mediumNumberColumn = mediumNumberGVC.getColumn();
+		mediumNumberColumn.setMoveable(true);
 		mediumNumberColumn.setWidth(50);
 		mediumNumberColumn.setText("Medium #");
 		
 		trackNumberGVC = new GridViewerColumn(tracksViewer, SWT.NONE);
 		trackNumberColumn = trackNumberGVC.getColumn();
+		trackNumberColumn.setMoveable(true);
 		trackNumberColumn.setWidth(50);
 		trackNumberColumn.setText("Track #");
 		
@@ -237,8 +250,16 @@ public class RecordingUI extends AbstractComposite<ObservableRecording> {
 		
 		sessionArtistPanel = new ContributorPanel(sessionComposite, SWT.NONE);
 		
+		hookListeners();
 		}
 
+	private void hookListeners() {
+		// default edit
+//		tracksViewer.addOpenListener(new OpenListener());
+		ViewerUtil.hookSorter(releaseGVC);
+		ViewerUtil.hookSorter(new MyTrackMediumNumberComparator(),  mediumNumberGVC);
+		ViewerUtil.hookSorter(new MyTrackNumberComparator(),  trackNumberGVC);
+	}
 	@Override
 	protected void checkSubclass() {
 		// Disable the check that prevents subclassing of SWT components
@@ -247,8 +268,17 @@ public class RecordingUI extends AbstractComposite<ObservableRecording> {
 	@Override
 	public void afterSetModel(ObservableRecording track) {
 		getArtistPanel().bindContributors(getModel().getContributors());
+		bindTracks();
 //		bindWorkPanel();
 //		bindSessionPanel();
+	}
+	
+	private void bindTracks() {
+		WritableList list = new WritableList(getModel().getTracks(), ObservableTrack.class);
+		IBeanValueProperty medium = BeanProperties.value(ObservableTrack.class, "medium.number");
+		IBeanValueProperty track = BeanProperties.value(ObservableTrack.class, "number");
+		IBeanValueProperty release = BeanProperties.value(ObservableTrack.class, "release.name");
+		ViewerUtil.bind(tracksViewer, list, release, medium, track);
 	}
 
 	public ContributorPanel getArtistPanel() {
