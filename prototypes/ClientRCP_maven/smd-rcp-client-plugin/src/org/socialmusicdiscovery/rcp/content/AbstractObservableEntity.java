@@ -29,6 +29,7 @@ package org.socialmusicdiscovery.rcp.content;
 
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.Type;
+import java.util.Collection;
 
 import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.observable.Observables;
@@ -282,6 +283,18 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 	protected void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
 		setDirty(true); // call before firing "real" change to let tooltip render dirty status
 		super.firePropertyChange(propertyName, oldValue, newValue);
+	}
+
+	/**
+	 * Convenience method, primarily intended for subclasses that implement
+	 * {@link #postInflate()} to inflate dependent entities.
+	 * 
+	 * @param entities
+	 */
+	protected void inflateAll(Collection<? extends AbstractObservableEntity> entities) {
+		for (AbstractObservableEntity entity : entities) {
+			entity.inflate();
+		}
 	}
 
 }
