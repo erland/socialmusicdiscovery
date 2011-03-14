@@ -60,6 +60,7 @@ import org.socialmusicdiscovery.rcp.editors.widgets.ContributorPanel;
 import org.socialmusicdiscovery.rcp.util.Util;
 import org.socialmusicdiscovery.rcp.util.ViewerUtil;
 import org.socialmusicdiscovery.rcp.views.util.AbstractComposite;
+import org.socialmusicdiscovery.rcp.views.util.OpenListener;
 import org.socialmusicdiscovery.server.business.model.core.Medium;
 import org.socialmusicdiscovery.server.business.model.core.Track;
 
@@ -88,7 +89,6 @@ public class RecordingUI extends AbstractComposite<ObservableRecording> {
 	private Text nameText;
 	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
 	private ScrolledForm scrldfrmRecording;
-	private GridTableViewer gridViewerTracks;
 	private ContributorPanel artistPanel;
 	private Label nameLabel;
 	private Section sctnRecordingData;
@@ -255,7 +255,7 @@ public class RecordingUI extends AbstractComposite<ObservableRecording> {
 
 	private void hookListeners() {
 		// default edit
-//		tracksViewer.addOpenListener(new OpenListener());
+		tracksViewer.addOpenListener(new OpenListener());
 		ViewerUtil.hookSorter(releaseGVC);
 		ViewerUtil.hookSorter(new MyTrackMediumNumberComparator(),  mediumNumberGVC);
 		ViewerUtil.hookSorter(new MyTrackNumberComparator(),  trackNumberGVC);
@@ -284,10 +284,7 @@ public class RecordingUI extends AbstractComposite<ObservableRecording> {
 	public ContributorPanel getArtistPanel() {
 		return artistPanel;
 	}
-	public GridTableViewer getGridViewerTracks() {
-		return gridViewerTracks;
-	}
-
+	
 	/**
 	 * @return {@link ObservableRecording}
 	 * @see #getModel()
@@ -333,5 +330,8 @@ public class RecordingUI extends AbstractComposite<ObservableRecording> {
 		bindingContext.bindValue(derivedNameObserveEnabledObserveWidget, getRecordingDerivedNameUsedObserveValue, null, null);
 		//
 		return bindingContext;
+	}
+	public GridTableViewer getTracksViewer() {
+		return tracksViewer;
 	}
 }

@@ -49,6 +49,8 @@ import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.nebula.jface.gridviewer.GridViewerColumn;
 import org.eclipse.nebula.widgets.grid.GridColumn;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
@@ -62,18 +64,24 @@ import org.eclipse.ui.services.IEvaluationService;
 public class ViewerUtil {
 
 	/**
-	 * Not quite sure why, but it seems we need to monitor selection changes
-	 * in internal viewers - the evaluation service is only updated when active part changes?
+	 * Not quite sure why, but it seems we need to monitor selection changes in
+	 * internal viewers - the evaluation service is only updated when active
+	 * part changes? And even more weird is that we need manually fire events
+	 * when changing the active editor?
 	 */
-	private static final class MyBridgeFromSelectionProviderToEvaluationService extends AbstractSourceProvider implements ISelectionChangedListener {
+	private static final class MyBridgeFromSelectionProviderToEvaluationService extends AbstractSourceProvider implements ISelectionChangedListener, FocusListener {
 		private static final String PROP = ISources.ACTIVE_CURRENT_SELECTION_NAME;
 		private final Map<String, Object> map = new HashMap<String, Object>();
+		private final Viewer viewer;
 
-		private MyBridgeFromSelectionProviderToEvaluationService() {
+		private MyBridgeFromSelectionProviderToEvaluationService(Viewer viewer) {
 			super();
+			this.viewer = viewer;
 			setCurrentSelection(null);
 			IEvaluationService e = WorkbenchUtil.getEvaluationService();
 			e.addSourceProvider(this);
+			viewer.addSelectionChangedListener(this);
+			viewer.getControl().addFocusListener(this);
 		}
 
 //		Does not work? It should, if I read the javadoc right
@@ -88,6 +96,16 @@ public class ViewerUtil {
 		@Override
 		public void selectionChanged(SelectionChangedEvent event) {
 			ISelection selection = event.getSelection();
+			updateSelection(selection);
+		}
+
+		@Override
+		public void focusGained(FocusEvent e) {
+			ISelection selection = viewer.getSelection();
+			updateSelection(selection);
+		}
+		
+		private void updateSelection(ISelection selection) {
 			setCurrentSelection(selection);
 			fireSourceChanged(1, PROP, selection);
 		}
@@ -110,6 +128,12 @@ public class ViewerUtil {
 		public String[] getProvidedSourceNames() {
 			Set<String> keys = map.keySet();
 			return (String[]) keys.toArray(new String[keys.size()]);
+		}
+
+		@Override
+		public void focusLost(FocusEvent arg0) {
+			// TODO Auto-generated method stub
+			
 		}
 	}
 
@@ -178,7 +202,7 @@ public class ViewerUtil {
 		
 		site.registerContextMenu(menuManager, viewer);	// let other plug-ins contribute
 		site.setSelectionProvider(viewer); 				// let manifest define selection-based expressions
-		viewer.addSelectionChangedListener(new MyBridgeFromSelectionProviderToEvaluationService());
+		new MyBridgeFromSelectionProviderToEvaluationService(viewer);
 	}
 
 	public static void handleOpen(OpenEvent event) {
