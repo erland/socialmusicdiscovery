@@ -86,12 +86,10 @@ public class ObservableRelease extends AbstractObservableEntity<Release> impleme
 	public void postInflate() {
 		Root<Track> trackRoot = getDataSource().resolveRoot(Track.class);
 		Collection<ObservableTrack> allTracks = trackRoot.findAll(this);
-		for (ObservableTrack track : allTracks) {
-			track.inflate();
-		}
+		inflateAll(allTracks);
 		tracks.addAll(allTracks);
 	}
-	
+
 	@Override
 	public Label getLabel() {
 		return label;
