@@ -58,6 +58,7 @@ import org.socialmusicdiscovery.rcp.editors.recording.RecordingEditor;
 import org.socialmusicdiscovery.rcp.editors.release.ReleaseEditor;
 import org.socialmusicdiscovery.rcp.error.FatalApplicationException;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
+import org.socialmusicdiscovery.server.business.model.core.Recording;
 import org.socialmusicdiscovery.server.business.model.core.Track;
 
 public final class WorkbenchUtil {
@@ -91,12 +92,29 @@ public final class WorkbenchUtil {
 		}
 	}
 
+	/**
+	 * Convenience method.
+	 * @return {@link IEditorPart} or <code>null</code>
+	 */
+	public static IEditorPart getActiveEditor() {
+		IWorkbenchPage page = getActivePage();
+		return page==null ? null : page.getActiveEditor();
+	}
+
+	/**
+	 * Convenience method.
+	 * @return {@link IWorkbenchPage} or <code>null</code>
+	 */
 	public static IWorkbenchPage getActivePage() {
 		IWorkbenchWindow window = getWindow();
-		IWorkbenchPage page = window.getActivePage();
+		IWorkbenchPage page = window==null ? null : window.getActivePage();
 		return page;
 	}
 
+	/**
+	 * Convenience method.
+	 * @return {@link IWorkbenchWindow} or <code>null</code>
+	 */
 	public static IWorkbenchWindow getWindow() {
 		IWorkbench workbench = PlatformUI.getWorkbench();
 		IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
@@ -129,14 +147,16 @@ public final class WorkbenchUtil {
 		}
 	}
 
-	public static void openDistinct(Object element) {
-		IEditorInput input = resolveEditableElement(element);
-		String editorId = resolveEditorId(input);
-		String viewId = resolveViewId(input);
+	public static void openDistinct(Object selectedElement) {
+		IEditorPart activeEditor = getActiveEditor();
+		IEditorInput currentInput= activeEditor==null ? null : activeEditor.getEditorInput();
+		IEditorInput nextInput = resolveEditableElement(currentInput, selectedElement);
+		String editorId = resolveEditorId(nextInput);
+		String viewId = resolveViewId(nextInput);
 		IWorkbenchPart part = null;
 		
 		if (editorId!=null) {
-			part = WorkbenchUtil.openEditor(input, editorId);
+			part = WorkbenchUtil.openEditor(nextInput, editorId);
 		} else if (viewId!=null) {
 			part = WorkbenchUtil.openView(viewId, viewId);
 		}
@@ -145,19 +165,23 @@ public final class WorkbenchUtil {
 		}
 	}
 
-	private static IEditorInput resolveEditableElement(Object element) {
-		if (element instanceof Contributor) {
-			return resolveEditableElement(((Contributor) element).getArtist());
+	private static IEditorInput resolveEditableElement(IEditorInput currentEditorInput, Object selectedElement) {
+		if (selectedElement instanceof Contributor) {
+			return resolveEditableElement(currentEditorInput, ((Contributor) selectedElement).getArtist());
 		}
-		if (element instanceof Track) {
-			return resolveEditableElement(((Track) element).getRecording());
+		if (selectedElement instanceof Track) {
+			Track track = (Track) selectedElement;
+			// what to open next depends on where we're currently editing the track
+			// Recording => Release, Release => Recording
+			Object target = currentEditorInput instanceof Recording ? track.getRelease() : track.getRecording();
+			return resolveEditableElement(currentEditorInput, target);
 		}
-		if (element instanceof IEditorInput) {
-			return (IEditorInput) element;
+		if (selectedElement instanceof IEditorInput) {
+			return (IEditorInput) selectedElement;
 		}
-		if (element instanceof IAdaptable) {
-			IAdaptable a = (IAdaptable) element;
-			return resolveEditableElement(a.getAdapter(IEditorInput.class));
+		if (selectedElement instanceof IAdaptable) {
+			IAdaptable a = (IAdaptable) selectedElement;
+			return resolveEditableElement(currentEditorInput, a.getAdapter(IEditorInput.class));
 		}
 		return null;
 	}
