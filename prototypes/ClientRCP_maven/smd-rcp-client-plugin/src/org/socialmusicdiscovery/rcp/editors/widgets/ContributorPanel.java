@@ -32,6 +32,7 @@ import java.util.Set;
 import org.eclipse.core.databinding.beans.BeanProperties;
 import org.eclipse.core.databinding.beans.IBeanValueProperty;
 import org.eclipse.core.databinding.observable.list.WritableList;
+import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
 import org.eclipse.nebula.jface.gridviewer.GridViewerColumn;
@@ -40,6 +41,7 @@ import org.eclipse.nebula.widgets.grid.GridColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -64,8 +66,23 @@ public class ContributorPanel extends Composite {
 	private GridViewerColumn roleGVC;
 	private GridColumn artistColumn;
 	private GridViewerColumn artistGVC;
-	private GridTableColumnLayout gridTableColumnLayout;
 
+	/**
+	 * Create the composite with optional {@link TableColumnLayout}. Separate
+	 * constructor since WindowBuilder doesn't appear to like this.
+	 * 
+	 * @param parent
+	 * @param isAdjustColumnLayout
+	 */
+	public ContributorPanel(Composite parent, boolean isAdjustColumnLayout) {
+		this(parent, SWT.NONE);
+		if (isAdjustColumnLayout) {
+			GridTableColumnLayout gridTableColumnLayout = new GridTableColumnLayout();
+			gridTableColumnLayout.computeWeights(gridTableViewer.getGrid());
+			setLayout(gridTableColumnLayout);
+		}
+	}
+	
 	/**
 	 * Create the composite.
 	 * @param parent
@@ -80,8 +97,7 @@ public class ContributorPanel extends Composite {
 		});
 		toolkit.adapt(this);
 		toolkit.paintBordersFor(this);
-		gridTableColumnLayout = new GridTableColumnLayout();
-		setLayout(gridTableColumnLayout);
+		setLayout(new FillLayout());
 		
 		gridTableViewer = new GridTableViewer(this, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI);
 		Grid grid = gridTableViewer.getGrid();
@@ -94,17 +110,18 @@ public class ContributorPanel extends Composite {
 		roleGVC = new GridViewerColumn(gridTableViewer, SWT.NONE);
 		roleColumn = roleGVC.getColumn();
 		roleColumn.setMoveable(true);
+		roleColumn.setResizeable(true);
 		roleColumn.setWidth(100);
 		roleColumn.setText("Role");
 		
 		artistGVC = new GridViewerColumn(gridTableViewer, SWT.NONE);
 		artistColumn = artistGVC.getColumn();
 		artistColumn.setMoveable(true);
+		artistColumn.setResizeable(true);
 		artistColumn.setWidth(400);
 		artistColumn.setText("Artist");
 		
 		hookListeners();
-		gridTableColumnLayout.computeWeights(gridTableViewer.getGrid());
 	}
 	
 	private void hookListeners() {

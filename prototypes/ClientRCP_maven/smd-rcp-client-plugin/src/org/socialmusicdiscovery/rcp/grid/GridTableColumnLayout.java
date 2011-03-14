@@ -106,7 +106,7 @@ public class GridTableColumnLayout extends AbstractColumnLayout {
 	 */
 	public void computeWeights(Grid grid) {
 		for (GridColumn c : grid.getColumns()) {
-			ColumnWeightData cwd = new ColumnWeightData(c.getWidth());
+			ColumnWeightData cwd = new ColumnWeightData(c.getWidth(), c.getResizeable());
 			setColumnData(c, cwd);
 		}
 	}

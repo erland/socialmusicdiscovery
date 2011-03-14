@@ -209,7 +209,7 @@ public class RecordingUI extends AbstractComposite<ObservableRecording> {
 		artistTab = new CTabItem(tabFolder, SWT.NONE);
 		artistTab.setText("Artist(s)");
 		
-		artistPanel = new ContributorPanel(tabFolder, SWT.NONE);
+		artistPanel = new ContributorPanel(tabFolder, true);
 		artistTab.setControl(artistPanel);
 		formToolkit.paintBordersFor(artistPanel);
 		
