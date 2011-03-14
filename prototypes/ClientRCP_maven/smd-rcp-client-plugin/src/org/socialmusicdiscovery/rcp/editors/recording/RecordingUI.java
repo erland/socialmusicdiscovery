@@ -56,6 +56,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.socialmusicdiscovery.rcp.content.ObservableRecording;
 import org.socialmusicdiscovery.rcp.content.ObservableTrack;
+import org.socialmusicdiscovery.rcp.content.ObservableWork;
 import org.socialmusicdiscovery.rcp.editors.widgets.ContributorPanel;
 import org.socialmusicdiscovery.rcp.util.Util;
 import org.socialmusicdiscovery.rcp.util.ViewerUtil;
@@ -106,11 +107,9 @@ public class RecordingUI extends AbstractComposite<ObservableRecording> {
 	private CTabItem artistTab;
 	private CTabItem workTab;
 	private Grid workGrid;
-	private GridTableViewer workGridViewer;
+	private GridTableViewer worksViewer;
 	private GridColumn workColumn;
 	private GridViewerColumn workGVC;
-	private GridColumn workIndexColumn;
-	private GridViewerColumn workIndexGVC;
 	private CTabItem sessionTab;
 	private Link sessionLink;
 	private Composite sessionComposite;
@@ -217,18 +216,13 @@ public class RecordingUI extends AbstractComposite<ObservableRecording> {
 		workTab = new CTabItem(tabFolder, SWT.NONE);
 		workTab.setText("Work");
 		
-		workGridViewer = new GridTableViewer(tabFolder, SWT.BORDER);
-		workGrid = workGridViewer.getGrid();
+		worksViewer = new GridTableViewer(tabFolder, SWT.BORDER);
+		workGrid = worksViewer.getGrid();
 		workGrid.setHeaderVisible(true);
 		workTab.setControl(workGrid);
 		formToolkit.paintBordersFor(workGrid);
 		
-		workIndexGVC = new GridViewerColumn(workGridViewer, SWT.NONE);
-		workIndexColumn = workIndexGVC.getColumn();
-		workIndexColumn.setWidth(100);
-		workIndexColumn.setText("Index");
-		
-		workGVC = new GridViewerColumn(workGridViewer, SWT.NONE);
+		workGVC = new GridViewerColumn(worksViewer, SWT.NONE);
 		workColumn = workGVC.getColumn();
 		workColumn.setWidth(400);
 		workColumn.setText("Work");
@@ -256,7 +250,7 @@ public class RecordingUI extends AbstractComposite<ObservableRecording> {
 	private void hookListeners() {
 		// default edit
 		tracksViewer.addOpenListener(new OpenListener());
-		ViewerUtil.hookSorter(releaseGVC);
+		ViewerUtil.hookSorter(releaseGVC, workGVC);
 		ViewerUtil.hookSorter(new MyTrackMediumNumberComparator(),  mediumNumberGVC);
 		ViewerUtil.hookSorter(new MyTrackNumberComparator(),  trackNumberGVC);
 	}
@@ -269,10 +263,16 @@ public class RecordingUI extends AbstractComposite<ObservableRecording> {
 	public void afterSetModel(ObservableRecording track) {
 		getArtistPanel().bindContributors(getModel().getContributors());
 		bindTracks();
-//		bindWorkPanel();
+		bindWorks();
 //		bindSessionPanel();
 	}
 	
+	private void bindWorks() {
+		WritableList list = new WritableList(getModel().getWorks(), ObservableWork.class);
+		IBeanValueProperty name = BeanProperties.value(ObservableWork.class, "name");
+		ViewerUtil.bind(worksViewer, list, name);
+	}
+
 	private void bindTracks() {
 		WritableList list = new WritableList(getModel().getTracks(), ObservableTrack.class);
 		IBeanValueProperty medium = BeanProperties.value(ObservableTrack.class, "medium.number");
@@ -302,10 +302,7 @@ public class RecordingUI extends AbstractComposite<ObservableRecording> {
 		return sessionArtistPanel;
 	}
 	public GridTableViewer getWorkGridViewer() {
-		return workGridViewer;
-	}
-	public GridViewerColumn getWorkIndexGVC() {
-		return workIndexGVC;
+		return worksViewer;
 	}
 	public GridViewerColumn getWorkGVC() {
 		return workGVC;
