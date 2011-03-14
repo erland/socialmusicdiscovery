@@ -38,7 +38,7 @@
  *     IBM Corporation - API refactoring and general maintenance
  *******************************************************************************/
 
-package org.socialmusicdiscovery.rcp.layout;
+package org.socialmusicdiscovery.rcp.grid;
 
 import org.eclipse.jface.layout.AbstractColumnLayout;
 import org.eclipse.jface.layout.TableColumnLayout;

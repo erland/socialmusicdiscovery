@@ -60,6 +60,7 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.services.IEvaluationService;
+import org.socialmusicdiscovery.rcp.grid.GridViewerColumnComparator;
 
 public class ViewerUtil {
 
