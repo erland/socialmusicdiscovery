@@ -27,14 +27,14 @@
 
 package org.socialmusicdiscovery.rcp.views.navigator;
 
-import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.databinding.observable.masterdetail.IObservableFactory;
+import org.eclipse.core.databinding.observable.set.IObservableSet;
 import org.socialmusicdiscovery.rcp.content.ModelObject;
 
-class NavigatorListFactory implements IObservableFactory {
+class NavigatorSetFactory implements IObservableFactory {
 
 	@Override
-	public IObservableList createObservable(Object target) {
+	public IObservableSet createObservable(Object target) {
 		if (target instanceof ModelObject) {
 			ModelObject model = (ModelObject) target;
 			return model.getObservableChildren();

@@ -28,7 +28,7 @@
 package org.socialmusicdiscovery.rcp.views.navigator;
 
 
-import org.eclipse.jface.databinding.viewers.ObservableListTreeContentProvider;
+import org.eclipse.jface.databinding.viewers.ObservableSetTreeContentProvider;
 import org.eclipse.jface.databinding.viewers.ViewerSupport;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerSorter;
@@ -68,7 +68,7 @@ public class TreeNavigator extends Composite {
 	 */
 	private void bindViewer() {
 		treeViewer.setSorter(new ViewerSorter());
-		ObservableListTreeContentProvider contentProvider = new ObservableListTreeContentProvider(new NavigatorListFactory(), new NavigatorStructureAdvisor());
+		ObservableSetTreeContentProvider contentProvider = new ObservableSetTreeContentProvider(new NavigatorSetFactory(), new NavigatorStructureAdvisor());
 		treeViewer.setContentProvider(contentProvider);
 		treeViewer.setLabelProvider(LabelProviderFactory.defaultObservable(contentProvider));
 	}

@@ -33,8 +33,8 @@ import java.util.Collection;
 
 import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.observable.Observables;
-import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.databinding.observable.list.WritableList;
+import org.eclipse.core.databinding.observable.set.IObservableSet;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IPersistableElement;
 import org.socialmusicdiscovery.rcp.Activator;
@@ -178,12 +178,12 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 	 * Default implementation returns an empty collection.
 	 * Subclasses are expected to override as necessary.
 	 * 
-	 * @return {@link IObservableList} (empty)
+	 * @return {@link IObservableSet} (empty)
 	 * @see Observables#emptyObservableList()
 	 */
 	@Override
-	public IObservableList getObservableChildren() {
-		return Observables.emptyObservableList();
+	public IObservableSet getObservableChildren() {
+		return Observables.emptyObservableSet();
 	}
 
 	public String getId() {

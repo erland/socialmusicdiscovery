@@ -29,16 +29,11 @@ package org.socialmusicdiscovery.rcp.content;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.databinding.beans.BeansObservables;
-import org.eclipse.core.databinding.observable.list.IListChangeListener;
-import org.eclipse.core.databinding.observable.list.ListChangeEvent;
 import org.eclipse.core.databinding.observable.set.IObservableSet;
 import org.eclipse.core.databinding.observable.set.ISetChangeListener;
 import org.eclipse.core.databinding.observable.set.SetChangeEvent;
@@ -56,7 +51,11 @@ import com.google.gson.annotations.Expose;
 
 public class ObservableRecording extends AbstractObservableEntity<Recording> implements Recording {
 
-	private class MyDerivedNameUpdater implements PropertyChangeListener, IListChangeListener, IValueChangeListener, ISetChangeListener {
+	/**
+	 * Warning: Work in Progress - this code has NOT been run yet!
+	 * FIXME test and implement properly
+	 */
+	private class MyDerivedNameUpdater implements PropertyChangeListener, IValueChangeListener, ISetChangeListener {
 
 		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
@@ -68,12 +67,6 @@ public class ObservableRecording extends AbstractObservableEntity<Recording> imp
 		public void handleSetChange(SetChangeEvent evt) {
 			System.out.println("ObservableRecording.MyDerivedNameUpdater.handleSetChange(): "+evt);
 			updateListeners(evt);
-			updateDerivedName();
-		}
-
-		@Override
-		public void handleListChange(ListChangeEvent evt) {
-			System.out.println("ObservableRecording.MyDerivedNameUpdater.handleListChange(): "+evt);
 			updateDerivedName();
 		}
 
@@ -241,10 +234,10 @@ public class ObservableRecording extends AbstractObservableEntity<Recording> imp
 		return Util.composeName(getWorks());
 	}
 
-	public List<ObservableTrack> getTracks() {
+	public Set<ObservableTrack> getTracks() {
 		Root<Track> root = getDataSource().resolveRoot(Track.class);
 		// FIXME return stable, observable collection where changes propagate to Release.getTracks()
-		Collection<ObservableTrack> tracks = root.findAll(this);
-		return new ArrayList<ObservableTrack>(tracks);
+		Set<ObservableTrack> tracks = root.findAll(this);
+		return tracks;
 	}
 }

@@ -32,8 +32,8 @@ import org.eclipse.core.databinding.observable.map.IObservableMap;
 import org.eclipse.core.databinding.observable.set.IObservableSet;
 import org.eclipse.core.databinding.property.Properties;
 import org.eclipse.core.databinding.property.value.IValueProperty;
-import org.eclipse.jface.databinding.viewers.ObservableListTreeContentProvider;
 import org.eclipse.jface.databinding.viewers.ObservableMapLabelProvider;
+import org.eclipse.jface.databinding.viewers.ObservableSetTreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.socialmusicdiscovery.rcp.content.ObservableEntity;
@@ -49,11 +49,11 @@ public final class LabelProviderFactory  {
 	private LabelProviderFactory() {}
 
 	
-	public static ObservableMapLabelProvider defaultObservable(ObservableListTreeContentProvider contentProvider) {
+	public static ObservableMapLabelProvider defaultObservable(ObservableSetTreeContentProvider contentProvider) {
 		return new DefaultObservableMapLabelProvider(createObservableAttributes(contentProvider, ObservableEntity.PROP_name, ObservableEntity.PROP_dirty));
 	}
 	
-	private static IObservableMap[] createObservableAttributes(ObservableListTreeContentProvider contentProvider, String... propertyNames) {
+	private static IObservableMap[] createObservableAttributes(ObservableSetTreeContentProvider contentProvider, String... propertyNames) {
 		IObservableSet listToObserve = contentProvider.getKnownElements();
 		IValueProperty[] propertiesToObserve = BeanProperties.values(propertyNames);
 		return Properties.observeEach(listToObserve, propertiesToObserve);
