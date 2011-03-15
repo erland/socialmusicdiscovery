@@ -8,7 +8,9 @@ Brief instructions on what you need to do to get it running is available in the 
   * http://socialmusicdiscovery.googlecode.com/svn/prototypes/ClientRCP/ReadMe.txt
 
 = "Roadmap" =
-Well, not really, but a few words on what I think needs to be done to bring this thing out of the prototype folder and let us start widening scope and honing details:
+Note: This section is becoming outdated as we start using the shared "todo list". 
+
+Anyway, here are a few words on what I think needs to be done to bring this thing out of the prototype folder and let us start widening scope and honing details:
   # (done) _Main menu and popup menus declared thru extension points (not in code)_
   # (done) _A wrapping layer to make SMD entities observable and "self-inflating"_
   # (done) _A decent navigator (probably !ExpandBar, using !PShelf for now)_
@@ -40,7 +42,7 @@ Some brief and preliminary thoughts on the design principles for the RCP client.
   * UI Style and "Skins"
     * Now (Eclipse 3.x): we run with the default appearance produced by the Forms Toolkit. 
     * Then (Eclipse 4): we use the new (CSS-oriented) way of styling the application. It is too much work to do that using the current platform (3.6).
-  * Target platform - a pre-configured RCP target platform will be checked into SVN. This includes the RCP base framework and all desired plug-ins to avoid the dependency on individual installations.
+  * Target platform - a pre-configured RCP target platform is downloaded and provided by Maven. This includes the RCP base framework and all desired plug-ins to avoid the dependency on individual installations.
   * Plug-in Component structure - we separate the client in a few main parts. The basic idea is to have a small base product that is easily installed and rarely updated, and to use an update site to maintain the other components.
     * Installer - an almost empty "bootstrap" to allow installation/update of other components from update site
     * Product - splash screens, license, intro pages, etc
