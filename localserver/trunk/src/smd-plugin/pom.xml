@@ -85,10 +85,10 @@
                                     <goal>single</goal>
                                 </goals>
                                 <configuration>
-                                    <finalName>${project.artifactId}-perl-0.1.${buildNumber}</finalName>
-                                    <appendAssemblyId>false</appendAssemblyId>
+                                    <finalName>${project.artifactId}-0.1.${buildNumber}</finalName>
+                                    <appendAssemblyId>true</appendAssemblyId>
                                     <ignoreDirFormatExtensions>false</ignoreDirFormatExtensions>
-                                    <attach>false</attach>
+                                    <attach>true</attach>
                                     <descriptors>
                                         <descriptor>src/main/assemble/perlzippackage.xml</descriptor>
                                     </descriptors>
@@ -117,10 +117,10 @@
                                     <goal>single</goal>
                                 </goals>
                                 <configuration>
-                                    <finalName>${project.artifactId}-server-0.1.${buildNumber}</finalName>
-                                    <appendAssemblyId>false</appendAssemblyId>
+                                    <finalName>${project.artifactId}-0.1.${buildNumber}</finalName>
+                                    <appendAssemblyId>true</appendAssemblyId>
                                     <ignoreDirFormatExtensions>false</ignoreDirFormatExtensions>
-                                    <attach>false</attach>
+                                    <attach>true</attach>
                                     <descriptors>
                                         <descriptor>src/main/assemble/serverzippackage.xml</descriptor>
                                     </descriptors>
@@ -199,10 +199,10 @@
                                     <goal>single</goal>
                                 </goals>
                                 <configuration>
-                                    <finalName>${project.artifactId}-full-0.1.${buildNumber}</finalName>
-                                    <appendAssemblyId>false</appendAssemblyId>
+                                    <finalName>${project.artifactId}-0.1.${buildNumber}</finalName>
+                                    <appendAssemblyId>true</appendAssemblyId>
                                     <ignoreDirFormatExtensions>false</ignoreDirFormatExtensions>
-                                    <attach>false</attach>
+                                    <attach>true</attach>
                                     <descriptors>
                                         <descriptor>src/main/assemble/fullzippackage.xml</descriptor>
                                     </descriptors>
