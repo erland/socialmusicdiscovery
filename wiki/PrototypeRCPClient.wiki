@@ -33,6 +33,7 @@ Some brief and preliminary thoughts on the design principles for the RCP client.
   * JFace 
     * JFace offers a convenience layer on top of SWT, making it much easier to work with. Application code should rarely touch an SWT component directly.
     * JFace data binding is perhaps the most important discriminator to separate a rich client from a thin. We bind widgets to properties using data binding, and we use observable label providers in grids. 
+    * Set over List and Collection. We use Sets in collection-oriented methods. Design rationale: to ensure proper databinding and stable collections, we need a distinct collection type. By definition (?) a relational DB returns unique instances in undefined order. All grids sort rows on user request, and a Set is easier to diff/merge in general. Hence all core signatures accept and return Set rather than List. 
   * Menus, Actions and Commands
     * Menu items (both main and popup) are primarily declared thru extension points, not attached directly to viewers. This makes common commands universally available; whenever and wherever an Artist is selected, a menu with all applicable Artist commands is available.
     * Actions vs. Commands - Commands are "new school" and more powerful, Actions are "old school" and less powerful. However, the command framework is pretty abstract and - to most people - confusing. We should use Commands to define  "global" actions that we bind to keyboard shortcuts, but we use regular Actions and Runnables where a Command isn't required.
