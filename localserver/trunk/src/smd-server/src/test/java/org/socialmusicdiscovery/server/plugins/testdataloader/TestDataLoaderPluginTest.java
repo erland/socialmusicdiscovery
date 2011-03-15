@@ -27,49 +27,39 @@
 
 package org.socialmusicdiscovery.server.plugins.testdataloader;
 
-import liquibase.ClassLoaderFileOpener;
-import liquibase.Liquibase;
-import liquibase.exception.LiquibaseException;
-import org.socialmusicdiscovery.server.api.plugin.AbstractPlugin;
-import org.socialmusicdiscovery.server.api.plugin.Plugin;
 import org.socialmusicdiscovery.server.api.plugin.PluginException;
-import org.socialmusicdiscovery.server.business.logic.InjectHelper;
-import org.socialmusicdiscovery.server.business.logic.injections.database.DatabaseProvider;
+import org.socialmusicdiscovery.test.BaseTestCase;
+import org.testng.annotations.*;
 
-import java.sql.Connection;
+import java.lang.reflect.Method;
 import java.sql.SQLException;
 
-public class TestDataLoaderPlugin extends AbstractPlugin {
-    @Override
-    public int getStartPriority() {
-        return Plugin.START_PRIORITY_EARLY;
+public class TestDataLoaderPluginTest extends BaseTestCase {
+    @BeforeTest
+    public void setUp() {
+        super.setUp();
     }
 
-    @Override
-    public boolean start() throws PluginException {
-        String database = InjectHelper.instanceWithName(String.class, "org.socialmusicdiscovery.server.database");
-        DatabaseProvider provider = InjectHelper.instanceWithName(DatabaseProvider.class, database);
-        try {
-            Connection connection = provider.getConnection();
-            if (database != null && (database.endsWith("-test"))) {
-                execute(connection);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new PluginException(getClass().getSimpleName() + " failure", e);
-        }
-        return false;
+    @AfterTest
+    public void tearDown() {
+        super.tearDown();
     }
 
-    void execute(Connection connection) throws PluginException {
-        try {
-            Liquibase liquibase = new Liquibase("org/socialmusicdiscovery/server/database/sampledata/smd-database.sampledata.xml", new
-                    ClassLoaderFileOpener(),
-                    connection);
-            liquibase.update("");
-        } catch (LiquibaseException e) {
-            e.printStackTrace();
-            throw new PluginException(getClass().getSimpleName() + " failure", e);
+    @BeforeMethod
+    public void setUpMethod(Method m) {
+        System.out.println("Executing " + getClass().getSimpleName() + "." + m.getName() + "...");
+        em.clear();
+    }
+
+    @AfterMethod
+    public void tearDownMethod(Method m) {
+        if (em.getTransaction().isActive()) {
+            em.getTransaction().rollback();
         }
+    }
+
+    @Test
+    public void testLoadTestdata() throws PluginException,SQLException {
+        new TestDataLoaderPlugin().execute(getProvider().getConnection());
     }
 }
