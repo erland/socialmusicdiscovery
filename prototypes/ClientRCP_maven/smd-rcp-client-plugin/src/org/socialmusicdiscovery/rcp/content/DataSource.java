@@ -28,7 +28,6 @@
 package org.socialmusicdiscovery.rcp.content;
 
 import java.beans.PropertyChangeEvent;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -38,8 +37,9 @@ import java.util.Set;
 import javax.ws.rs.core.MediaType;
 
 import org.eclipse.core.databinding.observable.Observables;
-import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.databinding.observable.list.WritableList;
+import org.eclipse.core.databinding.observable.set.IObservableSet;
+import org.eclipse.core.databinding.observable.set.WritableSet;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Shell;
@@ -238,8 +238,8 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		private final String name; // for user presentation
 		private final String path; // for querying server
 		private final Class<T> distinctQueryType; // for querying server
-		private GenericType<Collection<T>> genericCollectionQueryType;
-		private List<ObservableEntity<T>> children;
+		private GenericType<Set<T>> genericCollectionQueryType;
+		private Set<ObservableEntity<T>> children;
 
 		/**
 		 * Private constructor, roots should only be instantiated from this
@@ -256,7 +256,7 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		 * @param genericCollectionQueryType
 		 *            for server query (see {@link #findAll()})
 		 */
-		private Root(String nodeName, String queryPath, Class<T> distinctElementQueryType, GenericType<Collection<T>> genericCollectionQueryType) {
+		private Root(String nodeName, String queryPath, Class<T> distinctElementQueryType, GenericType<Set<T>> genericCollectionQueryType) {
 			this.name = nodeName;
 			this.path = queryPath;
 			this.distinctQueryType = distinctElementQueryType;
@@ -267,8 +267,8 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		 * Get all objects of the type that this root handles.
 		 * @return {@link List<T>}, possibly empty
 		 */
-		final public synchronized <O extends ObservableEntity<T>> List<O> findAll() {
-	        List<O> result = new ArrayList<O>();
+		final public synchronized <O extends ObservableEntity<T>> Set<O> findAll() {
+	        Set<O> result = new HashSet<O>();
 			for (T serverObject : get(genericCollectionQueryType)) {
 				O clientObject = getOrStore(serverObject);
 				result.add(clientObject);
@@ -282,11 +282,11 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		 * @param entity
 		 * @return Collection, possibly empty 
 		 */
-		final public synchronized <O extends ObservableEntity<T>> Collection<O> findAll(SMDIdentity entity) {
+		final public synchronized <O extends ObservableEntity<T>> Set<O> findAll(SMDIdentity entity) {
 			WebResource resource = Client.create(config).resource(getQueryPath(entity));
 			Collection<T> collection = resource.accept(MediaType.APPLICATION_JSON).get(genericCollectionQueryType);
 
-			List<O> result = new ArrayList<O>();
+			Set<O> result = new HashSet<O>();
 			for (T serverObject : collection) {
 				O clientObject = getOrStore(serverObject);
 				result.add(clientObject);
@@ -305,12 +305,12 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		 * modify directly, or an observable list that listens to changes made
 		 * thru PJO setters?
 		 */
-		public IObservableList getObservableChildren() {
+		public IObservableSet getObservableChildren() {
 			if (children==null) {
 				children = findAll();
 			}
 //			return PojoObservables.observeList(this, PROP_children);
-			return new WritableList(children, getType());
+			return new WritableSet(children, getType());
 		}
 
 //		public List<ObservableEntity<T>> getChildren() {
@@ -377,11 +377,11 @@ public class DataSource extends AbstractObservable implements ModelObject {
 			return isConnected || isAutoConnect ? !findAll().isEmpty() : true;
 		}
 
-		protected List<T> get(GenericType<Collection<T>> genericType) {
+		protected Set<T> get(GenericType<Set<T>> genericType) {
 			try {
-				Collection<T> collection = Client.create(config).resource(getPath()).accept(MediaType.APPLICATION_JSON).get(genericType);
+				Set<T> set = Client.create(config).resource(getPath()).accept(MediaType.APPLICATION_JSON).get(genericType);
 				isConnected = true;
-				return new ArrayList<T>(collection);
+				return set;
 			} catch (ClientHandlerException e) {
 				String msg = "Cannot access server: "+getPath(); //$NON-NLS-1$
 				String hint = "Please check configuration settings and make sure the server is running."; //$NON-NLS-1$
@@ -490,10 +490,10 @@ public class DataSource extends AbstractObservable implements ModelObject {
 	public List<? extends Root> getRoots() {
 		if (roots == null) {
 			roots = Arrays.asList(
-				new Root<Artist>("Artists", "/artists", Artist.class, new GenericType<Collection<Artist>>() {} ), 
-				new Root<Recording>("Recordings", "/recordings", Recording.class, new GenericType<Collection<Recording>>() {} ),
-				new Root<Release>("Releases", "/releases", Release.class, new GenericType<Collection<Release>>() {} ), 
-				new Root<Track>("Tracks", "/tracks", Track.class, new GenericType<Collection<Track>>() {} )
+				new Root<Artist>("Artists", "/artists", Artist.class, new GenericType<Set<Artist>>() {} ), 
+				new Root<Recording>("Recordings", "/recordings", Recording.class, new GenericType<Set<Recording>>() {} ),
+				new Root<Release>("Releases", "/releases", Release.class, new GenericType<Set<Release>>() {} ), 
+				new Root<Track>("Tracks", "/tracks", Track.class, new GenericType<Set<Track>>() {} )
 			);
 		}
 		return roots;
@@ -521,7 +521,7 @@ public class DataSource extends AbstractObservable implements ModelObject {
 	 * @param requestedTypes
 	 * @return List<Root>, possibly empty
 	 */
-	private List resolveRoots(Class<? extends SMDIdentity>... requestedTypes) {
+	private Set resolveRoots(Class<? extends SMDIdentity>... requestedTypes) {
 		Set<Root> matches = new HashSet<Root>();
 		for (Root prospect : getRoots()) {
 			for (Class requestedType : requestedTypes) {
@@ -530,7 +530,7 @@ public class DataSource extends AbstractObservable implements ModelObject {
 				}
 			}
 		}
-		return new ArrayList<Root>(matches);
+		return matches;
 	}
 
 	/**
@@ -595,8 +595,8 @@ public class DataSource extends AbstractObservable implements ModelObject {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public IObservableList getObservableChildren() {
-		return Observables.staticObservableList(resolveRoots(Artist.class, Release.class));
+	public IObservableSet getObservableChildren() {
+		return Observables.staticObservableSet(resolveRoots(Artist.class, Release.class));
 	}
 
 	@Override

@@ -31,8 +31,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.databinding.observable.list.WritableList;
+import org.eclipse.core.databinding.observable.set.IObservableSet;
 import org.eclipse.core.runtime.IAdaptable;
 import org.socialmusicdiscovery.rcp.event.Observable;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
@@ -103,7 +103,7 @@ public interface ModelObject extends Observable, IAdaptable {
 	 * /Peer
 	 * </p>
 	 * 
-	 * @return {@link IObservableList}, possibly empty (never <code>null</code>)
+	 * @return {@link IObservableSet}, possibly empty (never <code>null</code>)
 	 */
-	IObservableList getObservableChildren();
+	IObservableSet getObservableChildren();
 }
