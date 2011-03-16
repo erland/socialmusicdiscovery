@@ -443,10 +443,12 @@
              </activation>
              <build>
                  <plugins>
+                     <!--
                      <plugin>
                          <groupId>org.codehaus.mojo</groupId>
                          <artifactId>cobertura-maven-plugin</artifactId>
                      </plugin>
+                     -->
                      <plugin>
                          <groupId>org.apache.maven.plugins</groupId>
                          <artifactId>maven-pmd-plugin</artifactId>
