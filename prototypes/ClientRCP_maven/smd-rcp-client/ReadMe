@@ -1,0 +1,12 @@
+About the target platforms:
+
+The runtime platforms are built using Maven. 
+Alas, these hold no sources, which makes it very hard to develop and debug.
+
+The "development" target platform includes the local installation AND the runtime platform, thus providing 
+source code for Eclipse plug-ins and keeping the binary third party libs of the runtime platform (Google, Jersey, etc).
+
+NOTE: the development platform is "sloppy"; there is no guarantee that the local plug-in versions match the runtime platform.
+The local platform also holds quite a lot more plug-ins than the "naked" runtime. 
+The development platform should ONLY be used while debugging or browsing source code to understand concepts.
+It is provided "as is" as a temporary workaround until we find some way to build the true platform with source code attached.       
