@@ -335,6 +335,21 @@
                             </descriptors>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>client-sources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <appendAssemblyId>true</appendAssemblyId>
+                            <ignoreDirFormatExtensions>false</ignoreDirFormatExtensions>
+                            <attach>true</attach>
+                            <descriptors>
+                                <descriptor>src/main/assemble/clientsourcejarpackage.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
@@ -400,6 +415,20 @@
                         <include>org/socialmusicdiscovery/server/support/format/antlr/**</include>
                     </includes>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.1.2</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
