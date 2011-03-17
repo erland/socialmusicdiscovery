@@ -10,14 +10,14 @@
 	<classpathentry exported="true" kind="lib" path="lib/datechooser-1.0.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/formattedtext-1.0.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/swt-grouplayout.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/commons-beanutils-1.8.3.jar" sourcepath="lib/commons-beanutils-1.8.3-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/commons-logging/commons-logging-1.1.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="target/dependencies/commons-beanutils-1.8.3.jar" sourcepath="target/dependencies/commons-beanutils-1.8.3-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="target/dependencies/commons-logging-1.1.1.jar" sourcepath="target/dependencies/commons-logging-1.1.1-sources.jar"/>
 	<classpathentry kind="lib" path="lib/pshelf-1.0.0.jar" sourcepath="pshelf-1.0.0-src.zip"/>
-	<classpathentry exported="true" kind="lib" path="target/dependencies/smd-server-client-osgi-1.0-SNAPSHOT.jar"/>
-	<classpathentry exported="true" kind="lib" path="target/dependencies/jsr311-api-1.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="target/dependencies/jersey-client-1.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="target/dependencies/jersey-core-1.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="target/dependencies/smd-server-client-osgi-1.0-SNAPSHOT.jar" sourcepath="target/dependencies/smd-server-client-osgi-1.0-SNAPSHOT-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="target/dependencies/jsr311-api-1.0.jar" sourcepath="target/dependencies/jsr311-api-1.0-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="target/dependencies/jersey-client-1.4.jar" sourcepath="target/dependencies/jersey-client-1.4-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="target/dependencies/jersey-core-1.4.jar" sourcepath="target/dependencies/jersey-core-1.4-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="target/dependencies/guice-2.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="target/dependencies/gson-1.6.jar"/>
+	<classpathentry exported="true" kind="lib" path="target/dependencies/gson-1.6.jar" sourcepath="target/dependencies/gson-1.6-sources.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
