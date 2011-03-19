@@ -64,6 +64,8 @@ import org.socialmusicdiscovery.rcp.util.ViewerUtil;
 import org.socialmusicdiscovery.rcp.views.util.AbstractComposite;
 import org.socialmusicdiscovery.rcp.views.util.OpenListener;
 import org.socialmusicdiscovery.server.business.model.core.Recording;
+import org.eclipse.jface.databinding.viewers.ViewersObservables;
+import org.eclipse.core.databinding.beans.PojoObservables;
 
 public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 
@@ -300,6 +302,10 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 		//
 		IObservableList getReleaseTracksObserveList = BeansObservables.observeList(Realm.getDefault(), getRelease(), "tracks");
 		gridViewerTracks.setInput(getReleaseTracksObserveList);
+		//
+		IObservableValue gridViewerTracksObserveSingleSelection = ViewersObservables.observeDelayedValue(200, ViewersObservables.observeSingleSelection(gridViewerTracks));
+		IObservableValue trackContributorPanelModelObserveValue = PojoObservables.observeValue(trackContributorPanel, "model");
+		bindingContext.bindValue(gridViewerTracksObserveSingleSelection, trackContributorPanelModelObserveValue, null, null);
 		//
 		return bindingContext;
 	}

@@ -142,4 +142,10 @@ public class TrackContributorPanel extends AbstractComposite<ObservableTrack> {
 		//
 		return bindingContext;
 	}
+
+	@Override
+	protected void afterSetModel(ObservableTrack model) {
+		super.afterSetModel(model);
+		System.out.println("TrackContributorPanel.afterSetModel(): "+model);
+	}
 }
