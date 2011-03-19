@@ -45,6 +45,9 @@ public class ObservableTrack extends AbstractObservableEntity<Track> implements 
 	public static final String PROP_medium = "medium";
 	public static final String PROP_recording = "recording";
 	public static final String PROP_release = "release";
+	public static final String PROP_title = "title";
+	
+	private transient String title;
 	
 	@Expose private Integer number;
 	@Expose private Medium medium;
@@ -95,6 +98,29 @@ public class ObservableTrack extends AbstractObservableEntity<Track> implements 
 
 	public void setRelease(Release release) {
 		firePropertyChange(PROP_release, this.release, this.release = release);
+	}
+
+	public String getTitle() {
+		// FIXME observe recording
+		if (title==null) {
+			hookTitle();
+		}
+		return title;
+	}
+
+	private void hookTitle() {
+		ObservableRecording r = getObservableRecording();
+		title = r.getName();
+	}
+
+	public void setTitle(String title) {
+		firePropertyChange(PROP_title, this.title, this.title = title);
+	}
+
+	protected ObservableRecording getObservableRecording() {
+		ObservableRecording r = (ObservableRecording) getRecording();
+		r.inflate();
+		return r;
 	}
 
 }

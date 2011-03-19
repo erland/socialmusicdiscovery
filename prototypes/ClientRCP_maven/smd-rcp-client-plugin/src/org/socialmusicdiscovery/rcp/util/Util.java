@@ -108,13 +108,13 @@ public final class Util {
 	}
 
 	/**
-	 * Create a composite names from supplied elements.
+	 * Create a composite title from supplied Works.
 	 * @param works
 	 * @return a composite name
 	 */
-	public static String composeName(Collection<Work> objects) {
+	public static String composeTitle(Collection<Work> works) {
 		StringBuilder sb = new StringBuilder();
-		for (Work o : objects) {
+		for (Work o : works) {
 			if (sb.length()>0) {
 				sb.append(COMPOSITE_NAME_SEPARATOR);
 			}

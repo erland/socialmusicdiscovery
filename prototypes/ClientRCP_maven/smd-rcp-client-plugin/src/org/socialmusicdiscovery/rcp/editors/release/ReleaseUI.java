@@ -27,20 +27,15 @@
 
 package org.socialmusicdiscovery.rcp.editors.release;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.beans.BeansObservables;
+import org.eclipse.core.databinding.observable.Realm;
+import org.eclipse.core.databinding.observable.list.IObservableList;
+import org.eclipse.core.databinding.observable.map.IObservableMap;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.SWTObservables;
-import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.ViewerCell;
-import org.eclipse.nebula.jface.gridviewer.GridColumnLabelProvider;
+import org.eclipse.jface.databinding.viewers.ObservableListContentProvider;
+import org.eclipse.jface.databinding.viewers.ObservableMapLabelProvider;
 import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
 import org.eclipse.nebula.jface.gridviewer.GridViewerColumn;
 import org.eclipse.nebula.widgets.grid.Grid;
@@ -49,133 +44,32 @@ import org.eclipse.nebula.widgets.grid.GridColumnGroup;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.socialmusicdiscovery.rcp.content.ObservableRelease;
+import org.socialmusicdiscovery.rcp.content.ObservableTrack;
 import org.socialmusicdiscovery.rcp.editors.widgets.ContributorPanel;
-import org.socialmusicdiscovery.rcp.util.Util;
+import org.socialmusicdiscovery.rcp.editors.widgets.TrackMediumNumberComparator;
+import org.socialmusicdiscovery.rcp.editors.widgets.TrackNumberComparator;
+import org.socialmusicdiscovery.rcp.util.ViewerUtil;
 import org.socialmusicdiscovery.rcp.views.util.AbstractComposite;
-import org.socialmusicdiscovery.server.business.model.core.Contributor;
-import org.socialmusicdiscovery.server.business.model.core.Medium;
+import org.socialmusicdiscovery.rcp.views.util.OpenListener;
 import org.socialmusicdiscovery.server.business.model.core.Recording;
-import org.socialmusicdiscovery.server.business.model.core.Track;
-import org.socialmusicdiscovery.server.business.model.core.Work;
 
 public class ReleaseUI extends AbstractComposite<ObservableRelease> {
-
-	private static final String CONTRIBUTOR_TYPE_CONDUCTOR = "conductor";
-	private static final String CONTRIBUTOR_TYPE_COMPOSER = "composer";
-	private static final String CONTRIBUTOR_TYPE_PERFORMER = "performer";
-	
-	private abstract class MyAbstractTrackLabelProvider extends GridColumnLabelProvider {
-		
-		@Override
-		public void update(ViewerCell cell) {
-			super.update(cell);
-			Track track = (Track)cell.getElement();
-			Object value = getCellValue(track);
-			String cellValue = value==null ? "" : String.valueOf(value);
-			cell.setText(cellValue);
-		}
-
-		protected abstract Object getCellValue(Track element);
-	}
-	
-	private final class MyTrackNumberLabelProvider extends MyAbstractTrackLabelProvider implements Comparator<Track> {
-		@Override
-		protected Object getCellValue(Track track) {
-			return track.getNumber();
-		}
-
-		@Override
-		public int compare(Track t1, Track t2) {
-			return Util.compare(t1.getNumber(), t2.getNumber());
-		}
-	}
-	
-	private class MyTrackMediumNumberLabelProvider extends MyAbstractTrackLabelProvider implements Comparator<Track> {
-		@Override
-		protected Object getCellValue(Track track) {
-			return getNumber(track);
-		}
-
-		@Override
-		public int compare(Track t1, Track t2) {
-			return Util.compare(getNumber(t1), getNumber(t2));
-		}
-
-		private Integer getNumber(Track t) {
-			Medium m = t.getMedium();
-			return m==null ? null : m.getNumber();
-			
-		}
-	}
-
-
-	private final class MyTrackTitleLabelProvider extends MyAbstractTrackLabelProvider {
-		@Override
-		protected Object getCellValue(Track track) {
-			String name = null;
-			Recording recording = track.getRecording();
-			if (recording!=null) {
-				name = recording.getName();
-				if (isEmpty(name) && hasWork(recording)) {
-					name = Util.composeName(recording.getWorks());
-				}
-			}
-			return name;
-		}
-	}
-
-	private class MyTrackContributorLabelProvider extends MyAbstractTrackLabelProvider {
-		private final String contributionType;
-		private MyTrackContributorLabelProvider(String contributionType) {
-			super();
-			this.contributionType = contributionType;
-		}
-		
-		@Override
-		protected Object getCellValue(Track track) {
-            Recording recording = track.getRecording();
-			Set<Contributor> contributorSet = new HashSet<Contributor>(recording.getContributors());
-            if (hasWork(recording)) {
-                contributorSet.addAll(compileContributors(recording));
-            }
-            Map<String, StringBuilder> contributors = getContributorMap(contributorSet);
-            return contributors.get(contributionType);
-		}
-		
-	    private Collection<? extends Contributor> compileContributors(Recording recording) {
-	    	Set<Contributor> contributors = new HashSet<Contributor>();
-	    	for (Work w : recording.getWorks()) {
-				contributors.addAll(w.getContributors());
-			}
-			return contributors;
-		}
-
-		private Map<String, StringBuilder> getContributorMap(Set<Contributor> contributorSet) {
-	        Map<String, StringBuilder> contributors = new HashMap<String, StringBuilder>();
-	        for (Contributor contributor : contributorSet) {
-	            if (!contributors.containsKey(contributor.getType())) {
-	                contributors.put(contributor.getType(), new StringBuilder());
-	            }
-	            StringBuilder contributorString = contributors.get(contributor.getType());
-	            if (contributorString.length() > 0) {
-	                contributorString.append(", ");
-	            }
-	            contributorString.append(contributor.getArtist().getName());
-	        }
-	        return contributors;
-	    }
-	}
 
 	private Text textName;
 	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
@@ -183,7 +77,7 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 	protected Text text;
 	protected Section sectionAlbumData;
 	protected Composite compositeAlbumData;
-	protected CTabFolder tabFolderAlbumData;
+	protected CTabFolder albumDataTabFolder;
 	protected Grid gridTracks;
 	private GridTableViewer gridViewerTracks;
 	protected GridColumn colTrackNumber;
@@ -191,19 +85,35 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 	protected GridColumn colTitle;
 	private GridViewerColumn gvcTitle;
 	protected GridColumn colPerformer;
-	private GridViewerColumn gvcPerformer;
-	protected CTabItem tabItemArtists;
+	protected CTabItem contributorTab;
 	private Section sctnTracks;
 	private Composite gridContainer;
-	private GridColumn colComposer;
-	private GridViewerColumn gvcComposer;
-	private GridColumn colConductor;
-	private GridViewerColumn gvcConductor;
 	private GridColumnGroup groupContributors;
 	private ContributorPanel artistPanel;
 	private GridColumn colMediumNbr;
 	private GridViewerColumn gvcMediumNbr;
 	private GridColumnGroup groupNumbers;
+	private Group grpContributors;
+	private SashForm sashForm;
+	private Composite contributorArea;
+	private Group filterGroup;
+	private ContributorPanel contributorPanel;
+	private ToolBar toolBar;
+	private ToolItem recordingCheck;
+	private ToolItem workCheck;
+	private ToolItem albumCheck;
+	private ToolItem sessionCheck;
+	private Button effectiveContributorsButton;
+	private Label separator;
+	private CTabItem tabItemReleases;
+	private Composite releasesArea;
+	private Label lblNewLabel;
+	private CTabItem itemDetails;
+	private Composite labelArea;
+	private Label lblPlaceHolder;
+	private Label disclaimerLabel;
+	private Composite tracksArea;
+	private Composite contributors;
 
 	/**
 	 * Create the composite.
@@ -218,7 +128,9 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 		setLayout(gridLayout);
 		
 		scrldfrmRelease = formToolkit.createScrolledForm(this);
-		scrldfrmRelease.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		GridData gd_scrldfrmRelease = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+		gd_scrldfrmRelease.widthHint = 1143;
+		scrldfrmRelease.setLayoutData(gd_scrldfrmRelease);
 		formToolkit.paintBordersFor(scrldfrmRelease);
 		scrldfrmRelease.setText("Release");
 		scrldfrmRelease.getBody().setLayout(new GridLayout(1, false));
@@ -238,36 +150,46 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 		gridContainer = formToolkit.createComposite(sctnTracks, SWT.NONE);
 		formToolkit.paintBordersFor(gridContainer);
 		sctnTracks.setClient(gridContainer);
-		gridContainer.setLayout(new FillLayout(SWT.HORIZONTAL));
+		FillLayout fl_gridContainer = new FillLayout(SWT.HORIZONTAL);
+		fl_gridContainer.marginWidth = 5;
+		fl_gridContainer.spacing = 5;
+		gridContainer.setLayout(fl_gridContainer);
 		
-		gridViewerTracks = new GridTableViewer(gridContainer, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+		sashForm = new SashForm(gridContainer, SWT.BORDER);
+		sashForm.setSashWidth(2);
+		formToolkit.adapt(sashForm);
+		formToolkit.paintBordersFor(sashForm);
+		
+		tracksArea = formToolkit.createComposite(sashForm, SWT.NONE);
+		formToolkit.paintBordersFor(tracksArea);
+		FillLayout fl_tracksArea = new FillLayout(SWT.HORIZONTAL);
+		fl_tracksArea.marginWidth = 5;
+		tracksArea.setLayout(fl_tracksArea);
+		
+		gridViewerTracks = new GridTableViewer(tracksArea, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
 		gridTracks = gridViewerTracks.getGrid();
 		gridTracks.setCellSelectionEnabled(true);
 		gridTracks.setHeaderVisible(true);
 		formToolkit.paintBordersFor(gridTracks);
 		
 		groupNumbers = new GridColumnGroup(gridTracks, SWT.TOGGLE);
-		groupNumbers.setExpanded(false);
 		groupNumbers.setText("Index");
 		
 		colMediumNbr = new GridColumn(groupNumbers, SWT.RIGHT);
+		colMediumNbr.setDetail(false);
+		colMediumNbr.setMoveable(true);
 		colMediumNbr.setVisible(true);
-		colMediumNbr.setSummary(false);
-		colMediumNbr.setSort(SWT.UP);
-		colMediumNbr.setWidth(100);
+		colMediumNbr.setWidth(75);
 		colMediumNbr.setText("Medium#");
 		gvcMediumNbr = new GridViewerColumn(gridViewerTracks, colMediumNbr);
-		gvcMediumNbr.setLabelProvider(new MyTrackMediumNumberLabelProvider());
 		
 		colTrackNumber = new GridColumn(groupNumbers, SWT.RIGHT);
 		colTrackNumber.setMoveable(true);
-		colTrackNumber.setWidth(100);
+		colTrackNumber.setWidth(75);
 		colTrackNumber.setText("Track#");
 		gvcTrackNumber = new GridViewerColumn(gridViewerTracks, colTrackNumber);
-		gvcTrackNumber.setLabelProvider(new MyTrackNumberLabelProvider());
 		
 		gvcTitle = new GridViewerColumn(gridViewerTracks, SWT.NONE);
-		gvcTitle.setLabelProvider(new MyTrackTitleLabelProvider());
 		colTitle = gvcTitle.getColumn();
 		colTitle.setMoveable(true);
 		colTitle.setWidth(300);
@@ -275,27 +197,68 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 		
 		groupContributors = new GridColumnGroup(gridTracks, SWT.NONE);
 		groupContributors.setText("Contributors");
-		colPerformer = new GridColumn(groupContributors, SWT.NONE);
-		gvcPerformer = new GridViewerColumn(gridViewerTracks, colPerformer);
-		gvcPerformer.setLabelProvider(new MyTrackContributorLabelProvider(CONTRIBUTOR_TYPE_PERFORMER));
-		colPerformer = gvcPerformer.getColumn();
-		colPerformer.setMoveable(true);
-		colPerformer.setWidth(100);
-		colPerformer.setText("Performer(s)");
 		
-		colComposer = new GridColumn(groupContributors, SWT.NONE);
-		gvcComposer = new GridViewerColumn(gridViewerTracks, colComposer);
-		colComposer.setMoveable(true);
-		colComposer.setWidth(100);
-		colComposer.setText("Composer(s)");
-		gvcComposer.setLabelProvider(new MyTrackContributorLabelProvider(CONTRIBUTOR_TYPE_COMPOSER));
+		contributors = formToolkit.createComposite(sashForm, SWT.NONE);
+		formToolkit.paintBordersFor(contributors);
+		FillLayout fl_contributors = new FillLayout(SWT.HORIZONTAL);
+		fl_contributors.marginWidth = 5;
+		contributors.setLayout(fl_contributors);
 		
-		colConductor = new GridColumn(groupContributors, SWT.NONE);
-		gvcConductor = new GridViewerColumn(gridViewerTracks, colConductor);
-		colConductor.setMoveable(true);
-		colConductor.setWidth(100);
-		colConductor.setText("Conductor");
-		gvcConductor.setLabelProvider(new MyTrackContributorLabelProvider(CONTRIBUTOR_TYPE_CONDUCTOR));
+		grpContributors = new Group(contributors, SWT.NONE);
+		grpContributors.setText("Track Contributors");
+		formToolkit.adapt(grpContributors);
+		formToolkit.paintBordersFor(grpContributors);
+		grpContributors.setLayout(new GridLayout(2, false));
+		
+		disclaimerLabel = formToolkit.createLabel(grpContributors, "NOT YET IMPLEMENTED!", SWT.NONE);
+		new Label(grpContributors, SWT.NONE);
+		
+		contributorArea = formToolkit.createComposite(grpContributors, SWT.NONE);
+		GridData gd_contributorArea = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+		gd_contributorArea.horizontalIndent = 5;
+		gd_contributorArea.widthHint = 522;
+		contributorArea.setLayoutData(gd_contributorArea);
+		formToolkit.paintBordersFor(contributorArea);
+		contributorArea.setLayout(new GridLayout(1, false));
+		
+		contributorPanel = new ContributorPanel(contributorArea, SWT.NONE);
+		contributorPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		formToolkit.adapt(contributorPanel);
+		formToolkit.paintBordersFor(contributorPanel);
+		
+		filterGroup = new Group(grpContributors, SWT.NONE);
+		filterGroup.setToolTipText("Select which contributors to show");
+		filterGroup.setText("Filter");
+		formToolkit.paintBordersFor(filterGroup);
+		filterGroup.setLayout(new GridLayout(1, false));
+		
+		toolBar = new ToolBar(filterGroup, SWT.FLAT | SWT.RIGHT | SWT.VERTICAL);
+		formToolkit.adapt(toolBar);
+		formToolkit.paintBordersFor(toolBar);
+		
+		albumCheck = new ToolItem(toolBar, SWT.CHECK);
+		albumCheck.setToolTipText("Show contributors defined for Album");
+		albumCheck.setText("Album");
+		
+		sessionCheck = new ToolItem(toolBar, SWT.CHECK);
+		sessionCheck.setToolTipText("Show contributors defined for Recording Session");
+		sessionCheck.setText("Session");
+		
+		recordingCheck = new ToolItem(toolBar, SWT.CHECK);
+		recordingCheck.setToolTipText("Show contributors defined for Recording");
+		recordingCheck.setText("Recording");
+		
+		workCheck = new ToolItem(toolBar, SWT.CHECK);
+		workCheck.setToolTipText("Show contributors defined for Work");
+		workCheck.setText("Work");
+		
+		separator = new Label(filterGroup, SWT.SEPARATOR | SWT.HORIZONTAL);
+		formToolkit.adapt(separator, true, true);
+		
+		effectiveContributorsButton = new Button(filterGroup, SWT.CHECK);
+		formToolkit.adapt(effectiveContributorsButton, true, true);
+		effectiveContributorsButton.setText("Effective");
+		sashForm.setWeights(new int[] {567, 622});
 		
 		
 		sectionAlbumData = formToolkit.createSection(scrldfrmRelease.getBody(), Section.TWISTIE | Section.TITLE_BAR);
@@ -308,26 +271,50 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 		formToolkit.paintBordersFor(compositeAlbumData);
 		sectionAlbumData.setClient(compositeAlbumData);
 		compositeAlbumData.setLayout(new GridLayout(2, false));
-		tabFolderAlbumData = new CTabFolder(compositeAlbumData, SWT.BORDER | SWT.BOTTOM);
-		tabFolderAlbumData.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+		albumDataTabFolder = new CTabFolder(compositeAlbumData, SWT.BORDER | SWT.BOTTOM);
+		albumDataTabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		
-		formToolkit.adapt(tabFolderAlbumData);
-		formToolkit.paintBordersFor(tabFolderAlbumData);
+		formToolkit.adapt(albumDataTabFolder);
+		formToolkit.paintBordersFor(albumDataTabFolder);
 		
-		tabItemArtists = new CTabItem(tabFolderAlbumData, SWT.NONE);
-		tabItemArtists.setText("Artist(s)");
+		contributorTab = new CTabItem(albumDataTabFolder, SWT.NONE);
+		contributorTab.setText("Artist(s)");
 		
-		artistPanel = new ContributorPanel(tabFolderAlbumData, true);
-		tabItemArtists.setControl(artistPanel);
+		artistPanel = new ContributorPanel(albumDataTabFolder, true);
+		contributorTab.setControl(artistPanel);
 		formToolkit.paintBordersFor(artistPanel);
+		
+		tabItemReleases = new CTabItem(albumDataTabFolder, SWT.NONE);
+		tabItemReleases.setText("Releases");
+		
+		releasesArea = formToolkit.createComposite(albumDataTabFolder, SWT.NONE);
+		tabItemReleases.setControl(releasesArea);
+		formToolkit.paintBordersFor(releasesArea);
+		releasesArea.setLayout(new GridLayout(1, false));
+		
+		lblNewLabel = formToolkit.createLabel(releasesArea, "Place holder -  here we will show master, parent, and child releases (etc)", SWT.NONE);
+		lblNewLabel.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, false, 1, 1));
+		
+		itemDetails = new CTabItem(albumDataTabFolder, SWT.NONE);
+		itemDetails.setText("Details");
+		
+		labelArea = formToolkit.createComposite(albumDataTabFolder, SWT.NONE);
+		itemDetails.setControl(labelArea);
+		formToolkit.paintBordersFor(labelArea);
+		labelArea.setLayout(new GridLayout(1, false));
+		
+		lblPlaceHolder = formToolkit.createLabel(labelArea, "Place holder -  here we will show release details - date, label, numbers etc", SWT.NONE);
+		lblPlaceHolder.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
 
-		initStatic();
+		initUI();
 		}
 
-	private void initStatic() {
-		gridViewerTracks.setContentProvider(new ArrayContentProvider());
-		tabFolderAlbumData.setSelection(tabItemArtists);
-		
+	private void initUI() {
+		albumDataTabFolder.setSelection	(contributorTab);
+		gridViewerTracks.addOpenListener(new OpenListener()); // default edit (double-click)
+		ViewerUtil.hookSorter(gvcTitle);
+		ViewerUtil.hookSorter(new TrackMediumNumberComparator(),  gvcMediumNbr);
+		ViewerUtil.hookSorter(new TrackNumberComparator(),  gvcTrackNumber);
 	}
 
 	@Override
@@ -337,20 +324,15 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 
 	@Override
 	public void afterSetModel(ObservableRelease release) {
-		gridViewerTracks.setInput(getModel().getTracks());
-		colMediumNbr.pack();
-		colTrackNumber.pack();
+		// FIXME bindTrackContributors();
 		artistPanel.bindContributors(getModel().getContributors());
 	}
 
 
-	private static boolean isEmpty(String s) {
-		return s==null || s.trim().length()<1;
-	}
-	
 	public ContributorPanel getArtistPanel() {
 		return artistPanel;
 	}
+
 	public GridTableViewer getGridViewerTracks() {
 		return gridViewerTracks;
 	}
@@ -366,8 +348,6 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 	public ObservableRelease getRelease() {
 		return getModel();
 	}
-	
-	@Override
 	protected DataBindingContext initDataBindings() {
 		DataBindingContext bindingContext = new DataBindingContext();
 		//
@@ -378,6 +358,15 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 		IObservableValue textNameObserveTooltipTextObserveWidget = SWTObservables.observeTooltipText(textName);
 		IObservableValue getModelToolTipTextObserveValue = BeansObservables.observeValue(getModel(), "toolTipText");
 		bindingContext.bindValue(textNameObserveTooltipTextObserveWidget, getModelToolTipTextObserveValue, null, null);
+		//
+		ObservableListContentProvider listContentProvider = new ObservableListContentProvider();
+		gridViewerTracks.setContentProvider(listContentProvider);
+		//
+		IObservableMap[] observeMaps = BeansObservables.observeMaps(listContentProvider.getKnownElements(), ObservableTrack.class, new String[]{"medium.number", "number", "title"});
+		gridViewerTracks.setLabelProvider(new ObservableMapLabelProvider(observeMaps));
+		//
+		IObservableList getReleaseTracksObserveList = BeansObservables.observeList(Realm.getDefault(), getRelease(), "tracks");
+		gridViewerTracks.setInput(getReleaseTracksObserveList);
 		//
 		return bindingContext;
 	}
