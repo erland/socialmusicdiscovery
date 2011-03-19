@@ -35,16 +35,19 @@ public class TextUtil {
 
 	public static String getShortText(String text) {
 		if (text.length()>20) {
-			String head = text.substring(0,9);
-			String tail = text.substring(11,20);
-			return head+"..."+tail;
+			String head = text.substring(0,12);
+			String tail = text.substring(text.length()-5);
+			String result = head+"..."+tail;
+			assert result.length()<=20 : "Not shortened: "+result+", size="+result.length();
+			return result;
 		}
 		return text;
 	}
 
 	/**
-	 * Get a human readable text for supplied class.
-	 * Class is expected to be a subtype of {@link SMDIdentity}.
+	 * Get a human readable text for supplied class. Class is expected to be a
+	 * subtype of {@link SMDIdentity}, but this is not strictly enforced.
+	 * 
 	 * @param type
 	 * @return String
 	 */
