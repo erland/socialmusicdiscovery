@@ -48,14 +48,10 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
@@ -93,27 +89,16 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 	private GridColumn colMediumNbr;
 	private GridViewerColumn gvcMediumNbr;
 	private GridColumnGroup groupNumbers;
-	private Group grpContributors;
 	private SashForm sashForm;
-	private Composite contributorArea;
-	private Group filterGroup;
-	private ContributorPanel contributorPanel;
-	private ToolBar toolBar;
-	private ToolItem recordingCheck;
-	private ToolItem workCheck;
-	private ToolItem albumCheck;
-	private ToolItem sessionCheck;
-	private Button effectiveContributorsButton;
-	private Label separator;
 	private CTabItem tabItemReleases;
 	private Composite releasesArea;
 	private Label lblNewLabel;
 	private CTabItem itemDetails;
 	private Composite labelArea;
 	private Label lblPlaceHolder;
-	private Label disclaimerLabel;
 	private Composite tracksArea;
-	private Composite contributors;
+	private TrackContributorPanel trackContributorPanel;
+	private Composite composite;
 
 	/**
 	 * Create the composite.
@@ -160,7 +145,12 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 		formToolkit.adapt(sashForm);
 		formToolkit.paintBordersFor(sashForm);
 		
-		tracksArea = formToolkit.createComposite(sashForm, SWT.NONE);
+		composite = formToolkit.createComposite(sashForm, SWT.NONE);
+		formToolkit.paintBordersFor(composite);
+		composite.setLayout(new GridLayout(1, false));
+		
+		tracksArea = formToolkit.createComposite(composite, SWT.NONE);
+		tracksArea.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		formToolkit.paintBordersFor(tracksArea);
 		FillLayout fl_tracksArea = new FillLayout(SWT.HORIZONTAL);
 		fl_tracksArea.marginWidth = 5;
@@ -198,67 +188,10 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 		groupContributors = new GridColumnGroup(gridTracks, SWT.NONE);
 		groupContributors.setText("Contributors");
 		
-		contributors = formToolkit.createComposite(sashForm, SWT.NONE);
-		formToolkit.paintBordersFor(contributors);
-		FillLayout fl_contributors = new FillLayout(SWT.HORIZONTAL);
-		fl_contributors.marginWidth = 5;
-		contributors.setLayout(fl_contributors);
-		
-		grpContributors = new Group(contributors, SWT.NONE);
-		grpContributors.setText("Track Contributors");
-		formToolkit.adapt(grpContributors);
-		formToolkit.paintBordersFor(grpContributors);
-		grpContributors.setLayout(new GridLayout(2, false));
-		
-		disclaimerLabel = formToolkit.createLabel(grpContributors, "NOT YET IMPLEMENTED!", SWT.NONE);
-		new Label(grpContributors, SWT.NONE);
-		
-		contributorArea = formToolkit.createComposite(grpContributors, SWT.NONE);
-		GridData gd_contributorArea = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
-		gd_contributorArea.horizontalIndent = 5;
-		gd_contributorArea.widthHint = 522;
-		contributorArea.setLayoutData(gd_contributorArea);
-		formToolkit.paintBordersFor(contributorArea);
-		contributorArea.setLayout(new GridLayout(1, false));
-		
-		contributorPanel = new ContributorPanel(contributorArea, SWT.NONE);
-		contributorPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		formToolkit.adapt(contributorPanel);
-		formToolkit.paintBordersFor(contributorPanel);
-		
-		filterGroup = new Group(grpContributors, SWT.NONE);
-		filterGroup.setToolTipText("Select which contributors to show");
-		filterGroup.setText("Filter");
-		formToolkit.paintBordersFor(filterGroup);
-		filterGroup.setLayout(new GridLayout(1, false));
-		
-		toolBar = new ToolBar(filterGroup, SWT.FLAT | SWT.RIGHT | SWT.VERTICAL);
-		formToolkit.adapt(toolBar);
-		formToolkit.paintBordersFor(toolBar);
-		
-		albumCheck = new ToolItem(toolBar, SWT.CHECK);
-		albumCheck.setToolTipText("Show contributors defined for Album");
-		albumCheck.setText("Album");
-		
-		sessionCheck = new ToolItem(toolBar, SWT.CHECK);
-		sessionCheck.setToolTipText("Show contributors defined for Recording Session");
-		sessionCheck.setText("Session");
-		
-		recordingCheck = new ToolItem(toolBar, SWT.CHECK);
-		recordingCheck.setToolTipText("Show contributors defined for Recording");
-		recordingCheck.setText("Recording");
-		
-		workCheck = new ToolItem(toolBar, SWT.CHECK);
-		workCheck.setToolTipText("Show contributors defined for Work");
-		workCheck.setText("Work");
-		
-		separator = new Label(filterGroup, SWT.SEPARATOR | SWT.HORIZONTAL);
-		formToolkit.adapt(separator, true, true);
-		
-		effectiveContributorsButton = new Button(filterGroup, SWT.CHECK);
-		formToolkit.adapt(effectiveContributorsButton, true, true);
-		effectiveContributorsButton.setText("Effective");
-		sashForm.setWeights(new int[] {567, 622});
+		trackContributorPanel = new TrackContributorPanel(sashForm, SWT.NONE);
+		formToolkit.adapt(trackContributorPanel);
+		formToolkit.paintBordersFor(trackContributorPanel);
+		sashForm.setWeights(new int[] {404, 714});
 		
 		
 		sectionAlbumData = formToolkit.createSection(scrldfrmRelease.getBody(), Section.TWISTIE | Section.TITLE_BAR);
