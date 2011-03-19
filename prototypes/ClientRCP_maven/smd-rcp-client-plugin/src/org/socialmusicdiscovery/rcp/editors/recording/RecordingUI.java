@@ -27,7 +27,6 @@
 
 package org.socialmusicdiscovery.rcp.editors.recording;
 
-import java.util.Comparator;
 
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.beans.BeanProperties;
@@ -58,34 +57,13 @@ import org.socialmusicdiscovery.rcp.content.ObservableRecording;
 import org.socialmusicdiscovery.rcp.content.ObservableTrack;
 import org.socialmusicdiscovery.rcp.content.ObservableWork;
 import org.socialmusicdiscovery.rcp.editors.widgets.ContributorPanel;
-import org.socialmusicdiscovery.rcp.util.Util;
+import org.socialmusicdiscovery.rcp.editors.widgets.TrackMediumNumberComparator;
+import org.socialmusicdiscovery.rcp.editors.widgets.TrackNumberComparator;
 import org.socialmusicdiscovery.rcp.util.ViewerUtil;
 import org.socialmusicdiscovery.rcp.views.util.AbstractComposite;
 import org.socialmusicdiscovery.rcp.views.util.OpenListener;
-import org.socialmusicdiscovery.server.business.model.core.Medium;
-import org.socialmusicdiscovery.server.business.model.core.Track;
 
 public class RecordingUI extends AbstractComposite<ObservableRecording> {
-
-	private final class MyTrackNumberComparator implements Comparator<Track> {
-		@Override
-		public int compare(Track t1, Track t2) {
-			return Util.compare(t1.getNumber(), t2.getNumber());
-		}
-	}
-	
-	private class MyTrackMediumNumberComparator implements Comparator<Track> {
-		@Override
-		public int compare(Track t1, Track t2) {
-			return Util.compare(getNumber(t1), getNumber(t2));
-		}
-
-		private Integer getNumber(Track t) {
-			Medium m = t.getMedium();
-			return m==null ? null : m.getNumber();
-			
-		}
-	}
 
 	private Text nameText;
 	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
@@ -244,16 +222,17 @@ public class RecordingUI extends AbstractComposite<ObservableRecording> {
 		
 		sessionArtistPanel = new ContributorPanel(sessionComposite, SWT.NONE);
 		
-		hookListeners();
+		initUI();
 		}
 
-	private void hookListeners() {
-		// default edit
-		tracksViewer.addOpenListener(new OpenListener());
+	private void initUI() {
+		tabFolder.setSelection(artistTab);
+		tracksViewer.addOpenListener(new OpenListener()); // default edit (double-click)
 		ViewerUtil.hookSorter(releaseGVC, workGVC);
-		ViewerUtil.hookSorter(new MyTrackMediumNumberComparator(),  mediumNumberGVC);
-		ViewerUtil.hookSorter(new MyTrackNumberComparator(),  trackNumberGVC);
+		ViewerUtil.hookSorter(new TrackMediumNumberComparator(),  mediumNumberGVC);
+		ViewerUtil.hookSorter(new TrackNumberComparator(),  trackNumberGVC);
 	}
+	
 	@Override
 	protected void checkSubclass() {
 		// Disable the check that prevents subclassing of SWT components

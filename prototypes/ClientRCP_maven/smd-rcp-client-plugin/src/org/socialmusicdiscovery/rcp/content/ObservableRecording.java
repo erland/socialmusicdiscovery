@@ -112,7 +112,7 @@ public class ObservableRecording extends AbstractObservableEntity<Recording> imp
 	public static final String PROP_derivedName = "derivedName";
 	public static final String PROP_isDerivedNameUsed = "derivedNameUsed";
 	
-	private String derivedName;
+	private transient String derivedName;
 	private boolean isDerivedNameUsed;
 	
 	@Expose private Date date;
@@ -231,7 +231,7 @@ public class ObservableRecording extends AbstractObservableEntity<Recording> imp
 	}
 	
 	private String resolveDerivedName() {
-		return Util.composeName(getWorks());
+		return Util.composeTitle(getWorks());
 	}
 
 	public Set<ObservableTrack> getTracks() {
@@ -240,4 +240,5 @@ public class ObservableRecording extends AbstractObservableEntity<Recording> imp
 		Set<ObservableTrack> tracks = root.findAll(this);
 		return tracks;
 	}
+
 }
