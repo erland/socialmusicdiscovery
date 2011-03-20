@@ -58,4 +58,9 @@ public class ObservableContributor extends AbstractObservableEntity<Contributor>
 		firePropertyChange(PROP_type, this.type, this.type = type);
 	}
 
+	@Override
+	public String toString() {
+		return getClass().getSimpleName()+"@"+hashCode()+"-"+getType()+":"+getArtist().getName();
+	}
+
 }

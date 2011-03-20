@@ -74,4 +74,13 @@ public class ObservableContributorWithOrigin extends ObservableContributor imple
 		wrappedContributor.setType(arg0);
 	}
 
+	public Contributor getWrappedContributor() {
+		return wrappedContributor;
+	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName()+"@"+hashCode()+"-"+getType()+":"+getArtist().getName();
+	}
+
 }

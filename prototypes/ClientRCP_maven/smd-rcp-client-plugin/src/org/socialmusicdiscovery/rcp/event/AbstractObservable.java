@@ -30,6 +30,7 @@ package org.socialmusicdiscovery.rcp.event;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.Collection;
 import java.util.Set;
 
 import org.socialmusicdiscovery.rcp.error.FatalApplicationException;
@@ -140,7 +141,7 @@ public abstract class AbstractObservable implements Observable {
 	 * @param newContent
 	 */
 	@SuppressWarnings("unchecked")
-	protected void updateSet(String propertyName, Set existingSet, Set newContent) {
+	protected void updateSet(String propertyName, Set existingSet, Collection newContent) {
 		try {
 			Set oldContent = existingSet.getClass().newInstance();
 			oldContent.addAll(existingSet);
