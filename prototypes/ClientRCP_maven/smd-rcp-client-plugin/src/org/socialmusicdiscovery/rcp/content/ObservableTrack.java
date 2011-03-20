@@ -27,11 +27,11 @@
 
 package org.socialmusicdiscovery.rcp.content;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
 import org.socialmusicdiscovery.server.business.model.core.Medium;
 import org.socialmusicdiscovery.server.business.model.core.PlayableElement;
@@ -39,6 +39,7 @@ import org.socialmusicdiscovery.server.business.model.core.Recording;
 import org.socialmusicdiscovery.server.business.model.core.RecordingSession;
 import org.socialmusicdiscovery.server.business.model.core.Release;
 import org.socialmusicdiscovery.server.business.model.core.Track;
+import org.socialmusicdiscovery.server.business.model.core.Work;
 
 import com.google.gson.annotations.Expose;
 
@@ -46,23 +47,37 @@ public class ObservableTrack extends AbstractObservableEntity<Track> implements 
 
 	/**
 	 * Lots of unsafe types here - see comments on {@link AbstractContributableEntity}.
+	 * TODO add listeners to update sets when contributions change 
 	 * @param contributables
 	 */
 	@SuppressWarnings("unchecked")
 	private class MyContributorFacade extends AbstractContributableEntity {
 		
 		private MyContributorFacade() {
-			compileContributors(resolveContributables());
+			updateSet(PROP_contributors, getContributors(), resolveTypedContributions());
 		}
 
-		public Set resolveContributables() {
-			Set result = new HashSet(getRecording().getWorks());
-			result.addAll(Arrays.asList(
-					resolveRecordingSession(getRecording()),
-					getRecording(), 
-					getRelease()
-					));
-			result.retainAll(Arrays.asList(getRecording())); // FIXME remove when filters work in UI 
+		private Set resolveTypedContributions() {
+			Set result = new HashSet();
+			for (Work w : getRecording().getWorks()) {
+				result.addAll(compile(Work.class, w));
+			}
+			result.addAll(compile(Recording.class, getRecording()));
+			result.addAll(compile(RecordingSession.class, resolveRecordingSession(getRecording())));
+			result.addAll(compile(Release.class, getRelease()));
+			return result;
+		}
+
+		private Collection compile(Class<? extends SMDIdentity> type, SMDIdentity entity) {
+			Set result = new HashSet();
+			if (entity!=null) {
+				AbstractContributableEntity c = (AbstractContributableEntity) entity;
+				Set<Contributor> contributors = c.getContributors();
+				for (Contributor contributor: contributors) {
+					ObservableContributorWithOrigin r = new ObservableContributorWithOrigin(type, contributor);
+					result.add(r);
+				}
+			}
 			return result;
 		}
 
@@ -71,20 +86,8 @@ public class ObservableTrack extends AbstractObservableEntity<Track> implements 
 		 * @param recording
 		 * @return <code>null</code>
 		 */
-		public RecordingSession resolveRecordingSession(Recording recording) {
+		private  RecordingSession resolveRecordingSession(Recording recording) {
 			return null; // getRecordingSession();
-		}
-	
-		private void compileContributors(Collection contributables) {
-			Set<Contributor> contributors = getContributors();
-			contributors.clear();
-			for (Object o: contributables) {
-				if (o!=null) {
-					AbstractContributableEntity e = (AbstractContributableEntity) o;
-					contributors.addAll(e.getContributors());
-				}
-			}
-			firePropertyChange(PROP_contributors);
 		}
 	}
 
