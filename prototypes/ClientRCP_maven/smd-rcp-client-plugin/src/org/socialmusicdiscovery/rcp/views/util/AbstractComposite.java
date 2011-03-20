@@ -31,6 +31,8 @@ import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPart;
 import org.socialmusicdiscovery.rcp.content.AbstractObservableEntity;
+import org.socialmusicdiscovery.rcp.content.ObservableEntity;
+import org.socialmusicdiscovery.rcp.editors.widgets.ObservableComposite;
 
 /**
  * <p>
@@ -51,7 +53,7 @@ import org.socialmusicdiscovery.rcp.content.AbstractObservableEntity;
  * 
  * @param <T>
  */
-public abstract class AbstractComposite<T extends AbstractObservableEntity> extends Composite {
+public abstract class AbstractComposite<T extends ObservableEntity> extends ObservableComposite {
 
 	private IWorkbenchPart part;
 	private T model;

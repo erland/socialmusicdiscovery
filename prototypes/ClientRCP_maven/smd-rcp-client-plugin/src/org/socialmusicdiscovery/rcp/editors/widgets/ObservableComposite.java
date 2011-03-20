@@ -25,27 +25,32 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.rcp.event;
+package org.socialmusicdiscovery.rcp.editors.widgets;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Set;
 
+import org.eclipse.swt.widgets.Composite;
 import org.socialmusicdiscovery.rcp.error.FatalApplicationException;
+import org.socialmusicdiscovery.rcp.event.Observable;
 
 /**
- * Basic implementation that delegates all calls to an internal
- * {@link PropertyChangeSupport} instance, extending the public interface with
- * some internal convenience methods for subclasses that need to fire events or
- * manage listeners.
+ * A {@link Composite} with {@link PropertyChangeSupport} to allow databinding
+ * to UI properties thru {@link PropertyChangeEvent}s. Useful in a few odd cases.
  * 
  * @author Peer Törngren
  * 
  */
-public abstract class AbstractObservable implements Observable {
+public class ObservableComposite extends Composite implements Observable {
+	
+	PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
-	final private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+	public ObservableComposite(Composite parent, int style) {
+		super(parent, style);
+	}
+
 
 	@Override
 	public void addPropertyChangeListener(PropertyChangeListener listener) {
@@ -153,4 +158,5 @@ public abstract class AbstractObservable implements Observable {
 			throw new FatalApplicationException("Unable to clone set: "+existingSet, e);  //$NON-NLS-1$
 		}
 	}
+
 }

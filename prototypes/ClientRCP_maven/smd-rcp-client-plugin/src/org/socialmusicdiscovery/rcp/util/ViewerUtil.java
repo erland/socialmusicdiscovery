@@ -34,7 +34,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.databinding.beans.IBeanValueProperty;
-import org.eclipse.core.databinding.observable.list.WritableList;
+import org.eclipse.core.databinding.observable.list.IObservableList;
+import org.eclipse.core.databinding.observable.set.IObservableSet;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.databinding.viewers.ViewerSupport;
@@ -225,8 +226,18 @@ public class ViewerUtil {
 	 * @param list
 	 * @param properties
 	 */
-	public static void bind(StructuredViewer viewer, WritableList list, IBeanValueProperty... properties) {
+	public static void bind(StructuredViewer viewer, IObservableList list, IBeanValueProperty... properties) {
 		ViewerSupport.bind(viewer, list, properties);
+	}
+
+	/**
+	 * Convenience method to allow passing properties as varargs.
+	 * @param viewer
+	 * @param set
+	 * @param properties
+	 */
+	public static void bind(StructuredViewer viewer, IObservableSet set, IBeanValueProperty... properties) {
+		ViewerSupport.bind(viewer, set, properties);
 	}
 
 	public static int resolveColumnIndex(GridViewerColumn gvc) {

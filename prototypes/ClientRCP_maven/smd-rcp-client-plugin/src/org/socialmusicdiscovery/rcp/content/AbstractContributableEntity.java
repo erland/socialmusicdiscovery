@@ -27,38 +27,35 @@
 
 package org.socialmusicdiscovery.rcp.content;
 
-import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
-import org.socialmusicdiscovery.server.business.model.core.Recording;
-import org.socialmusicdiscovery.server.business.model.core.RecordingSession;
+import org.socialmusicdiscovery.server.business.model.SMDIdentity;
+import org.socialmusicdiscovery.server.business.model.core.Contributor;
 
 import com.google.gson.annotations.Expose;
 
-public class ObservableRecordingSession extends AbstractContributableEntity<RecordingSession> implements RecordingSession {
+/**
+ * A common abstraction for all entities that can have contributors. Use to
+ * enable common handling in shared widgets and methods. Should ideally be an
+ * interface, but that causes interference with implemented interfaces in
+ * different ways.
+ * 
+ * @author Peer Törngren
+ * 
+ */
+public abstract class AbstractContributableEntity<T extends SMDIdentity>  extends AbstractObservableEntity<T> {
 
-	public static final String PROP_date = "date";
-	public static final String PROP_recordings = "recordings";
+	public static final String PROP_contributors = "contributors";
+
+	@Expose private Set<Contributor> contributors = new HashSet<Contributor>();
 	
-	@Expose private Date date;
-	@Expose private Set<Recording> recordings;
-
-	@Override
-	public Date getDate() {
-		return date;
-	}
-	
-	@Override
-	public Set<Recording> getRecordings() {
-		return recordings;
+	public Set<Contributor> getContributors() {
+		return contributors;
 	}
 
-	public void setDate(Date date) {
-		firePropertyChange(PROP_date, this.date, this.date = date);
-	}
-
-	public void setRecordings(Set<Recording> recordings) {
-		firePropertyChange(PROP_recordings, this.recordings, this.recordings = recordings);
+	public void setContributors(Set<Contributor> contributors) {
+		updateSet(PROP_contributors, this.contributors, contributors);
 	}
 
 }

@@ -27,18 +27,66 @@
 
 package org.socialmusicdiscovery.rcp.content;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.socialmusicdiscovery.server.business.model.core.Contributor;
 import org.socialmusicdiscovery.server.business.model.core.Medium;
 import org.socialmusicdiscovery.server.business.model.core.PlayableElement;
 import org.socialmusicdiscovery.server.business.model.core.Recording;
+import org.socialmusicdiscovery.server.business.model.core.RecordingSession;
 import org.socialmusicdiscovery.server.business.model.core.Release;
 import org.socialmusicdiscovery.server.business.model.core.Track;
 
 import com.google.gson.annotations.Expose;
 
 public class ObservableTrack extends AbstractObservableEntity<Track> implements Track {
+
+	/**
+	 * Lots of unsafe types here - see comments on {@link AbstractContributableEntity}.
+	 * @param contributables
+	 */
+	@SuppressWarnings("unchecked")
+	private class MyContributorFacade extends AbstractContributableEntity {
+		
+		private MyContributorFacade() {
+			compileContributors(resolveContributables());
+		}
+
+		public Set resolveContributables() {
+			Set result = new HashSet(getRecording().getWorks());
+			result.addAll(Arrays.asList(
+					resolveRecordingSession(getRecording()),
+					getRecording(), 
+					getRelease()
+					));
+			result.retainAll(Arrays.asList(getRecording())); // FIXME remove when filters work in UI 
+			return result;
+		}
+
+		/**
+		 * FIXME stub - should move to some utility method or something?
+		 * @param recording
+		 * @return <code>null</code>
+		 */
+		public RecordingSession resolveRecordingSession(Recording recording) {
+			return null; // getRecordingSession();
+		}
+	
+		private void compileContributors(Collection contributables) {
+			Set<Contributor> contributors = getContributors();
+			contributors.clear();
+			for (Object o: contributables) {
+				if (o!=null) {
+					AbstractContributableEntity e = (AbstractContributableEntity) o;
+					contributors.addAll(e.getContributors());
+				}
+			}
+			firePropertyChange(PROP_contributors);
+		}
+	}
 
 	public static final String PROP_number = "number";
 	public static final String PROP_playableElements = "playableElements";
@@ -54,6 +102,7 @@ public class ObservableTrack extends AbstractObservableEntity<Track> implements 
 	@Expose private Recording recording;
 	@Expose private Set<PlayableElement> playableElements = new HashSet<PlayableElement>();
 	@Expose private Release release;
+	private MyContributorFacade contributorFacade;
 
 	@Override
 	public Integer getNumber() {
@@ -123,4 +172,13 @@ public class ObservableTrack extends AbstractObservableEntity<Track> implements 
 		return r;
 	}
 
+	public AbstractContributableEntity getContributionFacade() {
+		return contributorFacade;
+	}
+
+	@Override
+	protected void postInflate() {
+		super.postInflate();
+		contributorFacade = new MyContributorFacade();
+	}
 }

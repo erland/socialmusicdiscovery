@@ -27,6 +27,7 @@
 
 package org.socialmusicdiscovery.rcp.editors.release;
 
+
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.nebula.widgets.grid.GridColumn;
 import org.eclipse.swt.SWT;
@@ -42,9 +43,11 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
+import org.socialmusicdiscovery.rcp.content.AbstractObservableEntity;
 import org.socialmusicdiscovery.rcp.content.ObservableTrack;
 import org.socialmusicdiscovery.rcp.editors.widgets.ContributorPanel;
 import org.socialmusicdiscovery.rcp.views.util.AbstractComposite;
+import org.socialmusicdiscovery.server.business.model.core.Track;
 
 public class TrackContributorPanel extends AbstractComposite<ObservableTrack> {
 	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
@@ -137,6 +140,9 @@ public class TrackContributorPanel extends AbstractComposite<ObservableTrack> {
 		// Disable the check that prevents subclassing of SWT components
 	}
 
+	public AbstractObservableEntity<Track> getObservableTrack() {
+		return getModel();
+	}
 	protected DataBindingContext initDataBindings() {
 		DataBindingContext bindingContext = new DataBindingContext();
 		//
@@ -145,7 +151,7 @@ public class TrackContributorPanel extends AbstractComposite<ObservableTrack> {
 
 	@Override
 	protected void afterSetModel(ObservableTrack model) {
-		super.afterSetModel(model);
-		System.out.println("TrackContributorPanel.afterSetModel(): "+model);
+		contributorPanel.setModel(model.getContributionFacade());
 	}
+
 }
