@@ -28,6 +28,7 @@
 package org.socialmusicdiscovery.rcp.content;
 
 import java.beans.PropertyChangeListener;
+import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Collection;
 
@@ -40,6 +41,7 @@ import org.eclipse.ui.IPersistableElement;
 import org.socialmusicdiscovery.rcp.Activator;
 import org.socialmusicdiscovery.rcp.event.AbstractObservable;
 import org.socialmusicdiscovery.rcp.util.TextUtil;
+import org.socialmusicdiscovery.rcp.util.Util;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.support.copy.CopyHelper;
 
@@ -225,9 +227,16 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 	public void restore(AbstractObservableEntity backup) {
 		assertBackup(backup);
 		new CopyHelper().mergeInto(this, backup, Expose.class);
+		refreshExposedProperties();
 		// fire dirty AFTER merge to make sure name changes are updated in 
 		// label providers (the copy does not fire any events)
 		setDirty(false); 
+	}
+
+	private void refreshExposedProperties() {
+		for (Field f : Util.getAllFields(getClass(), Expose.class)) {
+			firePropertyChange(f.getName());
+		};
 	}
 
 	/**

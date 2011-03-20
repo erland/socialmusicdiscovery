@@ -27,12 +27,19 @@
 
 package org.socialmusicdiscovery.rcp.util;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.socialmusicdiscovery.server.business.model.core.Work;
+import org.socialmusicdiscovery.server.support.copy.CopyHelper;
+
+import com.google.gson.annotations.Expose;
 
 /**
  * Some general utilities.
@@ -121,6 +128,41 @@ public final class Util {
 			sb.append(o.getName());
 		}
 		return sb.toString();
+	}
+
+	/**
+	 * Convenience method. Get all persistent fields, including private fields. 
+	 * 
+	 * @param type
+	 * @return {@link Collection}
+	 */
+	public static Collection<Field> getAllPersistentFields(Class type) {
+	    return getAllFields(type, Expose.class);
+	}
+	/**
+	 * Get all fields, including private fields. If an annotation class is
+	 * supplied, only include fields annotated with this class. This code is
+	 * copy/pasted from {@link CopyHelper}.
+	 * 
+	 * @param type
+	 * @param onlyAnnotatedWith
+	 * @return {@link Collection}
+	 */
+	public static Collection<Field> getAllFields(Class type, Class<? extends Annotation> onlyAnnotatedWith) {
+	    ArrayList<Field> fields = new ArrayList<Field>();
+	    while (!type.equals(Object.class)) {
+	        if (onlyAnnotatedWith != null) {
+	            for (Field field : type.getDeclaredFields()) {
+	                if (field.isAnnotationPresent(onlyAnnotatedWith)) {
+	                    fields.add(field);
+	                }
+	            }
+	        } else {
+	            fields.addAll(Arrays.asList(type.getDeclaredFields()));
+	        }
+	        type = type.getSuperclass();
+	    }
+	    return fields;
 	}
 
 }
