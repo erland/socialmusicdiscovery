@@ -35,6 +35,7 @@ import org.eclipse.core.databinding.observable.set.IObservableSet;
 import org.eclipse.core.databinding.observable.set.WritableSet;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
 import org.eclipse.nebula.jface.gridviewer.GridViewerColumn;
 import org.eclipse.nebula.widgets.grid.Grid;
@@ -64,12 +65,14 @@ import org.socialmusicdiscovery.server.business.model.core.Contributor;
  */
 public class ContributorPanel extends AbstractComposite<AbstractContributableEntity> {
 
+	private static final String PROP_filters = "filters";
 	private final FormToolkit toolkit = new FormToolkit(Display.getCurrent());
 	private GridTableViewer gridTableViewer;
 	private GridColumn roleColumn;
 	private GridViewerColumn roleGVC;
 	private GridColumn artistColumn;
 	private GridViewerColumn artistGVC;
+	private ViewerFilter[] filters = new ViewerFilter[0];
 
 	/**
 	 * Create the composite with optional {@link TableColumnLayout}. Separate
@@ -144,6 +147,15 @@ public class ContributorPanel extends AbstractComposite<AbstractContributableEnt
 		IBeanValueProperty artistProperty = BeanProperties.value(ObservableContributor.class, "artist.name");
 		IObservableSet set = new WritableSet(getModel().getContributors(), ObservableContributor.class);
 		ViewerUtil.bind(gridTableViewer, set, roleProperty, artistProperty);
+	}
+
+	public ViewerFilter[] getFilters() {
+		return filters;
+	}
+
+	public void setFilters(ViewerFilter[] filters) {
+		gridTableViewer.setFilters(filters);
+		firePropertyChange(PROP_filters, this.filters, this.filters = filters);
 	}
 	
 }

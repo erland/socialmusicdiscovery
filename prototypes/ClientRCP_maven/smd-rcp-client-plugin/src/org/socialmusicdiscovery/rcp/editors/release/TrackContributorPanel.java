@@ -28,9 +28,16 @@
 package org.socialmusicdiscovery.rcp.editors.release;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.nebula.widgets.grid.GridColumn;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -44,12 +51,45 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.socialmusicdiscovery.rcp.content.AbstractObservableEntity;
+import org.socialmusicdiscovery.rcp.content.ObservableContributorWithOrigin;
 import org.socialmusicdiscovery.rcp.content.ObservableTrack;
 import org.socialmusicdiscovery.rcp.editors.widgets.ContributorPanel;
+import org.socialmusicdiscovery.rcp.util.NotYetImplemented;
 import org.socialmusicdiscovery.rcp.views.util.AbstractComposite;
+import org.socialmusicdiscovery.server.business.model.SMDIdentity;
+import org.socialmusicdiscovery.server.business.model.core.Recording;
+import org.socialmusicdiscovery.server.business.model.core.RecordingSession;
+import org.socialmusicdiscovery.server.business.model.core.Release;
 import org.socialmusicdiscovery.server.business.model.core.Track;
+import org.socialmusicdiscovery.server.business.model.core.Work;
 
 public class TrackContributorPanel extends AbstractComposite<ObservableTrack> {
+
+	private class MyContributorFilter extends ViewerFilter{
+
+		private Map<Class, Boolean> settings = new HashMap<Class, Boolean>();
+
+		public void set(Class<? extends SMDIdentity> type, boolean isVisible) {
+			settings.put(type, Boolean.valueOf(isVisible));
+			notifyContributorPanel();
+		}
+
+		public void notifyContributorPanel() {
+			contributorPanel.setFilters(new ViewerFilter[] {this});
+		}
+
+		@Override
+		public boolean select(Viewer viewer, Object parentElement, Object element) {
+			return element instanceof ObservableContributorWithOrigin ? accept((ObservableContributorWithOrigin) element) : true; 
+		}
+
+		private boolean accept(ObservableContributorWithOrigin c) {
+			Class definedBy = c.getOrigin();
+			return settings.containsKey(definedBy) ? settings.get(definedBy).booleanValue() : false;
+		}
+
+	}
+
 	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
 	protected Text text;
 	protected GridColumn colPerformer;
@@ -65,7 +105,8 @@ public class TrackContributorPanel extends AbstractComposite<ObservableTrack> {
 	private Composite rootArea;
 	private Section filterSection;
 	private Composite composite;
-
+	private MyContributorFilter contributorFilter = new MyContributorFilter();
+	
 	/**
 	 * Create the composite.
 	 * @param parent
@@ -106,18 +147,22 @@ public class TrackContributorPanel extends AbstractComposite<ObservableTrack> {
 		formToolkit.paintBordersFor(toolBar);
 		
 		albumCheck = new ToolItem(toolBar, SWT.CHECK);
+		albumCheck.addSelectionListener(new AlbumCheckSelectionListener());
 		albumCheck.setToolTipText("Show contributors defined for Album");
 		albumCheck.setText("Album");
 		
 		sessionCheck = new ToolItem(toolBar, SWT.CHECK);
+		sessionCheck.addSelectionListener(new SessionCheckSelectionListener());
 		sessionCheck.setToolTipText("Show contributors defined for Recording Session");
 		sessionCheck.setText("Session");
 		
 		recordingCheck = new ToolItem(toolBar, SWT.CHECK);
+		recordingCheck.addSelectionListener(new RecordingCheckSelectionListener());
 		recordingCheck.setToolTipText("Show contributors defined for Recording");
 		recordingCheck.setText("Recording");
 		
 		workCheck = new ToolItem(toolBar, SWT.CHECK);
+		workCheck.addSelectionListener(new WorkCheckSelectionListener());
 		workCheck.setToolTipText("Show contributors defined for Work");
 		workCheck.setText("Work");
 		
@@ -125,6 +170,7 @@ public class TrackContributorPanel extends AbstractComposite<ObservableTrack> {
 		formToolkit.adapt(separator, true, true);
 		
 		effectiveContributorsButton = new Button(composite, SWT.CHECK);
+		effectiveContributorsButton.addSelectionListener(new EffectiveContributorsButtonSelectionListener());
 		formToolkit.adapt(effectiveContributorsButton, true, true);
 		effectiveContributorsButton.setText("Effective");
 		new Label(rootArea, SWT.NONE);
@@ -133,6 +179,7 @@ public class TrackContributorPanel extends AbstractComposite<ObservableTrack> {
 		}
 
 	private void initUI() {
+		contributorFilter.notifyContributorPanel();
 	}
 
 	@Override
@@ -154,4 +201,35 @@ public class TrackContributorPanel extends AbstractComposite<ObservableTrack> {
 		contributorPanel.setModel(model.getContributionFacade());
 	}
 
+	private class AlbumCheckSelectionListener extends SelectionAdapter {
+
+		@Override
+		public void widgetSelected(SelectionEvent e) {
+			contributorFilter.set(Release.class, albumCheck.getSelection());
+		}
+	}
+	private class SessionCheckSelectionListener extends SelectionAdapter {
+		@Override
+		public void widgetSelected(SelectionEvent e) {
+			contributorFilter.set(RecordingSession.class, sessionCheck.getSelection());
+		}
+	}
+	private class RecordingCheckSelectionListener extends SelectionAdapter {
+		@Override
+		public void widgetSelected(SelectionEvent e) {
+			contributorFilter.set(Recording.class, recordingCheck.getSelection());
+		}
+	}
+	private class WorkCheckSelectionListener extends SelectionAdapter {
+		@Override
+		public void widgetSelected(SelectionEvent e) {
+			contributorFilter.set(Work.class, workCheck.getSelection());
+		}
+	}
+	private class EffectiveContributorsButtonSelectionListener extends SelectionAdapter {
+		@Override
+		public void widgetSelected(SelectionEvent e) {
+			NotYetImplemented.openDialog("Sorry");
+		}
+	}
 }
