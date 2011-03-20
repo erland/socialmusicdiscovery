@@ -66,6 +66,7 @@ import org.socialmusicdiscovery.rcp.views.util.OpenListener;
 import org.socialmusicdiscovery.server.business.model.core.Recording;
 import org.eclipse.jface.databinding.viewers.ViewersObservables;
 import org.eclipse.core.databinding.beans.PojoObservables;
+import org.eclipse.core.databinding.UpdateValueStrategy;
 
 public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 
@@ -250,6 +251,8 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 		ViewerUtil.hookSorter(gvcTitle);
 		ViewerUtil.hookSorter(new TrackMediumNumberComparator(),  gvcMediumNbr);
 		ViewerUtil.hookSorter(new TrackNumberComparator(),  gvcTrackNumber);
+//		FIXME: make this work (also disable grid inputs)
+//		ViewerUtil.hookEnabledWithDistinctSelection(gridViewerTracks, trackContributorPanel.getChildren());
 	}
 
 	@Override
@@ -286,11 +289,11 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 		DataBindingContext bindingContext = new DataBindingContext();
 		//
 		IObservableValue textNameObserveTextObserveWidget = SWTObservables.observeText(textName, SWT.Modify);
-		IObservableValue artistgetNameEmptyObserveValue = BeansObservables.observeValue(getModel(), "name");
+		IObservableValue artistgetNameEmptyObserveValue = PojoObservables.observeValue(getModel(), "name");
 		bindingContext.bindValue(textNameObserveTextObserveWidget, artistgetNameEmptyObserveValue, null, null);
 		//
 		IObservableValue textNameObserveTooltipTextObserveWidget = SWTObservables.observeTooltipText(textName);
-		IObservableValue getModelToolTipTextObserveValue = BeansObservables.observeValue(getModel(), "toolTipText");
+		IObservableValue getModelToolTipTextObserveValue = PojoObservables.observeValue(getModel(), "toolTipText");
 		bindingContext.bindValue(textNameObserveTooltipTextObserveWidget, getModelToolTipTextObserveValue, null, null);
 		//
 		ObservableListContentProvider listContentProvider = new ObservableListContentProvider();
@@ -303,8 +306,8 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 		gridViewerTracks.setInput(getReleaseTracksObserveList);
 		//
 		IObservableValue gridViewerTracksObserveSingleSelection = ViewersObservables.observeDelayedValue(200, ViewersObservables.observeSingleSelection(gridViewerTracks));
-		IObservableValue trackContributorPanelModelObserveValue = PojoObservables.observeValue(trackContributorPanel, "model");
-		bindingContext.bindValue(gridViewerTracksObserveSingleSelection, trackContributorPanelModelObserveValue, null, null);
+		IObservableValue trackContributorPanelModelObserveValue = BeansObservables.observeValue(trackContributorPanel, "model");
+		bindingContext.bindValue(gridViewerTracksObserveSingleSelection, trackContributorPanelModelObserveValue, null, new UpdateValueStrategy(UpdateValueStrategy.POLICY_NEVER));
 		//
 		return bindingContext;
 	}

@@ -273,5 +273,26 @@ public class ViewerUtil {
 			new GridViewerColumnComparator(gvc, comparator);
 		}
 	}
+
+	/**
+	 * TODO - doesn't seem to update properly on multi-selections? Might be a
+	 * problem with the Nebula grid when selecting many rows using Ctrl+click.
+	 * 
+	 * @param v
+	 * @param controls
+	 */
+	public static void hookEnabledWithDistinctSelection(Viewer v, final Control... controls) {
+		ISelectionChangedListener listener = new ISelectionChangedListener() {
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				Object[] selected = getSelectedObjects(event.getSelection());
+				boolean isEnabled = selected.length==1;
+				for (Control control : controls) {
+					control.setEnabled(isEnabled);
+				}
+			}
+		};
+		v.addSelectionChangedListener(listener);
+	}
 	
 }
