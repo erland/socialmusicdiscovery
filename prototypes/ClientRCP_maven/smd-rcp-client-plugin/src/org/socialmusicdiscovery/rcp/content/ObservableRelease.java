@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.socialmusicdiscovery.rcp.content.DataSource.Root;
-import org.socialmusicdiscovery.server.business.model.core.Contributor;
 import org.socialmusicdiscovery.server.business.model.core.Label;
 import org.socialmusicdiscovery.server.business.model.core.Medium;
 import org.socialmusicdiscovery.server.business.model.core.RecordingSession;
@@ -44,14 +43,13 @@ import org.socialmusicdiscovery.server.business.model.core.Track;
 
 import com.google.gson.annotations.Expose;
 
-public class ObservableRelease extends AbstractObservableEntity<Release> implements Release {
+public class ObservableRelease extends AbstractContributableEntity<Release> implements Release {
 
 	public static final String PROP_date = "date"; //$NON-NLS-1$
 	public static final String PROP_label = "label"; //$NON-NLS-1$
 	public static final String PROP_mediums = "mediums"; //$NON-NLS-1$
 	public static final String PROP_tracks = "tracks"; //$NON-NLS-1$
 	public static final String PROP_recordingSessions = "recordingSessions"; //$NON-NLS-1$
-	public static final String PROP_contributors = "contributors"; //$NON-NLS-1$
 
 	@Expose
 	private Date date = null;
@@ -67,9 +65,6 @@ public class ObservableRelease extends AbstractObservableEntity<Release> impleme
 
 	@Expose
 	private Set<RecordingSession> recordingSessions = new HashSet<RecordingSession>();
-
-	@Expose
-	private Set<Contributor> contributors = new HashSet<Contributor>();
 
 	@Override
 	public Date getDate() {
@@ -110,11 +105,6 @@ public class ObservableRelease extends AbstractObservableEntity<Release> impleme
 		return recordingSessions;
 	}
 
-	@Override
-	public Set<Contributor> getContributors() {
-		return contributors;
-	}
-
 	public void setDate(Date date) {
 		firePropertyChange(PROP_date, this.date, this.date = date);
 	}
@@ -133,10 +123,6 @@ public class ObservableRelease extends AbstractObservableEntity<Release> impleme
 
 	public void setRecordingSessions(Set<RecordingSession> recordingSessions) {
 		firePropertyChange(PROP_recordingSessions, this.recordingSessions, this.recordingSessions = recordingSessions);
-	}
-
-	public void setContributors(Set<Contributor> contributors) {
-		firePropertyChange(PROP_contributors, this.contributors, this.contributors = contributors);
 	}
 
 }

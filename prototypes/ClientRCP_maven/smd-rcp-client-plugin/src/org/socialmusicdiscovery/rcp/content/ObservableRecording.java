@@ -42,14 +42,13 @@ import org.eclipse.core.databinding.observable.value.ValueChangeEvent;
 import org.eclipse.ui.IEditorInput;
 import org.socialmusicdiscovery.rcp.content.DataSource.Root;
 import org.socialmusicdiscovery.rcp.util.Util;
-import org.socialmusicdiscovery.server.business.model.core.Contributor;
 import org.socialmusicdiscovery.server.business.model.core.Recording;
 import org.socialmusicdiscovery.server.business.model.core.Track;
 import org.socialmusicdiscovery.server.business.model.core.Work;
 
 import com.google.gson.annotations.Expose;
 
-public class ObservableRecording extends AbstractObservableEntity<Recording> implements Recording {
+public class ObservableRecording extends AbstractContributableEntity<Recording> implements Recording {
 
 	/**
 	 * Warning: Work in Progress - this code has NOT been run yet!
@@ -107,7 +106,6 @@ public class ObservableRecording extends AbstractObservableEntity<Recording> imp
 
 	public static final String PROP_date = "date";
 	public static final String PROP_mixOf = "mixOf";
-	public static final String PROP_contributors = "contributors";
 	public static final String PROP_works = "works";
 	public static final String PROP_derivedName = "derivedName";
 	public static final String PROP_isDerivedNameUsed = "derivedNameUsed";
@@ -117,7 +115,6 @@ public class ObservableRecording extends AbstractObservableEntity<Recording> imp
 	
 	@Expose private Date date;
 	@Expose private Recording mixOf;
-	@Expose private Set<Contributor> contributors = new HashSet<Contributor>();
 	@Expose private Set<Work> works = new HashSet<Work>();
 
 //	public ObservableRecording() {
@@ -157,11 +154,6 @@ public class ObservableRecording extends AbstractObservableEntity<Recording> imp
 	}
 
 	@Override
-	public Set<Contributor> getContributors() {
-		return contributors;
-	}
-
-	@Override
 	public Set<Work> getWorks() {
 		return works;
 	}
@@ -174,12 +166,6 @@ public class ObservableRecording extends AbstractObservableEntity<Recording> imp
 	@Override
 	public void setMixOf(Recording mixOf) {
 		firePropertyChange(PROP_mixOf, this.mixOf, this.mixOf = mixOf);
-	}
-
-	@Override
-	public void setContributors(Set<Contributor> contributors) {
-		throw new UnsupportedOperationException();
-//		firePropertyChange(PROP_contributors, this.contributors, this.contributors = contributors);
 	}
 
 	@Override

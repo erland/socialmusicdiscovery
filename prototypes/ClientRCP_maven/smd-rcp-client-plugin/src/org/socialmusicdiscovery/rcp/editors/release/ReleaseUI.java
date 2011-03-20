@@ -259,8 +259,7 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 
 	@Override
 	public void afterSetModel(ObservableRelease release) {
-		// FIXME bindTrackContributors();
-		artistPanel.bindContributors(getModel().getContributors());
+		getArtistPanel().setModel(getModel());
 	}
 
 

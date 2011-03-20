@@ -31,7 +31,8 @@ import java.util.Set;
 
 import org.eclipse.core.databinding.beans.BeanProperties;
 import org.eclipse.core.databinding.beans.IBeanValueProperty;
-import org.eclipse.core.databinding.observable.list.WritableList;
+import org.eclipse.core.databinding.observable.set.IObservableSet;
+import org.eclipse.core.databinding.observable.set.WritableSet;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
@@ -45,8 +46,11 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.socialmusicdiscovery.rcp.content.AbstractContributableEntity;
+import org.socialmusicdiscovery.rcp.content.ObservableContributor;
 import org.socialmusicdiscovery.rcp.grid.GridTableColumnLayout;
 import org.socialmusicdiscovery.rcp.util.ViewerUtil;
+import org.socialmusicdiscovery.rcp.views.util.AbstractComposite;
 import org.socialmusicdiscovery.rcp.views.util.OpenListener;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
 
@@ -58,7 +62,7 @@ import org.socialmusicdiscovery.server.business.model.core.Contributor;
  * @author Peer Törngren
  * 
  */
-public class ContributorPanel extends Composite {
+public class ContributorPanel extends AbstractComposite<AbstractContributableEntity> {
 
 	private final FormToolkit toolkit = new FormToolkit(Display.getCurrent());
 	private GridTableViewer gridTableViewer;
@@ -129,24 +133,17 @@ public class ContributorPanel extends Composite {
 		gridTableViewer.addOpenListener(new OpenListener());
 		ViewerUtil.hookSorter(roleGVC, artistGVC);
 	}
-	
-	public void bindContributors(Set<Contributor> contributors) {
-		WritableList list = new WritableList(contributors, Contributor.class);
-		IBeanValueProperty roleProperty = BeanProperties.value(Contributor.class, "type");
-		IBeanValueProperty artistProperty = BeanProperties.value(Contributor.class, "artist.name");
-		
-		ViewerUtil.bind(gridTableViewer, list, roleProperty, artistProperty);
-	}
-	
+
 	public GridTableViewer getGridViewer() {
 		return gridTableViewer;
 	}
 
-	public GridViewerColumn getRoleGVC() {
-		return roleGVC;
+	@Override
+	protected void afterSetModel(AbstractContributableEntity model) {
+		IBeanValueProperty roleProperty = BeanProperties.value(ObservableContributor.class, "type");
+		IBeanValueProperty artistProperty = BeanProperties.value(ObservableContributor.class, "artist.name");
+		IObservableSet set = new WritableSet(getModel().getContributors(), ObservableContributor.class);
+		ViewerUtil.bind(gridTableViewer, set, roleProperty, artistProperty);
 	}
-	public GridViewerColumn getArtistGVC() {
-		return artistGVC;
-	}
-
+	
 }

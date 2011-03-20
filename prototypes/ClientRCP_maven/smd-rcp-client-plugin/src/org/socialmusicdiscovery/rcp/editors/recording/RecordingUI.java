@@ -240,7 +240,7 @@ public class RecordingUI extends AbstractComposite<ObservableRecording> {
 
 	@Override
 	public void afterSetModel(ObservableRecording track) {
-		getArtistPanel().bindContributors(getModel().getContributors());
+		getArtistPanel().setModel(getModel());
 		bindTracks();
 		bindWorks();
 //		bindSessionPanel();
