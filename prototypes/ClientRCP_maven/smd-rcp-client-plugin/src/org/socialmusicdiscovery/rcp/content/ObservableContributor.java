@@ -60,7 +60,8 @@ public class ObservableContributor extends AbstractObservableEntity<Contributor>
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName()+"@"+hashCode()+"-"+getType()+":"+getArtist().getName();
+		String artistName = getArtist()==null ? "?" : getArtist().getName();
+		return getClass().getSimpleName()+"@"+hashCode()+"-"+getType()+":"+artistName + " ("+getName()+")";
 	}
 
 }
