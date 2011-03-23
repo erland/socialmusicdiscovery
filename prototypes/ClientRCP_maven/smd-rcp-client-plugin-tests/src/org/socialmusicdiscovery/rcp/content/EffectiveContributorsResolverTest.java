@@ -34,13 +34,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.socialmusicdiscovery.rcp.util.Util;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
 
 /**
@@ -125,12 +125,12 @@ public class EffectiveContributorsResolverTest {
 		expect(conductors1);
 		reject(conductors2);
 
-		Collection join1 = join(conductors1, composers1);
+		Collection join1 = Util.join(conductors1, composers1);
 		test(join1, conductors2);
 		expect(join1);
 		reject(conductors2);
 
-		test(conductors1, join(conductors2, composers2));
+		test(conductors1, Util.join(conductors2, composers2));
 		expect(conductors1, composers2);
 		reject(conductors2);
 
@@ -142,13 +142,13 @@ public class EffectiveContributorsResolverTest {
 	@Test
 	public void testExtended() throws Exception {
 
-		test(performers1, join(performers2, conductors2), join(performers3, composers3, conductors3));
+		test(performers1, Util.join(performers2, conductors2), Util.join(performers3, composers3, conductors3));
 		expect(performers1, conductors2, composers3);
 		reject(performers2, performers3, conductors3);
 
-		Collection j1 = join(composers1, conductors1, performers1);
-		Collection j2 = join(composers2, conductors2, performers2);
-		Collection j3 = join(composers3, conductors3, performers3);
+		Collection j1 = Util.join(composers1, conductors1, performers1);
+		Collection j2 = Util.join(composers2, conductors2, performers2);
+		Collection j3 = Util.join(composers3, conductors3, performers3);
 		test(j1, j2, j3);
 		expect(j1);
 		reject(j2, j3);
@@ -198,7 +198,7 @@ public class EffectiveContributorsResolverTest {
 	}
 	
 	private void expect(Collection... expected) {
-		Collection allExpected = join(expected);
+		Collection allExpected = Util.join(expected);
 		assertTrue(missing(allExpected, actual), actual.containsAll(allExpected));
 		assertEquals(extra(allExpected, actual), allExpected.size(), actual.size());
 	}
@@ -228,19 +228,6 @@ public class EffectiveContributorsResolverTest {
 		return result;
 	}
 
-	private static Collection join(Collection... collections) {
-		Collection result = new HashSet();
-		for (Collection c : collections) {
-			result.addAll(c);
-		}
-		return result;
-	}
-
-
-	private static Collection join(Contributor... performers) {
-		return Arrays.asList(performers);
-	}
-
 	private static String missing(Collection expected, Collection actual) {
 		Collection missing = new ArrayList(expected);
 		missing.removeAll(actual);
@@ -261,5 +248,10 @@ public class EffectiveContributorsResolverTest {
 		}
 		return msg;
 	}
+
+	private static <T> Collection<T> join(T... elements) {
+		return Arrays.asList(elements);
+	}
+
 
 }
