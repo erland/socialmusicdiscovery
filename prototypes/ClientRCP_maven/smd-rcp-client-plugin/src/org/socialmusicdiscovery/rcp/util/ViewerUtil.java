@@ -254,21 +254,33 @@ public class ViewerUtil {
 	}
 
 	/**
-	 * Hook default sorting on supplied columns.
+	 * Hook default sorting on supplied columns. See note on
+	 * {@link #bindSorter(Comparator, GridViewerColumn...)}.
+	 * 
 	 * @param gvcs
 	 */
-	public static void hookSorter(GridViewerColumn... gvcs) {
+	public static void bindSorter(GridViewerColumn... gvcs) {
 		for (GridViewerColumn gvc : gvcs) {
 			new GridViewerColumnComparator(gvc);
 		}
 	}
 
 	/**
+	 * <p>
 	 * Hook sorting on supplied columns using supplied comparator.
+	 * </p>
+	 * 
+	 * <p>
+	 * <b>Note</b>: the sorting is based on an observable label provider that
+	 * typically is registered while binding the grid. Hence, the sorter must
+	 * also be registered during data binding, it cannot be hooked in the UI
+	 * constructor.
+	 * </p>
+	 * 
 	 * @param omparator
 	 * @param gvcs
 	 */
-	public static void hookSorter(Comparator comparator, GridViewerColumn... gvcs) {
+	public static void bindSorter(Comparator comparator, GridViewerColumn... gvcs) {
 		for (GridViewerColumn gvc : gvcs) {
 			new GridViewerColumnComparator(gvc, comparator);
 		}

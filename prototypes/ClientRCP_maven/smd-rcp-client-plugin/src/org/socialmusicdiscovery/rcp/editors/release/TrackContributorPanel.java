@@ -54,7 +54,6 @@ import org.socialmusicdiscovery.rcp.content.AbstractObservableEntity;
 import org.socialmusicdiscovery.rcp.content.ObservableContributorWithOrigin;
 import org.socialmusicdiscovery.rcp.content.ObservableTrack;
 import org.socialmusicdiscovery.rcp.editors.widgets.ContributorPanel;
-import org.socialmusicdiscovery.rcp.util.NotYetImplemented;
 import org.socialmusicdiscovery.rcp.views.util.AbstractComposite;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.model.core.Recording;
@@ -65,6 +64,18 @@ import org.socialmusicdiscovery.server.business.model.core.Work;
 
 public class TrackContributorPanel extends AbstractComposite<ObservableTrack> {
 
+	private class MyEffectiveContributorsFilter extends ViewerFilter {
+
+		@Override
+		public boolean select(Viewer viewer, Object parentElement, Object element) {
+			return element instanceof ObservableContributorWithOrigin ? accept((ObservableContributorWithOrigin) element) : true; 
+		}
+
+		private boolean accept(ObservableContributorWithOrigin c) {
+			return getModel().isEffectiveContributor(c);
+		}
+
+	}
 	private class MyContributorFilter extends ViewerFilter{
 
 		private Map<Class, Boolean> settings = new HashMap<Class, Boolean>();
@@ -75,7 +86,7 @@ public class TrackContributorPanel extends AbstractComposite<ObservableTrack> {
 		}
 
 		public void notifyContributorPanel() {
-			contributorPanel.setFilters(new ViewerFilter[] {this});
+			contributorPanel.setFilters(this);
 		}
 
 		@Override
@@ -170,11 +181,13 @@ public class TrackContributorPanel extends AbstractComposite<ObservableTrack> {
 		formToolkit.adapt(separator, true, true);
 		
 		effectiveContributorsButton = new Button(composite, SWT.CHECK);
+		effectiveContributorsButton.setSelection(true);
 		effectiveContributorsButton.addSelectionListener(new EffectiveContributorsButtonSelectionListener());
 		formToolkit.adapt(effectiveContributorsButton, true, true);
 		effectiveContributorsButton.setText("Effective");
-		new Label(rootArea, SWT.NONE);
-
+		
+		formToolkit.createLabel(composite, "!!Work In Progress!!", SWT.BORDER | SWT.SHADOW_NONE | SWT.CENTER);
+	
 		initUI();
 		}
 
@@ -182,6 +195,15 @@ public class TrackContributorPanel extends AbstractComposite<ObservableTrack> {
 		contributorFilter.notifyContributorPanel();
 	}
 
+	private void updateFilters() {
+		boolean isShowEffective = effectiveContributorsButton.getSelection();
+		if (isShowEffective) {
+			contributorPanel.setFilters(new MyEffectiveContributorsFilter());
+		} else {
+			contributorFilter.notifyContributorPanel();
+		}
+		toolBar.setEnabled(!isShowEffective);
+	}
 	@Override
 	protected void checkSubclass() {
 		// Disable the check that prevents subclassing of SWT components
@@ -199,6 +221,8 @@ public class TrackContributorPanel extends AbstractComposite<ObservableTrack> {
 	@Override
 	protected void afterSetModel(ObservableTrack model) {
 		contributorPanel.setModel(model.getContributionFacade());
+		updateFilters();
+//		contributorPanel.debug();
 	}
 
 	private class AlbumCheckSelectionListener extends SelectionAdapter {
@@ -208,6 +232,7 @@ public class TrackContributorPanel extends AbstractComposite<ObservableTrack> {
 			contributorFilter.set(Release.class, albumCheck.getSelection());
 		}
 	}
+	
 	private class SessionCheckSelectionListener extends SelectionAdapter {
 		@Override
 		public void widgetSelected(SelectionEvent e) {
@@ -226,10 +251,11 @@ public class TrackContributorPanel extends AbstractComposite<ObservableTrack> {
 			contributorFilter.set(Work.class, workCheck.getSelection());
 		}
 	}
+
 	private class EffectiveContributorsButtonSelectionListener extends SelectionAdapter {
 		@Override
 		public void widgetSelected(SelectionEvent e) {
-			NotYetImplemented.openDialog("Sorry");
+			updateFilters();
 		}
 	}
 }

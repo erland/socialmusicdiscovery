@@ -27,6 +27,7 @@
 
 package org.socialmusicdiscovery.rcp.editors.widgets;
 
+import java.util.Collection;
 import java.util.Set;
 
 import org.eclipse.core.databinding.beans.BeanProperties;
@@ -35,6 +36,7 @@ import org.eclipse.core.databinding.observable.set.IObservableSet;
 import org.eclipse.core.databinding.observable.set.WritableSet;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
 import org.eclipse.nebula.jface.gridviewer.GridViewerColumn;
@@ -50,6 +52,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.socialmusicdiscovery.rcp.content.AbstractContributableEntity;
 import org.socialmusicdiscovery.rcp.content.ObservableContributor;
 import org.socialmusicdiscovery.rcp.grid.GridTableColumnLayout;
+import org.socialmusicdiscovery.rcp.util.Debug;
 import org.socialmusicdiscovery.rcp.util.ViewerUtil;
 import org.socialmusicdiscovery.rcp.views.util.AbstractComposite;
 import org.socialmusicdiscovery.rcp.views.util.OpenListener;
@@ -134,7 +137,6 @@ public class ContributorPanel extends AbstractComposite<AbstractContributableEnt
 	private void hookListeners() {
 		// default edit
 		gridTableViewer.addOpenListener(new OpenListener());
-		ViewerUtil.hookSorter(roleGVC, artistGVC);
 	}
 
 	public GridTableViewer getGridViewer() {
@@ -147,15 +149,39 @@ public class ContributorPanel extends AbstractComposite<AbstractContributableEnt
 		IBeanValueProperty artistProperty = BeanProperties.value(ObservableContributor.class, "artist.name");
 		IObservableSet set = new WritableSet(getModel().getContributors(), ObservableContributor.class);
 		ViewerUtil.bind(gridTableViewer, set, roleProperty, artistProperty);
+		ViewerUtil.bindSorter(roleGVC, artistGVC);
 	}
 
 	public ViewerFilter[] getFilters() {
 		return filters;
 	}
 
-	public void setFilters(ViewerFilter[] filters) {
+	public void setFilters(ViewerFilter... filters) {
 		gridTableViewer.setFilters(filters);
+//		debug(gridTableViewer);
 		firePropertyChange(PROP_filters, this.filters, this.filters = filters);
+	}
+
+	@SuppressWarnings("unused")
+	private void debug(StructuredViewer v) {
+		if (getModel()!=null) {
+			ViewerFilter[] viewerFilters = v.getFilters();
+			Set contributors = getModel().getContributors();
+			Debug.debug(this, "Track", getModel());
+			Debug.debug(this, "All", contributors);
+			Debug.debug(this, "Filters", (Object[]) viewerFilters);
+			Debug.debug(this, "Filtered result", filter(v, viewerFilters, contributors));
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private static Object[] filter(StructuredViewer v, ViewerFilter[] filters, Collection objects) {
+		Object[] result = objects.toArray(new Object[objects.size()]);
+		for (ViewerFilter f: filters) {
+			Object[] tmp = f.filter(v, (Object) null, result);
+			result = tmp;
+		}
+		return result;
 	}
 	
 }
