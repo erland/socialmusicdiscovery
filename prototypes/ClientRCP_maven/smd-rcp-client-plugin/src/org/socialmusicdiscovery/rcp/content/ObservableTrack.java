@@ -27,10 +27,13 @@
 
 package org.socialmusicdiscovery.rcp.content;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import org.socialmusicdiscovery.rcp.util.Util;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
 import org.socialmusicdiscovery.server.business.model.core.Medium;
@@ -52,23 +55,43 @@ public class ObservableTrack extends AbstractObservableEntity<Track> implements 
 	 */
 	@SuppressWarnings("unchecked")
 	private class MyContributorFacade extends AbstractContributableEntity {
-		
+		private EffectiveContributorsResolver<ObservableContributorWithOrigin> effectiveContributorsResolver;
 		private MyContributorFacade() {
-			updateSet(PROP_contributors, getContributors(), resolveTypedContributions());
+			List<Collection<ObservableContributorWithOrigin>> orderedContributors = getContributorsInOrderOfPrecedence();
+			updateSet(PROP_contributors, getContributors(), Util.joinAll(orderedContributors));
+			this.effectiveContributorsResolver = new EffectiveContributorsResolver<ObservableContributorWithOrigin>(orderedContributors);
 		}
 
-		private Set resolveTypedContributions() {
-			Set result = new HashSet();
-			for (Work w : getRecording().getWorks()) {
-				result.addAll(compile(Work.class, w));
-			}
-			result.addAll(compile(Recording.class, getRecording()));
-			result.addAll(compile(RecordingSession.class, resolveRecordingSession(getRecording())));
-			result.addAll(compile(Release.class, getRelease()));
+		private List<Collection<ObservableContributorWithOrigin>> getContributorsInOrderOfPrecedence() {
+			List<Collection<ObservableContributorWithOrigin>> result = new ArrayList<Collection<ObservableContributorWithOrigin>>();
+			result.add(getRecordingContributors());
+			result.add(getWorkContributors());
+			result.add(getRecordingSessionContributors());
+			result.add(getReleaseContributors());
 			return result;
 		}
 
-		private Collection compile(Class<? extends SMDIdentity> type, SMDIdentity entity) {
+		private Collection<ObservableContributorWithOrigin> getWorkContributors() {
+			Set<ObservableContributorWithOrigin> result = new HashSet<ObservableContributorWithOrigin>();
+			for (Work w : getRecording().getWorks()) {
+				result.addAll(compile(Work.class, w));
+			}
+			return result;
+		}
+
+		private Collection<ObservableContributorWithOrigin> getReleaseContributors() {
+			return compile(Release.class, getRelease());
+		}
+
+		private Collection<ObservableContributorWithOrigin> getRecordingSessionContributors() {
+			return compile(RecordingSession.class, resolveRecordingSession(getRecording()));
+		}
+
+		private Collection<ObservableContributorWithOrigin> getRecordingContributors() {
+			return compile(Recording.class, getRecording());
+		}
+
+		private Collection<ObservableContributorWithOrigin> compile(Class<? extends SMDIdentity> type, SMDIdentity entity) {
 			Set result = new HashSet();
 			if (entity!=null) {
 				AbstractContributableEntity c = (AbstractContributableEntity) entity;
@@ -88,6 +111,10 @@ public class ObservableTrack extends AbstractObservableEntity<Track> implements 
 		 */
 		private  RecordingSession resolveRecordingSession(Recording recording) {
 			return null; // getRecordingSession();
+		}
+
+		private Set<ObservableContributorWithOrigin> getEffectiveContributors() {
+			return effectiveContributorsResolver.getEffectiveContributors();
 		}
 	}
 
@@ -183,5 +210,21 @@ public class ObservableTrack extends AbstractObservableEntity<Track> implements 
 	protected void postInflate() {
 		super.postInflate();
 		contributorFacade = new MyContributorFacade();
+	}
+
+	/**
+	 * Is the supplied contributor an "effective contributor", or is it
+	 * overridden/disabled by some other?
+	 * 
+	 * @param contributor
+	 */
+	public boolean isEffectiveContributor(ObservableContributorWithOrigin contributor) {
+		Set<ObservableContributorWithOrigin> effectiveContributors = getEffectiveContributors();
+		boolean isEffective = effectiveContributors.contains(contributor);
+		return isEffective;
+	}
+	
+	public Set<ObservableContributorWithOrigin> getEffectiveContributors() {
+		return contributorFacade.getEffectiveContributors();
 	}
 }

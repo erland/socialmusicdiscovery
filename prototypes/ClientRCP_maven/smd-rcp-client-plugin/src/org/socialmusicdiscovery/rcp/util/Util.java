@@ -34,6 +34,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.socialmusicdiscovery.server.business.model.core.Work;
@@ -163,6 +164,34 @@ public final class Util {
 	        type = type.getSuperclass();
 	    }
 	    return fields;
+	}
+
+	/**
+	 * Join all elements of all collections.
+	 * @param <T>
+	 * @param collections
+	 * @return {@link List}
+	 */
+	public static <T> List<T> join(Collection<T>... collections) {
+		List<T> result = new ArrayList<T>();
+		for (Collection<T> c : collections) {
+			result.addAll(c);
+		}
+		return result;
+	}
+
+	/**
+	 * Join all elements of all collections.
+	 * @param <T>
+	 * @param collections
+	 * @return {@link List}
+	 */
+	public static <T> List joinAll(Collection<Collection<T>> collections) {
+		List<T> result = new ArrayList<T>();
+		for (Collection<T> c : collections) {
+			result.addAll(c);
+		}
+		return result;
 	}
 
 }
