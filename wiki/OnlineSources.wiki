@@ -185,6 +185,9 @@ This section contains online streaming sources that would be interesting to inte
     * Music store and previews and meta data
     * Have API which is free for non commercial usage
     * http://developer.7digital.net/
+  * *Mynamusic*
+    * https://www.mynamusic.com/
+    * Not sure if and how it could be integrated but they have an API and it's about music discovery
   * 
 
 = Other sites/tools which is of interest =
