@@ -228,6 +228,10 @@ public class RecordingUI extends AbstractComposite<ObservableRecording> {
 	private void initUI() {
 		tabFolder.setSelection(artistTab);
 		tracksViewer.addOpenListener(new OpenListener()); // default edit (double-click)
+		
+		ViewerUtil.hookSorter(releaseGVC, workGVC);
+		ViewerUtil.hookSorter(new TrackMediumNumberComparator(),  mediumNumberGVC);
+		ViewerUtil.hookSorter(new TrackNumberComparator(),  trackNumberGVC);
 	}
 	
 	@Override
@@ -241,9 +245,6 @@ public class RecordingUI extends AbstractComposite<ObservableRecording> {
 		bindTracks();
 		bindWorks();
 //		bindSessionPanel();
-		ViewerUtil.bindSorter(releaseGVC, workGVC);
-		ViewerUtil.bindSorter(new TrackMediumNumberComparator(),  mediumNumberGVC);
-		ViewerUtil.bindSorter(new TrackNumberComparator(),  trackNumberGVC);
 	}
 	
 	private void bindWorks() {

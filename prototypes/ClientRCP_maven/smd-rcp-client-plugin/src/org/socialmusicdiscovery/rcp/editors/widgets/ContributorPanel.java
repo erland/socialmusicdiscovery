@@ -135,6 +135,7 @@ public class ContributorPanel extends AbstractComposite<AbstractContributableEnt
 	}
 	
 	private void hookListeners() {
+		ViewerUtil.hookSorter(roleGVC, artistGVC);
 		// default edit
 		gridTableViewer.addOpenListener(new OpenListener());
 	}
@@ -149,7 +150,6 @@ public class ContributorPanel extends AbstractComposite<AbstractContributableEnt
 		IBeanValueProperty artistProperty = BeanProperties.value(ObservableContributor.class, "artist.name");
 		IObservableSet set = new WritableSet(getModel().getContributors(), ObservableContributor.class);
 		ViewerUtil.bind(gridTableViewer, set, roleProperty, artistProperty);
-		ViewerUtil.bindSorter(roleGVC, artistGVC);
 	}
 
 	public ViewerFilter[] getFilters() {
