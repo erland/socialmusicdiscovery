@@ -185,8 +185,6 @@ public class TrackContributorPanel extends AbstractComposite<ObservableTrack> {
 		effectiveContributorsButton.addSelectionListener(new EffectiveContributorsButtonSelectionListener());
 		formToolkit.adapt(effectiveContributorsButton, true, true);
 		effectiveContributorsButton.setText("Effective");
-		
-		formToolkit.createLabel(composite, "!!Work In Progress!!", SWT.BORDER | SWT.SHADOW_NONE | SWT.CENTER);
 	
 		initUI();
 		}
