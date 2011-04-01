@@ -248,6 +248,11 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 	private void initUI() {
 		albumDataTabFolder.setSelection	(contributorTab);
 		gridViewerTracks.addOpenListener(new OpenListener()); // default edit (double-click)
+		
+		ViewerUtil.hookSorter(gvcTitle);
+		ViewerUtil.hookSorter(new TrackMediumNumberComparator(),  gvcMediumNbr);
+		ViewerUtil.hookSorter(new TrackNumberComparator(),  gvcTrackNumber);
+
 //		FIXME: make this work (also disable grid inputs)
 //		ViewerUtil.hookEnabledWithDistinctSelection(gridViewerTracks, trackContributorPanel.getChildren());
 	}
@@ -260,9 +265,6 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 	@Override
 	public void afterSetModel(ObservableRelease release) {
 		getArtistPanel().setModel(getModel());
-		ViewerUtil.bindSorter(gvcTitle);
-		ViewerUtil.bindSorter(new TrackMediumNumberComparator(),  gvcMediumNbr);
-		ViewerUtil.bindSorter(new TrackNumberComparator(),  gvcTrackNumber);
 	}
 
 

@@ -96,24 +96,31 @@ public class GridViewerColumnComparator extends ViewerComparator implements Sele
 	private final ColumnViewer viewer;
 	private final GridColumn column;
 	private final GridViewerColumn gvc;
+	private final Comparator comparatorOrNull;
 	
-	private Comparator comparator; // lazy init since we may register this instance before the label provider
 	private int currentSortOrder = NO_SORT;
 	private ViewerComparator subSorter = new VoidComparator();
 	
 	/**
-	 * Constructor for default sorter.
+	 * Creates and registers a sorter with default comparator (dynamically resolved from label provider).
 	 */
-	public GridViewerColumnComparator(GridViewerColumn gvc) {
-		this(gvc, null);
+	public static GridViewerColumnComparator hook(GridViewerColumn gvc) {
+		return new GridViewerColumnComparator(gvc, null);
 	}
 	
 	/**
-	 * Constructor for specific sorter. 
+	 * Creates and registers a sorter with supplied comparator.  
 	 */
-	public GridViewerColumnComparator(GridViewerColumn gvc, Comparator comparator) {
+	public static GridViewerColumnComparator hook(GridViewerColumn gvc, Comparator comparator) {
+		return new GridViewerColumnComparator(gvc, null);
+	}
+
+	/**
+	 * Private constructor. Use static factory methods.
+	 */
+	private GridViewerColumnComparator(GridViewerColumn gvc, Comparator comparator) {
 		assert gvc!=null : "Must have viewer!"; //$NON-NLS-1$
-		this.comparator = comparator;
+		this.comparatorOrNull = comparator;
 		this.gvc = gvc;
 		this.viewer = gvc.getViewer();
 		this.column = gvc.getColumn();
@@ -139,14 +146,34 @@ public class GridViewerColumnComparator extends ViewerComparator implements Sele
 		return finalSort ;
 	}
 
+	/**
+	 * Implementation note: do <b>not</b> cache the comparator since it dependes on 
+	 * the concrete label provider instance that is rebound when the model changes.
+	 * Unless we got a stable comparator passed in the constructor, we need to resolve it
+	 * on every call (or find a safe way of caching and disposing with the label provider).
+	 * Until we see a performance problem here, it isn't worth the trouble. 
+	 */
 	@Override
 	protected Comparator getComparator() {
-		if (comparator==null) {
-			comparator = resolveComparator(gvc);
-		}
-		return comparator;
+		return comparatorOrNull==null ? resolveComparator(gvc) : comparatorOrNull;
 	}
 	
+	/**
+	 * Create a comparator based on the label provider of the column. See
+	 * comments on {@link #getComparator()}.
+	 * 
+	 * @param gvc
+	 * @return {@link Comparator}
+	 */
+	private static Comparator resolveComparator(GridViewerColumn gvc) {
+		IBaseLabelProvider lp = gvc.getViewer().getLabelProvider();
+		if (lp instanceof ITableLabelProvider) {
+			int columnIndex = ViewerUtil.resolveColumnIndex(gvc);
+			return new MyTableLabelProviderComparator((ITableLabelProvider) lp, columnIndex);
+		}
+		return Policy.getComparator(); // emergency: default comparator will probably not work as expected 
+	}
+
 	private void changeSortOrder() {
 		boolean isInitialSort = viewer.getComparator() != this;
 		int sortOrder = isInitialSort ? ASCENDING : getNextSortOrder(currentSortOrder);
@@ -230,15 +257,6 @@ public class GridViewerColumnComparator extends ViewerComparator implements Sele
 	 */
 	private void clearSubSorter() {
 		subSorter = new VoidComparator();
-	}
-
-	private static Comparator resolveComparator(GridViewerColumn gvc) {
-		IBaseLabelProvider lp = gvc.getViewer().getLabelProvider();
-		if (lp instanceof ITableLabelProvider) {
-			int columnIndex = ViewerUtil.resolveColumnIndex(gvc);
-			return new MyTableLabelProviderComparator((ITableLabelProvider) lp, columnIndex);
-		}
-		return Policy.getComparator(); // emergency: default comparator will probably not work as expected 
 	}
 
 	private static int getNextSortOrder(int currentSortOrder) {
