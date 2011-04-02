@@ -180,14 +180,14 @@ public class ObservableTrack extends AbstractObservableEntity<Track> implements 
 	}
 
 	public String getTitle() {
-		// FIXME observe recording
 		if (title==null) {
-			hookTitle();
+			bindTitle();
 		}
 		return title;
 	}
 
-	private void hookTitle() {
+	private void bindTitle() {
+		// FIXME observe recording
 		ObservableRecording r = getObservableRecording();
 		title = r.getName();
 	}
