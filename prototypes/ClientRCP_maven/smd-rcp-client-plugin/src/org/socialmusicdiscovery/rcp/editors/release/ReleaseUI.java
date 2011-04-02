@@ -72,7 +72,7 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 
 	private Text textName;
 	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
-	protected ScrolledForm scrldfrmRelease;
+	protected ScrolledForm formRelease;
 	protected Text text;
 	protected Section sectionAlbumData;
 	protected Composite compositeAlbumData;
@@ -85,7 +85,7 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 	private GridViewerColumn gvcTitle;
 	protected GridColumn colPerformer;
 	protected CTabItem contributorTab;
-	private Section sctnTracks;
+	private Section sectionTracks;
 	private Composite gridContainer;
 	private GridColumnGroup groupContributors;
 	private ContributorPanel artistPanel;
@@ -115,29 +115,29 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 		gridLayout.marginWidth = 0;
 		setLayout(gridLayout);
 		
-		scrldfrmRelease = formToolkit.createScrolledForm(this);
+		formRelease = formToolkit.createScrolledForm(this);
 		GridData gd_scrldfrmRelease = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		gd_scrldfrmRelease.widthHint = 1143;
-		scrldfrmRelease.setLayoutData(gd_scrldfrmRelease);
-		formToolkit.paintBordersFor(scrldfrmRelease);
-		scrldfrmRelease.setText("Release");
-		scrldfrmRelease.getBody().setLayout(new GridLayout(1, false));
+		formRelease.setLayoutData(gd_scrldfrmRelease);
+		formToolkit.paintBordersFor(formRelease);
+		formRelease.setText("Release");
+		formRelease.getBody().setLayout(new GridLayout(1, false));
 		
-		Label lblName = formToolkit.createLabel(scrldfrmRelease.getBody(), "Name", SWT.NONE);
+		Label lblName = formToolkit.createLabel(formRelease.getBody(), "Name", SWT.NONE);
 		lblName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
-		textName = formToolkit.createText(scrldfrmRelease.getBody(), "text", SWT.BORDER);
+		textName = formToolkit.createText(formRelease.getBody(), "text", SWT.BORDER);
 		textName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		textName.setText("");
 		
-		sctnTracks = formToolkit.createSection(scrldfrmRelease.getBody(), Section.EXPANDED | Section.TITLE_BAR);
-		sctnTracks.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		formToolkit.paintBordersFor(sctnTracks);
-		sctnTracks.setText("Tracks");
+		sectionTracks = formToolkit.createSection(formRelease.getBody(), Section.EXPANDED | Section.TITLE_BAR);
+		sectionTracks.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		formToolkit.paintBordersFor(sectionTracks);
+		sectionTracks.setText("Tracks");
 		
-		gridContainer = formToolkit.createComposite(sctnTracks, SWT.NONE);
+		gridContainer = formToolkit.createComposite(sectionTracks, SWT.NONE);
 		formToolkit.paintBordersFor(gridContainer);
-		sctnTracks.setClient(gridContainer);
+		sectionTracks.setClient(gridContainer);
 		FillLayout fl_gridContainer = new FillLayout(SWT.HORIZONTAL);
 		fl_gridContainer.marginWidth = 5;
 		fl_gridContainer.spacing = 5;
@@ -197,7 +197,7 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 		sashForm.setWeights(new int[] {404, 714});
 		
 		
-		sectionAlbumData = formToolkit.createSection(scrldfrmRelease.getBody(), Section.TWISTIE | Section.TITLE_BAR);
+		sectionAlbumData = formToolkit.createSection(formRelease.getBody(), Section.TWISTIE | Section.TITLE_BAR);
 		sectionAlbumData.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 		formToolkit.paintBordersFor(sectionAlbumData);
 		sectionAlbumData.setText("Album Data");
