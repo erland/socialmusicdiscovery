@@ -25,31 +25,28 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.rcp.editors.artist;
+package org.socialmusicdiscovery.rcp.content;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
-import org.socialmusicdiscovery.rcp.content.ObservableArtist;
-import org.socialmusicdiscovery.rcp.editors.AbstractEditorPart;
+import org.socialmusicdiscovery.server.business.model.core.Artist;
+import org.socialmusicdiscovery.server.business.model.core.Contributor;
 
-public class ArtistEditor extends AbstractEditorPart<ObservableArtist, ArtistUI> {
+/**
+ * Extends the {@link Contributor} with info on what the {@link Artist} contributes <b>to</b>.
+ * 
+ * @author Peer Törngren
+ */
+public class ObservableContribution extends ObservableContributor {
 
-	public static final String ID = ArtistEditor.class.getName();
+	private static final String PROP_entity = "entity";
+	
+	private AbstractContributableEntity entity; 
 
-	public ArtistEditor() {
+	public AbstractContributableEntity getEntity() {
+		return entity;
 	}
-
-	@Override
-	public void createPartControl(Composite parent) {
-		super.createPartControl(parent, new ArtistUI(parent, SWT.NONE));
-		hookContextMenus();
+	
+	public void setEntity(AbstractContributableEntity entity) {
+		firePropertyChange(PROP_entity, this.entity, this.entity = entity);
 	}
-
-	private void hookContextMenus() {
-		hookContextMenus(
-			getUI().getArtistContributionsPanel().getGridViewer()
-//			getUI().getAliasArea().getGridViewer(),
-//			getUI().getMemberArea().getGridViewer(),
-		);
-	}
+	
 }

@@ -27,6 +27,7 @@
 
 package org.socialmusicdiscovery.rcp.content;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -39,9 +40,11 @@ public class ObservableArtist extends AbstractObservableEntity<Artist> implement
 
 	public static final String PROP_person = "person";
 	public static final String PROP_aliases = "aliases";
+	public static final String PROP_contributions = "contributions";
 	
 	@Expose private Person person;
 	@Expose private Set<Artist> aliases = new HashSet<Artist>();
+	private transient Set<ObservableContribution> contributions;
 
 	@Override
 	public Person getPerson() {
@@ -59,6 +62,25 @@ public class ObservableArtist extends AbstractObservableEntity<Artist> implement
 
 	public void setAliases(Set<Artist> aliases) {
 		firePropertyChange(PROP_aliases, this.aliases, this.aliases = aliases);
+	}
+
+	public Set<ObservableContribution> getContributions() {
+		if (contributions==null) {
+			contributions = resolveContributions();
+		}
+		return contributions;
+	}
+
+	public void setContributions(Set<ObservableContribution> contributions) {
+		if (this.contributions==null) {
+			this.contributions = new HashSet<ObservableContribution>();
+		}
+		updateSet(PROP_contributions, this.contributions, contributions);
+	}
+
+	@SuppressWarnings("unchecked")
+	private Set<ObservableContribution> resolveContributions() {
+		return Collections.EMPTY_SET; // FIXME resolve artist contributions
 	}
 
 }

@@ -31,38 +31,36 @@ import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.SWTObservables;
-import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
-import org.eclipse.nebula.jface.gridviewer.GridViewerColumn;
-import org.eclipse.nebula.widgets.grid.Grid;
-import org.eclipse.nebula.widgets.grid.GridColumn;
-import org.eclipse.nebula.widgets.grid.GridItem;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
+import org.eclipse.ui.forms.widgets.Section;
 import org.socialmusicdiscovery.rcp.content.ObservableArtist;
 import org.socialmusicdiscovery.rcp.views.util.AbstractComposite;
 
 public class ArtistUI extends AbstractComposite<ObservableArtist> {
-	private Text textName;
+	private Text nameText;
 	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
 	protected ScrolledForm formArtist;
-	protected Label lblName;
-	protected ExpandableComposite metadataReferences;
-	protected Grid grid;
-	private GridTableViewer gridTableViewer;
-	protected GridColumn sourceCol;
-	private GridViewerColumn gridViewerColumn;
-	protected GridColumn valueCol;
-	private GridViewerColumn valueGVC;
-	protected GridItem itemSMD;
-	protected GridItem itemMB;
+	protected Label nameLabel;
+	private Section contributionSection;
+	private Section artistDataSection;
+	private Composite composite;
+	private CTabFolder artistDataTabFolder;
+	private CTabItem aliasTab;
+	private CTabItem memberTab;
+	private ArtistContributionsPanel artistContributionsPanel;
+	private Composite memberArea;
+	private Composite aliasArea;
+	private Label labelNotYetImplemented;
 	
 	/**
 	 * Create the composite.
@@ -82,43 +80,60 @@ public class ArtistUI extends AbstractComposite<ObservableArtist> {
 		formArtist.setText("Artist");
 		formArtist.getBody().setLayout(new GridLayout(1, false));
 		
-		lblName = formToolkit.createLabel(formArtist.getBody(), "Name:", SWT.NONE);
+		nameLabel = formToolkit.createLabel(formArtist.getBody(), "Name:", SWT.NONE);
 		
-		textName = new Text(formArtist.getBody(), SWT.BORDER);
-		textName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		nameText = new Text(formArtist.getBody(), SWT.BORDER);
+		nameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
-		metadataReferences = formToolkit.createExpandableComposite(formArtist.getBody(), ExpandableComposite.TREE_NODE | ExpandableComposite.TITLE_BAR);
-		GridData gd_metadataReferences = new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1);
-		gd_metadataReferences.widthHint = 194;
-		metadataReferences.setLayoutData(gd_metadataReferences);
-		metadataReferences.setToolTipText("Details about internal metadata and references to external sources.");
-		metadataReferences.setBounds(0, 0, 166, 13);
-		formToolkit.paintBordersFor(metadataReferences);
-		metadataReferences.setText("Metadata References");
-		metadataReferences.setExpanded(true);
+		labelNotYetImplemented = formToolkit.createLabel(formArtist.getBody(), "WORK IN PROGRESS - everything below is NOT YET IMPLEMENTED!!!", SWT.CENTER);
+		labelNotYetImplemented.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, false, 1, 1));
 		
-		gridTableViewer = new GridTableViewer(metadataReferences, SWT.BORDER);
-		grid = gridTableViewer.getGrid();
-		grid.setHeaderVisible(true);
-		formToolkit.paintBordersFor(grid);
-		metadataReferences.setClient(grid);
+		contributionSection = formToolkit.createSection(formArtist.getBody(), Section.TITLE_BAR);
+		contributionSection.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		formToolkit.paintBordersFor(contributionSection);
+		contributionSection.setText("Contributions");
 		
-		gridViewerColumn = new GridViewerColumn(gridTableViewer, SWT.NONE);
-		sourceCol = gridViewerColumn.getColumn();
-		sourceCol.setMoveable(true);
-		sourceCol.setWidth(100);
-		sourceCol.setText("Source");
 		
-		valueGVC = new GridViewerColumn(gridTableViewer, SWT.NONE);
-		valueCol = valueGVC.getColumn();
-		valueCol.setWidth(100);
-		valueCol.setText("Value");
+		composite = formToolkit.createComposite(contributionSection, SWT.NONE);
+		formToolkit.paintBordersFor(composite);
+		contributionSection.setClient(composite);
+		composite.setLayout(new GridLayout(1, false));
 		
-		itemSMD = new GridItem(grid, SWT.NONE);
-		itemSMD.setText("SMD");
+		artistContributionsPanel = new ArtistContributionsPanel(composite, SWT.NONE);
+		artistContributionsPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		formToolkit.adapt(artistContributionsPanel);
+		formToolkit.paintBordersFor(artistContributionsPanel);
+			
+		artistDataSection = formToolkit.createSection(formArtist.getBody(), Section.TWISTIE | Section.TITLE_BAR);
+		artistDataSection.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1));
+		formToolkit.paintBordersFor(artistDataSection);
+		artistDataSection.setText("Artist Data");
 		
-		itemMB = new GridItem(grid, SWT.NONE);
-		itemMB.setText("MusicBrainz");
+		artistDataTabFolder = new CTabFolder(artistDataSection, SWT.BORDER | SWT.BOTTOM);
+		formToolkit.adapt(artistDataTabFolder);
+		formToolkit.paintBordersFor(artistDataTabFolder);
+		artistDataSection.setClient(artistDataTabFolder);
+		artistDataTabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
+		
+		memberTab = new CTabItem(artistDataTabFolder, SWT.NONE);
+		memberTab.setText("Member/Members");
+		
+		memberArea = formToolkit.createComposite(artistDataTabFolder, SWT.NONE);
+		memberTab.setControl(memberArea);
+		formToolkit.paintBordersFor(memberArea);
+		
+		aliasTab = new CTabItem(artistDataTabFolder, SWT.NONE);
+		aliasTab.setText("Aliases");
+		
+		aliasArea = formToolkit.createComposite(artistDataTabFolder, SWT.NONE);
+		aliasTab.setControl(aliasArea);
+		formToolkit.paintBordersFor(aliasArea);
+		
+		initUI();
+	}
+
+	private void initUI() {
+		artistDataTabFolder.setSelection(memberTab);
 	}
 
 	@Override
@@ -136,14 +151,23 @@ public class ArtistUI extends AbstractComposite<ObservableArtist> {
 	protected DataBindingContext initDataBindings() {
 		DataBindingContext bindingContext = new DataBindingContext();
 		//
-		IObservableValue textNameObserveTextObserveWidget = SWTObservables.observeText(textName, SWT.Modify);
+		IObservableValue textNameObserveTextObserveWidget = SWTObservables.observeText(nameText, SWT.Modify);
 		IObservableValue artistgetNameEmptyObserveValue = BeansObservables.observeValue(getArtist(), "name");
 		bindingContext.bindValue(textNameObserveTextObserveWidget, artistgetNameEmptyObserveValue, null, null);
 		//
-		IObservableValue textNameObserveTooltipTextObserveWidget = SWTObservables.observeTooltipText(textName);
+		IObservableValue textNameObserveTooltipTextObserveWidget = SWTObservables.observeTooltipText(nameText);
 		IObservableValue getArtistPersonObserveValue = BeansObservables.observeValue(getArtist(), "person");
 		bindingContext.bindValue(textNameObserveTooltipTextObserveWidget, getArtistPersonObserveValue, null, null);
 		//
 		return bindingContext;
+	}
+	public ArtistContributionsPanel getArtistContributionsPanel() {
+		return artistContributionsPanel;
+	}
+	public Composite getMemberArea() {
+		return memberArea;
+	}
+	public Composite getAliasArea() {
+		return aliasArea;
 	}
 }
