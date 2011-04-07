@@ -54,6 +54,7 @@ import org.socialmusicdiscovery.rcp.util.JobUtil;
 import org.socialmusicdiscovery.rcp.util.TextUtil;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
+import org.socialmusicdiscovery.server.business.model.core.PlayableElement;
 import org.socialmusicdiscovery.server.business.model.core.Recording;
 import org.socialmusicdiscovery.server.business.model.core.Release;
 import org.socialmusicdiscovery.server.business.model.core.Track;
@@ -490,10 +491,11 @@ public class DataSource extends AbstractObservable implements ModelObject {
 	public List<? extends Root> getRoots() {
 		if (roots == null) {
 			roots = Arrays.asList(
-				new Root<Artist>("Artists", "/artists", Artist.class, new GenericType<Set<Artist>>() {} ), 
-				new Root<Recording>("Recordings", "/recordings", Recording.class, new GenericType<Set<Recording>>() {} ),
-				new Root<Release>("Releases", "/releases", Release.class, new GenericType<Set<Release>>() {} ), 
-				new Root<Track>("Tracks", "/tracks", Track.class, new GenericType<Set<Track>>() {} )
+				new Root<Artist>("Artists", "/artists", Artist.class, new GenericType<Set<Artist>>() {} )
+				,new Root<Recording>("Recordings", "/recordings", Recording.class, new GenericType<Set<Recording>>() {} )
+				,new Root<Release>("Releases", "/releases", Release.class, new GenericType<Set<Release>>() {} ) 
+				,new Root<Track>("Tracks", "/tracks", Track.class, new GenericType<Set<Track>>() {} )
+				,new Root<PlayableElement>("Playables", "/playableElements", PlayableElement.class, new GenericType<Set<PlayableElement>>() {} )
 			);
 		}
 		return roots;
