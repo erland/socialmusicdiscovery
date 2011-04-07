@@ -25,36 +25,57 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.rcp.test;
+package org.socialmusicdiscovery.rcp.content;
 
-import org.eclipse.core.databinding.observable.Realm;
+import org.socialmusicdiscovery.server.business.model.core.PlayableElement;
 
-import junit.framework.TestCase;
+import com.google.gson.annotations.Expose;
 
-/**
- * Abstract test case for UI-related testing; sets up and tears down a
- * {@link Realm} to enable jface data binding.
- * 
- * @author Peer Törngren
- * 
- */
-public abstract class AbstractTestCase extends TestCase {
-	private TestRealm realm;
+public class ObservablePlayableElement extends AbstractObservableEntity<PlayableElement> implements PlayableElement {
 
-	/**
-	 * Creates a new default realm for every test.
-	 */
-	protected void setUp() throws Exception {
-		super.setUp();
-		realm = new TestRealm();
+	private static final String PROP_bitrate = "bitrate"; //$NON-NLS-1$
+	private static final String PROP_format = "format"; //$NON-NLS-1$
+	private static final String PROP_smdID = "smdID"; //$NON-NLS-1$
+	private static final String PROP_uri = "uri"; //$NON-NLS-1$
+	
+	@Expose private Integer bitrate;
+	@Expose private String format;
+	@Expose private String smdID;
+	@Expose private String uri;
+
+	@Override
+	public Integer getBitrate() {
+		return bitrate;
 	}
 
-	/**
-	 * Removes the default realm.
-	 */
-	protected void tearDown() throws Exception {
-		super.tearDown();
-		realm.dispose();
+	@Override
+	public String getFormat() {
+		return format;
 	}
 
+	@Override
+	public String getSmdID() {
+		return smdID;
+	}
+
+	@Override
+	public String getUri() {
+		return uri;
+	}
+
+	public void setBitrate(Integer bitrate) {
+		firePropertyChange(PROP_bitrate, this.bitrate, this.bitrate = bitrate);
+	}
+
+	public void setFormat(String format) {
+		firePropertyChange(PROP_format, this.format, this.format = format);
+	}
+
+	public void setSmdID(String smdID) {
+		firePropertyChange(PROP_smdID, this.smdID, this.smdID = smdID);
+	}
+
+	public void setUri(String uri) {
+		firePropertyChange(PROP_uri, this.uri, this.uri = uri);
+	}
 }

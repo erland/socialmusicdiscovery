@@ -209,7 +209,7 @@ public class ObservableTrack extends AbstractContributableEntity<Track> implemen
 	}
 
 	public void setPlayableElements(Set<PlayableElement> playableElements) {
-		firePropertyChange(PROP_playableElements, this.playableElements, this.playableElements = playableElements);
+		updateSet(PROP_playableElements, this.playableElements, playableElements);
 	}
 
 	public void setMedium(Medium medium) {
