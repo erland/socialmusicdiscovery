@@ -27,13 +27,17 @@
 
 package org.socialmusicdiscovery.rcp.content;
 
+import static org.socialmusicdiscovery.rcp.content.ObservableContributor.PROP_artist;
+import static org.socialmusicdiscovery.rcp.content.ObservableContributor.PROP_type;
+import static org.socialmusicdiscovery.rcp.content.ObservableRecording.PROP_works;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.socialmusicdiscovery.rcp.util.Util;
+import org.socialmusicdiscovery.rcp.util.ChangeMonitor;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
 import org.socialmusicdiscovery.server.business.model.core.Medium;
@@ -46,7 +50,16 @@ import org.socialmusicdiscovery.server.business.model.core.Work;
 
 import com.google.gson.annotations.Expose;
 
-public class ObservableTrack extends AbstractObservableEntity<Track> implements Track {
+public class ObservableTrack extends AbstractContributableEntity<Track> implements Track {
+//	private class MyTitleManager implements Runnable {
+//
+//		@Override
+//		public void run() {
+//			Recording r = getRecording();
+//			String t = r==null ? null : r.getName();
+//			setTitle(t);
+//		}
+//	}
 
 	/**
 	 * Lots of unsafe types here - see comments on {@link AbstractContributableEntity}.
@@ -54,14 +67,29 @@ public class ObservableTrack extends AbstractObservableEntity<Track> implements 
 	 * @param contributables
 	 */
 	@SuppressWarnings("unchecked")
-	private class MyContributorFacade extends AbstractContributableEntity {
+	private class MyContributorFacade extends AbstractContributableEntity implements Runnable {
 		private EffectiveContributorsResolver<ObservableContributorWithOrigin> effectiveContributorsResolver;
 		private MyContributorFacade() {
-			List<Collection<ObservableContributorWithOrigin>> orderedContributors = getContributorsInOrderOfPrecedence();
-			updateSet(PROP_contributors, getContributors(), Util.joinAll(orderedContributors));
-			this.effectiveContributorsResolver = new EffectiveContributorsResolver<ObservableContributorWithOrigin>(orderedContributors);
+			update();
+			ChangeMonitor.observe(this, ObservableTrack.this, PROP_release, PROP_contributors, PROP_artist, PROP_name);
+			ChangeMonitor.observe(this, ObservableTrack.this, PROP_release, PROP_contributors, PROP_type);
+			ChangeMonitor.observe(this, ObservableTrack.this, PROP_recording, PROP_contributors, PROP_artist, PROP_name);
+			ChangeMonitor.observe(this, ObservableTrack.this, PROP_recording, PROP_contributors, PROP_type);
+			ChangeMonitor.observe(this, ObservableTrack.this, PROP_recording, PROP_works, PROP_contributors, PROP_artist, PROP_name);
+			ChangeMonitor.observe(this, ObservableTrack.this, PROP_recording, PROP_works, PROP_contributors, PROP_type);
 		}
 
+		private void update() {
+			List<Collection<ObservableContributorWithOrigin>> orderedContributors = getContributorsInOrderOfPrecedence();
+			effectiveContributorsResolver = new EffectiveContributorsResolver<ObservableContributorWithOrigin>(orderedContributors);
+			setContributors(effectiveContributorsResolver.getEffectiveContributors());
+		}
+
+		@Override
+		public void run() {
+			update(); // TODO refine, only update the affected set of contributors
+		}
+		
 		private List<Collection<ObservableContributorWithOrigin>> getContributorsInOrderOfPrecedence() {
 			List<Collection<ObservableContributorWithOrigin>> result = new ArrayList<Collection<ObservableContributorWithOrigin>>();
 			result.add(getRecordingContributors());
@@ -113,9 +141,19 @@ public class ObservableTrack extends AbstractObservableEntity<Track> implements 
 			return null; // getRecordingSession();
 		}
 
-		private Set<ObservableContributorWithOrigin> getEffectiveContributors() {
-			return effectiveContributorsResolver.getEffectiveContributors();
+		@Override
+		public Set<ObservableContributorWithOrigin> getContributors() {
+			// TODO make typesafe, use generics in signature
+			Set contributors = ObservableTrack.this.getContributors();
+			return contributors;
 		}
+
+		@Override
+		public void setContributors(Set contributors) {
+			// TODO make typesafe, use generics in signature
+			ObservableTrack.this.setContributors(contributors);
+		}
+
 	}
 
 	public static final String PROP_number = "number";
@@ -126,6 +164,7 @@ public class ObservableTrack extends AbstractObservableEntity<Track> implements 
 	public static final String PROP_title = "title";
 	
 	private transient String title;
+//	private transient final MyTitleManager titleManager = new MyTitleManager();
 	
 	@Expose private Integer number;
 	@Expose private Medium medium;
@@ -133,6 +172,12 @@ public class ObservableTrack extends AbstractObservableEntity<Track> implements 
 	@Expose private Set<PlayableElement> playableElements = new HashSet<PlayableElement>();
 	@Expose private Release release;
 	private MyContributorFacade contributorFacade;
+
+	public ObservableTrack() {
+		// FIXME make this work
+//		ChangeMonitor.observe(titleManager, this, PROP_recording, PROP_name);
+//		ChangeMonitor.observe(titleManager, this, PROP_observable_recording, PROP_name);
+	}
 
 	@Override
 	public Integer getNumber() {
@@ -196,9 +241,11 @@ public class ObservableTrack extends AbstractObservableEntity<Track> implements 
 		firePropertyChange(PROP_title, this.title, this.title = title);
 	}
 
-	protected ObservableRecording getObservableRecording() {
+	public ObservableRecording getObservableRecording() {
 		ObservableRecording r = (ObservableRecording) getRecording();
-		r.inflate();
+		if (r!=null) {
+			r.inflate();
+		}
 		return r;
 	}
 
@@ -219,12 +266,8 @@ public class ObservableTrack extends AbstractObservableEntity<Track> implements 
 	 * @param contributor
 	 */
 	public boolean isEffectiveContributor(ObservableContributorWithOrigin contributor) {
-		Set<ObservableContributorWithOrigin> effectiveContributors = getEffectiveContributors();
-		boolean isEffective = effectiveContributors.contains(contributor);
+		boolean isEffective = getContributors().contains(contributor);
 		return isEffective;
 	}
 	
-	public Set<ObservableContributorWithOrigin> getEffectiveContributors() {
-		return contributorFacade.getEffectiveContributors();
-	}
 }

@@ -170,8 +170,7 @@ public class ObservableRecording extends AbstractContributableEntity<Recording> 
 
 	@Override
 	public void setWorks(Set<Work> works) {
-		throw new UnsupportedOperationException();
-//		firePropertyChange(PROP_works, this.works, this.works = works);
+		updateSet(PROP_works, this.works, works);
 	}
 
 	
