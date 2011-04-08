@@ -42,24 +42,43 @@ import org.socialmusicdiscovery.rcp.event.Observable;
 import org.socialmusicdiscovery.rcp.util.ChangeMonitor.PropertyData;
 
 /**
+ * <p>
+ * A listener that can be linked with other similar listeners to produce a chain
+ * of listeners representing a complex property name like
+ * "father.mother.children". Whenever element in the chain changes, listeners
+ * are released and re-attached so that any change anywhere in the chain fires a
+ * {@link PropertyChangeEvent}.
+ * </p>
+ * 
+ * <p>
+ * Since some links may be collections, the result isn't really a "chain", but
+ * rather some kind of tree, where the root link may expand to zero, one or any
+ * number of leaves.
+ * </p>
+ * 
+ * <p>
+ * This class is internal and designed for use with {@link ChangeMonitor}. It
+ * may or may not work in other contexts.
+ * </p>
+ * 
  * @author Peer Törngren
  */
-/* package */ class ChainedChangeListener implements PropertyChangeListener {
+/* package */ class LinkedListener implements PropertyChangeListener {
 
 	private final Runnable runner;
 	private final PropertyData data;
 	private final List<PropertyData> tail;
-	private final Set<ChainedChangeListener> chainedListeners = new HashSet<ChainedChangeListener>();
+	private final Set<LinkedListener> links = new HashSet<LinkedListener>();
 	private final  Observable observed;
 
 	/**
 	 * Convenience constructor, primarily for testing.
 	 */
-	public ChainedChangeListener(Observable observable, Runnable runner, PropertyData... allData) {
+	public LinkedListener(Observable observable, Runnable runner, PropertyData... allData) {
 		this(observable, Arrays.asList(allData), runner);
 		
 	}
-	public ChainedChangeListener(Observable observable, List<PropertyData> allData, Runnable runner) {
+	public LinkedListener(Observable observable, List<PropertyData> allData, Runnable runner) {
 		assert !allData.isEmpty() : "Must have data to register listeners";
 		this.runner = runner;
 		this.data = allData.get(0);
@@ -92,7 +111,7 @@ import org.socialmusicdiscovery.rcp.util.ChangeMonitor.PropertyData;
 	}
 
 	private void createListener(Observable observable, List<PropertyData> tail, Runnable runner) {
-		chainedListeners.add(new ChainedChangeListener((Observable) observable, tail, runner));
+		links.add(new LinkedListener((Observable) observable, tail, runner));
 	}
 
 	@Override
@@ -138,21 +157,21 @@ import org.socialmusicdiscovery.rcp.util.ChangeMonitor.PropertyData;
 
 	private void release(Observable observed) {
 		observed.removePropertyChangeListener(data.propertyName, this);
-		for (ChainedChangeListener c : chainedListeners) {
+		for (LinkedListener c : links) {
 			c.release();
 		}
-		chainedListeners.clear();
+		links.clear();
 	}
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName()+"@"+observed+"=>"+chainedListeners;
+		return getClass().getSimpleName()+"@"+observed+"=>"+links;
 	}
 
 	/** For testing */
-	/* package */ List<ChainedChangeListener> getChain() {
-		List<ChainedChangeListener> list = new ArrayList<ChainedChangeListener>();
-		for (ChainedChangeListener l : chainedListeners) {
+	/* package */ List<LinkedListener> getChain() {
+		List<LinkedListener> list = new ArrayList<LinkedListener>();
+		for (LinkedListener l : links) {
 			list.add(l);
 			list.addAll(l.getChain());
 		}

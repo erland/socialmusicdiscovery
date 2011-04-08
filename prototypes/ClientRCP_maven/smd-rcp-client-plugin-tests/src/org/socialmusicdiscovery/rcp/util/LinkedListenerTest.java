@@ -42,7 +42,7 @@ import org.socialmusicdiscovery.rcp.util.ChangeMonitor.PropertyData;
  * @author Peer Törngren
  *
  */
-public class ChainedChangeListenerTest extends AbstractTestCase {
+public class LinkedListenerTest extends AbstractTestCase {
 
 	private PropertyData children;
 	private PropertyData name;
@@ -89,7 +89,7 @@ public class ChainedChangeListenerTest extends AbstractTestCase {
 
 	@Test
 	public void testBasic() {
-		ChainedChangeListener testee = testee(name);
+		LinkedListener testee = testee(name);
 		assertTrue(testee.getChain().isEmpty());
 
 		testee = testee(child);
@@ -101,7 +101,7 @@ public class ChainedChangeListenerTest extends AbstractTestCase {
 
 	@Test
 	public void testSimpleChain() {
-		ChainedChangeListener testee = testee(child, name);
+		LinkedListener testee = testee(child, name);
 		assertEquals(0, testee.getChain().size());
 		root.setChild(child1);
 		assertEquals(1, testee.getChain().size());
@@ -112,7 +112,7 @@ public class ChainedChangeListenerTest extends AbstractTestCase {
 	}			
 	@Test
 	public void testSimpleChainWithCollection() {
-		ChainedChangeListener testee = testee(children, name);
+		LinkedListener testee = testee(children, name);
 		assertEquals(0, testee.getChain().size());
 		root.add(child1);
 		assertEquals(1, testee.getChain().size());
@@ -124,7 +124,7 @@ public class ChainedChangeListenerTest extends AbstractTestCase {
 	
 	@Test
 	public void testChainWithTwoInstances() {
-		ChainedChangeListener testee = testee(child, child, name);
+		LinkedListener testee = testee(child, child, name);
 		assertEquals(0, testee.getChain().size());
 		root.setChild(child1);
 		assertEquals(1, testee.getChain().size());
@@ -143,7 +143,7 @@ public class ChainedChangeListenerTest extends AbstractTestCase {
 
 	@Test
 	public void testChainWithTwoCollections() {
-		ChainedChangeListener testee = testee(children, children, name);
+		LinkedListener testee = testee(children, children, name);
 		assertEquals(0, testee.getChain().size());
 		root.add(child1);
 		assertEquals(1, testee.getChain().size());
@@ -155,7 +155,7 @@ public class ChainedChangeListenerTest extends AbstractTestCase {
 
 	@Test
 	public void testChainWithTwoCollectionsAndDeleteIntermediate() {
-		ChainedChangeListener testee = testee(children, children, name);
+		LinkedListener testee = testee(children, children, name);
 		assertEquals(0, testee.getChain().size());
 		root.add(child1);
 		assertEquals(1, testee.getChain().size());
@@ -168,7 +168,7 @@ public class ChainedChangeListenerTest extends AbstractTestCase {
 		assertEquals(2, testee.getChain().size());
 	}
 	
-	private ChainedChangeListener testee(PropertyData... data) {
-		return new ChainedChangeListener(root, runnable, data);
+	private LinkedListener testee(PropertyData... data) {
+		return new LinkedListener(root, runnable, data);
 	}			
 }
