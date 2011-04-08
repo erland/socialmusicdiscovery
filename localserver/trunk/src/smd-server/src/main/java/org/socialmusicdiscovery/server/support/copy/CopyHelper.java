@@ -30,6 +30,7 @@ package org.socialmusicdiscovery.server.support.copy;
 import org.hibernate.collection.PersistentCollection;
 import org.hibernate.collection.PersistentMap;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.*;
@@ -85,13 +86,13 @@ public class CopyHelper {
     /**
      * Create a new instance with a custom cache implementation. This can be used to ensure that you only get one instance of each object
      *
-     * @param cacheImplementation
+     * @param cacheImplementation The cache implementation to use to avoid duplicating existing object and instead re-use them
      */
     public CopyHelper(Cache cacheImplementation) {
         objectCache = cacheImplementation;
     }
 
-    private <T> Collection<T> createDetachedCollectionCopy(Collection<T> toObjects, Collection<T> fromObjects, Map<Object, Object> cache, Class onlyAnnotatedWith, boolean onlyLoadedData) {
+    private <T> Collection<T> createDetachedCollectionCopy(Collection<T> toObjects, Collection<T> fromObjects, Map<Object, Object> cache, Class<? extends Annotation> onlyAnnotatedWith, boolean onlyLoadedData) {
         if (onlyLoadedData && fromObjects instanceof PersistentCollection &&
                 !((PersistentCollection) fromObjects).wasInitialized()) {
             return null;
@@ -116,7 +117,7 @@ public class CopyHelper {
         return result;
     }
 
-    private <K, T> Map<K, T> createDetachedMapCopy(Map<K, T> toObjects, Map<K, T> fromObjects, Map<Object, Object> cache, Class onlyAnnotatedWith, boolean onlyLoadedData) {
+    private <K, T> Map<K, T> createDetachedMapCopy(Map<K, T> toObjects, Map<K, T> fromObjects, Map<Object, Object> cache, Class<? extends Annotation> onlyAnnotatedWith, boolean onlyLoadedData) {
         if (onlyLoadedData && fromObjects instanceof PersistentMap &&
                 !((PersistentMap) fromObjects).wasInitialized()) {
             return null;
@@ -133,15 +134,15 @@ public class CopyHelper {
             throw new RuntimeException("Unsupported map type: " + fromObjects.getClass());
         }
         cache.put(fromObjects, result);
-        for (Map.Entry object : fromObjects.entrySet()) {
-            K key = (K) copyObject(null, object.getKey(), cache, onlyAnnotatedWith, onlyLoadedData);
-            T value = (T) copyObject(null, object.getValue(), cache, onlyAnnotatedWith, onlyLoadedData);
+        for (Map.Entry<K, T> object : fromObjects.entrySet()) {
+            K key = copyObject(null, object.getKey(), cache, onlyAnnotatedWith, onlyLoadedData);
+            T value = copyObject(null, object.getValue(), cache, onlyAnnotatedWith, onlyLoadedData);
             result.put(key, value);
         }
         return result;
     }
 
-    private <T> T copyObject(T toObject, T fromObject, Map<Object, Object> cache, Class onlyAnnotatedWith, boolean onlyLoadedData) {
+    private <T> T copyObject(T toObject, T fromObject, Map<Object, Object> cache, Class<? extends Annotation> onlyAnnotatedWith, boolean onlyLoadedData) {
         if (fromObject == null) {
             return null;
         }
@@ -250,7 +251,7 @@ public class CopyHelper {
      * @param onlyAnnotatedWith The annotation a field has to have to be part of the merging
      * @return The updated object, this is the same instance as toObject and is just provided for convenience
      */
-    public <T> T mergeInto(T toObject, T fromObject, Class onlyAnnotatedWith) {
+    public <T> T mergeInto(T toObject, T fromObject, Class<? extends Annotation> onlyAnnotatedWith) {
         Map<Object, Object> cache = new HashMap<Object, Object>();
         T result = copyObject(toObject, fromObject, cache, onlyAnnotatedWith, false);
         cache.clear();
@@ -280,7 +281,7 @@ public class CopyHelper {
      * @param onlyAnnotatedWith The annotation a field has to have to be part of the merging
      * @return The new instance of the object
      */
-    public <T> T detachedCopy(T object, Class onlyAnnotatedWith) {
+    public <T> T detachedCopy(T object, Class<? extends Annotation> onlyAnnotatedWith) {
         Map<Object, Object> cache = new HashMap<Object, Object>();
         T result = copyObject(null, object, cache, onlyAnnotatedWith, true);
         cache.clear();
@@ -309,7 +310,7 @@ public class CopyHelper {
      * @param onlyAnnotatedWith The annotation a field has to have to be part of the merging
      * @return The new instance of the object
      */
-    public <T> T copy(T object, Class onlyAnnotatedWith) {
+    public <T> T copy(T object, Class<? extends Annotation> onlyAnnotatedWith) {
         Map<Object, Object> cache = new HashMap<Object, Object>();
         T result = copyObject(null, object, cache, onlyAnnotatedWith, false);
         cache.clear();
