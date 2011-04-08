@@ -18,6 +18,11 @@
         <groupId>org.sonatype.tycho</groupId>
         <artifactId>maven-osgi-test-plugin</artifactId>
         <version>0.10.0</version>
+        <configuration>
+        	<excludes>
+        		<exclude>org/socialmusicdiscovery/rcp/test/**/*.class</exclude>
+        	</excludes>
+        </configuration>
       </plugin>
     </plugins>
   </build>
