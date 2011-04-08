@@ -47,8 +47,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class SMDApplication {
-    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy");
-
     @Inject
     private EntityManagerFactory emFactory;
 
@@ -157,8 +155,8 @@ public class SMDApplication {
 
             System.out.println("Hit q+enter to stop it...");
             while (System.in.read() != 'q') {
+                // Ignore anything besides the 'q' key
             }
-            ;
 
             System.out.println("\n\nExiting...\n");
 

@@ -31,7 +31,6 @@ import com.google.inject.Inject;
 import org.socialmusicdiscovery.server.business.model.core.MediumEntity;
 import org.socialmusicdiscovery.server.business.model.core.ReleaseEntity;
 import org.socialmusicdiscovery.server.business.model.core.TrackEntity;
-import org.socialmusicdiscovery.server.business.model.core.WorkEntity;
 import org.socialmusicdiscovery.server.business.repository.AbstractJPASMDIdentityRepository;
 
 import javax.persistence.EntityManager;
@@ -99,40 +98,28 @@ public class JPATrackRepository extends AbstractJPASMDIdentityRepository<TrackEn
 
     @Override
     public void create(TrackEntity entity) {
-        if(entity.getRelease() != null) {
-            if(!entityManager.contains(entity.getRelease())) {
-                entity.setRelease(releaseRepository.findById(entity.getRelease().getId()));
-            }
+        if(entity.getRelease() != null && !entityManager.contains(entity.getRelease())) {
+            entity.setRelease(releaseRepository.findById(entity.getRelease().getId()));
         }
-        if (entity.getMedium() != null) {
-            if(!entityManager.contains(entity.getMedium())) {
-                entity.setMedium(mediumRepository.findById(entity.getMedium().getId()));
-            }
+        if (entity.getMedium() != null && !entityManager.contains(entity.getMedium())) {
+            entity.setMedium(mediumRepository.findById(entity.getMedium().getId()));
         }
-        if (entity.getRecording() != null) {
-            if(!entityManager.contains(entity.getRecording())) {
-                entity.setRecording(recordingRepository.findById(entity.getRecording().getId()));
-            }
+        if (entity.getRecording() != null && !entityManager.contains(entity.getRecording())) {
+            entity.setRecording(recordingRepository.findById(entity.getRecording().getId()));
         }
         super.create(entity);
     }
 
     @Override
     public TrackEntity merge(TrackEntity entity) {
-        if (entity.getRelease() != null) {
-            if(!entityManager.contains(entity.getRelease())) {
-                entity.setRelease(releaseRepository.findById(entity.getRelease().getId()));
-            }
+        if (entity.getRelease() != null && !entityManager.contains(entity.getRelease())) {
+            entity.setRelease(releaseRepository.findById(entity.getRelease().getId()));
         }
-        if (entity.getMedium() != null) {
-            if(!entityManager.contains(entity.getMedium())) {
-                entity.setMedium(mediumRepository.findById(entity.getMedium().getId()));
-            }
+        if (entity.getMedium() != null && !entityManager.contains(entity.getMedium())) {
+            entity.setMedium(mediumRepository.findById(entity.getMedium().getId()));
         }
-        if (entity.getRecording() != null) {
-            if(!entityManager.contains(entity.getRecording())) {
-                entity.setRecording(recordingRepository.findById(entity.getRecording().getId()));
-            }
+        if (entity.getRecording() != null && !entityManager.contains(entity.getRecording())) {
+            entity.setRecording(recordingRepository.findById(entity.getRecording().getId()));
         }
         return super.merge(entity);
     }

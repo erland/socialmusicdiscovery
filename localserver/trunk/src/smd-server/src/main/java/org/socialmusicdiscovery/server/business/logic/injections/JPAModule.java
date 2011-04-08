@@ -44,8 +44,6 @@ public class JPAModule extends AbstractModule {
     private static final ThreadLocal<EntityManager> ENTITY_MANAGER_CACHE = new ThreadLocal<EntityManager>();
     private static EntityManagerFactory emFactory;
 
-    private static Map<String, Map<String,String>> persistenceOverride = new HashMap<String,Map<String,String>>();
-
     @Override
     protected void configure() {
     }

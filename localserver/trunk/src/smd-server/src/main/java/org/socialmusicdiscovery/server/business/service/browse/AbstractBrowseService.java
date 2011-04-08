@@ -123,9 +123,7 @@ public abstract class AbstractBrowseService {
                 } else {
                     query.setParameter("exclRel" + j, criteria.substring(criteria.indexOf(":") + 1));
                 }
-            } else if (criteria.contains(".")) {
-                // Don't use type criterias
-            } else {
+            } else if (!criteria.contains(".")) {
                 throw new RuntimeException("Type of criteria not specified: " + criteria);
             }
         }
@@ -142,9 +140,7 @@ public abstract class AbstractBrowseService {
                 } else {
                     exclusions.append(" AND NOT (").append(entityAlias).append(".reference=:exclRel").append(j).append(")");
                 }
-            } else if (criteria.contains(".")) {
-                // Don't exclude type criterias
-            } else {
+            } else if (!criteria.contains(".")) {
                 throw new RuntimeException("Type of criteria not specified: " + criteria);
             }
         }

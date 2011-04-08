@@ -73,20 +73,16 @@ public class JPAContributorRepository extends AbstractJPASMDIdentityRepository<C
     }
     @Override
     public void create(ContributorEntity entity) {
-        if (entity.getArtist() != null) {
-            if(!entityManager.contains(entity.getArtist())) {
-                entity.setArtist(artistRepository.findById(entity.getArtist().getId()));
-            }
+        if (entity.getArtist() != null && !entityManager.contains(entity.getArtist())) {
+            entity.setArtist(artistRepository.findById(entity.getArtist().getId()));
         }
         super.create(entity);
     }
 
     @Override
     public ContributorEntity merge(ContributorEntity entity) {
-        if (entity.getArtist() != null) {
-            if(!entityManager.contains(entity.getArtist())) {
-                entity.setArtist(artistRepository.findById(entity.getArtist().getId()));
-            }
+        if (entity.getArtist() != null && !entityManager.contains(entity.getArtist())) {
+            entity.setArtist(artistRepository.findById(entity.getArtist().getId()));
         }
         return super.merge(entity);
     }
