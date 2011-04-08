@@ -41,7 +41,7 @@ import org.socialmusicdiscovery.rcp.event.Observable;
 
 /**
  * A utility for monitoring property changes using nested property names.
- * Whenever the specifed property or any of the intermediate elements change,
+ * Whenever the specified property or any of the intermediate elements change,
  * the listener is notified.
  * 
  * @author Peer Törngren
@@ -138,7 +138,7 @@ public class ChangeMonitor {
 	}
 
 	static void hook(Observable observable, List<PropertyData> data, Runnable listener) {
-			new ChainedChangeListener(observable, data, listener);
+			new LinkedListener(observable, data, listener);
 	}
 
 
