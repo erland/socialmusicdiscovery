@@ -37,7 +37,6 @@ import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
 
 import java.util.*;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 
 public class MediaImportManager {
     @Inject
@@ -132,7 +131,7 @@ public class MediaImportManager {
         synchronized (RUNNING_MODULES) {
             runningModules.put(module, new ProcessState(mediaImporters.get(module), ProcessState.Phase.EXECUTING));
         }
-        Future future = executorService.submit(new Runnable() {
+        executorService.submit(new Runnable() {
             public void run() {
                 try {
                     mediaImporters.get(module).execute(new ProcessingStatusCallback() {

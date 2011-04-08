@@ -27,7 +27,6 @@
 
 package org.socialmusicdiscovery.server.plugins.mediaimport.dropdatabase;
 
-import com.google.inject.Inject;
 import liquibase.ClassLoaderFileOpener;
 import liquibase.Liquibase;
 import liquibase.exception.LiquibaseException;
@@ -36,7 +35,6 @@ import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
 import org.socialmusicdiscovery.server.business.logic.injections.database.DatabaseProvider;
 
-import javax.persistence.EntityManager;
 import java.sql.Connection;
 import java.sql.SQLException;
 

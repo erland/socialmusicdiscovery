@@ -75,10 +75,8 @@ public class JPAWorkRepository extends AbstractJPASMDIdentityRepository<WorkEnti
     }
     @Override
     public void create(WorkEntity entity) {
-        if (entity.getParent() != null) {
-            if(!entityManager.contains(entity.getParent())) {
-                entity.setParent(findById(entity.getParent().getId()));
-            }
+        if (entity.getParent() != null && !entityManager.contains(entity.getParent())) {
+            entity.setParent(findById(entity.getParent().getId()));
         }
         for (Contributor contributor : entity.getContributors()) {
             if(!entityManager.contains(contributor)) {
@@ -96,10 +94,8 @@ public class JPAWorkRepository extends AbstractJPASMDIdentityRepository<WorkEnti
 
     @Override
     public WorkEntity merge(WorkEntity entity) {
-        if (entity.getParent() != null) {
-            if(!entityManager.contains(entity.getParent())) {
-                entity.setParent(findById(entity.getParent().getId()));
-            }
+        if (entity.getParent() != null && !entityManager.contains(entity.getParent())) {
+            entity.setParent(findById(entity.getParent().getId()));
         }
         for (Contributor contributor : entity.getContributors()) {
             if(!entityManager.contains(contributor)) {

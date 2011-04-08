@@ -92,10 +92,9 @@ public class CopyHelper {
     }
 
     private <T> Collection<T> createDetachedCollectionCopy(Collection<T> toObjects, Collection<T> fromObjects, Map<Object, Object> cache, Class onlyAnnotatedWith, boolean onlyLoadedData) {
-        if (onlyLoadedData && fromObjects instanceof PersistentCollection) {
-            if (!((PersistentCollection) fromObjects).wasInitialized()) {
-                return null;
-            }
+        if (onlyLoadedData && fromObjects instanceof PersistentCollection &&
+                !((PersistentCollection) fromObjects).wasInitialized()) {
+            return null;
         }
         Collection<T> result;
         if (toObjects != null) {
@@ -118,10 +117,9 @@ public class CopyHelper {
     }
 
     private <K, T> Map<K, T> createDetachedMapCopy(Map<K, T> toObjects, Map<K, T> fromObjects, Map<Object, Object> cache, Class onlyAnnotatedWith, boolean onlyLoadedData) {
-        if (onlyLoadedData && fromObjects instanceof PersistentMap) {
-            if (!((PersistentMap) fromObjects).wasInitialized()) {
-                return null;
-            }
+        if (onlyLoadedData && fromObjects instanceof PersistentMap &&
+                !((PersistentMap) fromObjects).wasInitialized()) {
+            return null;
         }
         Map<K, T> result;
         if (toObjects != null) {

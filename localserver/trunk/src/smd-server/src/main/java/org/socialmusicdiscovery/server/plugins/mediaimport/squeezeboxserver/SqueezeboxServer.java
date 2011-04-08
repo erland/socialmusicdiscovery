@@ -336,42 +336,38 @@ public class SqueezeboxServer implements MediaImporter {
                 Set<Contributor> conductorContributors = getContributorsForTag(tags.get(TagData.CONDUCTOR), Contributor.CONDUCTOR);
                 Set<Contributor> recordingContributors = new HashSet<Contributor>();
 
-                if (artistContributors.size() == 1) {
-                    if (tags.containsKey(TagData.MUSICBRAINZ_ARTIST_ID)) {
-                        String artistId = tags.get(TagData.MUSICBRAINZ_ARTIST_ID).iterator().next();
-                        if (!artistMusicbrainzCache.contains(artistId)) {
-                            Artist artist = artistCache.get(tags.get(TagData.ARTIST).iterator().next().toLowerCase()).iterator().next();
-                            GlobalIdentityEntity identity = globalIdentityRepository.findBySourceAndEntity(GlobalIdentity.SOURCE_MUSICBRAINZ, artist);
-                            if (identity == null) {
-                                identity = new GlobalIdentityEntity();
-                                identity.setSource(GlobalIdentity.SOURCE_MUSICBRAINZ);
-                                identity.setEntityId(artist.getId());
-                                identity.setUri(artistId);
-                                identity.setLastUpdated(new Date());
-                                identity.setLastUpdatedBy(getId());
-                                globalIdentityRepository.create(identity);
-                            }
-                            artistMusicbrainzCache.add(artistId);
+                if (artistContributors.size() == 1 && tags.containsKey(TagData.MUSICBRAINZ_ARTIST_ID)) {
+                    String artistId = tags.get(TagData.MUSICBRAINZ_ARTIST_ID).iterator().next();
+                    if (!artistMusicbrainzCache.contains(artistId)) {
+                        Artist artist = artistCache.get(tags.get(TagData.ARTIST).iterator().next().toLowerCase()).iterator().next();
+                        GlobalIdentityEntity identity = globalIdentityRepository.findBySourceAndEntity(GlobalIdentity.SOURCE_MUSICBRAINZ, artist);
+                        if (identity == null) {
+                            identity = new GlobalIdentityEntity();
+                            identity.setSource(GlobalIdentity.SOURCE_MUSICBRAINZ);
+                            identity.setEntityId(artist.getId());
+                            identity.setUri(artistId);
+                            identity.setLastUpdated(new Date());
+                            identity.setLastUpdatedBy(getId());
+                            globalIdentityRepository.create(identity);
                         }
+                        artistMusicbrainzCache.add(artistId);
                     }
                 }
-                if (albumArtistContributors.size() == 1) {
-                    if (tags.containsKey(TagData.MUSICBRAINZ_ALBUMARTIST_ID)) {
-                        String artistId = tags.get(TagData.MUSICBRAINZ_ALBUMARTIST_ID).iterator().next();
-                        if (!artistMusicbrainzCache.contains(artistId)) {
-                            Artist artist = artistCache.get(tags.get(TagData.ALBUMARTIST).iterator().next().toLowerCase()).iterator().next();
-                            GlobalIdentityEntity identity = globalIdentityRepository.findBySourceAndEntity(GlobalIdentity.SOURCE_MUSICBRAINZ, artist);
-                            if (identity == null) {
-                                identity = new GlobalIdentityEntity();
-                                identity.setSource(GlobalIdentity.SOURCE_MUSICBRAINZ);
-                                identity.setEntityId(artist.getId());
-                                identity.setUri(artistId);
-                                identity.setLastUpdated(new Date());
-                                identity.setLastUpdatedBy(getId());
-                                globalIdentityRepository.create(identity);
-                            }
-                            artistMusicbrainzCache.add(artistId);
+                if (albumArtistContributors.size() == 1 && tags.containsKey(TagData.MUSICBRAINZ_ALBUMARTIST_ID)) {
+                    String artistId = tags.get(TagData.MUSICBRAINZ_ALBUMARTIST_ID).iterator().next();
+                    if (!artistMusicbrainzCache.contains(artistId)) {
+                        Artist artist = artistCache.get(tags.get(TagData.ALBUMARTIST).iterator().next().toLowerCase()).iterator().next();
+                        GlobalIdentityEntity identity = globalIdentityRepository.findBySourceAndEntity(GlobalIdentity.SOURCE_MUSICBRAINZ, artist);
+                        if (identity == null) {
+                            identity = new GlobalIdentityEntity();
+                            identity.setSource(GlobalIdentity.SOURCE_MUSICBRAINZ);
+                            identity.setEntityId(artist.getId());
+                            identity.setUri(artistId);
+                            identity.setLastUpdated(new Date());
+                            identity.setLastUpdatedBy(getId());
+                            globalIdentityRepository.create(identity);
                         }
+                        artistMusicbrainzCache.add(artistId);
                     }
                 }
 
@@ -521,10 +517,8 @@ public class SqueezeboxServer implements MediaImporter {
                                     // Ignore this and try with name instead
                                 }
                             }
-                            if (m.getName() != null) {
-                                if (m.getName().equals(discNo)) {
-                                    medium = (MediumEntity) m;
-                                }
+                            if (m.getName() != null && m.getName().equals(discNo)) {
+                                medium = (MediumEntity) m;
                             }
                         }
 

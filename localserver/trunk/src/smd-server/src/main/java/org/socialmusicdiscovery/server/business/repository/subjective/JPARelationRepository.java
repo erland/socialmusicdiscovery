@@ -30,7 +30,6 @@ package org.socialmusicdiscovery.server.business.repository.subjective;
 import com.google.inject.Inject;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReference;
 import org.socialmusicdiscovery.server.business.model.subjective.RelationEntity;
-import org.socialmusicdiscovery.server.business.repository.AbstractJPAEntityRepository;
 import org.socialmusicdiscovery.server.business.repository.AbstractJPASMDIdentityRepository;
 
 import javax.persistence.EntityManager;

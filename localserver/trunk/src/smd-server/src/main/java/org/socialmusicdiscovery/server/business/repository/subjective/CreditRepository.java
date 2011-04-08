@@ -30,7 +30,6 @@ package org.socialmusicdiscovery.server.business.repository.subjective;
 import com.google.inject.ImplementedBy;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.model.subjective.CreditEntity;
-import org.socialmusicdiscovery.server.business.repository.EntityRepository;
 import org.socialmusicdiscovery.server.business.repository.SMDIdentityRepository;
 
 import java.util.Collection;

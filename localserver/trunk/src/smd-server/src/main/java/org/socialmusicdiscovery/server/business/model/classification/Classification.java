@@ -28,7 +28,6 @@
 package org.socialmusicdiscovery.server.business.model.classification;
 
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
-import org.socialmusicdiscovery.server.business.model.SMDIdentityReference;
 
 import java.util.Set;
 

@@ -41,16 +41,14 @@ public class JPAReleaseRepository extends AbstractJPASMDIdentityRepository<Relea
     private TrackRepository trackRepository;
     private MediumRepository mediumRepository;
     private LabelRepository labelRepository;
-    private ArtistRepository artistRepository;
 
     @Inject
-    public JPAReleaseRepository(EntityManager em, ContributorRepository contributorRepository, TrackRepository trackRepository, MediumRepository mediumRepository, LabelRepository labelRepository, ArtistRepository artistRepository) {
+    public JPAReleaseRepository(EntityManager em, ContributorRepository contributorRepository, TrackRepository trackRepository, MediumRepository mediumRepository, LabelRepository labelRepository) {
         super(em);
         this.contributorRepository = contributorRepository;
         this.trackRepository = trackRepository;
         this.mediumRepository = mediumRepository;
         this.labelRepository = labelRepository;
-        this.artistRepository = artistRepository;
     }
 
     public Collection<ReleaseEntity> findByName(String name) {
@@ -83,10 +81,8 @@ public class JPAReleaseRepository extends AbstractJPASMDIdentityRepository<Relea
 
     @Override
     public void create(ReleaseEntity entity) {
-        if (entity.getLabel() != null) {
-            if(!entityManager.contains(entity.getLabel())) {
-                entity.setLabel(labelRepository.findById(entity.getLabel().getId()));
-            }
+        if (entity.getLabel() != null && !entityManager.contains(entity.getLabel())) {
+            entity.setLabel(labelRepository.findById(entity.getLabel().getId()));
         }
         for (Medium medium : entity.getMediums()) {
             if(!entityManager.contains(medium)) {
@@ -117,10 +113,8 @@ public class JPAReleaseRepository extends AbstractJPASMDIdentityRepository<Relea
 
     @Override
     public ReleaseEntity merge(ReleaseEntity entity) {
-        if (entity.getLabel() != null) {
-            if(!entityManager.contains(entity.getLabel())) {
-                entity.setLabel(labelRepository.findById(entity.getLabel().getId()));
-            }
+        if (entity.getLabel() != null && !entityManager.contains(entity.getLabel())) {
+            entity.setLabel(labelRepository.findById(entity.getLabel().getId()));
         }
         for (Medium medium : entity.getMediums()) {
             if(!entityManager.contains(medium)) {

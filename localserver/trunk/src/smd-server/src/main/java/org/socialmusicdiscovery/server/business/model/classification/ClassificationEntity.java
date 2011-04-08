@@ -29,7 +29,6 @@ package org.socialmusicdiscovery.server.business.model.classification;
 
 import com.google.gson.annotations.Expose;
 import org.socialmusicdiscovery.server.business.model.AbstractSMDIdentityEntity;
-import org.socialmusicdiscovery.server.business.model.SMDIdentityReference;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
 
 import javax.persistence.*;
