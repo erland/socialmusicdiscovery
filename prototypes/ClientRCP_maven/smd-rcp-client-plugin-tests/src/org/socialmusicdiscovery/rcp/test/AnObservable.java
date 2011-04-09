@@ -101,6 +101,10 @@ public class AnObservable extends AbstractObservable {
 		setChildren(set);
 	}
 
+	public void firePropertyChangeEventWithoutValues(String propertyName) {
+		firePropertyChange(propertyName);
+	}
+	
 	@Override
 	public String toString() {
 		return getClass().getSimpleName()+":"+id;

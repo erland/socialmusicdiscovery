@@ -168,6 +168,17 @@ public class LinkedListenerTest extends AbstractTestCase {
 		assertEquals(2, testee.getChain().size());
 	}
 	
+	/**
+	 * Make sure we can handle property change events with <code>null</code>
+	 * values.
+	 */
+	@Test
+	public void testRefreshPropetyChange() {
+		testee(children, name);
+		root.add(child1);
+		child1.firePropertyChangeEventWithoutValues(name.propertyName);
+	}
+	
 	private LinkedListener testee(PropertyData... data) {
 		return new LinkedListener(root, runnable, data);
 	}			

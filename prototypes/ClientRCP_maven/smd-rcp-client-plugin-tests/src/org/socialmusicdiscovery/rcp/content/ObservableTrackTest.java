@@ -195,11 +195,11 @@ public class ObservableTrackTest extends AbstractTestCase {
 	@Test
 	public void testTitle() throws Exception {
 		assertEquals(recording.getName(), track.getTitle());
-
+		
 		track.addPropertyChangeListener(ObservableTrack.PROP_title, listener);
 		recording.setName("Kalle");
 		
-		assertEquals(recording.getName(), track.getTitle());
+		assertEquals("Kalle", track.getTitle());
 		assertTrue(listener.isChanged());
 	}
 	
