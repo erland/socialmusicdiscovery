@@ -51,15 +51,15 @@ import org.socialmusicdiscovery.server.business.model.core.Work;
 import com.google.gson.annotations.Expose;
 
 public class ObservableTrack extends AbstractContributableEntity<Track> implements Track {
-//	private class MyTitleManager implements Runnable {
-//
-//		@Override
-//		public void run() {
-//			Recording r = getRecording();
-//			String t = r==null ? null : r.getName();
-//			setTitle(t);
-//		}
-//	}
+	private class MyTitleManager implements Runnable {
+
+		@Override
+		public void run() {
+			Recording r = getRecording();
+			String t = r==null ? null : r.getName();
+			setTitle(t);
+		}
+	}
 
 	/**
 	 * Lots of unsafe types here - see comments on {@link AbstractContributableEntity}.
@@ -164,7 +164,7 @@ public class ObservableTrack extends AbstractContributableEntity<Track> implemen
 	public static final String PROP_title = "title";
 	
 	private transient String title;
-//	private transient final MyTitleManager titleManager = new MyTitleManager();
+	private transient final MyTitleManager titleManager = new MyTitleManager();
 	
 	@Expose private Integer number;
 	@Expose private Medium medium;
@@ -172,12 +172,6 @@ public class ObservableTrack extends AbstractContributableEntity<Track> implemen
 	@Expose private Set<PlayableElement> playableElements = new HashSet<PlayableElement>();
 	@Expose private Release release;
 	private MyContributorFacade contributorFacade;
-
-	public ObservableTrack() {
-		// FIXME make this work
-//		ChangeMonitor.observe(titleManager, this, PROP_recording, PROP_name);
-//		ChangeMonitor.observe(titleManager, this, PROP_observable_recording, PROP_name);
-	}
 
 	@Override
 	public Integer getNumber() {
@@ -225,16 +219,7 @@ public class ObservableTrack extends AbstractContributableEntity<Track> implemen
 	}
 
 	public String getTitle() {
-		if (title==null) {
-			bindTitle();
-		}
 		return title;
-	}
-
-	private void bindTitle() {
-		// FIXME observe recording
-		ObservableRecording r = getObservableRecording();
-		title = r.getName();
 	}
 
 	public void setTitle(String title) {
@@ -257,6 +242,8 @@ public class ObservableTrack extends AbstractContributableEntity<Track> implemen
 	protected void postInflate() {
 		super.postInflate();
 		contributorFacade = new MyContributorFacade();
+		titleManager.run();
+		ChangeMonitor.observe(titleManager, this, PROP_recording, PROP_name);
 	}
 
 	/**
