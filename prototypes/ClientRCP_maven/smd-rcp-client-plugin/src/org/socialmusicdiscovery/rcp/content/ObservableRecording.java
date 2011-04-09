@@ -33,14 +33,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.core.databinding.beans.BeansObservables;
-import org.eclipse.core.databinding.observable.set.IObservableSet;
-import org.eclipse.core.databinding.observable.set.ISetChangeListener;
-import org.eclipse.core.databinding.observable.set.SetChangeEvent;
-import org.eclipse.core.databinding.observable.value.IValueChangeListener;
-import org.eclipse.core.databinding.observable.value.ValueChangeEvent;
 import org.eclipse.ui.IEditorInput;
 import org.socialmusicdiscovery.rcp.content.DataSource.Root;
+import org.socialmusicdiscovery.rcp.util.ChangeMonitor;
 import org.socialmusicdiscovery.rcp.util.Util;
 import org.socialmusicdiscovery.server.business.model.core.Recording;
 import org.socialmusicdiscovery.server.business.model.core.Track;
@@ -48,60 +43,27 @@ import org.socialmusicdiscovery.server.business.model.core.Work;
 
 import com.google.gson.annotations.Expose;
 
+/**
+ * The {@link ObservableRecording} can have a local name, but if that is
+ * missing it derives its name from its {@link Work}s (if any).
+ * 
+ * @author Peer Törngren
+ * 
+ */
 public class ObservableRecording extends AbstractContributableEntity<Recording> implements Recording {
 
-	/**
-	 * Warning: Work in Progress - this code has NOT been run yet!
-	 * FIXME test and implement properly
-	 */
-	private class MyDerivedNameUpdater implements PropertyChangeListener, IValueChangeListener, ISetChangeListener {
-
+	private class MyDerivedNameUpdater implements Runnable {
 		@Override
-		public void propertyChange(PropertyChangeEvent evt) {
-//			System.out.println("ObservableRecording.MyDerivedNameUpdater.propertyChange(): "+ evt);
-			updateDerivedName();
-		}
-
-		@Override
-		public void handleSetChange(SetChangeEvent evt) {
-//			System.out.println("ObservableRecording.MyDerivedNameUpdater.handleSetChange(): "+evt);
-			updateListeners(evt);
-			updateDerivedName();
-		}
-
-		@Override
-		public void handleValueChange(ValueChangeEvent evt) {
-//			System.out.println("ObservableRecording.MyDerivedNameUpdater.handleValueChange(): "+evt);
-			updateDerivedName();
-		}
-		
-		private void updateDerivedName() {
+		public void run() {
 			setDerivedName(resolveDerivedName());
-		}
-
-		private void updateListeners(SetChangeEvent evt) {
-			for (Object o : evt.diff.getRemovals()) {
-				if (o instanceof ObservableWork) {
-					ObservableWork ow = (ObservableWork) o;
-					ow.removePropertyChangeListener(ObservableWork.PROP_name, this);
-				}
-			}
-			for (Object o : evt.diff.getAdditions()) {
-				if (o instanceof ObservableWork) {
-					ObservableWork ow = (ObservableWork) o;
-					ow.addPropertyChangeListener(ObservableWork.PROP_name, this);
-				}
-			}
 		}
 	}
 
 	private class MyIsDerivedNameUsedMonitor implements PropertyChangeListener {
-
 		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
 			setDerivedNameUsed(resolveIsDerivedNameUsed());
 		}
-
 	}
 
 	public static final String PROP_date = "date";
@@ -133,9 +95,9 @@ public class ObservableRecording extends AbstractContributableEntity<Recording> 
 	}
 
 	private void hookDerivedName() {
-		IObservableSet master = BeansObservables.observeSet(this, PROP_works, null);
-		master.addSetChangeListener(new MyDerivedNameUpdater());
-		derivedName = resolveDerivedName();
+		MyDerivedNameUpdater listener = new MyDerivedNameUpdater();
+		ChangeMonitor.observe(listener, this, PROP_works, ObservableWork.PROP_name);
+		listener.run();
 	}
 
 	@Override
@@ -199,7 +161,11 @@ public class ObservableRecording extends AbstractContributableEntity<Recording> 
 	}
 
 	private void setDerivedName(String derivedName) {
+		String oldName = getName();
 		firePropertyChange(PROP_derivedName, this.derivedName, this.derivedName = derivedName);
+		if (isDerivedNameUsed()) {
+			firePropertyChange(PROP_name, oldName, getName());
+		}
 	}
 
 	public boolean isDerivedNameUsed() {

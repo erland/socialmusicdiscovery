@@ -63,7 +63,6 @@ public class ObservableTrack extends AbstractContributableEntity<Track> implemen
 
 	/**
 	 * Lots of unsafe types here - see comments on {@link AbstractContributableEntity}.
-	 * TODO add listeners to update sets when contributions change 
 	 * @param contributables
 	 */
 	@SuppressWarnings("unchecked")
