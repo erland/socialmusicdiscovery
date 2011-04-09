@@ -130,12 +130,20 @@ import org.socialmusicdiscovery.rcp.util.ChangeMonitor.PropertyData;
 	private void handleChangedCollection(PropertyChangeEvent evt) {
 		Collection<Observable> oldValue = (Collection<Observable>) evt.getOldValue();
 		Collection<Observable> newValue = (Collection<Observable>) evt.getNewValue();
-		for (Observable observable : oldValue) {
-			release(observable);
+		
+		// release existing listeners
+		if (oldValue!=null) {
+			for (Observable observable : oldValue) {
+				release(observable);
+			}
 		}
+		
+		// hook new listeners
 		if (!tail.isEmpty()) {
-			for (Observable observable : newValue) {
-				createListener(observable, tail, runner);
+			if (newValue!=null) {
+				for (Observable observable : newValue) {
+					createListener(observable, tail, runner);
+				}
 			}
 		}
 	}
