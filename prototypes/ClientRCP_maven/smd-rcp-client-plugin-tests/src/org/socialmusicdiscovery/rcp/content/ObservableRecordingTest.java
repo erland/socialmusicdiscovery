@@ -143,8 +143,10 @@ public class ObservableRecordingTest extends AbstractTestCase {
 		recording.setWorks(set);
 	}
 	
-	protected boolean contains(String name) {
-		return recording.getName().indexOf(name)>=0;
+	protected boolean contains(String probe) {
+		String name = recording.getName();
+//		System.out.println(name);
+		return name.indexOf(probe)>=0;
 	}
 	
 
