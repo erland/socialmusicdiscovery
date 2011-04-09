@@ -226,21 +226,24 @@ public class ObservableTrack extends AbstractContributableEntity<Track> implemen
 		firePropertyChange(PROP_title, this.title, this.title = title);
 	}
 
-	public ObservableRecording getObservableRecording() {
-		ObservableRecording r = (ObservableRecording) getRecording();
-		if (r!=null) {
-			r.inflate();
-		}
-		return r;
-	}
-
 	public AbstractContributableEntity getContributionFacade() {
 		return contributorFacade;
 	}
 
+	/**
+	 * Since title is derived from the name of the {@link Recording}, 
+	 * and since that in its turn is (or can be) derived from its {@link Work},
+	 * we need to inflate the {@link Recording}. 
+	 */
 	@Override
 	protected void postInflate() {
 		super.postInflate();
+		ObservableRecording r = (ObservableRecording) getRecording();
+		if (r!=null) {
+			r.inflate();
+		}
+
+		// hook listeners for derived properties
 		contributorFacade = new MyContributorFacade();
 		titleManager.run();
 		ChangeMonitor.observe(titleManager, this, PROP_recording, PROP_name);

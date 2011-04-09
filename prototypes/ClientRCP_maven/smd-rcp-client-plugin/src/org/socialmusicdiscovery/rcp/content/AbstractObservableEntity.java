@@ -34,7 +34,6 @@ import java.util.Collection;
 
 import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.observable.Observables;
-import org.eclipse.core.databinding.observable.list.WritableList;
 import org.eclipse.core.databinding.observable.set.IObservableSet;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IPersistableElement;
@@ -126,7 +125,7 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 	 * if the instance was inflated. Default method does 
 	 * nothing, subclasses should override as necessary, 
 	 * typically to load any properties not loaded by the 
-	 * default infaltion.  
+	 * default inflation.  
 	 */
 	protected void postInflate() {
 		// no-op
@@ -251,7 +250,6 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 	
 	/**
 	 * Mark instance as dirty (or not). Method must be called whenever the persistent state of this instance changes.
-	 * TODO Hook listeners in collections to detect changes made directly to collections (thru {@link WritableList}?) 
 	 * @param isDirty
 	 */
 	@Override
@@ -259,6 +257,13 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 		super.firePropertyChange(PROP_isDirty, this.isDirty, this.isDirty = isDirty);
 	}
 
+	/**
+	 * Mark instance as inflated. <b>Use ONLY for testing!</b>
+	 */
+	/* package */ void markInflated() {
+		isInflated = true;
+	}
+	
 	@Override
 	public String toString() {
 		return getClass().getSimpleName()+"/'"+getName()+"'";

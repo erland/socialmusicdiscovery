@@ -138,7 +138,7 @@ public class ObservableTrackTest extends AbstractTestCase {
 		t.setNumber(Integer.valueOf(trackNumber));
 		t.setRelease(release);
 		t.setRecording(recording);
-		t.postInflate();
+		t.postInflate(); // hook listeners
 		
 		List<Track> moreTracks = new ArrayList(release.getTracks());
 		moreTracks.add(t);
@@ -150,6 +150,7 @@ public class ObservableTrackTest extends AbstractTestCase {
 		ObservableRecording r = new ObservableRecording();
 		r.setId(String.valueOf(id));
 		r.setName(name);
+		r.markInflated();
 		return r;
 	}
 

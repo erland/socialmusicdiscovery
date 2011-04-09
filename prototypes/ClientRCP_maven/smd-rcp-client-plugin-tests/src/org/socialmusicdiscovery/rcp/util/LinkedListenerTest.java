@@ -173,7 +173,7 @@ public class LinkedListenerTest extends AbstractTestCase {
 	 * values.
 	 */
 	@Test
-	public void testRefreshPropetyChange() {
+	public void testPropertyRefreshEvent() {
 		testee(children, name);
 		root.add(child1);
 		child1.firePropertyChangeEventWithoutValues(name.propertyName);

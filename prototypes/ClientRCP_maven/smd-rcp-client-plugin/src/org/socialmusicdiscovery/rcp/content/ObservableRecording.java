@@ -58,20 +58,20 @@ public class ObservableRecording extends AbstractContributableEntity<Recording> 
 
 		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
-			System.out.println("ObservableRecording.MyDerivedNameUpdater.propertyChange(): "+ evt);
+//			System.out.println("ObservableRecording.MyDerivedNameUpdater.propertyChange(): "+ evt);
 			updateDerivedName();
 		}
 
 		@Override
 		public void handleSetChange(SetChangeEvent evt) {
-			System.out.println("ObservableRecording.MyDerivedNameUpdater.handleSetChange(): "+evt);
+//			System.out.println("ObservableRecording.MyDerivedNameUpdater.handleSetChange(): "+evt);
 			updateListeners(evt);
 			updateDerivedName();
 		}
 
 		@Override
 		public void handleValueChange(ValueChangeEvent evt) {
-			System.out.println("ObservableRecording.MyDerivedNameUpdater.handleValueChange(): "+evt);
+//			System.out.println("ObservableRecording.MyDerivedNameUpdater.handleValueChange(): "+evt);
 			updateDerivedName();
 		}
 		
@@ -116,11 +116,6 @@ public class ObservableRecording extends AbstractContributableEntity<Recording> 
 	@Expose private Date date;
 	@Expose private Recording mixOf;
 	@Expose private Set<Work> works = new HashSet<Work>();
-
-//	public ObservableRecording() {
-//		super();
-//	}
-
 
 	@Override
 	protected void postInflate() {
