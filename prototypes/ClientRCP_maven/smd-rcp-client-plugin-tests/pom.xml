@@ -19,9 +19,9 @@
         <artifactId>maven-osgi-test-plugin</artifactId>
         <version>0.10.0</version>
         <configuration>
-        	<excludes>
-        		<exclude>org/socialmusicdiscovery/rcp/test/**/*.class</exclude>
-        	</excludes>
+        	<includes>
+        		<include>**/*Test.class</include>
+        	</includes>
         </configuration>
       </plugin>
     </plugins>
