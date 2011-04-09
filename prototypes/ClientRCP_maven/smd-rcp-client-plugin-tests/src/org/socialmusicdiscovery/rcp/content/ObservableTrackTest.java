@@ -193,15 +193,14 @@ public class ObservableTrackTest extends AbstractTestCase {
 	}
 	
 	@Test
-	public void testTitleUpdate() throws Exception {
-//		assertEquals(recording.getName(), track.getTitle());
-//
-//		track.addPropertyChangeListener(ObservableTrack.PROP_title, listener);
-//		recording.setName("Kalle");
-//		
-		// FIXME enable when implemented 
-//		assertEquals(recording.getName(), track.getTitle());
-//		assertTrue(listener.isChanged());
+	public void testTitle() throws Exception {
+		assertEquals(recording.getName(), track.getTitle());
+
+		track.addPropertyChangeListener(ObservableTrack.PROP_title, listener);
+		recording.setName("Kalle");
+		
+		assertEquals(recording.getName(), track.getTitle());
+		assertTrue(listener.isChanged());
 	}
 	
 	@Test
@@ -209,8 +208,7 @@ public class ObservableTrackTest extends AbstractTestCase {
 		Set<Contributor> expected = join(release, recording, work1, work2);
 		int expectedSize = expected.size();
 		assertEquals(expectedSize, track.getContributors().size());
-//		Does not work, we get contributors with origin, not plain contributors
-//		assertEquals(expected, track.getContributors());
+//		assertEquals(expected, track.getContributors());  // Does not work, we get contributors with origin, not plain contributors
 		
 		add(release, releaseArtist, CONDUCTOR);
 		assertEquals("Bad size after add", expectedSize+1, track.getContributors().size());
