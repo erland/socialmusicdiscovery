@@ -74,6 +74,7 @@ public class ObservableRecordingTest extends AbstractTestCase {
 		work2 = work(2, "work2");
 		recording.setWorks(asSet(work1, work2));
 		recording.addPropertyChangeListener(ObservableTrack.PROP_name, listener);
+		recording.setDirty(false);
 	}
 	
 	private ObservableRecording recording(int id, String name) {
@@ -99,21 +100,25 @@ public class ObservableRecordingTest extends AbstractTestCase {
 	@Test
 	public void testSetup() throws Exception {
 		assertTrue(recording.getWorks().containsAll(asSet(work1, work2)));
+		assertFalse(recording.isDirty());
 	}
 	
 	@Test
 	public void testDerivedName() throws Exception {
 		assertTrue(contains("work1"));
 		assertTrue(contains("work2"));
+		assertFalse(recording.isDirty());
 		
 		work1.setName("Kalle");
 		assertTrue(contains("Kalle"));
 		assertTrue(listener.isChanged());
+		assertFalse(recording.isDirty());
 		
 		remove(work1);
 		assertFalse(contains("Kalle"));
 		assertTrue(contains("work2"));
 		assertTrue(listener.isChanged());
+		assertTrue(recording.isDirty());
 		
 		work1.setName("Olle");
 		assertFalse(contains("Olle"));
@@ -124,13 +129,20 @@ public class ObservableRecordingTest extends AbstractTestCase {
 		assertTrue(contains("work2"));
 		assertTrue(listener.isChanged());
 		
+	}
+
+	public void testName() throws Exception {
+		assertTrue(contains("work1"));
+		assertTrue(contains("work2"));
+		assertFalse(recording.isDirty());
+		
 		recording.setName("Pelle");
 		assertEquals(recording.getName(), "Pelle");
 		assertFalse(contains("work1"));
 		assertFalse(contains("work2"));
 		assertTrue(listener.isChanged());
+		assertTrue(recording.isDirty());
 	}
-
 	private void remove(ObservableWork w) {
 		Set<Work> set = new HashSet(recording.getWorks());
 		set.remove(w);

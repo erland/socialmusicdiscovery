@@ -125,7 +125,9 @@ public abstract class AbstractObservable implements Observable {
 
 	/**
 	 * Fire {@link PropertyChangeEvent} for supplied property name. No old or
-	 * new value is sent.
+	 * new value is sent. This is useful for sending "refresh events" to notify
+	 * listeners that they need to update although the property has not
+	 * necessarily changed.
 	 * 
 	 * @param propertyName
 	 */
