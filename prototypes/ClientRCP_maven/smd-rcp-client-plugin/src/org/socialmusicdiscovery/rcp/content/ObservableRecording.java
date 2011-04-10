@@ -161,10 +161,10 @@ public class ObservableRecording extends AbstractContributableEntity<Recording> 
 	}
 
 	private void setDerivedName(String derivedName) {
-		String oldName = getName();
-		firePropertyChange(PROP_derivedName, this.derivedName, this.derivedName = derivedName);
+		this.derivedName = derivedName;
+		firePropertyChange(PROP_derivedName); // silent refresh, do not mark dirty
 		if (isDerivedNameUsed()) {
-			firePropertyChange(PROP_name, oldName, getName());
+			firePropertyChange(PROP_name);
 		}
 	}
 
@@ -173,7 +173,8 @@ public class ObservableRecording extends AbstractContributableEntity<Recording> 
 	}
 
 	private void setDerivedNameUsed(boolean isDerivedNameUsed) {
-		firePropertyChange(PROP_isDerivedNameUsed, this.isDerivedNameUsed, this.isDerivedNameUsed = isDerivedNameUsed);
+		this.isDerivedNameUsed = isDerivedNameUsed;
+		firePropertyChange(PROP_isDerivedNameUsed);
 	}
 	
 	private String resolveDerivedName() {
