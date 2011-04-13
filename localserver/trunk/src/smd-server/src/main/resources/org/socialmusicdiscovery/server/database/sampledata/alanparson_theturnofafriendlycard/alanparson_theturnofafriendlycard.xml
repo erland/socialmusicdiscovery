@@ -84,5 +84,14 @@
             <column header="last_updated" type="DATE"/>
             <column header="last_updated_by" type="STRING"/>
         </loadData>
+        <loadData tableName="playable_elements" file="org/socialmusicdiscovery/server/database/sampledata/alanparson_theturnofafriendlycard/playable_elements.csv">
+            <column header="id" type="STRING"/>
+            <column header="track_id" type="STRING"/>
+            <column header="smdID" type="STRING"/>
+            <column header="format" type="STRING"/>
+            <column header="uri" type="STRING"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
+        </loadData>
     </changeSet>
 </databaseChangeLog>

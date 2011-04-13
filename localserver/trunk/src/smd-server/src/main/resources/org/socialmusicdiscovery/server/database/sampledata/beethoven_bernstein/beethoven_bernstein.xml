@@ -2,7 +2,7 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
-    <changeSet id="sample_thebodyguard" author="erland">
+    <changeSet id="sample_beethoven_bernstein" author="erland">
         <loadData tableName="smdidentity_references"
                   file="org/socialmusicdiscovery/server/database/sampledata/beethoven_bernstein/smdidentity_references.csv">
             <column header="id" type="STRING"/>
@@ -86,6 +86,15 @@
             <column header="release_id" type="STRING"/>
             <column header="session_id" type="STRING"/>
             <column header="type" type="STRING"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
+        </loadData>
+        <loadData tableName="playable_elements" file="org/socialmusicdiscovery/server/database/sampledata/beethoven_bernstein/playable_elements.csv">
+            <column header="id" type="STRING"/>
+            <column header="track_id" type="STRING"/>
+            <column header="smdID" type="STRING"/>
+            <column header="format" type="STRING"/>
+            <column header="uri" type="STRING"/>
             <column header="last_updated" type="DATE"/>
             <column header="last_updated_by" type="STRING"/>
         </loadData>
