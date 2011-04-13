@@ -237,7 +237,7 @@ my $log = logger('database.info');
 #	}
 #}
 
-use constant BROWSELIBRARY => 'smdbrowselibrary';
+use constant BROWSELIBRARY => 'browselibrary';
 
 my $_initialized = 0;
 my $_pendingChanges = 0;

@@ -45,17 +45,20 @@ use strict;
 use Slim::Utils::Log;
 use Slim::Utils::Prefs;
 use Slim::Utils::Strings qw(cstring);
-use Plugins::SocialMusicDiscovery::MenuAPI::BrowseLibrary;
 
 my $serverPrefs = preferences('server');
 my $prefs = preferences('plugin.socialmusicdiscovery');
 my $log = logger('plugin.socialmusicdiscovery');
+my $browseLibraryImplementation;
 
 my %nodeFilters;
 
 sub init {
 	my $class = shift;
+	my $blImplementation = shift;
 	
+	$browseLibraryImplementation = $blImplementation;
+
 	main::DEBUGLOG && $log->is_debug && $log->debug('init');
 	
 	my @topLevel = (
@@ -73,7 +76,7 @@ sub init {
 	);
 	
 	foreach (@topLevel) {
-		Plugins::SocialMusicDiscovery::MenuAPI::BrowseLibrary->registerNode($_);
+		$browseLibraryImplementation->registerNode($_);
 	}
 }
 
@@ -136,7 +139,8 @@ sub _genericReply {
 	$result->{'offset'} = $jsonResult->{'offset'};
 	$result->{'count'} = $jsonResult->{'size'};
 	$result->{'total'} = $jsonResult->{'totalSize'};
-
+use Data::Dumper;
+$log->info("Returning ".Dumper($result));
 	$params->{'callback'}->($result);
 }
 
@@ -189,7 +193,7 @@ sub _smd {
 #					command     => ['artistinfo', 'items'],
 #				},
 				items => {
-					command     => [Plugins::SocialMusicDiscovery::MenuAPI::BrowseLibrary::BROWSELIBRARY, 'items'],
+					command     => ["browselibrary", 'items'],
 					fixedParams => {
 						mode       => 'smd',
 						%{&_tagsToParams(\@searchTags)},

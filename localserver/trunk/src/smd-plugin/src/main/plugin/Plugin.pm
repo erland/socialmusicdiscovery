@@ -43,9 +43,7 @@ if ( main::WEBUI ) {
 	require Plugins::SocialMusicDiscovery::Settings;
 }
 use Plugins::SocialMusicDiscovery::Scanner;
-use Plugins::SocialMusicDiscovery::MenuAPI::BrowseLibrary;
 use Plugins::SocialMusicDiscovery::Menu::SMDMenus;
-use Plugins::SocialMusicDiscovery::MenuAPI::Buttons::XMLBrowser;
 
 my $log = Slim::Utils::Log->addLogCategory({
 	'category'     => 'plugin.socialmusicdiscovery',
@@ -102,9 +100,19 @@ sub initPlugin
 
 	# Initialize scanner module so it's JSON commands are registered
 	Plugins::SocialMusicDiscovery::Scanner::init();
-	Plugins::SocialMusicDiscovery::MenuAPI::BrowseLibrary->init();
-	Plugins::SocialMusicDiscovery::MenuAPI::Buttons::XMLBrowser->init();
-	Plugins::SocialMusicDiscovery::Menu::SMDMenus->init();
+	eval "use Slim::Menu::BrowseLibrary";
+	if ($@) {
+		$log->info("BrowseLibrary not found, using custom BrowseLibrary implementation");
+		require Plugins::SocialMusicDiscovery::MenuAPI::BrowseLibrary;
+		require Plugins::SocialMusicDiscovery::MenuAPI::Buttons::XMLBrowser;
+
+		Plugins::SocialMusicDiscovery::MenuAPI::BrowseLibrary->init();
+		Plugins::SocialMusicDiscovery::MenuAPI::Buttons::XMLBrowser->init();
+		Plugins::SocialMusicDiscovery::Menu::SMDMenus->init("Plugins::SocialMusicDiscovery::MenuAPI::BrowseLibrary");
+	}else {
+		$log->info("Using Logitech version of BrowseLibrary");
+		Plugins::SocialMusicDiscovery::Menu::SMDMenus->init("Slim::Menu::BrowseLibrary");
+	}
 
     # Find location of smd-server binary in plugin directory
     my $smdServerPath = undef;
