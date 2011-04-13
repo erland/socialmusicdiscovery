@@ -30,6 +30,7 @@ package org.socialmusicdiscovery.rcp.editors.release;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.jface.viewers.Viewer;
@@ -51,7 +52,7 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.socialmusicdiscovery.rcp.content.AbstractObservableEntity;
-import org.socialmusicdiscovery.rcp.content.ObservableContributorWithOrigin;
+import org.socialmusicdiscovery.rcp.content.ObservableContribution;
 import org.socialmusicdiscovery.rcp.content.ObservableTrack;
 import org.socialmusicdiscovery.rcp.editors.widgets.ContributorPanel;
 import org.socialmusicdiscovery.rcp.views.util.AbstractComposite;
@@ -68,10 +69,10 @@ public class TrackContributorPanel extends AbstractComposite<ObservableTrack> {
 
 		@Override
 		public boolean select(Viewer viewer, Object parentElement, Object element) {
-			return element instanceof ObservableContributorWithOrigin ? accept((ObservableContributorWithOrigin) element) : true; 
+			return element instanceof ObservableContribution ? accept((ObservableContribution) element) : true; 
 		}
 
-		private boolean accept(ObservableContributorWithOrigin c) {
+		private boolean accept(ObservableContribution c) {
 			return getModel().isEffectiveContributor(c);
 		}
 
@@ -91,12 +92,16 @@ public class TrackContributorPanel extends AbstractComposite<ObservableTrack> {
 
 		@Override
 		public boolean select(Viewer viewer, Object parentElement, Object element) {
-			return element instanceof ObservableContributorWithOrigin ? accept((ObservableContributorWithOrigin) element) : true; 
+			return element instanceof ObservableContribution ? accept((ObservableContribution) element) : true; 
 		}
 
-		private boolean accept(ObservableContributorWithOrigin c) {
-			Class definedBy = c.getOrigin();
-			return settings.containsKey(definedBy) ? settings.get(definedBy).booleanValue() : false;
+		private boolean accept(ObservableContribution c) {
+			for (Entry<Class, Boolean> entry: settings.entrySet()) {
+				if (entry.getKey().isInstance(c.getEntity())) {
+					return entry.getValue().booleanValue();
+				}
+			}
+			return false;
 		}
 
 	}
@@ -142,8 +147,8 @@ public class TrackContributorPanel extends AbstractComposite<ObservableTrack> {
 		formToolkit.adapt(contributorPanel);
 		formToolkit.paintBordersFor(contributorPanel);
 		
-		filterSection = formToolkit.createSection(rootArea, Section.TWISTIE | Section.TITLE_BAR);
-		filterSection.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1));
+		filterSection = formToolkit.createSection(rootArea, Section.TITLE_BAR);
+		filterSection.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
 		formToolkit.paintBordersFor(filterSection);
 		filterSection.setText("Filter");
 		filterSection.setExpanded(true);

@@ -27,12 +27,14 @@
 
 package org.socialmusicdiscovery.rcp.content;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.socialmusicdiscovery.server.business.model.core.Artist;
+import org.socialmusicdiscovery.server.business.model.core.Contributor;
 import org.socialmusicdiscovery.server.business.model.core.Person;
+import org.socialmusicdiscovery.server.business.model.core.Recording;
+import org.socialmusicdiscovery.server.business.model.core.Release;
 
 import com.google.gson.annotations.Expose;
 
@@ -80,7 +82,40 @@ public class ObservableArtist extends AbstractObservableEntity<Artist> implement
 
 	@SuppressWarnings("unchecked")
 	private Set<ObservableContribution> resolveContributions() {
-		return Collections.EMPTY_SET; // FIXME resolve artist contributions
+		Set<ObservableContribution> result = new HashSet();
+		Class[] contributableTypes = {
+			Release.class, 
+			Recording.class, 
+//			Work.class, // FIXME enable when we have a Root
+//			RecordingSession.class // FIXME enable when we have a Root
+			};
+		for (Class type : contributableTypes) {
+			result.addAll(getContributions(type));
+		}
+		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	private Set<ObservableContribution> getContributions(Class type) {
+		Set<ObservableContribution> result = new HashSet<ObservableContribution>();
+		Set<AbstractContributableEntity> contributedEntities = getDataSource().resolveRoot(type).findAll(this);
+		
+		for (AbstractContributableEntity contributedEntity : contributedEntities) {
+			contributedEntity.inflate();
+			for (Object o : contributedEntity.getContributors()) {
+				Contributor contributor = (Contributor) o;
+				Artist contributingArtist = contributor.getArtist();
+				if (contributingArtist.equals(this)) {
+                    ObservableContribution observableContribution = new ObservableContribution();
+                    observableContribution.setArtist(this);
+                    observableContribution.setEntity(contributedEntity);
+                    observableContribution.setType(contributor.getType());
+					result.add(observableContribution);
+				}
+			}
+		}
+		
+		return result;
 	}
 
 }

@@ -60,7 +60,8 @@ public class ArtistUI extends AbstractComposite<ObservableArtist> {
 	private ArtistContributionsPanel artistContributionsPanel;
 	private Composite memberArea;
 	private Composite aliasArea;
-	private Label labelNotYetImplemented;
+	private Label memberLabel;
+	private Label aliasLabel;
 	
 	/**
 	 * Create the composite.
@@ -84,9 +85,6 @@ public class ArtistUI extends AbstractComposite<ObservableArtist> {
 		
 		nameText = new Text(formArtist.getBody(), SWT.BORDER);
 		nameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		
-		labelNotYetImplemented = formToolkit.createLabel(formArtist.getBody(), "WORK IN PROGRESS - everything below is NOT YET IMPLEMENTED!!!", SWT.CENTER);
-		labelNotYetImplemented.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, false, 1, 1));
 		
 		contributionSection = formToolkit.createSection(formArtist.getBody(), Section.TITLE_BAR);
 		contributionSection.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
@@ -121,6 +119,11 @@ public class ArtistUI extends AbstractComposite<ObservableArtist> {
 		memberArea = formToolkit.createComposite(artistDataTabFolder, SWT.NONE);
 		memberTab.setControl(memberArea);
 		formToolkit.paintBordersFor(memberArea);
+		memberArea.setLayout(new GridLayout(1, false));
+		
+		memberLabel = new Label(memberArea, SWT.NONE);
+		formToolkit.adapt(memberLabel, true, true);
+		memberLabel.setText("(artist members and memberships to be edited here)");
 		
 		aliasTab = new CTabItem(artistDataTabFolder, SWT.NONE);
 		aliasTab.setText("Aliases");
@@ -128,6 +131,11 @@ public class ArtistUI extends AbstractComposite<ObservableArtist> {
 		aliasArea = formToolkit.createComposite(artistDataTabFolder, SWT.NONE);
 		aliasTab.setControl(aliasArea);
 		formToolkit.paintBordersFor(aliasArea);
+		aliasArea.setLayout(new GridLayout(1, false));
+		
+		aliasLabel = new Label(aliasArea, SWT.NONE);
+		formToolkit.adapt(aliasLabel, true, true);
+		aliasLabel.setText("(artist aliases to be edited here)");
 		
 		initUI();
 	}
@@ -169,5 +177,11 @@ public class ArtistUI extends AbstractComposite<ObservableArtist> {
 	}
 	public Composite getAliasArea() {
 		return aliasArea;
+	}
+
+	@Override
+	protected void afterSetModel(ObservableArtist model) {
+		super.afterSetModel(model);
+		getArtistContributionsPanel().setModel(model);
 	}
 }

@@ -64,4 +64,19 @@ public class ObservableContributor extends AbstractObservableEntity<Contributor>
 		return getClass().getSimpleName()+"@"+hashCode()+"-"+getType()+":"+artistName + " ("+getName()+")";
 	}
 
+	/**
+	 * Compare two contributor instances that may be of different types. Deem
+	 * them equal if the represent the the same artist and type.
+	 * 
+	 * @param c1
+	 * @param c2
+	 * @return boolean
+	 */
+	public static boolean equal(Contributor c1, Contributor c2) {
+		if (c1==null || c2==null) {
+			return c1==c2; // true if both are null
+		};
+		return c1==c2 || c1.equals(c2) || (c1.getArtist().equals(c2.getArtist()) && c1.getType().equals(c2.getType()));
+	}
+
 }
