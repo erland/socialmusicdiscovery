@@ -208,14 +208,20 @@ public class ObservableTrackTest extends AbstractTestCase {
 	public void testEffectiveContributors() throws Exception {
 		Set<Contributor> expected = join(release, recording, work1, work2);
 		int expectedSize = expected.size();
+		
 		assertEquals(expectedSize, track.getContributors().size());
-//		assertEquals(expected, track.getContributors());  // Does not work, we get contributors with origin, not plain contributors
+		for (Contributor e : expected) {
+			assertTrue("Not effective contributor: "+e, track.isEffectiveContributor(e));
+		}
 		
-		add(release, releaseArtist, CONDUCTOR);
+		Contributor releaseConductor = add(release, releaseArtist, CONDUCTOR);
 		assertEquals("Bad size after add", expectedSize+1, track.getContributors().size());
+		assertTrue("Not effective contributor: "+releaseConductor, track.isEffectiveContributor(releaseConductor));
 		
+		assertTrue("Not effective contributor: "+releasePerformer, track.isEffectiveContributor(releasePerformer));
 		remove(release, releasePerformer);
 		assertEquals("Bad size after add", expectedSize, track.getContributors().size());
+		assertFalse("Effective contributor: "+releasePerformer, track.isEffectiveContributor(releasePerformer));
 		
 		clear(release, recording, work1, work2);
 		assertTrue("Not empty", track.getContributors().isEmpty());
@@ -305,8 +311,10 @@ public class ObservableTrackTest extends AbstractTestCase {
 	}
 	
 	
-	private void add(AbstractContributableEntity e, ObservableArtist a, String role) {
-		add(e, createContributor(a, role));
+	private ObservableContributor add(AbstractContributableEntity e, ObservableArtist a, String role) {
+		ObservableContributor contributor = createContributor(a, role);
+		add(e, contributor);
+		return contributor;
 	}
 
 	private void add(AbstractContributableEntity e, ObservableContributor c) {

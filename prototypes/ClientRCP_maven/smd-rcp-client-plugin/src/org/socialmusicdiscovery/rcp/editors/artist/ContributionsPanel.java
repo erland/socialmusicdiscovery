@@ -49,9 +49,8 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.socialmusicdiscovery.rcp.content.AbstractContributableEntity;
 import org.socialmusicdiscovery.rcp.content.ObservableArtist;
-import org.socialmusicdiscovery.rcp.content.ObservableContributor;
+import org.socialmusicdiscovery.rcp.content.ObservableContribution;
 import org.socialmusicdiscovery.rcp.grid.GridTableColumnLayout;
 import org.socialmusicdiscovery.rcp.util.Debug;
 import org.socialmusicdiscovery.rcp.util.ViewerUtil;
@@ -145,10 +144,10 @@ import org.socialmusicdiscovery.rcp.views.util.OpenListener;
 
 	@Override
 	protected void afterSetModel(ObservableArtist model) {
-		IBeanValueProperty roleProperty = BeanProperties.value(ObservableContributor.class, "type");
-		IBeanValueProperty artistProperty = BeanProperties.value(ObservableContributor.class, "artist.name");
-		IObservableSet set = new WritableSet(getModel().getContributions(), AbstractContributableEntity.class);
-		ViewerUtil.bind(gridTableViewer, set, roleProperty, artistProperty);
+		IBeanValueProperty roleProperty = BeanProperties.value(ObservableContribution.class, "type");
+		IBeanValueProperty entityProperty = BeanProperties.value(ObservableContribution.class, "entity.name");
+		IObservableSet set = new WritableSet(getModel().getContributions(), ObservableContribution.class);
+		ViewerUtil.bind(gridTableViewer, set, roleProperty, entityProperty);
 	}
 
 	public ViewerFilter[] getFilters() {

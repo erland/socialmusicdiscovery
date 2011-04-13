@@ -67,7 +67,7 @@ public class ObservableTrack extends AbstractContributableEntity<Track> implemen
 	 */
 	@SuppressWarnings("unchecked")
 	private class MyContributorFacade extends AbstractContributableEntity implements Runnable {
-		private EffectiveContributorsResolver<ObservableContributorWithOrigin> effectiveContributorsResolver;
+		private EffectiveContributorsResolver<ObservableContribution> effectiveContributorsResolver;
 		private MyContributorFacade() {
 			update();
 			ChangeMonitor.observe(this, ObservableTrack.this, PROP_release, PROP_contributors, PROP_artist, PROP_name);
@@ -79,8 +79,8 @@ public class ObservableTrack extends AbstractContributableEntity<Track> implemen
 		}
 
 		private void update() {
-			List<Collection<ObservableContributorWithOrigin>> orderedContributors = getContributorsInOrderOfPrecedence();
-			effectiveContributorsResolver = new EffectiveContributorsResolver<ObservableContributorWithOrigin>(orderedContributors);
+			List<Collection<ObservableContribution>> orderedContributors = getContributorsInOrderOfPrecedence();
+			effectiveContributorsResolver = new EffectiveContributorsResolver<ObservableContribution>(orderedContributors);
 			setContributors(effectiveContributorsResolver.getEffectiveContributors());
 		}
 
@@ -89,8 +89,8 @@ public class ObservableTrack extends AbstractContributableEntity<Track> implemen
 			update(); // TODO refine, only update the affected set of contributors
 		}
 		
-		private List<Collection<ObservableContributorWithOrigin>> getContributorsInOrderOfPrecedence() {
-			List<Collection<ObservableContributorWithOrigin>> result = new ArrayList<Collection<ObservableContributorWithOrigin>>();
+		private List<Collection<ObservableContribution>> getContributorsInOrderOfPrecedence() {
+			List<Collection<ObservableContribution>> result = new ArrayList<Collection<ObservableContribution>>();
 			result.add(getRecordingContributors());
 			result.add(getWorkContributors());
 			result.add(getRecordingSessionContributors());
@@ -98,33 +98,36 @@ public class ObservableTrack extends AbstractContributableEntity<Track> implemen
 			return result;
 		}
 
-		private Collection<ObservableContributorWithOrigin> getWorkContributors() {
-			Set<ObservableContributorWithOrigin> result = new HashSet<ObservableContributorWithOrigin>();
+		private Collection<ObservableContribution> getWorkContributors() {
+			Set<ObservableContribution> result = new HashSet<ObservableContribution>();
 			for (Work w : getRecording().getWorks()) {
 				result.addAll(compile(Work.class, w));
 			}
 			return result;
 		}
 
-		private Collection<ObservableContributorWithOrigin> getReleaseContributors() {
+		private Collection<ObservableContribution> getReleaseContributors() {
 			return compile(Release.class, getRelease());
 		}
 
-		private Collection<ObservableContributorWithOrigin> getRecordingSessionContributors() {
+		private Collection<ObservableContribution> getRecordingSessionContributors() {
 			return compile(RecordingSession.class, resolveRecordingSession(getRecording()));
 		}
 
-		private Collection<ObservableContributorWithOrigin> getRecordingContributors() {
+		private Collection<ObservableContribution> getRecordingContributors() {
 			return compile(Recording.class, getRecording());
 		}
 
-		private Collection<ObservableContributorWithOrigin> compile(Class<? extends SMDIdentity> type, SMDIdentity entity) {
+		private Collection<ObservableContribution> compile(Class<? extends SMDIdentity> type, SMDIdentity entity) {
 			Set result = new HashSet();
 			if (entity!=null) {
 				AbstractContributableEntity c = (AbstractContributableEntity) entity;
 				Set<Contributor> contributors = c.getContributors();
 				for (Contributor contributor: contributors) {
-					ObservableContributorWithOrigin r = new ObservableContributorWithOrigin(type, contributor);
+					ObservableContribution r = new ObservableContribution();
+					r.setArtist(contributor.getArtist());
+					r.setType(contributor.getType());
+					r.setEntity(c);
 					result.add(r);
 				}
 			}
@@ -141,7 +144,7 @@ public class ObservableTrack extends AbstractContributableEntity<Track> implemen
 		}
 
 		@Override
-		public Set<ObservableContributorWithOrigin> getContributors() {
+		public Set<ObservableContribution> getContributors() {
 			// TODO make typesafe, use generics in signature
 			Set contributors = ObservableTrack.this.getContributors();
 			return contributors;
@@ -254,9 +257,13 @@ public class ObservableTrack extends AbstractContributableEntity<Track> implemen
 	 * 
 	 * @param contributor
 	 */
-	public boolean isEffectiveContributor(ObservableContributorWithOrigin contributor) {
-		boolean isEffective = getContributors().contains(contributor);
-		return isEffective;
+	public boolean isEffectiveContributor(Contributor contributor) {
+		for (Contributor c : getContributors()) {
+			if (ObservableContributor.equal(c, contributor)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 }

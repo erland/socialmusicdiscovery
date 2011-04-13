@@ -51,12 +51,14 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.services.IEvaluationService;
 import org.socialmusicdiscovery.rcp.content.ObservableArtist;
+import org.socialmusicdiscovery.rcp.content.ObservableContribution;
 import org.socialmusicdiscovery.rcp.content.ObservableRecording;
 import org.socialmusicdiscovery.rcp.content.ObservableRelease;
 import org.socialmusicdiscovery.rcp.editors.artist.ArtistEditor;
 import org.socialmusicdiscovery.rcp.editors.recording.RecordingEditor;
 import org.socialmusicdiscovery.rcp.editors.release.ReleaseEditor;
 import org.socialmusicdiscovery.rcp.error.FatalApplicationException;
+import org.socialmusicdiscovery.server.business.model.core.Artist;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
 import org.socialmusicdiscovery.server.business.model.core.Recording;
 import org.socialmusicdiscovery.server.business.model.core.Track;
@@ -166,15 +168,22 @@ public final class WorkbenchUtil {
 	}
 
 	private static IEditorInput resolveEditableElement(IEditorInput currentEditorInput, Object selectedElement) {
-		if (selectedElement instanceof Contributor) {
-			return resolveEditableElement(currentEditorInput, ((Contributor) selectedElement).getArtist());
-		}
 		if (selectedElement instanceof Track) {
 			Track track = (Track) selectedElement;
 			// what to open next depends on where we're currently editing the track
 			// Recording => Release, Release => Recording
 			Object target = currentEditorInput instanceof Recording ? track.getRelease() : track.getRecording();
 			return resolveEditableElement(currentEditorInput, target);
+		}
+		if (selectedElement instanceof ObservableContribution) {
+			ObservableContribution c = (ObservableContribution) selectedElement;
+			// what to open next depends on where we're currently editing the contribution
+			// Artist => Entity, anything else => Artist
+			Object target = currentEditorInput instanceof Artist ? c.getEntity() : c.getArtist();
+			return resolveEditableElement(currentEditorInput, target);
+		}
+		if (selectedElement instanceof Contributor) {
+			return resolveEditableElement(currentEditorInput, ((Contributor) selectedElement).getArtist());
 		}
 		if (selectedElement instanceof IEditorInput) {
 			return (IEditorInput) selectedElement;
