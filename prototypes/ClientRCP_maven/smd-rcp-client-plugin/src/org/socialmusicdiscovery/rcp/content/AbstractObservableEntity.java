@@ -42,6 +42,7 @@ import org.socialmusicdiscovery.rcp.event.AbstractObservable;
 import org.socialmusicdiscovery.rcp.util.TextUtil;
 import org.socialmusicdiscovery.rcp.util.Util;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
+import org.socialmusicdiscovery.server.business.model.core.Release;
 import org.socialmusicdiscovery.server.support.copy.CopyHelper;
 
 import com.google.gson.annotations.Expose;
@@ -90,6 +91,22 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 
 	@Expose
 	private String name;
+	private final Class rootType;
+
+	public AbstractObservableEntity() {
+		super();
+		rootType = resolveRootType();
+	}
+
+	private Class resolveRootType() {
+		Package refPkg = Release.class.getPackage();
+		for (Class type : getClass().getInterfaces()) {
+			if (refPkg.equals(type.getPackage())) {
+				return type;
+			}
+		}
+		return getClass();
+	}
 
 	@Override
 	public Object getAdapter(Class adapter) {
@@ -202,6 +219,10 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 
 	public void setName(String name) {
 		firePropertyChange(PROP_name, this.name, this.name = name);
+	}
+
+	public String getTypeName() {
+		return rootType.getSimpleName();
 	}
 
 	public boolean isDirty() {
