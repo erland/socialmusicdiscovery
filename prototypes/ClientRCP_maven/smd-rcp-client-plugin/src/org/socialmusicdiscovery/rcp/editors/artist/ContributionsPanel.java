@@ -75,6 +75,8 @@ import org.socialmusicdiscovery.rcp.views.util.OpenListener;
 	private GridColumn entityColumn;
 	private GridViewerColumn entityGVC;
 	private ViewerFilter[] filters = new ViewerFilter[0];
+	private GridColumn typeColumn;
+	private GridViewerColumn typeGVC;
 
 	/**
 	 * Create the composite with optional {@link TableColumnLayout}. Separate
@@ -123,6 +125,12 @@ import org.socialmusicdiscovery.rcp.views.util.OpenListener;
 		roleColumn.setWidth(100);
 		roleColumn.setText("Role");
 		
+		typeGVC = new GridViewerColumn(gridTableViewer, SWT.NONE);
+		typeColumn = typeGVC.getColumn();
+		typeColumn.setMoveable(true);
+		typeColumn.setWidth(100);
+		typeColumn.setText("Entity Type");
+		
 		entityGVC = new GridViewerColumn(gridTableViewer, SWT.NONE);
 		entityColumn = entityGVC.getColumn();
 		entityColumn.setMoveable(true);
@@ -145,9 +153,10 @@ import org.socialmusicdiscovery.rcp.views.util.OpenListener;
 	@Override
 	protected void afterSetModel(ObservableArtist model) {
 		IBeanValueProperty roleProperty = BeanProperties.value(ObservableContribution.class, "type");
+		IBeanValueProperty classProperty = BeanProperties.value(ObservableContribution.class, "entity.typeName");
 		IBeanValueProperty entityProperty = BeanProperties.value(ObservableContribution.class, "entity.name");
 		IObservableSet set = new WritableSet(getModel().getContributions(), ObservableContribution.class);
-		ViewerUtil.bind(gridTableViewer, set, roleProperty, entityProperty);
+		ViewerUtil.bind(gridTableViewer, set, roleProperty, classProperty, entityProperty);
 	}
 
 	public ViewerFilter[] getFilters() {
@@ -187,5 +196,8 @@ import org.socialmusicdiscovery.rcp.views.util.OpenListener;
 	}
 	public GridViewerColumn getEntityGVC() {
 		return entityGVC;
+	}
+	public GridViewerColumn getTypeGVC() {
+		return typeGVC;
 	}
 }
