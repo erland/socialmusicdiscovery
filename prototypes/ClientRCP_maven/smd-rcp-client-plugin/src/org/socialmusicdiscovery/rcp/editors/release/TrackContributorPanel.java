@@ -117,7 +117,6 @@ public class TrackContributorPanel extends AbstractComposite<ObservableTrack> {
 	private ToolItem sessionCheck;
 	private Button effectiveContributorsButton;
 	private Label separator;
-	private Section rootSection;
 	private Composite rootArea;
 	private Section filterSection;
 	private Composite composite;
@@ -132,14 +131,8 @@ public class TrackContributorPanel extends AbstractComposite<ObservableTrack> {
 		super(parent, style);
 		setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		rootSection = formToolkit.createSection(this, Section.TWISTIE | Section.TITLE_BAR);
-		formToolkit.paintBordersFor(rootSection);
-		rootSection.setText("Track Contributors");
-		rootSection.setExpanded(true);
-		
-		rootArea = formToolkit.createComposite(rootSection, SWT.NONE);
+		rootArea = formToolkit.createComposite(this, SWT.NONE);
 		formToolkit.paintBordersFor(rootArea);
-		rootSection.setClient(rootArea);
 		rootArea.setLayout(new GridLayout(2, false));
 		
 		contributorPanel = new ContributorPanel(rootArea, SWT.NONE);

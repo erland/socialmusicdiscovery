@@ -28,7 +28,9 @@
 package org.socialmusicdiscovery.rcp.editors.release;
 
 import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.core.databinding.beans.BeansObservables;
+import org.eclipse.core.databinding.beans.PojoObservables;
 import org.eclipse.core.databinding.observable.Realm;
 import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.databinding.observable.map.IObservableMap;
@@ -36,6 +38,7 @@ import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.databinding.viewers.ObservableListContentProvider;
 import org.eclipse.jface.databinding.viewers.ObservableMapLabelProvider;
+import org.eclipse.jface.databinding.viewers.ViewersObservables;
 import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
 import org.eclipse.nebula.jface.gridviewer.GridViewerColumn;
 import org.eclipse.nebula.widgets.grid.Grid;
@@ -64,9 +67,6 @@ import org.socialmusicdiscovery.rcp.util.ViewerUtil;
 import org.socialmusicdiscovery.rcp.views.util.AbstractComposite;
 import org.socialmusicdiscovery.rcp.views.util.OpenListener;
 import org.socialmusicdiscovery.server.business.model.core.Recording;
-import org.eclipse.jface.databinding.viewers.ViewersObservables;
-import org.eclipse.core.databinding.beans.PojoObservables;
-import org.eclipse.core.databinding.UpdateValueStrategy;
 
 public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 
@@ -102,6 +102,12 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 	private Composite tracksArea;
 	private TrackContributorPanel trackContributorPanel;
 	private Composite composite;
+	private CTabFolder trackDetailsFolder;
+	private CTabItem trackContributorTab;
+	private CTabItem playableTab;
+	private Section trackDetailsSection;
+	private Composite playableArea;
+	private Label lblWatchThisSpce;
 
 	/**
 	 * Create the composite.
@@ -143,7 +149,7 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 		fl_gridContainer.spacing = 5;
 		gridContainer.setLayout(fl_gridContainer);
 		
-		sashForm = new SashForm(gridContainer, SWT.BORDER);
+		sashForm = new SashForm(gridContainer, SWT.SMOOTH);
 		sashForm.setSashWidth(2);
 		formToolkit.adapt(sashForm);
 		formToolkit.paintBordersFor(sashForm);
@@ -191,10 +197,36 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 		groupContributors = new GridColumnGroup(gridTracks, SWT.NONE);
 		groupContributors.setText("Contributors");
 		
-		trackContributorPanel = new TrackContributorPanel(sashForm, SWT.NONE);
+		trackDetailsSection = formToolkit.createSection(sashForm, Section.SHORT_TITLE_BAR);
+		formToolkit.paintBordersFor(trackDetailsSection);
+		trackDetailsSection.setText("Track Details");
+		trackDetailsSection.setExpanded(true);
+		
+		trackDetailsFolder = new CTabFolder(trackDetailsSection, SWT.BORDER | SWT.FLAT | SWT.BOTTOM);
+		trackDetailsSection.setClient(trackDetailsFolder);
+		formToolkit.adapt(trackDetailsFolder);
+		formToolkit.paintBordersFor(trackDetailsFolder);
+		trackDetailsFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
+		
+		trackContributorTab = new CTabItem(trackDetailsFolder, SWT.NONE);
+		trackContributorTab.setText("Artists");
+		
+		trackContributorPanel = new TrackContributorPanel(trackDetailsFolder, SWT.NONE);
+		trackContributorTab.setControl(trackContributorPanel);
 		formToolkit.adapt(trackContributorPanel);
 		formToolkit.paintBordersFor(trackContributorPanel);
-		sashForm.setWeights(new int[] {404, 714});
+		
+		playableTab = new CTabItem(trackDetailsFolder, SWT.NONE);
+		playableTab.setText("Sounds");
+		
+		playableArea = formToolkit.createComposite(trackDetailsFolder, SWT.NONE);
+		playableTab.setControl(playableArea);
+		formToolkit.paintBordersFor(playableArea);
+		playableArea.setLayout(new GridLayout(1, false));
+		
+		lblWatchThisSpce = formToolkit.createLabel(playableArea, "Watch this space - PlayableElements will appear here any day ...", SWT.NONE);
+		lblWatchThisSpce.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, false, 1, 1));
+		sashForm.setWeights(new int[] {404, 442});
 		
 		
 		sectionAlbumData = formToolkit.createSection(formRelease.getBody(), Section.TWISTIE | Section.TITLE_BAR);
@@ -246,6 +278,7 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 		}
 
 	private void initUI() {
+		trackDetailsFolder.setSelection(trackContributorTab);
 		albumDataTabFolder.setSelection	(contributorTab);
 		gridViewerTracks.addOpenListener(new OpenListener()); // default edit (double-click)
 		
@@ -313,5 +346,8 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 		bindingContext.bindValue(gridViewerTracksObserveSingleSelection, trackContributorPanelModelObserveValue, null, new UpdateValueStrategy(UpdateValueStrategy.POLICY_NEVER));
 		//
 		return bindingContext;
+	}
+	public Composite getPlayableArea() {
+		return playableArea;
 	}
 }
