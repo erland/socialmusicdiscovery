@@ -27,10 +27,13 @@
 
 package org.socialmusicdiscovery.rcp.commands;
 
+import java.util.Collection;
+
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.socialmusicdiscovery.rcp.util.NotYetImplemented;
+import org.eclipse.core.expressions.EvaluationContext;
+import org.eclipse.swt.program.Program;
 import org.socialmusicdiscovery.server.business.model.core.PlayableElement;
 
 /**
@@ -43,8 +46,25 @@ public class PlayElement extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		NotYetImplemented.openDialog("Can not yet play element: " +event.getTrigger() + "Sorry.");
+		EvaluationContext ctx = (EvaluationContext) event.getApplicationContext();
+		Object defaultVariable = ctx.getDefaultVariable();
+		if (defaultVariable instanceof Collection) {
+			Collection collection = (Collection) defaultVariable;
+			for (Object each : collection) {
+				play(each);
+			}
+		} else {
+			play(defaultVariable);
+		}
 		return null;
+	}
+
+	private void play(Object o) {
+		if (o instanceof PlayableElement) {
+			PlayableElement pe = (PlayableElement) o;
+			String uri = pe.getUri();
+			Program.launch(uri);
+		}
 	}
 
 }

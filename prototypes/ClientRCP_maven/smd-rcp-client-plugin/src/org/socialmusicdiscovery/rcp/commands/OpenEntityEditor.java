@@ -41,4 +41,12 @@ public class OpenEntityEditor extends AbstractHandler implements IHandler {
 		WorkbenchUtil.open(event);
 		return null;
 	}
+
+	@Override
+	public boolean isEnabled() {
+		// TODO return false if no editor is registered
+		return super.isEnabled();
+	}
+	
+	
 }
