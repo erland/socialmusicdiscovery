@@ -161,6 +161,8 @@ public final class WorkbenchUtil {
 			part = WorkbenchUtil.openEditor(nextInput, editorId);
 		} else if (viewId!=null) {
 			part = WorkbenchUtil.openView(viewId, viewId);
+		} else {
+			NotYetImplemented.openDialog("Unable to locate an editor for " + nextInput);
 		}
 		if (part!=null) {
 			
