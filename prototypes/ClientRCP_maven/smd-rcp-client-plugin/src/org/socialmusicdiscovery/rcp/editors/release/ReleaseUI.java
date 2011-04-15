@@ -104,10 +104,9 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 	private Composite composite;
 	private CTabFolder trackDetailsFolder;
 	private CTabItem trackContributorTab;
-	private CTabItem playableTab;
 	private Section trackDetailsSection;
-	private Composite playableArea;
-	private Label lblWatchThisSpce;
+	private CTabItem trackPlayableTab;
+	private PlayableElementsPanel playableElementsPanel;
 
 	/**
 	 * Create the composite.
@@ -202,7 +201,7 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 		trackDetailsSection.setText("Track Details");
 		trackDetailsSection.setExpanded(true);
 		
-		trackDetailsFolder = new CTabFolder(trackDetailsSection, SWT.BORDER | SWT.FLAT | SWT.BOTTOM);
+		trackDetailsFolder = new CTabFolder(trackDetailsSection, SWT.BORDER | SWT.BOTTOM);
 		trackDetailsSection.setClient(trackDetailsFolder);
 		formToolkit.adapt(trackDetailsFolder);
 		formToolkit.paintBordersFor(trackDetailsFolder);
@@ -216,16 +215,12 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 		formToolkit.adapt(trackContributorPanel);
 		formToolkit.paintBordersFor(trackContributorPanel);
 		
-		playableTab = new CTabItem(trackDetailsFolder, SWT.NONE);
-		playableTab.setText("Sounds");
+		trackPlayableTab = new CTabItem(trackDetailsFolder, SWT.NONE);
+		trackPlayableTab.setText("Sounds");
 		
-		playableArea = formToolkit.createComposite(trackDetailsFolder, SWT.NONE);
-		playableTab.setControl(playableArea);
-		formToolkit.paintBordersFor(playableArea);
-		playableArea.setLayout(new GridLayout(1, false));
-		
-		lblWatchThisSpce = formToolkit.createLabel(playableArea, "Watch this space - PlayableElements will appear here any day ...", SWT.NONE);
-		lblWatchThisSpce.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, false, 1, 1));
+		playableElementsPanel = new PlayableElementsPanel(trackDetailsFolder, SWT.NONE);
+		trackPlayableTab.setControl(playableElementsPanel);
+		formToolkit.paintBordersFor(playableElementsPanel);
 		sashForm.setWeights(new int[] {404, 442});
 		
 		
@@ -320,7 +315,6 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 	public ObservableRelease getRelease() {
 		return getModel();
 	}
-	
 	protected DataBindingContext initDataBindings() {
 		DataBindingContext bindingContext = new DataBindingContext();
 		//
@@ -345,9 +339,10 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 		IObservableValue trackContributorPanelModelObserveValue = BeansObservables.observeValue(trackContributorPanel, "model");
 		bindingContext.bindValue(gridViewerTracksObserveSingleSelection, trackContributorPanelModelObserveValue, null, new UpdateValueStrategy(UpdateValueStrategy.POLICY_NEVER));
 		//
+		IObservableValue gridViewerTracksObserveSingleSelection_1 = ViewersObservables.observeSingleSelection(gridViewerTracks);
+		IObservableValue playableElementsPanelModelObserveValue = BeansObservables.observeValue(playableElementsPanel, "model");
+		bindingContext.bindValue(gridViewerTracksObserveSingleSelection_1, playableElementsPanelModelObserveValue, null, new UpdateValueStrategy(UpdateValueStrategy.POLICY_NEVER));
+		//
 		return bindingContext;
-	}
-	public Composite getPlayableArea() {
-		return playableArea;
 	}
 }

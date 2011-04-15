@@ -133,7 +133,10 @@ public class TrackContributorPanel extends AbstractComposite<ObservableTrack> {
 		
 		rootArea = formToolkit.createComposite(this, SWT.NONE);
 		formToolkit.paintBordersFor(rootArea);
-		rootArea.setLayout(new GridLayout(2, false));
+		GridLayout gl_rootArea = new GridLayout(2, false);
+		gl_rootArea.marginHeight = 0;
+		gl_rootArea.marginWidth = 0;
+		rootArea.setLayout(gl_rootArea);
 		
 		contributorPanel = new ContributorPanel(rootArea, SWT.NONE);
 		contributorPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
