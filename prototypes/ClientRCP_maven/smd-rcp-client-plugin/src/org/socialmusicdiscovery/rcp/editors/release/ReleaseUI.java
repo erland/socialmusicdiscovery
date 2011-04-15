@@ -345,4 +345,7 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 		//
 		return bindingContext;
 	}
+	public PlayableElementsPanel getPlayableElementsPanel() {
+		return playableElementsPanel;
+	}
 }
