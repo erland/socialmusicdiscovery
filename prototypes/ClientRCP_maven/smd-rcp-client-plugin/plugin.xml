@@ -244,6 +244,16 @@
                style="push">
          </command>
       </menuContribution>
+      <menuContribution
+            allPopups="true"
+            locationURI="popup:org.eclipse.ui.popup.any">
+         <command
+               commandId="org.socialmusicdiscovery.rcp.commands.PlayElement"
+               label="%popup.command.play.label"
+               mnemonic="%popup.command.play.mnemonic"
+               style="push">
+         </command>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -261,6 +271,10 @@
             id="org.socialmusicdiscovery.rcp.commands.OpenEntityEditor"
             name="Edit">
       </command>
+      <command
+            id="org.socialmusicdiscovery.rcp.commands.PlayElement"
+            name="Play">
+      </command>
    </extension>
    <extension
           point="org.eclipse.ui.handlers">
@@ -271,6 +285,17 @@
                 <iterate>
                   <instanceof
                         value="org.socialmusicdiscovery.rcp.content.ObservableEntity">
+                  </instanceof>
+               </iterate>
+         </enabledWhen>
+      </handler>
+     <handler
+            class="org.socialmusicdiscovery.rcp.commands.PlayElement"
+            commandId="org.socialmusicdiscovery.rcp.commands.PlayElement">
+          <enabledWhen>
+                <iterate>
+                  <instanceof
+                        value="org.socialmusicdiscovery.server.business.model.core.PlayableElement">
                   </instanceof>
                </iterate>
          </enabledWhen>

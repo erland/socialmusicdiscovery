@@ -119,4 +119,7 @@ public class PlayableElementsPanel extends AbstractComposite<ObservableTrack> {
 		ViewerUtil.bind(gridTableViewer, set, uriProperty, formatProperty, bitrateProperty);
 	}
 
+	public GridTableViewer getGridTableViewer() {
+		return gridTableViewer;
+	}
 }

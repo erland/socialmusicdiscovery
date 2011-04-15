@@ -25,29 +25,26 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.rcp.editors.release;
+package org.socialmusicdiscovery.rcp.commands;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
-import org.socialmusicdiscovery.rcp.content.ObservableRelease;
-import org.socialmusicdiscovery.rcp.editors.AbstractEditorPart;
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
+import org.socialmusicdiscovery.rcp.util.NotYetImplemented;
+import org.socialmusicdiscovery.server.business.model.core.PlayableElement;
 
-public class ReleaseEditor extends AbstractEditorPart<ObservableRelease, ReleaseUI> {
-
-	public static final String ID = ReleaseEditor.class.getName();
+/**
+ * Plays a {@link PlayableElement}.
+ *  
+ * @author Peer Törngren
+ *
+ */
+public class PlayElement extends AbstractHandler {
 
 	@Override
-	public void createPartControl(Composite parent) {
-		super.createPartControl(parent, new ReleaseUI(parent, SWT.NONE));
-		hookContextMenus();
-	}
-
-	private void hookContextMenus() {
-		hookContextMenus(
-			getUI().getGridViewerTracks(),
-			getUI().getArtistPanel().getGridViewer(),
-			getUI().getPlayableElementsPanel().getGridTableViewer()
-		);
+	public Object execute(ExecutionEvent event) throws ExecutionException {
+		NotYetImplemented.openDialog("Can not yet play element: " +event.getTrigger() + "Sorry.");
+		return null;
 	}
 
 }
