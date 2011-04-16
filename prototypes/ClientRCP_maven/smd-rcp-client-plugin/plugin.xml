@@ -192,6 +192,16 @@
                      checkEnabled="true">
                </visibleWhen>
             </command>
+            <command
+                  commandId="org.socialmusicdiscovery.rcp.commands.ImportFromSBS"
+                  label="%command.server.import.sbs.label"
+                  mnemonic="%command.server.import.sbs.mnemonic"
+                  style="push"
+                  tooltip="Import files and metadata from SqueezeBox Server">
+               <visibleWhen
+                     checkEnabled="true">
+               </visibleWhen>
+            </command>
          </menu>
          <separator
                name="additions"
@@ -281,6 +291,10 @@
             id="org.socialmusicdiscovery.rcp.commands.OpenEntityEditor"
             name="Edit">
       </command>
+      <command
+            id="org.socialmusicdiscovery.rcp.commands.ImportFromSBS"
+            name="Import SBS">
+      </command>
    </extension>
    <extension
           point="org.eclipse.ui.handlers">
@@ -313,6 +327,10 @@
      <handler
            class="org.socialmusicdiscovery.rcp.commands.DisconnectDataSource"
            commandId="org.socialmusicdiscovery.rcp.commands.DisconnectDataSource">
+     </handler>
+     <handler
+           class="org.socialmusicdiscovery.rcp.commands.ImportFromSBS"
+           commandId="org.socialmusicdiscovery.rcp.commands.ImportFromSBS">
      </handler>
    </extension>
 

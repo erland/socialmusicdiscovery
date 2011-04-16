@@ -30,42 +30,20 @@ package org.socialmusicdiscovery.rcp.commands;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.commands.HandlerEvent;
-import org.socialmusicdiscovery.rcp.Activator;
-import org.socialmusicdiscovery.rcp.content.DataSource;
-import org.socialmusicdiscovery.rcp.content.DataSource.Root;
-import org.socialmusicdiscovery.rcp.util.WorkbenchUtil;
+import org.socialmusicdiscovery.rcp.util.NotYetImplemented;
+
 
 /**
- * <p>
- * Disconnect the client from the {@link DataSource}.
- * </p>
- * <p>
- * <b>NOTE:</b> If client is set to "auto-connect", it will effectively do
- * precisely that after this command, since the navigator will refresh its
- * content when the {@link Root}s are cleared. Hence, in "auto-connect mode",
- * this command is really a "reconnect" command; it will disconnect from the
- * current {@link DataSource}, but the data binding will most likely force a new
- * connection immediately.
- * </p>
+ * Runs a simple import from SBS. Expect to evolve.  
  * 
  * @author Peer Törngren
- * 
  */
-public class DisconnectDataSource extends AbstractHandler {
-	public static final String COMMAND_ID = DisconnectDataSource.class.getName();	
+public class ImportFromSBS extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		if (WorkbenchUtil.closeAllEditors()) {
-			Activator.getDefault().getDataSource().disconnect();
-			fireHandlerChanged(new HandlerEvent(this, true, isEnabled()));
-		}
+		NotYetImplemented.openDialog("Import from SBS");
 		return null;
 	}
 
-	@Override
-	public boolean isEnabled() {
-		return Activator.getDefault().getDataSource().isConnected();
-	}
 }
