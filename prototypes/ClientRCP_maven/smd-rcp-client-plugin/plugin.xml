@@ -104,12 +104,6 @@
             name="%preferences.server.connection.name">
       </page>
       <page
-            category="org.socialmusicdiscovery.rcp.prefs.Main"
-            class="org.socialmusicdiscovery.rcp.prefs.LocalServer"
-            id="org.socialmusicdiscovery.rcp.prefs.LocalServer"
-            name="%preferences.server.local.name">
-      </page>
-      <page
             class="org.socialmusicdiscovery.rcp.prefs.Main"
             id="org.socialmusicdiscovery.rcp.prefs.Main"
             name="%preferences.main.name">
@@ -180,15 +174,21 @@
                mnemonic="%menu.server.mnemonic">
             <command
                   commandId="org.socialmusicdiscovery.rcp.commands.LoadDataSource"
-                  label="%command.server.reload.label"
-                  mnemonic="%command.server.reload.mnemonic"
+                  label="%command.server.connect.label"
+                  mnemonic="%command.server.connect.mnemonic"
                   style="push">
+               <visibleWhen
+                     checkEnabled="true">
+               </visibleWhen>
             </command>
             <command
-                  commandId="org.socialmusicdiscovery.rcp.commands.LaunchServer"
-                  label="%command.server.launch.label"
-                  mnemonic="%command.server.launch.mnemonic"
+                  commandId="org.socialmusicdiscovery.rcp.commands.UnloadDataSource"
+                  label="%command.server.disconnect.label"
+                  mnemonic="%command.server.disconnect.mnemonic"
                   style="push">
+               <visibleWhen
+                     checkEnabled="true">
+               </visibleWhen>
             </command>
          </menu>
          <separator
@@ -252,28 +252,32 @@
                label="%popup.command.play.label"
                mnemonic="%popup.command.play.mnemonic"
                style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <instanceof
+                     value="org.socialmusicdiscovery.server.business.model.core.PlayableElement">
+               </instanceof>
+            </visibleWhen>
          </command>
       </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
       <command
-            defaultHandler="org.socialmusicdiscovery.rcp.commands.LoadDataSource"
             id="org.socialmusicdiscovery.rcp.commands.LoadDataSource"
-            name="(Re)Load Data Source">
+            name="Connect Data Source">
       </command>
       <command
-            defaultHandler="org.socialmusicdiscovery.rcp.commands.LaunchLocalServer"
-            id="org.socialmusicdiscovery.rcp.commands.LaunchServer"
-   			name="Launch Server">
-      </command>
-      <command
-            id="org.socialmusicdiscovery.rcp.commands.OpenEntityEditor"
-            name="Edit">
+            id="org.socialmusicdiscovery.rcp.commands.UnloadDataSource"
+            name="Disconnect Data Source">
       </command>
       <command
             id="org.socialmusicdiscovery.rcp.commands.PlayElement"
             name="Play">
+      </command>
+      <command
+            id="org.socialmusicdiscovery.rcp.commands.OpenEntityEditor"
+            name="Edit">
       </command>
    </extension>
    <extension
@@ -300,6 +304,14 @@
                </iterate>
          </enabledWhen>
       </handler>
+     <handler
+           class="org.socialmusicdiscovery.rcp.commands.LoadDataSource"
+           commandId="org.socialmusicdiscovery.rcp.commands.LoadDataSource">
+     </handler>
+     <handler
+           class="org.socialmusicdiscovery.rcp.commands.UnloadDataSource"
+           commandId="org.socialmusicdiscovery.rcp.commands.UnloadDataSource">
+     </handler>
    </extension>
 
 </plugin>

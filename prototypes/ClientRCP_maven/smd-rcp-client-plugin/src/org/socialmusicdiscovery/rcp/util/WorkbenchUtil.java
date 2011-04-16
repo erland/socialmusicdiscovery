@@ -235,4 +235,16 @@ public final class WorkbenchUtil {
 		}
 	}
 
+	/**
+	 * Close all open editors. Prompt to save changes if any editor has unsaved changes.
+	 * @return <code>true</code> if all editors were closed, <code>false if not</code>
+	 */
+	public static boolean closeAllEditors() {
+		IWorkbenchPage page = getActivePage();
+		if (page != null) {
+			page.closeAllEditors(true);
+		}
+		return page.getEditorReferences().length<1;
+	}
+
 }

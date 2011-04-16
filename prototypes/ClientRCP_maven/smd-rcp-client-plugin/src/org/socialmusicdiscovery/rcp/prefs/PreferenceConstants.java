@@ -38,9 +38,4 @@ public class PreferenceConstants {
 
 	public static final String P_HOSTNAME = "server.hostName";
 	
-	public static final String P_LOCALSERVER_DIRECTORY = "localServer.file";
-
-	public static final String P_LOCALSERVER_AUTOLAUNCH = "localServer.autoLaunch";
-
-	public static final String P_LOCALSERVER_DB = "localServer.db";
 }
