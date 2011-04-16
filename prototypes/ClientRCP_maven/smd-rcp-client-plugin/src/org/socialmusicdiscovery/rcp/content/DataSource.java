@@ -37,7 +37,6 @@ import java.util.Set;
 import javax.ws.rs.core.MediaType;
 
 import org.eclipse.core.databinding.observable.Observables;
-import org.eclipse.core.databinding.observable.list.WritableList;
 import org.eclipse.core.databinding.observable.set.IObservableSet;
 import org.eclipse.core.databinding.observable.set.WritableSet;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -234,13 +233,19 @@ public class DataSource extends AbstractObservable implements ModelObject {
 	 */
 	public class Root<T extends SMDIdentity> extends AbstractObservable implements ModelObject {
 
+/**
+		 * 
+		 */
+		public static final String PROP_OBSERVABLE_CHILDREN = "observableChildren";
 //		private static final String PROP_children = "children";
 		
 		private final String name; // for user presentation
 		private final String path; // for querying server
 		private final Class<T> distinctQueryType; // for querying server
 		private GenericType<Set<T>> genericCollectionQueryType;
-		private Set<ObservableEntity<T>> children;
+		private final Set<ObservableEntity<T>> children = new HashSet<ObservableEntity<T>>();
+
+		private boolean isLoaded = false;
 
 		/**
 		 * Private constructor, roots should only be instantiated from this
@@ -302,16 +307,14 @@ public class DataSource extends AbstractObservable implements ModelObject {
 
 		/**
 		 * Preliminary code, not sure how we want to handle add/delete if
-		 * children (we don't do that yet). Do we want a {@link WritableList} to
-		 * modify directly, or an observable list that listens to changes made
-		 * thru PJO setters?
+		 * children (we don't do that yet). 
 		 */
 		public IObservableSet getObservableChildren() {
-			if (children==null) {
-				children = findAll();
+			if (!isLoaded && (isConnected || isAutoConnect)) {
+				children.addAll(findAll());
+				isLoaded = true;
 			}
-//			return PojoObservables.observeList(this, PROP_children);
-			return new WritableSet(children, getType());
+			return isLoaded ? new WritableSet(children, getType()) : Observables.emptyObservableSet();
 		}
 
 //		public List<ObservableEntity<T>> getChildren() {
@@ -365,17 +368,6 @@ public class DataSource extends AbstractObservable implements ModelObject {
 			String queryType = resolveRoot(entity).getType().getSimpleName().toLowerCase(); // e.g. "release" 
 			String result = getPath() + "?" + queryType + "=" + entity.getId(); //$NON-NLS-1$ //$NON-NLS-2$
 			return result;
-		}
-
-		
-		/**
-		 * If connected (or set to autoconnect), check number of children (would 
-		 * really want a server-supported call. e.g. based on a DB "count"?).
-		 * Otherwise we return <code>true</code>; 
-		 * @return boolean
-		 */
-		public boolean hasChildren() {
-			return isConnected || isAutoConnect ? !findAll().isEmpty() : true;
 		}
 
 		protected Set<T> get(GenericType<Set<T>> genericType) {
@@ -479,6 +471,14 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		private boolean isNew(ObservableEntity entity) {
 			return entity.getId()==null;
 		}
+		
+		public void clear() {
+			if (children!=null) {
+				children.clear();
+				isLoaded = false;
+			}
+			firePropertyChange(PROP_OBSERVABLE_CHILDREN);
+		}
 
 	}
 
@@ -517,13 +517,18 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		throw new IllegalArgumentException("Cannot resolve root for instance: "+entity);
 	}
 
+	@SuppressWarnings("unchecked")
+	private Set<Root> getVisibleRoots() {
+		return resolveRoots(Artist.class, Release.class);
+	}
+
 	/**
 	 * Find the {@link Root}s for the supplied types. 
 	 * 
 	 * @param requestedTypes
 	 * @return List<Root>, possibly empty
 	 */
-	private Set resolveRoots(Class<? extends SMDIdentity>... requestedTypes) {
+	private Set<Root> resolveRoots(Class<? extends SMDIdentity>... requestedTypes) {
 		Set<Root> matches = new HashSet<Root>();
 		for (Root prospect : getRoots()) {
 			for (Class requestedType : requestedTypes) {
@@ -579,8 +584,42 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		firePropertyChange(PROP_IS_CONNECTED, this.isConnected, this.isConnected = isConnected);
 	}
 
-	public void reset() {
+	/**
+	 * Disconnect from data source, clear all contents and all caches, and fire necessary events.
+	 * After this, the client should appear empty. 
+	 * @return the connected state; <code>false</code> unless we threw an exception 
+	 */
+	public boolean disconnect() {
+		if (!isConnected()) {
+			throw new IllegalStateException("Already connected");
+		}
 		this.setConnected(false);
+		this.cache.clear();
+		for (Root root : getRoots()) {
+			root.clear();
+		}
+		fireConnectedRefreshEvent();
+		return isConnected();
+	}
+
+	/**
+	 * Connect to the data source and fire necessary events.
+	 * After this, the client should have content (if there is any).
+	 * @return the connected state; <code>true</code> unless we threw an exception 
+	 */
+	public boolean connect() {
+		if (isConnected()) {
+			throw new IllegalStateException("Already connected");
+		}
+		this.setConnected(true);
+		for (Root root : getVisibleRoots()) {
+			root.getObservableChildren();
+		}
+		fireConnectedRefreshEvent();
+		return isConnected();
+	}
+
+	private void fireConnectedRefreshEvent() {
 		// fire "refresh event" to make sure listeners get notified even if we already were disconnected 
 		firePropertyChange(new PropertyChangeEvent(this, PROP_IS_CONNECTED, null, null));
 	}
@@ -595,10 +634,9 @@ public class DataSource extends AbstractObservable implements ModelObject {
 	 * We may want to dynamically add repositories and thus discover new roots. 
 	 * If/when that happens, this code must be changed.  
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public IObservableSet getObservableChildren() {
-		return Observables.staticObservableSet(resolveRoots(Artist.class, Release.class));
+		return Observables.staticObservableSet(getVisibleRoots());
 	}
 
 	@Override

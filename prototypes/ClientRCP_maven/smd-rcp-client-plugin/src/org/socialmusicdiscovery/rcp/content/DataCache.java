@@ -162,6 +162,10 @@ import com.google.gson.annotations.Expose;
     	cache.remove(entity.getId());
 	}
     
+    /* package */  void clear() {
+		this.cache.clear();
+	}
+
 	private <T extends SMDIdentity> void deepMerge(T from, ObservableEntity<T> to, FieldFilter filter) {
 		for (Field f : getFields(to, filter)) {
 			try {
