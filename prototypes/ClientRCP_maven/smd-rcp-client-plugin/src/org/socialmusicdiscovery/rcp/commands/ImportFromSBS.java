@@ -31,6 +31,7 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.socialmusicdiscovery.rcp.util.NotYetImplemented;
+import org.socialmusicdiscovery.rcp.util.WorkbenchUtil;
 
 
 /**
@@ -44,6 +45,11 @@ public class ImportFromSBS extends AbstractHandler {
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		NotYetImplemented.openDialog("Import from SBS");
 		return null;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return WorkbenchUtil.getDataSource().isConnected();
 	}
 
 }
