@@ -25,31 +25,28 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.rcp.commands;
+package org.socialmusicdiscovery.rcp.util;
 
-import org.eclipse.core.commands.AbstractHandler;
-import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
-import org.socialmusicdiscovery.rcp.util.NotYetImplemented;
-import org.socialmusicdiscovery.rcp.util.SMDUtil;
-
+import org.socialmusicdiscovery.rcp.Activator;
+import org.socialmusicdiscovery.rcp.content.DataSource;
 
 /**
- * Runs a simple import from SBS. Expect to evolve.  
+ * Some SMD-specific convenience utils.
  * 
  * @author Peer Törngren
+ *
  */
-public class ImportFromSBS extends AbstractHandler {
+public class SMDUtil {
 
-	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		NotYetImplemented.openDialog("Import from SBS");
-		return null;
-	}
+	private SMDUtil() {}
 
-	@Override
-	public boolean isEnabled() {
-		return SMDUtil.getDataSource().isConnected();
+	/**
+	 * Convenience method.
+	 * @return {@link DataSource}
+	 */
+	public static DataSource getDataSource() {
+		return Activator.getDefault().getDataSource();
 	}
+	
 
 }

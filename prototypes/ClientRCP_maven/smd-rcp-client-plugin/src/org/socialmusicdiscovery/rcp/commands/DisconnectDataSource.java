@@ -33,6 +33,7 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.HandlerEvent;
 import org.socialmusicdiscovery.rcp.content.DataSource;
 import org.socialmusicdiscovery.rcp.content.DataSource.Root;
+import org.socialmusicdiscovery.rcp.util.SMDUtil;
 import org.socialmusicdiscovery.rcp.util.WorkbenchUtil;
 
 /**
@@ -57,7 +58,7 @@ public class DisconnectDataSource extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		if (WorkbenchUtil.closeAllEditors()) {
-			WorkbenchUtil.getDataSource().disconnect();
+			SMDUtil.getDataSource().disconnect();
 			fireHandlerChanged(new HandlerEvent(this, true, isEnabled()));
 		}
 		return null;
@@ -65,6 +66,6 @@ public class DisconnectDataSource extends AbstractHandler {
 
 	@Override
 	public boolean isEnabled() {
-		return WorkbenchUtil.getDataSource().isConnected();
+		return SMDUtil.getDataSource().isConnected();
 	}
 }
