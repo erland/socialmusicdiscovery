@@ -591,7 +591,7 @@ public class DataSource extends AbstractObservable implements ModelObject {
 	 */
 	public boolean disconnect() {
 		if (!isConnected()) {
-			throw new IllegalStateException("Already connected");
+			throw new IllegalStateException("Not connected");
 		}
 		this.setConnected(false);
 		this.cache.clear();

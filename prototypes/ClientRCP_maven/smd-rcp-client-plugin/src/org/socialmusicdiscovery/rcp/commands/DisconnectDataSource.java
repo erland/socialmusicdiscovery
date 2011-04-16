@@ -32,19 +32,22 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.HandlerEvent;
 import org.socialmusicdiscovery.rcp.Activator;
+import org.socialmusicdiscovery.rcp.util.WorkbenchUtil;
 
-public class LoadDataSource extends AbstractHandler {
-	public static final String COMMAND_ID = LoadDataSource.class.getName();	
+public class DisconnectDataSource extends AbstractHandler {
+	public static final String COMMAND_ID = DisconnectDataSource.class.getName();	
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		Activator.getDefault().getDataSource().connect();
-		fireHandlerChanged(new HandlerEvent(this, true, isEnabled()));
+		if (WorkbenchUtil.closeAllEditors()) {
+			Activator.getDefault().getDataSource().disconnect();
+			fireHandlerChanged(new HandlerEvent(this, true, isEnabled()));
+		}
 		return null;
 	}
-	
+
 	@Override
 	public boolean isEnabled() {
-		return !Activator.getDefault().getDataSource().isConnected();
+		return Activator.getDefault().getDataSource().isConnected();
 	}
 }
