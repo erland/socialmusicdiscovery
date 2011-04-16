@@ -32,7 +32,16 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.HandlerEvent;
 import org.socialmusicdiscovery.rcp.Activator;
+import org.socialmusicdiscovery.rcp.content.DataSource;
 
+/**
+ * <p>
+ * Connect the client to the {@link DataSource}.
+ * </p>
+ * 
+ * @author Peer Törngren
+ * 
+ */
 public class ConnectDataSource extends AbstractHandler {
 	public static final String COMMAND_ID = ConnectDataSource.class.getName();	
 
