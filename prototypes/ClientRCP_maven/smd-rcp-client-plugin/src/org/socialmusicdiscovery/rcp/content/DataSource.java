@@ -585,9 +585,16 @@ public class DataSource extends AbstractObservable implements ModelObject {
 	}
 
 	/**
-	 * Disconnect from data source, clear all contents and all caches, and fire necessary events.
-	 * After this, the client should appear empty. 
-	 * @return the connected state; <code>false</code> unless we threw an exception 
+	 * <p>
+	 * Disconnect from {@link DataSource}, clear all contents and all caches,
+	 * and fire necessary events. Fail if not connected. After this, the client
+	 * should appear empty until it is connected again.
+	 * </p>
+	 * 
+	 * @return the connected state; <code>false</code> unless we threw an
+	 *         exception or got reconnected as a result of firing events
+	 * @see #connect()
+	 * @throws IllegalStateException
 	 */
 	public boolean disconnect() {
 		if (!isConnected()) {
@@ -603,9 +610,13 @@ public class DataSource extends AbstractObservable implements ModelObject {
 	}
 
 	/**
-	 * Connect to the data source and fire necessary events.
-	 * After this, the client should have content (if there is any).
-	 * @return the connected state; <code>true</code> unless we threw an exception 
+	 * Connect to the {@link DataSource} and fire necessary events. Fail if
+	 * already connected. After this, the client should have content (if there
+	 * is any).
+	 * 
+	 * @return the connected state; <code>true</code> unless we threw an exception
+	 * @see #disconnect()
+	 * @throws IllegalStateException
 	 */
 	public boolean connect() {
 		if (isConnected()) {

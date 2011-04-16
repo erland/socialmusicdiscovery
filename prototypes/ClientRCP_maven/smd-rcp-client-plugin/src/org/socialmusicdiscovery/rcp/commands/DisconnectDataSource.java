@@ -32,8 +32,24 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.HandlerEvent;
 import org.socialmusicdiscovery.rcp.Activator;
+import org.socialmusicdiscovery.rcp.content.DataSource;
+import org.socialmusicdiscovery.rcp.content.DataSource.Root;
 import org.socialmusicdiscovery.rcp.util.WorkbenchUtil;
 
+/**
+ * <p>
+ * Disconnect the client from the {@link DataSource}.
+ * </p>
+ * <p>
+ * <b>NOTE:</b> If client is set to "auto-connect", it will effectively do
+ * precisely that after this command, since the navigator will refresh its
+ * content when the {@link Root}s are cleared. Hence, in "auto-connect mode",
+ * this command is really a "reconnect" command.
+ * </p>
+ * 
+ * @author Peer Törngren
+ * 
+ */
 public class DisconnectDataSource extends AbstractHandler {
 	public static final String COMMAND_ID = DisconnectDataSource.class.getName();	
 
