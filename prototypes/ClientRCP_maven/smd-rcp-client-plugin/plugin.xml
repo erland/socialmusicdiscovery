@@ -176,7 +176,8 @@
                   commandId="org.socialmusicdiscovery.rcp.commands.ConnectDataSource"
                   label="%command.server.connect.label"
                   mnemonic="%command.server.connect.mnemonic"
-                  style="push">
+                  style="push"
+                  tooltip="Connect to server according to server preferences.">
                <visibleWhen
                      checkEnabled="true">
                </visibleWhen>
@@ -185,7 +186,8 @@
                   commandId="org.socialmusicdiscovery.rcp.commands.DisconnectDataSource"
                   label="%command.server.disconnect.label"
                   mnemonic="%command.server.disconnect.mnemonic"
-                  style="push">
+                  style="push"
+                  tooltip="Disconnect from server. Note: if set to &quot;auto-connect&quot;, a new connection to the server will be made immeditely. If server settings have changed in between, the new connection will be made to changed settings.">
                <visibleWhen
                      checkEnabled="true">
                </visibleWhen>
