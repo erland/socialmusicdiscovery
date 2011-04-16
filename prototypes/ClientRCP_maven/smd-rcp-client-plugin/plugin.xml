@@ -173,7 +173,7 @@
                label="%menu.server.label"
                mnemonic="%menu.server.mnemonic">
             <command
-                  commandId="org.socialmusicdiscovery.rcp.commands.LoadDataSource"
+                  commandId="org.socialmusicdiscovery.rcp.commands.ConnectDataSource"
                   label="%command.server.connect.label"
                   mnemonic="%command.server.connect.mnemonic"
                   style="push">
@@ -182,7 +182,7 @@
                </visibleWhen>
             </command>
             <command
-                  commandId="org.socialmusicdiscovery.rcp.commands.UnloadDataSource"
+                  commandId="org.socialmusicdiscovery.rcp.commands.DisconnectDataSource"
                   label="%command.server.disconnect.label"
                   mnemonic="%command.server.disconnect.mnemonic"
                   style="push">
@@ -264,11 +264,11 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
-            id="org.socialmusicdiscovery.rcp.commands.LoadDataSource"
+            id="org.socialmusicdiscovery.rcp.commands.ConnectDataSource"
             name="Connect Data Source">
       </command>
       <command
-            id="org.socialmusicdiscovery.rcp.commands.UnloadDataSource"
+            id="org.socialmusicdiscovery.rcp.commands.DisconnectDataSource"
             name="Disconnect Data Source">
       </command>
       <command
@@ -305,12 +305,12 @@
          </enabledWhen>
       </handler>
      <handler
-           class="org.socialmusicdiscovery.rcp.commands.LoadDataSource"
-           commandId="org.socialmusicdiscovery.rcp.commands.LoadDataSource">
+           class="org.socialmusicdiscovery.rcp.commands.ConnectDataSource"
+           commandId="org.socialmusicdiscovery.rcp.commands.ConnectDataSource">
      </handler>
      <handler
-           class="org.socialmusicdiscovery.rcp.commands.UnloadDataSource"
-           commandId="org.socialmusicdiscovery.rcp.commands.UnloadDataSource">
+           class="org.socialmusicdiscovery.rcp.commands.DisconnectDataSource"
+           commandId="org.socialmusicdiscovery.rcp.commands.DisconnectDataSource">
      </handler>
    </extension>
 
