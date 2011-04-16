@@ -50,6 +50,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.services.IEvaluationService;
+import org.socialmusicdiscovery.rcp.Activator;
+import org.socialmusicdiscovery.rcp.content.DataSource;
 import org.socialmusicdiscovery.rcp.content.ObservableArtist;
 import org.socialmusicdiscovery.rcp.content.ObservableContribution;
 import org.socialmusicdiscovery.rcp.content.ObservableRecording;
@@ -245,6 +247,14 @@ public final class WorkbenchUtil {
 			page.closeAllEditors(true);
 		}
 		return page.getEditorReferences().length<1;
+	}
+
+	/**
+	 * Convenience method.
+	 * @return {@link DataSource}
+	 */
+	public static DataSource getDataSource() {
+		return Activator.getDefault().getDataSource();
 	}
 
 }
