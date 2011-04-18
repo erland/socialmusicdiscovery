@@ -98,6 +98,7 @@ The above examples illustrates how it looks like for artists, the complete list 
   * recordings
   * persons
   * works
+  * playableelements
 
 More objects will be added, but this is what we have at the moment.
 
