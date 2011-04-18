@@ -22,7 +22,7 @@ Anyway, here are a few words on what I think needs to be done to bring this thin
   # (done) _[http://code.google.com/p/socialmusicdiscovery/issues/detail?id=7 A head-less builder (e.g. Maven or Buckminster)]_
   # [http://code.google.com/p/socialmusicdiscovery/issues/detail?id=4 A bootstrap to deploy the basic client (e.g. JWS)]
   # [http://code.google.com/p/socialmusicdiscovery/issues/detail?id=3 An update site where we can upload new versions of the plug-ins]
-  # [http://code.google.com/p/socialmusicdiscovery/issues/detail?id=5 Enrich the core editors (Release and Artist)]
+  # (done) _[http://code.google.com/p/socialmusicdiscovery/issues/detail?id=5 Enrich the core editors (Release and Artist)]_
   # [http://code.google.com/p/socialmusicdiscovery/issues/detail?id=6 Create extension points to allow more editors]
 
 Effective time, this would all take a couple of weeks or so. Working odd hours around midnight ... I'm not so sure :-(
