@@ -47,4 +47,15 @@ public class JPAPlayableElementRepository extends AbstractJPASMDIdentityReposito
         query.setParameter("smdID",smdID);
         return query.getResultList();
     }
+    public Collection<PlayableElementEntity> findByURIWithRelations(String uri, Collection<String> mandatoryRelations, Collection<String> optionalRelations) {
+        Query query = entityManager.createQuery(queryStringFor("e", mandatoryRelations, optionalRelations) + " where lower(e.uri)=:uri order by e.uri");
+        query.setParameter("uri", uri.toLowerCase());
+        return query.getResultList();
+    }
+
+    public Collection<PlayableElementEntity> findByPartialURIWithRelations(String uriContains, Collection<String> mandatoryRelations, Collection<String> optionalRelations) {
+        Query query = entityManager.createQuery(queryStringFor("e", mandatoryRelations, optionalRelations) + " where lower(e.uri) like :uri order by e.uri");
+        query.setParameter("uri", "%" + uriContains.toLowerCase() + "%");
+        return query.getResultList();
+    }
 }

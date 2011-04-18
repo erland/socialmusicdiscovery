@@ -77,6 +77,8 @@ public class BaseTestCase {
     @Inject
     protected TrackRepository trackRepository;
     @Inject
+    protected PlayableElementRepository playableElementRepository;
+    @Inject
     protected WorkRepository workRepository;
     @Inject
     protected GlobalIdentityRepository globalIdentityRepository;

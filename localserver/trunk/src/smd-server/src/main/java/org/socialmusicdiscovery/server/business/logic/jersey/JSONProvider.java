@@ -73,6 +73,7 @@ public final class JSONProvider extends AbstractJSONProvider {
         converters.put(Relation.class, SMDIdentityReferenceEntity.class);
         converters.put(Credit.class, CreditEntity.class);
         converters.put(Series.class, SeriesEntity.class);
+        converters.put(PlayableElement.class, PlayableElementEntity.class);
 
         return converters;
     }

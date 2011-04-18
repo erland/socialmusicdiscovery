@@ -36,10 +36,7 @@ import org.testng.annotations.*;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 
 public class CoreTest extends BaseTestCase {
@@ -183,13 +180,25 @@ public class CoreTest extends BaseTestCase {
             track.setNumber(1);
             track.setRecording(recording);
             setLastChanged(track);
+            PlayableElementEntity playableElement = new PlayableElementEntity();
+            playableElement.setFormat("flc");
+            playableElement.setSmdID("1000");
+            playableElement.setUri("file:///music/TheBodyguard/track1.flac");
+            track.getPlayableElements().add(playableElement);
+            playableElement = new PlayableElementEntity();
+            playableElement.setFormat("mp3");
+            playableElement.setSmdID("1001");
+            playableElement.setUri("file:///music/TheBodyguard/track1.mp3");
+            track.getPlayableElements().add(playableElement);
             trackRepository.create(track);
 
             release.setTracks(Arrays.asList((Track)track));
             releaseRepository.create(release);
         }
         finally{
-            em.getTransaction().commit();
+            if(!em.getTransaction().getRollbackOnly()) {
+                em.getTransaction().commit();
+            }
         }
         em.getTransaction().begin();
         Query query = em.createQuery("from ReleaseEntity where name=:name");
@@ -209,6 +218,10 @@ public class CoreTest extends BaseTestCase {
         assert(track.getNumber().equals(1));
         assert ((TrackEntity)track).getLastUpdated() != null;
         assert ((TrackEntity)track).getLastUpdatedBy() != null;
+        assert (track.getPlayableElements() != null);
+        assert (track.getPlayableElements().size() == 2);
+        PlayableElement playableElement = track.getPlayableElements().iterator().next();
+        assert playableElement.getSmdID().equals("1000") || playableElement.getSmdID().equals("1001");
         assert(track.getRecording() != null);
         assert(track.getRecording().getContributors() != null);
         assert(track.getRecording().getContributors().size()==2);
@@ -246,6 +259,82 @@ public class CoreTest extends BaseTestCase {
     }
 
     @Test
+    public void testModelPlayableElementUpdate() throws Exception {
+        loadTestData(getClass().getPackage().getName(),"The Bodyguard.xml");
+        em.getTransaction().begin();
+        
+        Query query = em.createQuery("from ReleaseEntity where name=:name");
+        query.setParameter("name","The Bodyguard (Original Soundtrack Album)");
+        Release release = (Release) query.getSingleResult();
+        assert(release != null);
+        
+        TrackEntity track = (TrackEntity) release.getTracks().get(0);
+        PlayableElementEntity playableElement = new PlayableElementEntity();
+        playableElement.setFormat("mp3");
+        playableElement.setSmdID("1000");
+        playableElement.setUri("someservice://sometrackidentifier");
+        setLastChanged(playableElement);
+        playableElementRepository.create(playableElement);
+        track.getPlayableElements().add(playableElement);
+        trackRepository.merge(track);
+        
+        query = em.createQuery("from ReleaseEntity where name=:name");
+        query.setParameter("name","The Bodyguard (Original Soundtrack Album)");
+        release = (Release) query.getSingleResult();
+        assert(release != null);
+        track = (TrackEntity) release.getTracks().get(0);
+        assert track.getPlayableElements().size()==2;
+
+        boolean found = false;
+        for (PlayableElement element : track.getPlayableElements()) {
+            if(element.getSmdID().equals("1000")) {
+                found = true;
+            }
+        }
+        assert found;
+
+        Collection<PlayableElementEntity> previousPlayableElements = playableElementRepository.findBySmdID("fd4fe48417dd941af53799619ecf1a40-10000000");
+        assert previousPlayableElements.size()>0;
+        playableElement = previousPlayableElements.iterator().next();
+        playableElement.setFormat("mp3");
+        playableElement.setUri("someservice://sometrackidentifier");
+        setLastChanged(playableElement);
+
+        query = em.createQuery("from ReleaseEntity where name=:name");
+        query.setParameter("name","The Bodyguard (Original Soundtrack Album)");
+        release = (Release) query.getSingleResult();
+        assert(release != null);
+        track = (TrackEntity) release.getTracks().get(0);
+        assert track.getPlayableElements().size()==2;
+
+        found = false;
+        for (PlayableElement element : track.getPlayableElements()) {
+            if(element.getSmdID().equals("fd4fe48417dd941af53799619ecf1a40-10000000")) {
+                assert element.getUri().equals("someservice://sometrackidentifier");
+                found = true;
+            }
+        }
+        assert found;
+
+        for (PlayableElement element : track.getPlayableElements()) {
+            if(element.getSmdID().equals("1000")) {
+                track.getPlayableElements().remove(element);
+                playableElementRepository.remove((PlayableElementEntity) element);
+                break;
+            }
+        }
+
+        query = em.createQuery("from ReleaseEntity where name=:name");
+        query.setParameter("name","The Bodyguard (Original Soundtrack Album)");
+        release = (Release) query.getSingleResult();
+        assert(release != null);
+        track = (TrackEntity) release.getTracks().get(0);
+        assert track.getPlayableElements().size()==1;
+
+        em.getTransaction().commit();
+    }
+    
+    @Test
     public void testModelRead() throws Exception {
         loadTestData(getClass().getPackage().getName(),"The Bodyguard.xml");
         em.getTransaction().begin();
@@ -277,6 +366,8 @@ public class CoreTest extends BaseTestCase {
 
         String releaseId = release.getId();
         assert 0 < em.createQuery("from TrackEntity where release_id=:release").setParameter("release",releaseId).getResultList().size();
+        assert 0 < em.createQuery("from TrackEntity as t JOIN t.playableElements where t.release=:release").setParameter("release",release).getResultList().size();
+        assert 0 < em.createQuery("from PlayableElementEntity").getResultList().size();
         assert 0 < em.createQuery("from ReleaseSearchRelationEntity where id=:release").setParameter("release",releaseId).getResultList().size();
         int recordings = em.createQuery("from RecordingEntity").getResultList().size();
 
@@ -293,6 +384,7 @@ public class CoreTest extends BaseTestCase {
         assert(release == null);
 
         assert 0 == em.createQuery("from TrackEntity where release_id=:release").setParameter("release",releaseId).getResultList().size();
+        assert 0 == em.createQuery("from PlayableElementEntity").getResultList().size();
         assert 0 == em.createQuery("from ReleaseSearchRelationEntity where id=:release").setParameter("release",releaseId).getResultList().size();
         assert recordings == em.createQuery("from RecordingEntity").getResultList().size();
 
@@ -430,6 +522,8 @@ public class CoreTest extends BaseTestCase {
         Release release = (Release) query.getSingleResult();
         assert(release != null);
 
+        int playableElements = em.createQuery("from PlayableElementEntity").getResultList().size();
+
         Track trackForRecording = null;
         Recording recording = null;
         for (Track track : release.getTracks()) {
@@ -445,6 +539,8 @@ public class CoreTest extends BaseTestCase {
         em.flush();
         recordingRepository.remove((RecordingEntity)recording);
         em.flush();
+
+        assert playableElements == em.createQuery("from PlayableElementEntity").getResultList().size()+1;
 
         query = em.createQuery("from ReleaseEntity where name=:name");
         query.setParameter("name","The Bodyguard (Original Soundtrack Album)");
