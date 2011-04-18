@@ -28,30 +28,36 @@
 package org.socialmusicdiscovery.server.business.repository.core;
 
 import com.google.inject.Inject;
-import org.socialmusicdiscovery.server.business.model.core.MediumEntity;
-import org.socialmusicdiscovery.server.business.model.core.ReleaseEntity;
-import org.socialmusicdiscovery.server.business.model.core.TrackEntity;
+import org.socialmusicdiscovery.server.business.model.core.*;
 import org.socialmusicdiscovery.server.business.repository.AbstractJPASMDIdentityRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import java.util.Collection;
+import java.util.*;
 
 public class JPATrackRepository extends AbstractJPASMDIdentityRepository<TrackEntity> implements TrackRepository {
     private ReleaseRepository releaseRepository;
     private MediumRepository mediumRepository;
     private RecordingRepository recordingRepository;
+    private PlayableElementRepository playableElementRepository;
 
     @Inject
-    public JPATrackRepository(EntityManager em, ReleaseRepository releaseRepository, MediumRepository mediumRepository, RecordingRepository recordingRepository) {
+    public JPATrackRepository(EntityManager em, ReleaseRepository releaseRepository, MediumRepository mediumRepository, RecordingRepository recordingRepository, PlayableElementRepository playableElementRepository) {
         super(em);
         this.releaseRepository = releaseRepository;
         this.mediumRepository = mediumRepository;
         this.recordingRepository = recordingRepository;
+        this.playableElementRepository = playableElementRepository;
     }
 
     public Collection<TrackEntity> findByName(String name) {
         return findByNameWithRelations(name, null, null);
+    }
+
+    public Collection<TrackEntity> findBySMDID(String smdID) {
+        Query query = entityManager.createQuery("from TrackEntity as t JOIN t.playableElements as p where p.smdID=:smdID");
+        query.setParameter("smdID",smdID);
+        return query.getResultList();
     }
 
     public Collection<TrackEntity> findByNameWithRelations(String name, Collection<String> mandatoryRelations, Collection<String> optionalRelations) {
@@ -107,6 +113,17 @@ public class JPATrackRepository extends AbstractJPASMDIdentityRepository<TrackEn
         if (entity.getRecording() != null && !entityManager.contains(entity.getRecording())) {
             entity.setRecording(recordingRepository.findById(entity.getRecording().getId()));
         }
+        for (PlayableElement playableElement : entity.getPlayableElements()) {
+            if(!entityManager.contains(playableElement)) {
+                if(((PlayableElementEntity)playableElement).getLastUpdated()==null) {
+                    ((PlayableElementEntity)playableElement).setLastUpdated(entity.getLastUpdated());
+                }
+                if(((PlayableElementEntity)playableElement).getLastUpdatedBy()==null) {
+                    ((PlayableElementEntity)playableElement).setLastUpdatedBy(entity.getLastUpdatedBy());
+                }
+                playableElementRepository.create((PlayableElementEntity) playableElement);
+            }
+        }
         super.create(entity);
     }
 
@@ -121,6 +138,17 @@ public class JPATrackRepository extends AbstractJPASMDIdentityRepository<TrackEn
         if (entity.getRecording() != null && !entityManager.contains(entity.getRecording())) {
             entity.setRecording(recordingRepository.findById(entity.getRecording().getId()));
         }
+        for (PlayableElement playableElement : entity.getPlayableElements()) {
+            if(!entityManager.contains(playableElement)) {
+                if(((PlayableElementEntity)playableElement).getLastUpdated()==null) {
+                    ((PlayableElementEntity)playableElement).setLastUpdated(entity.getLastUpdated());
+                }
+                if(((PlayableElementEntity)playableElement).getLastUpdatedBy()==null) {
+                    ((PlayableElementEntity)playableElement).setLastUpdatedBy(entity.getLastUpdatedBy());
+                }
+                playableElementRepository.merge((PlayableElementEntity) playableElement);
+            }
+        }
         return super.merge(entity);
     }
 
@@ -131,6 +159,11 @@ public class JPATrackRepository extends AbstractJPASMDIdentityRepository<TrackEn
         }
         if(entity.getRelease() != null) {
             entity.getRelease().getTracks().remove(entity);
+        }
+        for (PlayableElement playableElement : entity.getPlayableElements()) {
+            if(findBySMDID(playableElement.getSmdID()).size()==1) {
+                playableElementRepository.remove((PlayableElementEntity)playableElement);
+            }
         }
         entityManager.createQuery("DELETE from RecordingTrackSearchRelationEntity where reference=:id").setParameter("id",entity.getId()).executeUpdate();
         entityManager.createQuery("DELETE from ReleaseSearchRelationEntity where reference=:id").setParameter("id",entity.getId()).executeUpdate();

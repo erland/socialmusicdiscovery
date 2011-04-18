@@ -37,11 +37,11 @@ public class TrackBrowseService extends AbstractBrowseService implements BrowseS
     protected Query createFindQuery(Class entity, String objectType, String relationType, String orderBy, Collection<String> criteriaList, Collection<String> sortCriteriaList, String joinString, String whereString) {
         Query query;
         if (criteriaList.size() > 0) {
-            query = entityManager.createQuery("SELECT distinct e from RecordingEntity as r JOIN r."+relationType+"SearchRelations as searchRelations JOIN searchRelations."+relationType+" as e " + joinString + " LEFT JOIN FETCH e.medium as m WHERE " + whereString + buildExclusionString("searchRelations", criteriaList) + (orderBy != null ? " order by " + orderBy : ""));
+            query = entityManager.createQuery("SELECT distinct e from RecordingEntity as r JOIN r."+relationType+"SearchRelations as searchRelations JOIN searchRelations."+relationType+" as e " + joinString + " LEFT JOIN FETCH e.medium as m LEFT JOIN FETCH e.playableElements as p WHERE " + whereString + buildExclusionString("searchRelations", criteriaList) + (orderBy != null ? " order by " + orderBy : ""));
             setExclusionQueryParameters(query, criteriaList);
             setQueryParameters(objectType, query, criteriaList);
         } else {
-            query = entityManager.createQuery("SELECT distinct e from " + entity.getSimpleName() + " as e JOIN FETCH e.recording as r LEFT JOIN FETCH e.medium as m " + (orderBy != null ? " order by " + orderBy : ""));
+            query = entityManager.createQuery("SELECT distinct e from " + entity.getSimpleName() + " as e JOIN FETCH e.recording as r LEFT JOIN FETCH e.medium as m LEFT JOIN FETCH e.playableElements as p " + (orderBy != null ? " order by " + orderBy : ""));
         }
         return query;
     }

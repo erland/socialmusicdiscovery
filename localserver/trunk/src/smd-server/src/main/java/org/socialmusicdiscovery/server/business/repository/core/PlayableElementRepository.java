@@ -36,5 +36,7 @@ import java.util.Collection;
 @ImplementedBy(JPAPlayableElementRepository.class)
 public interface PlayableElementRepository extends SMDIdentityRepository<PlayableElementEntity> {
     Collection<PlayableElementEntity> findBySmdID(String smdID);
+    Collection<PlayableElementEntity> findByPartialURIWithRelations(String uriContains, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
+    Collection<PlayableElementEntity> findByURIWithRelations(String uriContains, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
     Collection<PlayableElementEntity> findBySmdIDWithRelations(String smdID, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
 }

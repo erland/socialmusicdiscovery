@@ -88,7 +88,8 @@ public class FacadeTest extends BaseTestCase {
             converters.put(Relation.class, SMDIdentityReferenceEntity.class);
             converters.put(Credit.class, CreditEntity.class);
             converters.put(Series.class, SeriesEntity.class);
-            
+            converters.put(PlayableElement.class, PlayableElementEntity.class);
+
             return converters;
         }
     }
@@ -409,6 +410,18 @@ public class FacadeTest extends BaseTestCase {
         myTrack.setRecording(recording);
         myTrack.setNumber(13);
 
+        PlayableElement myFlacPlayableElement = new PlayableElementEntity();
+        myFlacPlayableElement.setSmdID("7777777");
+        myFlacPlayableElement.setFormat("flc");
+        myFlacPlayableElement.setUri("file:///music/SomeRelease/track.flac");
+        myTrack.getPlayableElements().add(myFlacPlayableElement);
+
+        PlayableElement myMP3PlayableElement = new PlayableElementEntity();
+        myMP3PlayableElement.setSmdID("8888888");
+        myMP3PlayableElement.setFormat("mp3");
+        myMP3PlayableElement.setUri("file:///music/SomeRelease/track.mp3");
+        myTrack.getPlayableElements().add(myMP3PlayableElement);
+
         Track t = Client.create(config).resource(HOSTURL+"/tracks").type(MediaType.APPLICATION_JSON).post(Track.class,myTrack);
         assert t!=null;
         assert t.getNumber().equals(myTrack.getNumber());
@@ -418,6 +431,8 @@ public class FacadeTest extends BaseTestCase {
         assert t.getRecording().getWorks()!=null;
         assert t.getRecording().getWorks().size()==1;
         assert t.getRecording().getWorks().iterator().next().getName().equals(myWork.getName());
+        assert t.getPlayableElements()!=null;
+        assert t.getPlayableElements().size()==2;
 
         t = Client.create(config).resource(HOSTURL+"/tracks/"+t.getId()).accept(MediaType.APPLICATION_JSON).get(Track.class);
 
@@ -426,10 +441,15 @@ public class FacadeTest extends BaseTestCase {
         assert t.getId()!=null;
 
         t.setNumber(4);
+        t.getPlayableElements().remove(myFlacPlayableElement);
+        t.getPlayableElements().iterator().next().setUri("file:///music/SomeOtherRelease/track.mp3");
         t = Client.create(config).resource(HOSTURL+"/tracks/"+t.getId()).type(MediaType.APPLICATION_JSON).put(Track.class, t);
         assert t!=null;
         assert t.getNumber().equals(4);
         assert t.getId()!=null;
+        assert t.getPlayableElements()!=null;
+        assert t.getPlayableElements().size()==1;
+        assert t.getPlayableElements().iterator().next().getUri().equals("file:///music/SomeOtherRelease/track.mp3");
 
         Collection<Track> tracks = Client.create(config).resource(HOSTURL+"/tracks").accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<Track>>() {});
         assert tracks !=null;
@@ -456,6 +476,8 @@ public class FacadeTest extends BaseTestCase {
         }
         assert found;
 
+        Collection<PlayableElement> previousPlayableElements = Client.create(config).resource(HOSTURL+"/playableelements").accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<PlayableElement>>() {});
+
         Client.create(config).resource(HOSTURL+"/tracks/"+t.getId()).accept(MediaType.APPLICATION_JSON).delete();
         Client.create(config).resource(HOSTURL+"/recordings/"+recording.getId()).accept(MediaType.APPLICATION_JSON).delete();
         Client.create(config).resource(HOSTURL+"/works/"+w.getId()).accept(MediaType.APPLICATION_JSON).delete();
@@ -466,6 +488,81 @@ public class FacadeTest extends BaseTestCase {
         found = false;
         for (Track track : tracks) {
             if(track.getId().equals(t.getId())) {
+                found = true;
+            }
+        }
+        assert !found;
+
+        Collection<PlayableElement> playableElements = Client.create(config).resource(HOSTURL+"/playableelements").accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<PlayableElement>>() {});
+        assert playableElements!=null;
+        assert playableElements.size()==previousPlayableElements.size()-1;
+    }
+
+    @Test
+    public void testPlayableElement() throws Exception {
+        PlayableElement myPlayableElement = new PlayableElementEntity();
+        myPlayableElement.setUri("file:///music/SomeRelease/track.flac");
+        myPlayableElement.setFormat("flc");
+        myPlayableElement.setSmdID("9999999");
+        PlayableElement playableElement = Client.create(config).resource(HOSTURL+"/playableelements").type(MediaType.APPLICATION_JSON).post(PlayableElement.class,myPlayableElement);
+
+        assert playableElement!=null;
+        assert playableElement.getFormat().equals("flc");
+        assert playableElement.getSmdID().equals("9999999");
+        assert playableElement.getUri().equals("file:///music/SomeRelease/track.flac");
+
+        playableElement = Client.create(config).resource(HOSTURL+"/playableelements/"+playableElement.getId()).accept(MediaType.APPLICATION_JSON).get(PlayableElement.class);
+
+        assert playableElement!=null;
+        assert playableElement.getSmdID().equals(myPlayableElement.getSmdID());
+        assert playableElement.getId()!=null;
+
+        playableElement.setUri("file:///music/OtherFolder/SomeRelease/track.flac");
+        playableElement = Client.create(config).resource(HOSTURL+"/playableelements/"+playableElement.getId()).type(MediaType.APPLICATION_JSON).put(PlayableElement.class, playableElement);
+        assert playableElement!=null;
+        assert playableElement.getSmdID().equals(myPlayableElement.getSmdID());
+        assert playableElement.getUri().equals("file:///music/OtherFolder/SomeRelease/track.flac");
+        assert playableElement.getId()!=null;
+
+        Collection<PlayableElement> playableElements = Client.create(config).resource(HOSTURL+"/playableelements").accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<PlayableElement>>() {});
+        assert playableElements !=null;
+        assert playableElements.size()>0;
+        boolean found = false;
+        for (PlayableElement element : playableElements) {
+            if(element.getId().equals(playableElement.getId())) {
+                found = true;
+            }
+        }
+        assert found;
+
+        playableElements = Client.create(config).resource(HOSTURL+"/playableelements?uri="+playableElement.getUri()+"WRONG").accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<PlayableElement>>() {});
+        assert playableElements.size()==0;
+
+        playableElements = Client.create(config).resource(HOSTURL+"/playableelements?uri="+playableElement.getUri()).accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<PlayableElement>>() {});
+        assert playableElements.size()>0;
+
+        found = false;
+        for (PlayableElement element : playableElements) {
+            if(element.getId().equals(playableElement.getId())) {
+                found = true;
+            }
+        }
+        assert found;
+
+        playableElements = Client.create(config).resource(HOSTURL+"/playableelements?smdID="+playableElement.getSmdID()).accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<PlayableElement>>() {});
+        assert playableElements.size()>0;
+
+        playableElements = Client.create(config).resource(HOSTURL+"/playableelements?uriContains=OtherFolder").accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<PlayableElement>>() {
+        });
+        assert playableElements.size()>0;
+
+        Client.create(config).resource(HOSTURL+"/playableelements/"+playableElement.getId()).accept(MediaType.APPLICATION_JSON).delete();
+
+        playableElements = Client.create(config).resource(HOSTURL+"/playableelements").accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<PlayableElement>>() {});
+        assert playableElements !=null;
+        found = false;
+        for (PlayableElement element : playableElements) {
+            if(element.getId().equals(playableElement.getId())) {
                 found = true;
             }
         }

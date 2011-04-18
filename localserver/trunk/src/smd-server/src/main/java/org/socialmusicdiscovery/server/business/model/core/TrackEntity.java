@@ -46,7 +46,7 @@ public class TrackEntity extends AbstractSMDIdentityEntity implements Track {
     @Expose
     private Recording recording;
 
-    @OneToMany(targetEntity = PlayableElementEntity.class)
+    @OneToMany(targetEntity = PlayableElementEntity.class, fetch = FetchType.EAGER)
     @JoinColumn(name = "track_id")
     @Expose
     private Set<PlayableElement> playableElements = new HashSet<PlayableElement>();
