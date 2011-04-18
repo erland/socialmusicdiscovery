@@ -56,12 +56,12 @@ public class PropertiesModule extends AbstractModule {
             properties.load(defaultFile);
             InputStream file = null;
             try {
-                file = new FileInputStream("socialmusicdiscovery-default.properties");
+                file = new FileInputStream("socialmusicdiscovery.properties");
                 properties.load(file);
             } catch (FileNotFoundException e) {
                 // Do nothing
             }
-            file = getClass().getResourceAsStream("/socialmusicdiscovery-default.properties");
+            file = getClass().getResourceAsStream("/socialmusicdiscovery.properties");
             if(file != null) {
                 properties.load(file);
             }
