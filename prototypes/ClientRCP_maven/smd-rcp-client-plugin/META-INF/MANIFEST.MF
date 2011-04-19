@@ -23,13 +23,14 @@ Import-Package: com.google.gson.annotations,
  javax.ws.rs.core,
  javax.ws.rs.ext,
  org.apache.commons.beanutils,
+ org.apache.commons.lang.time,
+ org.socialmusicdiscovery.server.api,
+ org.socialmusicdiscovery.server.api.management.mediaimport,
  org.socialmusicdiscovery.server.business.model,
  org.socialmusicdiscovery.server.business.model.core,
  org.socialmusicdiscovery.server.support.copy,
  org.socialmusicdiscovery.server.support.format,
- org.socialmusicdiscovery.server.support.json,
- org.socialmusicdiscovery.server.api,
- org.socialmusicdiscovery.server.api.management.mediaimport
+ org.socialmusicdiscovery.server.support.json
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Activator: org.socialmusicdiscovery.rcp.Activator
 Bundle-Localization: plugin

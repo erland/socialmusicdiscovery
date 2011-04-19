@@ -42,14 +42,13 @@ import org.socialmusicdiscovery.rcp.util.SMDUtil;
  */
 public class ImportFromSBS extends AbstractHandler {
 
-	private final boolean runAsJob = false;
+	private final boolean runAsJob = true;
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		String jobName = "Import from SBS";
 		if (runAsJob ) {
-			ImportJob importer = new ImportJob(jobName, SMDUtil.getDataSource(), DataSource.MODULE_SQUEEZEBOXSERVER);
-			importer.schedule();
+			JobUtil.schedule(new ImportJob(jobName, SMDUtil.getDataSource(), DataSource.MODULE_SQUEEZEBOXSERVER));
 		} else {
 			ImportRunner importer = new ImportRunner(jobName, SMDUtil.getDataSource(), DataSource.MODULE_SQUEEZEBOXSERVER);
 			JobUtil.run(null, importer, jobName);
