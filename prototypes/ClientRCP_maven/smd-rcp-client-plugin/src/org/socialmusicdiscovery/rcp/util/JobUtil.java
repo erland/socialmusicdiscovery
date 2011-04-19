@@ -34,7 +34,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Shell;
-import org.socialmusicdiscovery.rcp.error.FatalApplicationException;
 
 /**
  * Some helpers for long-running operations of various kinds (not necessarily {@link Job}s.
@@ -51,7 +50,9 @@ public class JobUtil {
 	 * @return <code>true</code> if job finished ok, <code>false</code> if not (e.g. user cancelled)
 	 */
 	public static boolean run(Shell shell, IRunnableWithProgress runnable, String dialogTitle) {
+//		double started = System.currentTimeMillis();
 		ProgressMonitorDialog dialog = new ProgressMonitorDialog(shell);
+
 		try {
 			dialog.create();
 			dialog.getShell().setText(dialogTitle);
@@ -61,10 +62,19 @@ public class JobUtil {
 				return false;
 			}
 		} catch (InvocationTargetException e) {
-			throw new FatalApplicationException(dialogTitle, e);
+			return handleError(e, dialogTitle);
 		} catch (InterruptedException e) {
-			throw new FatalApplicationException(dialogTitle, e);
+			return handleError(e, dialogTitle);
 		}
+		
+//        double elapsed = System.currentTimeMillis()-started;
+//		System.out.println("ImportJob.run(): "+((long)elapsed));
 		return true;
+	}
+
+	private static boolean handleError(Exception e, String dialogTitle) {
+		String message = e.getCause()==null ? e.getMessage() : e.getCause().getMessage();
+		MessageDialog.openError(null, dialogTitle, message);
+		return false;
 	}
 }

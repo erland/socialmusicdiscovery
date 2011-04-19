@@ -30,7 +30,8 @@ package org.socialmusicdiscovery.rcp.commands;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.socialmusicdiscovery.rcp.util.NotYetImplemented;
+import org.socialmusicdiscovery.rcp.content.DataSource;
+import org.socialmusicdiscovery.rcp.util.JobUtil;
 import org.socialmusicdiscovery.rcp.util.SMDUtil;
 
 
@@ -43,7 +44,9 @@ public class ImportFromSBS extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		NotYetImplemented.openDialog("Import from SBS");
+		String jobName = "Import from SBS";
+		ImportJob importer = new ImportJob(SMDUtil.getDataSource(), DataSource.MODULE_SQUEEZEBOXSERVER);
+		JobUtil.run(null, importer, jobName);
 		return null;
 	}
 
