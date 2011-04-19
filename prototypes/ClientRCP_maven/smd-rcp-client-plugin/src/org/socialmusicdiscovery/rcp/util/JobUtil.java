@@ -34,6 +34,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.progress.WorkbenchJob;
 
 /**
  * Some helpers for long-running operations of various kinds (not necessarily {@link Job}s.
@@ -43,11 +44,16 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class JobUtil {
 
-	/** A simple runner. Should/could be extended to run in background etc.
+	/**
+	 * A simple runner with a progress monitor. For more sophisticated
+	 * operation, consider running a {@link Job} or a {@link WorkbenchJob}.
+	 * 
 	 * @param shell
 	 * @param runnable
 	 * @param dialogTitle
-	 * @return <code>true</code> if job finished ok, <code>false</code> if not (e.g. user cancelled)
+	 * @return <code>true</code> if job finished ok, <code>false</code> if not (e.g. user canceled)
+	 * @see Job#schedule()
+	 * @see WorkbenchJob#schedule()
 	 */
 	public static boolean run(Shell shell, IRunnableWithProgress runnable, String dialogTitle) {
 //		double started = System.currentTimeMillis();
@@ -58,7 +64,7 @@ public class JobUtil {
 			dialog.getShell().setText(dialogTitle);
 			dialog.run(true, true, runnable);
 			if (dialog.getProgressMonitor().isCanceled()) {
-				MessageDialog.openInformation(shell, dialogTitle+" cancelled", "Operation was cancelled");
+				MessageDialog.openInformation(shell, dialogTitle+" cancelled", "Operation was canceled");
 				return false;
 			}
 		} catch (InvocationTargetException e) {
@@ -72,7 +78,7 @@ public class JobUtil {
 		return true;
 	}
 
-	private static boolean handleError(Exception e, String dialogTitle) {
+	public static boolean handleError(Throwable e, String dialogTitle) {
 		String message = e.getCause()==null ? e.getMessage() : e.getCause().getMessage();
 		MessageDialog.openError(null, dialogTitle, message);
 		return false;
