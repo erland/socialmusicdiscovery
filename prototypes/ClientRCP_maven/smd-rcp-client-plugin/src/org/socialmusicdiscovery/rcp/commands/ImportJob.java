@@ -30,23 +30,18 @@ package org.socialmusicdiscovery.rcp.commands;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.ui.internal.progress.ProgressView;
 import org.socialmusicdiscovery.rcp.content.DataSource;
-import org.socialmusicdiscovery.rcp.util.JobUtil;
 
 /**
  * Runs a server import job as a scheduled job, allowing user to run job in
- * background. Not yet usable, need to figure out how to
- * <ul>
- * <li>bring job out of background (seems to need a {@link ProgressView}?)</li>
- * <li>handle concurrent updates of server (while client is running and possibly
- * updates server)</li>
- * </ul>
+ * background.
+ * 
+ * TODO handle concurrent updates of server (while client is running and possibly
+ * updates server). Perhaps we should block background jobs?
  * 
  * @author Peer Törngren
  * 
  */
-@SuppressWarnings("restriction")
 public class ImportJob extends Job {
 	
 	private final ImportWorker worker;
@@ -61,16 +56,6 @@ public class ImportJob extends Job {
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
         IStatus status = worker.run(monitor);
-		if (status.matches(IStatus.ERROR)) {
-        	JobUtil.handleError(status.getException(), getName());
-        }
 		return status;
 	}
-
-//	if extending UIJob
-//	@Override
-//	public IStatus runInUIThread(IProgressMonitor monitor) {
-//    	return worker.run(monitor);
-//	}
-
 }

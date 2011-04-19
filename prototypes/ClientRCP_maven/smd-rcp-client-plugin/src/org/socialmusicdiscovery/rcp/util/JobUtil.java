@@ -29,12 +29,16 @@ package org.socialmusicdiscovery.rcp.util;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.apache.commons.lang.time.StopWatch;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.progress.WorkbenchJob;
 
 /**
  * Some helpers for long-running operations of various kinds (not necessarily {@link Job}s.
@@ -44,16 +48,65 @@ import org.eclipse.ui.progress.WorkbenchJob;
  */
 public class JobUtil {
 
+	private static class MyJobListener extends JobChangeAdapter implements Runnable {
+
+		private final StopWatch sw = new StopWatch();
+		private IJobChangeEvent event;
+		
+		@Override
+		public void aboutToRun(IJobChangeEvent event) {
+			sw.start();
+		}
+
+		@Override
+		public void done(IJobChangeEvent event) {
+			this.event = event;
+			Display.getDefault().syncExec(this);
+		}
+
+		@Override
+		public void run() {
+			sw.split();
+			String time = sw.toSplitString();
+				
+			IStatus result = event.getResult();
+			String dlgTitle = event.getJob().getName();
+			int severity = result.getSeverity();
+			
+			if (result.isOK()) {
+				MessageDialog.openInformation(null, dlgTitle, "Done: "+time);
+			} else if (severity==IStatus.CANCEL) {
+				MessageDialog.openWarning(null, dlgTitle, "Canceled after "+time);
+			} else if (severity==IStatus.WARNING) {
+				MessageDialog.openWarning(null, dlgTitle, "Done with warnings after "+time+": "+result.getMessage());			
+			} else if (severity==IStatus.ERROR) {
+				MessageDialog.openError(null, dlgTitle, "Failed after "+time+": "+result.getMessage());			
+			} else {
+				throw new IllegalArgumentException("Unexpected status: "+result);
+			}
+		}
+	}
+
+	/**
+	 * Schedule a job and attach a listener to report results back to user.
+	 * TODO accept a listener to be notified about IStatus when job completes 
+	 * @param job
+	 */
+	public static void schedule(Job job) {
+		job.addJobChangeListener(new MyJobListener());
+		job.schedule();
+	}
+	
 	/**
 	 * A simple runner with a progress monitor. For more sophisticated
-	 * operation, consider running a {@link Job} or a {@link WorkbenchJob}.
+	 * operation, consider running a {@link Job} thru {@link #schedule(Job)}. 
 	 * 
 	 * @param shell
 	 * @param runnable
 	 * @param dialogTitle
 	 * @return <code>true</code> if job finished ok, <code>false</code> if not (e.g. user canceled)
-	 * @see Job#schedule()
-	 * @see WorkbenchJob#schedule()
+	 * 
+	 * @see #schedule(Job)
 	 */
 	public static boolean run(Shell shell, IRunnableWithProgress runnable, String dialogTitle) {
 //		double started = System.currentTimeMillis();
@@ -78,9 +131,10 @@ public class JobUtil {
 		return true;
 	}
 
-	public static boolean handleError(Throwable e, String dialogTitle) {
+	private static boolean handleError(Throwable e, String dialogTitle) {
 		String message = e.getCause()==null ? e.getMessage() : e.getCause().getMessage();
 		MessageDialog.openError(null, dialogTitle, message);
 		return false;
 	}
+
 }

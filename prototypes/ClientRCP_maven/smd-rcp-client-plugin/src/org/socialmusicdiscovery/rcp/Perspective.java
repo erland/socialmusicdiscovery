@@ -27,21 +27,26 @@
 
 package org.socialmusicdiscovery.rcp;
 
+import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 import org.socialmusicdiscovery.rcp.views.navigator.NavigatorView;
 
 public class Perspective implements IPerspectiveFactory {
 
-//	private static final String PLACEHOLDER_PATTERN = "org.socialmusicdiscovery.rcp.views.*";
+	public static final String ID_VIEW_FOLDER = "views";
+	//	private static final String PLACEHOLDER_PATTERN = "org.socialmusicdiscovery.rcp.views.*";
 	public final static String ID = Perspective.class.getName();
+	private static final String ID_PROGRESSVIEW = "org.eclipse.ui.views.ProgressView";
+
 	
 	public void createInitialLayout(IPageLayout layout) {
 		String editorArea = layout.getEditorArea();
 		layout.setEditorAreaVisible(true);
 		
 		layout.addStandaloneView(NavigatorView.ID,  false, IPageLayout.LEFT, 0.25f, editorArea);
-//		IFolderLayout folder = layout.createFolder("views", IPageLayout.BOTTOM, 0.80f, editorArea);
+		IFolderLayout folder = layout.createFolder(ID_VIEW_FOLDER, IPageLayout.BOTTOM, 0.80f, editorArea);
+		folder.addView(ID_PROGRESSVIEW);
 //		folder.addPlaceholder(PLACEHOLDER_PATTERN);
 		
 		layout.getViewLayout(NavigatorView.ID).setCloseable(false);
