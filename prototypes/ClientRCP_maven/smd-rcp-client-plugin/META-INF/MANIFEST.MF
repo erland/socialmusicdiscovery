@@ -27,7 +27,9 @@ Import-Package: com.google.gson.annotations,
  org.socialmusicdiscovery.server.business.model.core,
  org.socialmusicdiscovery.server.support.copy,
  org.socialmusicdiscovery.server.support.format,
- org.socialmusicdiscovery.server.support.json
+ org.socialmusicdiscovery.server.support.json,
+ org.socialmusicdiscovery.server.api,
+ org.socialmusicdiscovery.server.api.management.mediaimport
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Activator: org.socialmusicdiscovery.rcp.Activator
 Bundle-Localization: plugin
