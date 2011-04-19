@@ -45,6 +45,7 @@ use strict;
 use Slim::Utils::Log;
 use Slim::Utils::Prefs;
 use Slim::Utils::Strings qw(cstring);
+use Data::Dumper;
 
 my $serverPrefs = preferences('server');
 my $prefs = preferences('plugin.socialmusicdiscovery');
@@ -78,7 +79,105 @@ sub init {
 	foreach (@topLevel) {
 		$browseLibraryImplementation->registerNode($_);
 	}
+	Slim::Control::Request::addDispatch(
+		[ "smdplaylistcontrol"],
+	    [ 1, 0, 1, \&cliPlaylistControl ]
+	);
+
 }
+
+sub cliPlaylistControl {
+	my $request = shift;
+
+	# check this is the correct command.
+	if ($request->isNotCommand([['smdplaylistcontrol']])) {
+		$request->setStatusBadDispatch();
+		return;
+	}
+
+	# get the parameters
+	my $client              = $request->client();
+	my $cmd                 = $request->getParam('cmd');
+	my $jumpIndex           = $request->getParam('play_index');
+	my $path                = $request->getParam('path');
+
+	if (!defined($path)) {
+		$request->setStatusBadParams();
+		return;
+	}
+
+	if ($request->paramUndefinedOrNotOneOf($cmd, ['load', 'insert', 'add', 'delete'])) {
+		$request->setStatusBadParams();
+		return;
+	}
+
+	$path =~ s/^\///;
+	my @pathElements = split(/\//,$path);
+
+	# Remove initial item, if it doesn't contain ":", this is not needed for play command
+	my $first = shift @pathElements;
+	if(defined($first) && $first =~ /:/) {
+		unshift @pathElements, $first
+	}
+
+	main::INFOLOG && $log->is_info && $log->info("smdplaylistcontrol ",join(", ", @pathElements));
+	
+	my $http = Slim::Networking::SimpleAsyncHTTP->new(\&_playReply, \&_playError, {
+		cmd => $cmd,
+		request => $request,
+                client => $client, 
+                jumpIndex => $jumpIndex,
+        });
+
+	my $hostname = $prefs->get('hostname');
+	my $port = $prefs->get('port');
+	my $url = "http://".$hostname.":".$port."/browse/Track?criteria=".join("&criteria=",@pathElements);
+
+	$log->info("Getting data using: ".$url);
+	$http->get($url);
+}
+
+sub _playReply {
+	my $http = shift;
+	my $params = $http->params();
+	
+	my $content = $http->content();
+	my $jsonResult = JSON::XS::decode_json($content);
+
+	my @trackIdList = ();
+	foreach (@{$jsonResult->{'items'}}) {
+		my $playableElements = $_->{'item'}->{'playableElements'};
+		if(scalar(@$playableElements)>0) {
+			my $playableElement = shift @$playableElements;
+			my $track = Slim::Schema->objectForUrl({
+		                'url' => $playableElement->{'uri'},
+		        });
+			if(defined($track)) {
+				push @trackIdList, $track->id; 
+			}
+		}
+	}
+
+	if(scalar(@trackIdList)>0) {
+		$log->info("Playing tracks: ".join(",",@trackIdList));
+		Slim::Control::Request::executeRequest(
+			$params->{'client'}, ['playlistcontrol', 'cmd:'.$params->{'cmd'}, 'track_id:'.join(",",@trackIdList)]
+		);
+	}else {
+		$log->error("Error executing smdplaylistcontrol command, no playable elements found");
+	}
+
+	$params->{'request'}->setStatusDone();
+}
+
+sub _playError {
+	my $http = shift;
+	my $params = $http->params();
+
+	$log->error("Error executing smdplaylistcontrol command, unable to communicate with server");
+	$params->{'request'}->setStatusDone();
+}
+
 
 sub _generic {
 	my ($client,
@@ -139,8 +238,7 @@ sub _genericReply {
 	$result->{'offset'} = $jsonResult->{'offset'};
 	$result->{'count'} = $jsonResult->{'size'};
 	$result->{'total'} = $jsonResult->{'totalSize'};
-use Data::Dumper;
-$log->info("Returning ".Dumper($result));
+	$log->debug("Returning ".Dumper($result));
 	$params->{'callback'}->($result);
 }
 
@@ -199,21 +297,21 @@ sub _smd {
 						%{&_tagsToParams(\@searchTags)},
 					},
 				},
-#				play => {
-#					command     => ['playlistcontrol'],
-#					fixedParams => {cmd => 'load', %$params},
-#				},
-#				add => {
-#					command     => ['playlistcontrol'],
-#					fixedParams => {cmd => 'add', %$params},
-#				},
-#				insert => {
-#					command     => ['playlistcontrol'],
-#					fixedParams => {cmd => 'insert', %$params},
-#				},
+				play => {
+					command     => ['smdplaylistcontrol'],
+					fixedParams => {cmd => 'load', %$params},
+				},
+				add => {
+					command     => ['smdplaylistcontrol'],
+					fixedParams => {cmd => 'add', %$params},
+				},
+				insert => {
+					command     => ['smdplaylistcontrol'],
+					fixedParams => {cmd => 'insert', %$params},
+				},
 			);
-#			$actions{'playall'} = $actions{'play'};
-#			$actions{'addall'} = $actions{'add'};
+			$actions{'playall'} = $actions{'play'};
+			$actions{'addall'} = $actions{'add'};
 
 			return {items => $items, actions => \%actions, sorted => 1}, $extra;
 		},
