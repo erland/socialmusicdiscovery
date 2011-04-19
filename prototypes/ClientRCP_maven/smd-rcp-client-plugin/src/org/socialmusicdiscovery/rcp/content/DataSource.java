@@ -51,6 +51,8 @@ import org.socialmusicdiscovery.rcp.prefs.PreferenceConstants;
 import org.socialmusicdiscovery.rcp.prefs.ServerConnection;
 import org.socialmusicdiscovery.rcp.util.JobUtil;
 import org.socialmusicdiscovery.rcp.util.TextUtil;
+import org.socialmusicdiscovery.server.api.OperationStatus;
+import org.socialmusicdiscovery.server.api.management.mediaimport.MediaImportStatus;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
 import org.socialmusicdiscovery.server.business.model.core.PlayableElement;
@@ -126,6 +128,9 @@ import com.sun.jersey.api.client.config.DefaultClientConfig;
  * @author Peer Törngren
  */
 public class DataSource extends AbstractObservable implements ModelObject {
+
+	public static final String MODULE_SQUEEZEBOXSERVER = "squeezeboxserver";
+
 	private class MyPersistor implements IRunnableWithProgress {
 
 		private final ObservableEntity[] entities;
@@ -682,6 +687,35 @@ public class DataSource extends AbstractObservable implements ModelObject {
 			throw new FatalApplicationException("Failed to inflate instance: "+shallowEntity, e);  //$NON-NLS-1$
 		}
 		return true;
+	}
+	
+	/**
+	 * Run an import from specified module (valid modules are defined by server).
+	 * @return {@link OperationStatus}
+	 */
+	public OperationStatus startImport(String module) {
+		WebResource resource = getImportPath(module);
+		return resource.post(OperationStatus.class);
+	}
+
+	/**
+	 * Get the import status from specified module (an import must first be started).
+	 * @return {@link MediaImportStatus}
+	 * @see #startImport(String)
+	 */
+	public MediaImportStatus getImportStatus(String module) {
+		return getImportPath(module).accept(MediaType.APPLICATION_JSON).get(MediaImportStatus.class);
+	}
+
+	/**
+	 * Cancel import of specified module.
+	 */
+	public void cancelImport(String module) {
+		getImportPath(module).delete();
+	}
+
+	private WebResource getImportPath(String module) {
+		return Client.create(config).resource(getServerURI()+ "/mediaimportmodules/" + module);
 	}
 	
 	public static ClientConfig newClientConfig() {
