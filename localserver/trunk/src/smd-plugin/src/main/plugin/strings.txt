@@ -67,3 +67,9 @@ SETUP_PLUGIN_SOCIALMUSICDISCOVERY_HOSTNAME
 SETUP_PLUGIN_SOCIALMUSICDISCOVERY_HOSTNAME_DESC
 	EN	The hostname or IP-address which should be used when connecting to SMD Server
 
+SETUP_PLUGIN_SOCIALMUSICDISCOVERY_SIMULATED_DATA
+	EN	Simulated data file
+
+SETUP_PLUGIN_SOCIALMUSICDISCOVERY_SIMULATED_DATA_DESC
+	EN	Use data from this data file instead of reading it from file tags, this should only be used for testing purpuses to verify logic when real files doesn't exist
+

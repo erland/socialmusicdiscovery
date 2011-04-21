@@ -51,7 +51,7 @@ sub page {
 }
 
 sub prefs {
-	return ($prefs, qw(hostname port));
+	return ($prefs, qw(hostname port simulatedData));
 }
 
 sub handler {

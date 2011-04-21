@@ -37,6 +37,7 @@ use Slim::Utils::OSDetect;
 use Slim::Utils::Strings qw(string);
 use File::Spec::Functions qw(:ALL);
 use DBI qw(:sql_types);
+use File::Slurp;
 
 use Data::Dumper;
 
@@ -56,6 +57,9 @@ my $inProgress;
 my $currentlyScannedTrackNo;
 my $currentlyScannedTrackFile;
 my $totalNumberOfTracks;
+
+my $content;
+my $contentFile;
 
 =head1 NAME
 
@@ -612,6 +616,11 @@ sub getDirectTagsAsJSON {
 	$log->debug("Entering jsonHandlerDirect");
 	my $request = shift;
 
+	if(defined($prefs->get('simulatedData'))) {
+		getSimulatedTagsAsJSON($request);
+		return;
+	}
+
   	my $offset = $request->getParam('offset');
   	my $size = $request->getParam('size');
 
@@ -669,6 +678,86 @@ sub getDirectTagsAsJSON {
 	$request->setStatusDone();
 }
 
+sub getSimulatedTagsAsJSON {
+	$log->debug("Entering jsonHandlerSimulated");
+	my $request = shift;
+
+  	my $offset = $request->getParam('offset');
+  	my $size = $request->getParam('size');
+
+	my $file = $prefs->get("simulatedData");
+	if(!defined($content) || $contentFile ne $file) {
+		$log->info("Reading simulated data from: $file");
+		my $rawData = eval { read_file($file) };
+		if(defined($rawData)) {
+			my @tracks = split(/[\n\r]+/,$rawData);
+			$log->info("Got ".scalar(@tracks)." simulated tracks");
+			$content = \@tracks;
+			$contentFile = $file;
+		}else {
+			$log->error("Unable to read file, $@");
+		}
+	}
+
+	my $count = 0;	
+	my @handledData = ();
+	if(defined($content)) {
+		$count = scalar(@$content);
+		if(defined($size) && defined($offset)) {
+			if($offset>1) {
+				@handledData = @$content[$offset..($offset+$size)];
+			}else {
+				push @handledData,@$content[$offset];
+			}
+		}
+	}
+
+	my $result = {
+		'count' => $count,
+	};
+	if(defined($offset)) {
+		$result->{'offset'} = $offset;
+	}
+
+	my @tracks = ();
+	foreach my $line (@handledData) {
+		if(defined($line) && $line ne "") {
+			my @fileTags = split(/\|/,$line);
+		
+			my $file = shift @fileTags;
+			$file =~ s/^PATH=//;
+			my $type = Slim::Music::Info::typeFromPath($file);
+		
+			my $smdID = shift @fileTags;
+			$smdID =~ s/^SMDID=//;
+
+			my $item = {
+				'smdID' => $smdID,
+				'url' => Slim::Utils::Misc::fileURLFromPath($file),
+				'file' => $file,
+				'format' => $type,
+			};
+
+			my @tags = ();
+			for my $tagItem (@fileTags) {
+				if($tagItem =~ /^([^=]+)=(.*)$/) {
+					my $tag = {
+						'name' => $1,
+						'value' => $2,
+					};
+					push @tags,$tag;
+				}
+			}
+			$item->{'tags'} = \@tags;
+			push @tracks,$item;
+		}
+	}
+	$result->{'tracks'} = \@tracks;
+	$request->setRawResults($result);
+
+	$log->debug("Exit jsonHandlerSimulated");
+	$request->setStatusDone();
+}
 
 # Scan a specific track and store its tags in the database
 sub _scanTrack {
