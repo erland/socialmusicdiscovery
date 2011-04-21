@@ -8,5 +8,9 @@
 		<input type="text" class="stdedit" name="pref_port" id="port" value="[% prefs.pref_port %]" size="5">
 	[% END %]
 
+	[% WRAPPER setting title="SETUP_PLUGIN_SOCIALMUSICDISCOVERY_SIMULATED_DATA" desc="SETUP_PLUGIN_SOCIALMUSICDISCOVERY_SIMULATED_DATA_DESC" %]
+		<input type="text" class="stdedit selectFile" name="pref_simulatedData" id="simulatedData" value="[% prefs.pref_simulatedData %]" size="40">
+	[% END %]
+
 [% PROCESS settings/footer.html %]
 
