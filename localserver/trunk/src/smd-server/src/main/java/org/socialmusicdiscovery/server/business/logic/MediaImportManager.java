@@ -68,6 +68,8 @@ public class MediaImportManager {
         String currentPostProcessingModule;
         Long started = System.currentTimeMillis();
         String currentDescription;
+        Long lastUpdated = null;
+        List<Long> processingTimes = new ArrayList<Long>(100);
         Long currentNo;
         Long totalNo;
         public ProcessState(ProcessingModule module, Phase phase) {
@@ -136,11 +138,45 @@ public class MediaImportManager {
                 try {
                     mediaImporters.get(module).execute(new ProcessingStatusCallback() {
                         public void progress(String module, String currentDescription, Long currentNo, Long totalNo) {
-                            System.out.println(module+" ("+currentNo+" of "+totalNo+"): "+currentDescription);
+                            long processingTime;
+                            long avgProcessingTime;
+                            long currentTime = System.currentTimeMillis();
                             synchronized (RUNNING_MODULES) {
+                                if(runningModules.get(module).lastUpdated == null) {
+                                    processingTime = currentTime-runningModules.get(module).started;
+                                }else {
+                                    processingTime = currentTime-runningModules.get(module).lastUpdated;
+                                }
+                                if(runningModules.get(module).processingTimes.size()<=currentNo%100) {
+                                    runningModules.get(module).processingTimes.add(processingTime);
+                                }else {
+                                    runningModules.get(module).processingTimes.set((int)(currentNo%100),processingTime);
+                                }
+                                avgProcessingTime = 0;
+                                int count = 0;
+                                for (Long time : runningModules.get(module).processingTimes) {
+                                    if(time==null) {
+                                        break;
+                                    }
+                                    avgProcessingTime += time;
+                                    count++;
+                                }
+                                avgProcessingTime = avgProcessingTime/count;
+                                runningModules.get(module).lastUpdated = currentTime;
                                 runningModules.get(module).currentDescription = currentDescription;
                                 runningModules.get(module).currentNo= currentNo;
                                 runningModules.get(module).totalNo= totalNo;
+                            }
+                            if(totalNo>10000 && currentNo>50 && avgProcessingTime<10000/100) {
+                                if(currentNo%100==0 || currentNo.equals(totalNo)) {
+                                    System.out.println(module+" ("+currentNo+" of "+totalNo+", "+avgProcessingTime+" msec/item): "+currentDescription);
+                                }
+                            }else if(totalNo>1000 && currentNo>5 && avgProcessingTime<10000/10) {
+                                if(currentNo%10==0 || currentNo.equals(totalNo)) {
+                                    System.out.println(module+" ("+currentNo+" of "+totalNo+", "+avgProcessingTime+" msec/item): "+currentDescription);
+                                }
+                            }else {
+                                System.out.println(module+" ("+currentNo+" of "+totalNo+", "+avgProcessingTime+" msec/item): "+currentDescription);
                             }
                         }
 
