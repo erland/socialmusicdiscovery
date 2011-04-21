@@ -27,6 +27,8 @@
 
 package org.socialmusicdiscovery.rcp.commands;
 
+import java.util.Arrays;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -37,18 +39,27 @@ import org.socialmusicdiscovery.rcp.error.FatalApplicationException;
 import org.socialmusicdiscovery.server.api.OperationStatus;
 import org.socialmusicdiscovery.server.api.management.mediaimport.MediaImportStatus;
 
+import com.sun.jersey.api.client.UniformInterfaceException;
+
 /**
  * Runs a server import. Designed to be called from some kind of {@link Job} or other 
  * task that runs a {@link IProgressMonitor}. 
  *  
  * @author Peer Törngren
- *
+ * @see ImportJob
+ * @see ImportRunner
+ * @see ImportFromSBS
  */
 public class ImportWorker {
 	
 	private final DataSource dataSource;
 	private final String module;
-	private final String taskName = "Importing media information";
+	private final String[] taskNames = {
+			"Importing media information",
+			"Generating search relations"
+	};
+	private int taskNumber = 0;  // index for tasknames
+
 	private final String name;
 	
 	public ImportWorker(String name, DataSource dataSource, String module) {
@@ -68,7 +79,6 @@ public class ImportWorker {
 		return new Status(Status.ERROR, Activator.PLUGIN_ID, name, e);
 	}
 	
-
 	private IStatus monitorImport(IProgressMonitor monitor) {
     	try {
     		MediaImportStatus status = dataSource.getImportStatus(module);
@@ -80,10 +90,16 @@ public class ImportWorker {
 			monitor.beginTask("Initializing ...", IProgressMonitor.UNKNOWN);
 			while (status != null) {
 				totalWork = status.getTotalNumber();
-				if (isLoaded) {
+				if (isLoaded && status.getCurrentNumber()<lastPosition) {
+					// new subtask
+					lastPosition = 0;
+					startSubTask(monitor, totalWork);
+				} else if (isLoaded) {
+					// making progress in subtask
 			        lastPosition = updateProgressCounter(monitor, status, lastPosition);
 				} else if (totalWork>0) {
-					isLoaded = startProgressCounter(monitor, totalWork);
+					// first subtask
+					isLoaded = startSubTask(monitor, totalWork);
 				}
 			    subTask = updateSubTask(monitor, status, lastPosition, subTask);
 			    
@@ -96,8 +112,16 @@ public class ImportWorker {
 			    status = dataSource.getImportStatus(module);
 			}
 			monitor.done();
-    	} finally {
-    		dataSource.cancelImport(module);
+    	} catch (UniformInterfaceException e) {
+            if (e.getResponse().getStatus() != 204) {
+                throw e;
+            }
+            // TODO fix a better exit - this is currently the normal end; 
+            // we get a URI exception with status 204 in response when server task is finished 
+			monitor.done();
+       	} catch (RuntimeException e) {
+       		dataSource.cancelImport(module);
+       		throw e;
     	}
         return Status.OK_STATUS;
 	}
@@ -114,14 +138,14 @@ public class ImportWorker {
 		return currentSubTask;
 	}
 
-	private boolean startProgressCounter(IProgressMonitor monitor, long totalWork) {
-		boolean isLoaded;
-		isLoaded = true;
+	private boolean startSubTask(IProgressMonitor monitor, long totalWork) {
+		assert taskNumber<taskNames.length : "Task number exceed names: "+taskNumber+", tasks:"+Arrays.asList(taskNames);
+		String taskName = taskNames[taskNumber++];
 		String msg = taskName + " (" + totalWork +" entries)";
 		monitor.beginTask(msg, (int) totalWork);
-		return isLoaded;
+		return true;
 	}
-
+	
 	private double updateProgressCounter(IProgressMonitor monitor, MediaImportStatus status, double lastPosition) {
 		double currentPosition = status.getCurrentNumber();
 		double worked = currentPosition - lastPosition;
