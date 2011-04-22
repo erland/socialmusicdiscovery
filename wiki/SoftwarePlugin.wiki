@@ -8,9 +8,11 @@ The source code is available here:
 
 To install the plugin, you need to setup the following repository file in SBS Settings/Plugins:
   * For the perl only version:
-    * http://socialmusicdiscovery.googlecode.com/svn/repository/development.xml
+    * Official builds: http://socialmusicdiscovery.googlecode.com/svn/repository/development.xml
+    * Nightly builds: http://downloads.socialmusicdiscovery.org/smd-plugin/svn-development-repository.xml
   * For the version with bundled smd-server and smd-frontend:
-    * http://socialmusicdiscovery.googlecode.com/svn/repository/alpha.xml
+    * Official builds: http://socialmusicdiscovery.googlecode.com/svn/repository/alpha.xml
+    * Nightly builds: http://downloads.socialmusicdiscovery.org/smd-plugin/svn-alpha-repository.xml
 
 
 After that you should be able to install the "Social Music Discovery" plugin through SBS Settings/Plugins
