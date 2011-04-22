@@ -87,3 +87,9 @@ The latest official build (with server/frontend bundled with plugin) is availabl
 
 The latest official build (without server/frontend) is available in this repository which you can configure in SBS Settings/Plugins:
   * http://socialmusicdiscovery.googlecode.com/svn/repository/development.xml
+
+The latest nightly build (with server/frontend bundled with plugin) is available in this repository which you can configure in SBS Settings/Plugins:
+  * http://downloads.socialmusicdiscovery.org/smd-plugin/svn-alpha-repository.xml
+
+The latest nightly build (without server/frontend) is available in this repository which you can configure in SBS Settings/Plugins:
+  * http://downloads.socialmusicdiscovery.org/smd-plugin/svn-development-repository.xml
