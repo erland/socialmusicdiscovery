@@ -21,7 +21,7 @@ Anyway, here are a few words on what I think needs to be done to bring this thin
   # (done) _Dirty status (render in views, enable/disable save command on menus)_
   # (done) _Implement save command (only 'update', 'new' and 'delete' not yet supported)_
   # [http://code.google.com/p/socialmusicdiscovery/issues/detail?id=8 Restructured plug-ins (as outlined below)]
-  # [http://code.google.com/p/socialmusicdiscovery/issues/detail?id=2 Add an option to import from SBS (like the Pivot client)]
+  # (done) _[http://code.google.com/p/socialmusicdiscovery/issues/detail?id=2 Add an option to import from SBS (like the Pivot client)]_
   # (done) _[http://code.google.com/p/socialmusicdiscovery/issues/detail?id=7 A head-less builder (e.g. Maven or Buckminster)]_
   # [http://code.google.com/p/socialmusicdiscovery/issues/detail?id=4 A bootstrap to deploy the basic client (e.g. JWS)]
   # [http://code.google.com/p/socialmusicdiscovery/issues/detail?id=3 An update site where we can upload new versions of the plug-ins]
