@@ -13,6 +13,10 @@
         </developerConnection>
     </scm>
 
+    <properties>
+        <smd-download-site>http://socialmusicdiscovery.googlecode.com/files/</smd-download-site>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.socialmusicdiscovery</groupId>
@@ -92,6 +96,57 @@
                                     <descriptors>
                                         <descriptor>src/main/assemble/perlzippackage.xml</descriptor>
                                     </descriptors>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>development-repository</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <checksum file="target/smd-plugin-0.1.${buildNumber}-perl.zip" algorithm="SHA-1" property="smd-plugin-perl-sha"/>
+                                        <copy todir="target" filtering="true">
+                                            <filterset begintoken="${" endtoken="}">
+                                                <filter token="buildNumber" value="0.1.${buildNumber}"/>
+                                                <filter token="smd-plugin-perl-sha" value="${smd-plugin-perl-sha}"/>
+                                                <filter token="smd-download-site" value="${smd-download-site}"/>
+                                            </filterset>
+                                            <fileset dir="src/main/repositories">
+                                                <include name="*development*.xml"/>
+                                            </fileset>
+                                        </copy>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <version>1.5</version>
+                        <executions>
+                            <execution>
+                                <id>attach-development-artifacts</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>attach-artifact</goal>
+                                </goals>
+                                <configuration>
+                                    <artifacts>
+                                        <artifact>
+                                            <file>${project.build.directory}/svn-development-repository.xml</file>
+                                            <type>xml</type>
+                                            <classifier>development-repository</classifier>
+                                        </artifact>
+                                    </artifacts>
                                 </configuration>
                             </execution>
                         </executions>
@@ -210,6 +265,58 @@
                             </execution>
                         </executions>
                     </plugin>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>alpha-repository</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <checksum file="target/smd-plugin-0.1.${buildNumber}-full.zip" algorithm="SHA-1" property="smd-plugin-full-sha"/>
+                                        <copy todir="target" filtering="true">
+                                            <filterset begintoken="${" endtoken="}">
+                                                <filter token="buildNumber" value="0.1.${buildNumber}"/>
+                                                <filter token="smd-plugin-full-sha" value="${smd-plugin-full-sha}"/>
+                                                <filter token="smd-download-site" value="${smd-download-site}"/>
+                                            </filterset>
+                                            <fileset dir="src/main/repositories">
+                                                <include name="*alpha*.xml"/>
+                                            </fileset>
+                                        </copy>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <version>1.5</version>
+                        <executions>
+                            <execution>
+                                <id>attach-alpha-artifacts</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>attach-artifact</goal>
+                                </goals>
+                                <configuration>
+                                    <artifacts>
+                                        <artifact>
+                                            <file>${project.build.directory}/svn-alpha-repository.xml</file>
+                                            <type>xml</type>
+                                            <classifier>alpha-repository</classifier>
+                                        </artifact>
+                                    </artifacts>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
                 </plugins>
             </build>
         </profile>
