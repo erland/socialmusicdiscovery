@@ -94,7 +94,9 @@ Install the prerequisites which is needed to compile the frontend:
 You now need to build SMD Server
   * Check out the source code and build with maven
     * See the separate [BuildInstructions build instructions] page for more information about this
-    * An alternative to building SMD Server, is to download the latest smd-plugin-full package from our download page: http://code.google.com/p/socialmusicdiscovery/downloads/list
+    * An alternative to building SMD Server, is to download the latest smd-plugin-full package from our download page: 
+      * Official builds: http://code.google.com/p/socialmusicdiscovery/downloads/list
+      * Nightly builds: http://downloads.socialmusicdiscovery.org/smd-server/
       * You will need the smd-server-1.0-SNAPSHOT.jar bundled in this zip file.
 
 If you like the server to use a Squeezebox Server library, you also need to install the SMD Plugin in your Squeezebox Server
