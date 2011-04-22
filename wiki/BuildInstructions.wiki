@@ -56,6 +56,9 @@ mvn eclipse:clean
 The svn path is:
   * https://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/
 
+Latest pre-compiled binary version (if you don't want to build it locally):
+  * http://downloads.socialmusicdiscovery.org/smd-server/
+
 To run, you build with maven as described above and then run:
   * java -jar smd-server-1.0-SNAPSHOT.jar
 
@@ -63,6 +66,9 @@ To run, you build with maven as described above and then run:
 
 The svn path is:
   * https://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-frontend/
+
+Latest pre-compiled binary version (if you don't want to build it locally):
+  * http://downloads.socialmusicdiscovery.org/smd-frontend/
 
 To run, you build with maven as described above and then run:
   * java -jar smd-frontend-1.0-SNAPSHOT.jar
