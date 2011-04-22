@@ -8,8 +8,10 @@ There are a number of different options to install the SMD prototype as describe
 
 The easiest way to install if you just want to beta test the software, is to do as follows. This is not the best way if you want to look at the source code or run the software in the debugger, but it's the preferred way if you are only looking for a way to get it up and running and do some testing.
 
-  # Configure the alpha repository in your Squeezebox Server in Settings/Plugins
-    * http://socialmusicdiscovery.googlecode.com/svn/repository/alpha.xml
+  # Configure one of the following alpha repositories in your Squeezebox Server in Settings/Plugins
+    * Official builds: http://socialmusicdiscovery.googlecode.com/svn/repository/alpha.xml
+    * Nightly builds: http://downloads.socialmusicdiscovery.org/smd-plugin/svn-alpha-repository.xml
+
   # In Squeezebox Server inside Settings/Plugin, select to install "Social Music Discovery" which is available in the repository you just setup.
 
 This will give you:
@@ -46,8 +48,10 @@ You now need to build both SMD Server and SMD Frontend
     * See the separate [BuildInstructions build instructions] page for more information about this
 
 If you like the server to use a Squeezebox Server library, you also need to install the SMD Plugin in your Squeezebox Server
-  # Configure the development repository in your Squeezebox Server in Settings/Plugins
-    * http://socialmusicdiscovery.googlecode.com/svn/repository/development.xml
+  # Configure one of the following development repositories in your Squeezebox Server in Settings/Plugins
+    * Official builds: http://socialmusicdiscovery.googlecode.com/svn/repository/development.xml
+    * Nightly builds: http://downloads.socialmusicdiscovery.org/smd-plugin/svn-development-repository.xml
+
   # In Squeezebox Server inside Settings/Plugin, select to install "Social Music Discovery" which is available in the repository you just setup.
     * The development repository only contains the SMD Plugin without and server/frontend, so this installation differs from the above suggested installation for beta testing.
 
@@ -94,8 +98,9 @@ You now need to build SMD Server
       * You will need the smd-server-1.0-SNAPSHOT.jar bundled in this zip file.
 
 If you like the server to use a Squeezebox Server library, you also need to install the SMD Plugin in your Squeezebox Server
-  # Configure the development repository in your Squeezebox Server in Settings/Plugins
-    * http://socialmusicdiscovery.googlecode.com/svn/repository/development.xml
+  # Configure one of the following development repositories in your Squeezebox Server in Settings/Plugins
+    * Official builds: http://socialmusicdiscovery.googlecode.com/svn/repository/development.xml
+    * Nightly builds: http://downloads.socialmusicdiscovery.org/smd-plugin/svn-development-repository.xml
     * The development repository only contains the SMD Plugin without and server/frontend, so this installation differs from the above suggested installation for beta testing.
   # In Squeezebox Server inside Settings/Plugin, select to install "Social Music Discovery" which is available in the repository you just setup.
 
