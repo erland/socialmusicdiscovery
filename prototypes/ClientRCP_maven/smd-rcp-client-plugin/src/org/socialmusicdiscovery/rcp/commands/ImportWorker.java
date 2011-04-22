@@ -86,22 +86,22 @@ public class ImportWorker {
 			double lastPosition = 0;
 			boolean isLoaded = false;
 			
-			String subTask = status.getCurrentDescription();
+			String task = status.getCurrentDescription();
 			monitor.beginTask("Initializing ...", IProgressMonitor.UNKNOWN);
 			while (status != null) {
 				totalWork = status.getTotalNumber();
 				if (isLoaded && status.getCurrentNumber()<lastPosition) {
 					// new subtask
 					lastPosition = 0;
-					startSubTask(monitor, totalWork);
+					beginTask(monitor, totalWork);
 				} else if (isLoaded) {
 					// making progress in subtask
 			        lastPosition = updateProgressCounter(monitor, status, lastPosition);
 				} else if (totalWork>0) {
 					// first subtask
-					isLoaded = startSubTask(monitor, totalWork);
+					isLoaded = beginTask(monitor, totalWork);
 				}
-			    subTask = updateSubTask(monitor, status, lastPosition, subTask);
+			    task = updateTask(monitor, status, lastPosition, task);
 			    
 			    pause(2000);
 			    
@@ -126,7 +126,7 @@ public class ImportWorker {
         return Status.OK_STATUS;
 	}
 
-	private String updateSubTask(IProgressMonitor monitor, MediaImportStatus status, double position, String lastSubTask) {
+	private String updateTask(IProgressMonitor monitor, MediaImportStatus status, double position, String lastSubTask) {
 		String currentSubTask = status.getCurrentDescription();
 		
 		if (currentSubTask.equals(lastSubTask)) {
@@ -138,7 +138,7 @@ public class ImportWorker {
 		return currentSubTask;
 	}
 
-	private boolean startSubTask(IProgressMonitor monitor, long totalWork) {
+	private boolean beginTask(IProgressMonitor monitor, long totalWork) {
 		assert taskNumber<taskNames.length : "Task number exceed names: "+taskNumber+", tasks:"+Arrays.asList(taskNames);
 		String taskName = taskNames[taskNumber++];
 		String msg = taskName + " (" + totalWork +" entries)";

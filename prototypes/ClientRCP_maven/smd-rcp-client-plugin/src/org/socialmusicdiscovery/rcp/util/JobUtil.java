@@ -74,7 +74,7 @@ public class JobUtil {
 			int severity = result.getSeverity();
 			
 			if (result.isOK()) {
-				MessageDialog.openInformation(null, dlgTitle, "Done: "+time);
+				MessageDialog.openInformation(null, dlgTitle, "Done after "+time);
 			} else if (severity==IStatus.CANCEL) {
 				MessageDialog.openWarning(null, dlgTitle, "Canceled after "+time);
 			} else if (severity==IStatus.WARNING) {
