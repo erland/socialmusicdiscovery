@@ -11,21 +11,15 @@ Latest pre-compiled nightly builds of RCP Client can be found here:
   * http://downloads.socialmusicdiscovery.org/smd-rcpclient/
 
 = "Roadmap" =
-Note: This section is becoming outdated as we start using the shared "todo list". 
+This section provides a very rough overview of things to do. For details, please refer to the shared [http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=Component%3DUI-RCPClient "todo list"]. 
 
-Anyway, here are a few words on what I think needs to be done to bring this thing out of the prototype folder and let us start widening scope and honing details:
-  # (done) _Main menu and popup menus declared thru extension points (not in code)_
-  # (done) _A wrapping layer to make SMD entities observable and "self-inflating"_
-  # (done) _A decent navigator (probably !ExpandBar, using !PShelf for now)_
-  # (done) _Observable label providers in grids_
-  # (done) _Dirty status (render in views, enable/disable save command on menus)_
-  # (done) _Implement save command (only 'update', 'new' and 'delete' not yet supported)_
+Here are a few words on what I think needs to be done to bring this thing out of the prototype folder and let us start widening scope and honing details:
+  # [http://code.google.com/p/socialmusicdiscovery/issues/detail?id=21 Add "cell editor" to edit contributor types]
+  # [http://code.google.com/p/socialmusicdiscovery/issues/detail?id=20 	Add/delete contributors (and more)]
+  # Improve performance.
   # [http://code.google.com/p/socialmusicdiscovery/issues/detail?id=8 Restructured plug-ins (as outlined below)]
-  # (done) _[http://code.google.com/p/socialmusicdiscovery/issues/detail?id=2 Add an option to import from SBS (like the Pivot client)]_
-  # (done) _[http://code.google.com/p/socialmusicdiscovery/issues/detail?id=7 A head-less builder (e.g. Maven or Buckminster)]_
   # [http://code.google.com/p/socialmusicdiscovery/issues/detail?id=4 A bootstrap to deploy the basic client (e.g. JWS)]
   # [http://code.google.com/p/socialmusicdiscovery/issues/detail?id=3 An update site where we can upload new versions of the plug-ins]
-  # (done) _[http://code.google.com/p/socialmusicdiscovery/issues/detail?id=5 Enrich the core editors (Release and Artist)]_
   # [http://code.google.com/p/socialmusicdiscovery/issues/detail?id=6 Create extension points to allow more editors]
 
 Effective time, this would all take a couple of weeks or so. Working odd hours around midnight ... I'm not so sure :-(
