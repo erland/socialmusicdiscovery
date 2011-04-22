@@ -16,7 +16,7 @@ This section provides a very rough overview of things to do. For details, please
 Here are a few words on what I think needs to be done to bring this thing out of the prototype folder and let us start widening scope and honing details:
   # [http://code.google.com/p/socialmusicdiscovery/issues/detail?id=21 Add "cell editor" to edit contributor types]
   # [http://code.google.com/p/socialmusicdiscovery/issues/detail?id=20 	Add/delete contributors (and more)]
-  # Improve performance.
+  # [http://code.google.com/p/socialmusicdiscovery/issues/detail?id=25 Improve performance]
   # [http://code.google.com/p/socialmusicdiscovery/issues/detail?id=8 Restructured plug-ins (as outlined below)]
   # [http://code.google.com/p/socialmusicdiscovery/issues/detail?id=4 A bootstrap to deploy the basic client (e.g. JWS)]
   # [http://code.google.com/p/socialmusicdiscovery/issues/detail?id=3 An update site where we can upload new versions of the plug-ins]
