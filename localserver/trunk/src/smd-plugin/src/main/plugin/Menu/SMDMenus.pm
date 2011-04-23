@@ -100,13 +100,26 @@ sub cliPlaylistControl {
 	my $cmd                 = $request->getParam('cmd');
 	my $jumpIndex           = $request->getParam('play_index');
 	my $path                = $request->getParam('path');
+	my $audio_url                = $request->getParam('audio_url');
 
-	if (!defined($path)) {
+	if ($request->paramUndefinedOrNotOneOf($cmd, ['load', 'insert', 'add', 'delete'])) {
 		$request->setStatusBadParams();
 		return;
 	}
 
-	if ($request->paramUndefinedOrNotOneOf($cmd, ['load', 'insert', 'add', 'delete'])) {
+	if(defined($audio_url)) {
+		my $track = Slim::Schema->objectForUrl({
+		        'url' => $audio_url,
+		});
+		$log->info("Playing track: ".$track->id);
+		Slim::Control::Request::executeRequest(
+			$client, ['playlistcontrol', 'cmd:'.$cmd, 'track_id:'.$track->id]
+		);
+		$request->setStatusDone();
+		return;
+	}
+
+	if (!defined($path)) {
 		$request->setStatusBadParams();
 		return;
 	}
@@ -198,11 +211,16 @@ sub _generic {
 	if(defined($params->{'path'})) {
 		$path = $params->{'path'};
 	}
+	my $userInterfaceIdiom = "Logitech";
+	if(defined($params->{'userInterfaceIdiom'})) {
+		$userInterfaceIdiom = $params->{'userInterfaceIdiom'};
+	}
 
 	main::INFOLOG && $log->is_info && $log->info("$path ($index, $quantity): tags ->", join(', ', @$criterias));
 	
 	my $http = Slim::Networking::SimpleAsyncHTTP->new(\&_genericReply, \&_genericError, {
 		path => $path,
+		userInterfaceIdiom => $userInterfaceIdiom,
                 client => $client, 
                 callback => $callback, 
                 resultsFunc => $resultsFunc, 
@@ -234,7 +252,7 @@ sub _genericReply {
 	my $content = $http->content();
 
 	my $jsonResult = JSON::XS::decode_json($content);
-	my ($result, $extraitems) = $params->{'resultsFunc'}->($params->{'path'}, $jsonResult);
+	my ($result, $extraitems) = $params->{'resultsFunc'}->($params->{'path'}, $params->{'userInterfaceIdiom'}, $jsonResult);
 	$result->{'offset'} = $jsonResult->{'offset'};
 	$result->{'count'} = $jsonResult->{'size'};
 	$result->{'total'} = $jsonResult->{'totalSize'};
@@ -266,6 +284,7 @@ sub _smd {
 		[@searchTags],
 		sub {
 			my $path = shift;
+			my $userInterfaceIdiom = shift;
 			my $results = shift;
 			my @empty = ();
 			my $items = \@empty;
@@ -273,12 +292,37 @@ sub _smd {
 				my $item = {
 					'id' => $path."/".$_->{'id'},
 					'name' => $_->{'name'},
-					'type' => 'playlist',
-					'playlist' => \&_tracks,
-					'url' => \&_smd,
 					'passthrough' => [ { searchTags => [@searchTags, "path:" . $path."/".$_->{'id'}] } ],
-					'favorites_url' => 'smd:object='.$_->{'id'},
 				};
+				if($_->{'leaf'}) {
+					if($_->{'playable'}) {
+						$item->{'type'} = "audio";
+						my $playableElements = $_->{'item'}->{'playableElements'};
+						if(scalar(@$playableElements)>0) {
+							my $playableElement = shift @$playableElements;
+							$item->{'audio_url'} = $playableElement->{'uri'};
+							$item->{'favorites_url'} = $playableElement->{'uri'};
+						}else {
+							$item->{'audio_url'} = 'smd:object='.$_->{'id'};
+							$item->{'favorites_url'} = 'smd:object='.$_->{'id'};
+						}
+					}else {
+						$item->{'type'} = "text";
+					}
+				}else {
+					$item->{'url'} = \&_smd;
+					$item->{'playlist'} = \&_tracks;
+					if($_->{'playable'}) {
+						if($userInterfaceIdiom eq 'iPeng') {
+							$item->{'type'} = "link";
+						}else {
+							$item->{'type'} = "playlist";
+						}
+						$item->{'favorites_url'} = 'smd:object='.$_->{'id'};
+					}else {
+						$item->{'type'} = "link";
+					}
+				}
 				push @$items,$item;
 			}
 			my $extra;
@@ -286,7 +330,7 @@ sub _smd {
 			my $params = _tagsToParams(\@searchTags);
 			my %actions = (
 				allAvailableActionsDefined => 1,
-				commonVariables	=> ['path' => 'id'],
+				commonVariables	=> ['path' => 'id','audio_url' => 'audio_url'],
 #				info => {
 #					command     => ['artistinfo', 'items'],
 #				},
