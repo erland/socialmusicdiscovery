@@ -237,15 +237,19 @@ public abstract class AbstractBrowseService {
                         }
                     }
 
-                    ResultItem<T> resultItem = new ResultItem<T>(item, childCounters);
+                    ResultItem<T> resultItem = new ResultItem<T>(item, getPlayable(), childCounters);
                     resultItems.add(resultItem);
                 } else {
-                    ResultItem<T> resultItem = new ResultItem<T>(item);
+                    ResultItem<T> resultItem = new ResultItem<T>(item, getPlayable(), false);
                     resultItems.add(resultItem);
                 }
             }
         }
         return result;
+    }
+
+    protected Boolean getPlayable() {
+        return true;
     }
 
     protected Map<String, Long> findObjectTypes(Collection<String> criteriaList, Boolean returnCounters) {

@@ -35,34 +35,44 @@ public class ResultItem<T> {
     private String type;
     private String id;
     private String name;
+    private Boolean playable;
+    private Boolean leaf;
     private T item;
 
     public ResultItem() {
     }
 
-    public ResultItem(T item) {
+    public ResultItem(T item, Boolean playable, Boolean leaf) {
         this.item = item;
+        this.playable = playable;
+        this.leaf = leaf;
     }
 
-    public ResultItem(T item, String type, String id, String name) {
+    public ResultItem(T item, String type, String id, String name, Boolean playable, Boolean leaf) {
         this.item = item;
         this.id = id;
         this.type = type;
         this.name = name;
+        this.playable = playable;
+        this.leaf = leaf;
     }
 
-    public ResultItem(T item, Map<String, Long> childCounters) {
+    public ResultItem(T item, Boolean playable, Map<String, Long> childCounters) {
         this.item = item;
         this.id = null;
         this.type = item.getClass().getSimpleName();
+        this.playable = playable;
+        this.leaf = childCounters.size()==0;
         childItems = new HashMap<String, Long>(childCounters);
     }
 
-    public ResultItem(T item, String type, String id, String name, Map<String, Long> childCounters) {
+    public ResultItem(T item, String type, String id, String name, Boolean playable, Map<String,Long> childCounters) {
         this.item = item;
         this.id = id;
         this.type = type;
         this.name = name;
+        this.playable = playable;
+        this.leaf = childCounters.size()==0;
         childItems = new HashMap<String, Long>(childCounters);
     }
 
@@ -100,5 +110,21 @@ public class ResultItem<T> {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Boolean getPlayable() {
+        return playable;
+    }
+
+    public void setPlayable(Boolean playable) {
+        this.playable = playable;
+    }
+
+    public Boolean getLeaf() {
+        return leaf;
+    }
+
+    public void setLeaf(Boolean leaf) {
+        this.leaf = leaf;
     }
 }
