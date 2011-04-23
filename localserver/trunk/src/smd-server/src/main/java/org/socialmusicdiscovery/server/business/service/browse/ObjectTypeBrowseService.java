@@ -52,4 +52,9 @@ public class ObjectTypeBrowseService extends AbstractBrowseService {
     public Collection<String> findTypes(Collection<String> criteriaList) {
         return super.findObjectTypes(criteriaList, false).keySet();
     }
+
+    @Override
+    protected Boolean getPlayable() {
+        return false;
+    }
 }

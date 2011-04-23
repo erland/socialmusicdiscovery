@@ -41,10 +41,12 @@ public class LibraryBrowseService {
     private static class MenuLevel {
         String type;
         String format;
+        Boolean playable;
 
-        MenuLevel(String type, String format) {
+        MenuLevel(String type, String format, Boolean playable) {
             this.type = type;
             this.format = format;
+            this.playable = playable;
         }
     }
 
@@ -65,35 +67,35 @@ public class LibraryBrowseService {
     public LibraryBrowseService() {
         InjectHelper.injectMembers(this);
         menus.add(new Menu("artists", "Artists", Arrays.asList(
-                new MenuLevel("Artist", "%object.name"),
-                new MenuLevel("Release", "%object.name"),
-                new MenuLevel("Track", "(%object.medium.name|%object.medium.number)||[%object.medium,-]||%object.number||. ||%object.recording.works.parent.name||[%object.recording.works.parent,: ]||%object.recording.works.name"))));
+                new MenuLevel("Artist", "%object.name", true),
+                new MenuLevel("Release", "%object.name", true),
+                new MenuLevel("Track", "(%object.medium.name|%object.medium.number)||[%object.medium,-]||%object.number||. ||%object.recording.works.parent.name||[%object.recording.works.parent,: ]||%object.recording.works.name", true))));
         menus.add(new Menu("artists.composers", "Composers", Arrays.asList(
-                new MenuLevel("Artist.composer", "%object.name"),
-                new MenuLevel("Release", "%object.name"),
-                new MenuLevel("Track", "(%object.medium.name|%object.medium.number)||[%object.medium,-]||%object.number||. ||%object.recording.works.parent.name||[%object.recording.works.parent,: ]||%object.recording.works.name"))));
+                new MenuLevel("Artist.composer", "%object.name", true),
+                new MenuLevel("Release", "%object.name", true),
+                new MenuLevel("Track", "(%object.medium.name|%object.medium.number)||[%object.medium,-]||%object.number||. ||%object.recording.works.parent.name||[%object.recording.works.parent,: ]||%object.recording.works.name", true))));
         menus.add(new Menu("artists.conductors", "Conductors", Arrays.asList(
-                new MenuLevel("Artist.conductor", "%object.name"),
-                new MenuLevel("Release", "%object.name"),
-                new MenuLevel("Track", "(%object.medium.name|%object.medium.number)||[%object.medium,-]||%object.number||. ||%object.recording.works.parent.name||[%object.recording.works.parent,: ]||%object.recording.works.name"))));
+                new MenuLevel("Artist.conductor", "%object.name", true),
+                new MenuLevel("Release", "%object.name", true),
+                new MenuLevel("Track", "(%object.medium.name|%object.medium.number)||[%object.medium,-]||%object.number||. ||%object.recording.works.parent.name||[%object.recording.works.parent,: ]||%object.recording.works.name", true))));
         menus.add(new Menu("releases", "Releases", Arrays.asList(
-                new MenuLevel("Release", "%object.name"),
-                new MenuLevel("Track", "(%object.medium.name|%object.medium.number)||[%object.medium,-]||%object.number||. ||%object.recording.works.parent.name||[%object.recording.works.parent,: ]||%object.recording.works.name"))));
+                new MenuLevel("Release", "%object.name", true),
+                new MenuLevel("Track", "(%object.medium.name|%object.medium.number)||[%object.medium,-]||%object.number||. ||%object.recording.works.parent.name||[%object.recording.works.parent,: ]||%object.recording.works.name", true))));
         menus.add(new Menu("classifications.genres", "Genres", Arrays.asList(
-                new MenuLevel("Classification.genre", "%object.name"),
-                new MenuLevel("Artist", "%object.name"),
-                new MenuLevel("Release", "%object.name"),
-                new MenuLevel("Track", "(%object.medium.name|%object.medium.number)||[%object.medium,-]||%object.number||. ||%object.recording.works.parent.name||[%object.recording.works.parent,: ]||%object.recording.works.name"))));
+                new MenuLevel("Classification.genre", "%object.name", false),
+                new MenuLevel("Artist", "%object.name", true),
+                new MenuLevel("Release", "%object.name", true),
+                new MenuLevel("Track", "(%object.medium.name|%object.medium.number)||[%object.medium,-]||%object.number||. ||%object.recording.works.parent.name||[%object.recording.works.parent,: ]||%object.recording.works.name", true))));
         menus.add(new Menu("classifications.styles", "Styles", Arrays.asList(
-                new MenuLevel("Classification.style", "%object.name"),
-                new MenuLevel("Artist", "%object.name"),
-                new MenuLevel("Release", "%object.name"),
-                new MenuLevel("Track", "(%object.medium.name|%object.medium.number)||[%object.medium,-]||%object.number||. ||%object.recording.works.parent.name||[%object.recording.works.parent,: ]||%object.recording.works.name"))));
+                new MenuLevel("Classification.style", "%object.name", false),
+                new MenuLevel("Artist", "%object.name", true),
+                new MenuLevel("Release", "%object.name", true),
+                new MenuLevel("Track", "(%object.medium.name|%object.medium.number)||[%object.medium,-]||%object.number||. ||%object.recording.works.parent.name||[%object.recording.works.parent,: ]||%object.recording.works.name", true))));
         menus.add(new Menu("classifications.moods", "Moods", Arrays.asList(
-                new MenuLevel("Classification.mood", "%object.name"),
-                new MenuLevel("Artist", "%object.name"),
-                new MenuLevel("Release", "%object.name"),
-                new MenuLevel("Track", "(%object.medium.name|%object.medium.number)||[%object.medium,-]||%object.number||. ||%object.recording.works.parent.name||[%object.recording.works.parent,: ]||%object.recording.works.name"))));
+                new MenuLevel("Classification.mood", "%object.name", false),
+                new MenuLevel("Artist", "%object.name", true),
+                new MenuLevel("Release", "%object.name", true),
+                new MenuLevel("Track", "(%object.medium.name|%object.medium.number)||[%object.medium,-]||%object.number||. ||%object.recording.works.parent.name||[%object.recording.works.parent,: ]||%object.recording.works.name", true))));
     }
 
 
@@ -130,9 +132,9 @@ public class LibraryBrowseService {
                         if (counters.get(menu.hierarchy.get(0).type) != null) {
                             childCounters.put(menu.hierarchy.get(0).type, counters.get(menu.hierarchy.get(0).type));
                         }
-                        items.add(new ResultItem<Object>(menu.name, "Folder", menu.id, menu.name, childCounters));
+                        items.add(new ResultItem<Object>(menu.name, "Folder", menu.id, menu.name, false, childCounters));
                     } else {
-                        items.add(new ResultItem<Object>(menu.name, "Folder", menu.id, menu.name));
+                        items.add(new ResultItem<Object>(menu.name, "Folder", menu.id, menu.name, false, false));
                     }
                 }
                 i++;
@@ -204,6 +206,8 @@ public class LibraryBrowseService {
                         item.setId(id);
                         item.setType(requestedMainObjectType);
                         item.setName(parser.format(item.getItem()));
+                        item.setPlayable(requestedObjectType.playable);
+                        item.setLeaf(nextObjectType==null);
 
                         if (counts) {
                             Map<String, Long> childCounters = new HashMap<String, Long>();

@@ -79,34 +79,46 @@ public class Result {
         private String type;
         @Expose
         private Object item;
+        @Expose
+        private Boolean playable;
+        @Expose
+        private Boolean leaf;
 
         public ResultItem() {
         }
 
-        public ResultItem(Object item) {
+        public ResultItem(Object item, Boolean playable, Boolean leaf) {
             this.item = item;
+            this.playable = playable;
+            this.leaf = leaf;
         }
 
-        public ResultItem(Object item, String type, String id, String name) {
+        public ResultItem(Object item, String type, String id, String name, Boolean playable, Boolean leaf) {
             this.item = item;
             this.type = type;
             this.id = id;
             this.name = name;
+            this.playable = playable;
+            this.leaf = leaf;
         }
 
-        public ResultItem(Object item, Map<String, Long> childCounters) {
+        public ResultItem(Object item, Boolean playable, Map<String, Long> childCounters) {
             this.item = item;
+            this.playable = playable;
+            this.leaf = childCounters.size()==0;
             childItems = new ArrayList<Child>(childCounters.size());
             for (Map.Entry<String, Long> entry : childCounters.entrySet()) {
                 childItems.add(new Child(entry.getKey(), entry.getValue()));
             }
         }
 
-        public ResultItem(Object item, String type, String id, String name, Map<String, Long> childCounters) {
+        public ResultItem(Object item, String type, String id, String name, Boolean playable, Map<String, Long> childCounters) {
             this.item = item;
             this.type = type;
             this.id=id;
             this.name=name;
+            this.playable = playable;
+            this.leaf = childCounters.size()==0;
             childItems = new ArrayList<Child>(childCounters.size());
             for (Map.Entry<String, Long> entry : childCounters.entrySet()) {
                 childItems.add(new Child(entry.getKey(), entry.getValue()));

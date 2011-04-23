@@ -82,9 +82,9 @@ public class BrowseFacade {
         while (itemIterator.hasNext()) {
             ResultItem resultItem = itemIterator.next();
             if (resultItem.getChildItems() != null) {
-                genericResultItems.add(new Result.ResultItem(resultItem.getItem(), new HashMap<String, Long>(resultItem.getChildItems())));
+                genericResultItems.add(new Result.ResultItem(resultItem.getItem(), resultItem.getPlayable(), new HashMap<String, Long>(resultItem.getChildItems())));
             } else {
-                genericResultItems.add(new Result.ResultItem(resultItem.getItem()));
+                genericResultItems.add(new Result.ResultItem(resultItem.getItem(), resultItem.getPlayable(), resultItem.getLeaf()));
             }
         }
 
@@ -154,9 +154,9 @@ public class BrowseFacade {
         while (itemIterator.hasNext()) {
             ResultItem resultItem = itemIterator.next();
             if (resultItem.getChildItems() != null) {
-                genericResultItems.add(new Result.ResultItem(resultItem.getItem(), resultItem.getType(), resultItem.getId(), resultItem.getName(), new HashMap<String, Long>(resultItem.getChildItems())));
+                genericResultItems.add(new Result.ResultItem(resultItem.getItem(), resultItem.getType(), resultItem.getId(), resultItem.getName(), resultItem.getPlayable(), new HashMap<String, Long>(resultItem.getChildItems())));
             } else {
-                genericResultItems.add(new Result.ResultItem(resultItem.getItem(), resultItem.getType(), resultItem.getId(), resultItem.getName()));
+                genericResultItems.add(new Result.ResultItem(resultItem.getItem(), resultItem.getType(), resultItem.getId(), resultItem.getName(), resultItem.getPlayable(), resultItem.getLeaf()));
             }
         }
 

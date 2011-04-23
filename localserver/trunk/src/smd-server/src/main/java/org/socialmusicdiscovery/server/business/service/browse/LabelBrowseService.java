@@ -36,4 +36,9 @@ public class LabelBrowseService extends AbstractBrowseService implements BrowseS
     public Result<Label> findChildren(Collection<String> criteriaList, Collection<String> sortCriteriaList, Integer firstItem, Integer maxItems, Boolean returnChildCounters) {
         return super.findChildren(LabelEntity.class, "Label", "label", "e.name", criteriaList, sortCriteriaList, firstItem, maxItems, returnChildCounters);
     }
+
+    @Override
+    protected Boolean getPlayable() {
+        return false;
+    }
 }
