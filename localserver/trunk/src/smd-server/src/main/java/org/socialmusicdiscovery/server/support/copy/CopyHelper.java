@@ -164,6 +164,7 @@ public class CopyHelper {
                 fromObject.getClass().equals(Integer.class) ||
                 fromObject.getClass().equals(Long.class) ||
                 fromObject.getClass().equals(Date.class) ||
+                fromObject.getClass().equals(Boolean.class) ||
                 fromObject.getClass().equals(Double.class) ||
                 fromObject.getClass().equals(Float.class)) {
             return fromObject;
@@ -200,6 +201,7 @@ public class CopyHelper {
                                     field.getType().equals(Integer.class) ||
                                     field.getType().equals(Long.class) ||
                                     field.getType().equals(Date.class) ||
+                                    field.getType().equals(Boolean.class) ||
                                     field.getType().equals(Double.class) ||
                                     field.getType().equals(Float.class)) {
                                 field.set(copy, field.get(fromObject));
