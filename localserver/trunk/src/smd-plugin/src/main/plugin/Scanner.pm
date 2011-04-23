@@ -616,7 +616,8 @@ sub getDirectTagsAsJSON {
 	$log->debug("Entering jsonHandlerDirect");
 	my $request = shift;
 
-	if(defined($prefs->get('simulatedData'))) {
+	my $simulatedData = $prefs->get('simulatedData');
+	if(defined($simulatedData) && $simulatedData ne '') {
 		getSimulatedTagsAsJSON($request);
 		return;
 	}
