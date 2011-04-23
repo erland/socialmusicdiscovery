@@ -10,7 +10,7 @@
     },
     SMDCRUDSearchWindow: {
         windowTitle: "Social Music Discovery - Manage",
-        importButton: "Import",
+        importButton: "Execute",
         abortButton: "Abort",
         closeButton: "Close"
       },

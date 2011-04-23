@@ -25,6 +25,8 @@
                                 <rows>
                                     <TablePane.Row height="-1">
                                         <BoxPane styles="{verticalAlignment:'center'}">
+                                            <ListButton wtkx:id="selectedImporterButton"
+                                                                listData="['squeezeboxserver','dropdatabase']"/>
                                             <PushButton wtkx:id="importButton" enabled="true"
                                                 styles="{padding:4}" buttonData="%SMDCRUDSearchWindow.importButton"/>
                                         </BoxPane>
