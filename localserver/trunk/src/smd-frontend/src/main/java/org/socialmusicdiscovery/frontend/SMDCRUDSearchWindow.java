@@ -73,10 +73,6 @@ public class SMDCRUDSearchWindow extends Window implements Bindable {
     private String HOSTURL = null;
 
     /**
-     * Import module to use
-     */
-    private final String IMPORT_MODULE = "squeezeboxserver";
-    /**
      * Background task for updating progress bar duing media imports
      */
     private Task<Void> importTask = null;
@@ -93,6 +89,8 @@ public class SMDCRUDSearchWindow extends Window implements Bindable {
     Meter importProgressMeter;
     @WTKX
     Label importProgressDescription;
+    @WTKX
+    ListButton selectedImporterButton;
     @WTKX
     PushButton importButton;
 
@@ -123,6 +121,7 @@ public class SMDCRUDSearchWindow extends Window implements Bindable {
         this.resources = resources;
         InjectHelper.injectMembers(this);
         HOSTURL = "http://" + SMDSERVER + ":" + SMDSERVERPORT;
+        selectedImporterButton.setSelectedIndex(0);
     }
 
     @Override
@@ -137,9 +136,9 @@ public class SMDCRUDSearchWindow extends Window implements Bindable {
 
         // Check if an import is in progress and refresh the progress bar if it is
         try {
-            MediaImportStatus status = Client.create(config).resource(HOSTURL + "/mediaimportmodules/" + IMPORT_MODULE).accept(MediaType.APPLICATION_JSON).get(MediaImportStatus.class);
+            MediaImportStatus status = Client.create(config).resource(HOSTURL + "/mediaimportmodules/" + selectedImporterButton.getSelectedItem()).accept(MediaType.APPLICATION_JSON).get(MediaImportStatus.class);
             if (status != null) {
-                startImportProgressBar(IMPORT_MODULE);
+                startImportProgressBar();
             }
         } catch (UniformInterfaceException e) {
             if (e.getResponse().getStatus() != 204) {
@@ -152,9 +151,9 @@ public class SMDCRUDSearchWindow extends Window implements Bindable {
             @Override
             public void buttonPressed(Button button) {
                 if (importTask != null) {
-                    abortImport(IMPORT_MODULE);
+                    abortImport(selectedImporterButton.getSelectedItem().toString());
                 } else {
-                    startImport(IMPORT_MODULE);
+                    startImport(selectedImporterButton.getSelectedItem().toString());
                 }
             }
         });
@@ -240,6 +239,21 @@ public class SMDCRUDSearchWindow extends Window implements Bindable {
                     throw new RuntimeException(e);
                 }
                 return false;
+            }
+        });
+        selectedImporterButton.getListButtonSelectionListeners().add(new ListButtonSelectionListener() {
+            @Override
+            public void selectedIndexChanged(ListButton listButton, int i) {
+                try {
+                    MediaImportStatus status = Client.create(config).resource(HOSTURL + "/mediaimportmodules/" + selectedImporterButton.getSelectedItem()).accept(MediaType.APPLICATION_JSON).get(MediaImportStatus.class);
+                    if (status != null) {
+                        startImportProgressBar();
+                    }
+                } catch (UniformInterfaceException e) {
+                    if (e.getResponse().getStatus() != 204) {
+                        throw e;
+                    }
+                }
             }
         });
     }
@@ -461,7 +475,7 @@ public class SMDCRUDSearchWindow extends Window implements Bindable {
             OperationStatus operationStatus = Client.create(config).resource(HOSTURL + "/mediaimportmodules/" + module).post(OperationStatus.class);
             Boolean status = operationStatus.getSuccess();
             if (status != null && status) {
-                startImportProgressBar(module);
+                startImportProgressBar();
             }
         }
     }
@@ -469,19 +483,19 @@ public class SMDCRUDSearchWindow extends Window implements Bindable {
     /**
      * Start a background thread responsible to update the progress bar for an import operation in progress
      *
-     * @param module Import module to show in the progress bar
      */
-    private void startImportProgressBar(final String module) {
+    private void startImportProgressBar() {
         if (importTask == null) {
             importTask = new Task<Void>() {
                 @Override
                 public Void execute() throws TaskExecutionException {
                     try {
+                        selectedImporterButton.setEnabled(false);
                         importButton.setButtonData(resources.getString("SMDCRUDSearchWindow.abortButton"));
                         importProgressMeter.setPercentage(0);
                         importProgressMeter.setText("");
                         importProgressMeter.setVisible(true);
-                        MediaImportStatus status = Client.create(config).resource(HOSTURL + "/mediaimportmodules/" + module).accept(MediaType.APPLICATION_JSON).get(MediaImportStatus.class);
+                        MediaImportStatus status = Client.create(config).resource(HOSTURL + "/mediaimportmodules/" + selectedImporterButton.getSelectedItem().toString()).accept(MediaType.APPLICATION_JSON).get(MediaImportStatus.class);
                         while (status != null) {
                             if (status.getTotalNumber() > 0) {
                                 importProgressMeter.setPercentage((double) status.getCurrentNumber() / status.getTotalNumber());
@@ -493,12 +507,14 @@ public class SMDCRUDSearchWindow extends Window implements Bindable {
                             } catch (InterruptedException e) {
                                 throw new TaskExecutionException(e);
                             }
-                            status = Client.create(config).resource(HOSTURL + "/mediaimportmodules/" + module).accept(MediaType.APPLICATION_JSON).get(MediaImportStatus.class);
+                            status = Client.create(config).resource(HOSTURL + "/mediaimportmodules/" + selectedImporterButton.getSelectedItem().toString()).accept(MediaType.APPLICATION_JSON).get(MediaImportStatus.class);
                         }
                     } catch (UniformInterfaceException e) {
                         if (e.getResponse().getStatus() != 204) {
                             throw e;
                         }
+                    } finally {
+                        selectedImporterButton.setEnabled(true);
                     }
                     return null;
                 }
