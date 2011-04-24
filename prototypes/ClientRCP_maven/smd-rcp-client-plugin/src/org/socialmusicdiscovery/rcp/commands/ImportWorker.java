@@ -88,7 +88,7 @@ public class ImportWorker {
 			
 			String task = status.getCurrentDescription();
 			monitor.beginTask("Initializing ...", IProgressMonitor.UNKNOWN);
-			while (status != null) {
+			while (status != null && status.getStatus()==MediaImportStatus.Status.Running) {
 				totalWork = status.getTotalNumber();
 				if (isLoaded && status.getCurrentNumber()<lastPosition) {
 					// new subtask
