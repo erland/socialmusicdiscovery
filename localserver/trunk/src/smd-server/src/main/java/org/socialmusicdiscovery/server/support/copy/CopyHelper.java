@@ -166,7 +166,8 @@ public class CopyHelper {
                 fromObject.getClass().equals(Date.class) ||
                 fromObject.getClass().equals(Boolean.class) ||
                 fromObject.getClass().equals(Double.class) ||
-                fromObject.getClass().equals(Float.class)) {
+                fromObject.getClass().equals(Float.class) ||
+                fromObject.getClass().isEnum()) {
             return fromObject;
         }
         try {
@@ -203,7 +204,8 @@ public class CopyHelper {
                                     field.getType().equals(Date.class) ||
                                     field.getType().equals(Boolean.class) ||
                                     field.getType().equals(Double.class) ||
-                                    field.getType().equals(Float.class)) {
+                                    field.getType().equals(Float.class) ||
+                                    field.getType().isEnum()) {
                                 field.set(copy, field.get(fromObject));
                             } else if (Collection.class.isAssignableFrom(field.getType())) {
                                 if (field.get(fromObject) != null) {
