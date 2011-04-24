@@ -135,15 +135,9 @@ public class SMDCRUDSearchWindow extends Window implements Bindable {
         searchTextInput.requestFocus();
 
         // Check if an import is in progress and refresh the progress bar if it is
-        try {
-            MediaImportStatus status = Client.create(config).resource(HOSTURL + "/mediaimportmodules/" + selectedImporterButton.getSelectedItem()).accept(MediaType.APPLICATION_JSON).get(MediaImportStatus.class);
-            if (status != null) {
-                startImportProgressBar();
-            }
-        } catch (UniformInterfaceException e) {
-            if (e.getResponse().getStatus() != 204) {
-                throw e;
-            }
+        MediaImportStatus status = Client.create(config).resource(HOSTURL + "/mediaimportmodules/" + selectedImporterButton.getSelectedItem()).accept(MediaType.APPLICATION_JSON).get(MediaImportStatus.class);
+        if (status != null) {
+            startImportProgressBar();
         }
 
         // Setup listeners for Import/Abort button
@@ -244,15 +238,9 @@ public class SMDCRUDSearchWindow extends Window implements Bindable {
         selectedImporterButton.getListButtonSelectionListeners().add(new ListButtonSelectionListener() {
             @Override
             public void selectedIndexChanged(ListButton listButton, int i) {
-                try {
-                    MediaImportStatus status = Client.create(config).resource(HOSTURL + "/mediaimportmodules/" + selectedImporterButton.getSelectedItem()).accept(MediaType.APPLICATION_JSON).get(MediaImportStatus.class);
-                    if (status != null) {
-                        startImportProgressBar();
-                    }
-                } catch (UniformInterfaceException e) {
-                    if (e.getResponse().getStatus() != 204) {
-                        throw e;
-                    }
+                MediaImportStatus status = Client.create(config).resource(HOSTURL + "/mediaimportmodules/" + selectedImporterButton.getSelectedItem()).accept(MediaType.APPLICATION_JSON).get(MediaImportStatus.class);
+                if (status != null) {
+                    startImportProgressBar();
                 }
             }
         });
@@ -496,12 +484,16 @@ public class SMDCRUDSearchWindow extends Window implements Bindable {
                         importProgressMeter.setText("");
                         importProgressMeter.setVisible(true);
                         MediaImportStatus status = Client.create(config).resource(HOSTURL + "/mediaimportmodules/" + selectedImporterButton.getSelectedItem().toString()).accept(MediaType.APPLICATION_JSON).get(MediaImportStatus.class);
-                        while (status != null) {
+                        while (status != null && (status.getStatus()==MediaImportStatus.Status.Running || status.getStatus()==MediaImportStatus.Status.Aborting)) {
                             if (status.getTotalNumber() > 0) {
                                 importProgressMeter.setPercentage((double) status.getCurrentNumber() / status.getTotalNumber());
                                 importProgressMeter.setText(status.getCurrentNumber() + " of " + status.getTotalNumber());
                             }
                             importProgressDescription.setText(status.getCurrentDescription());
+                            if(status.getStatus()==MediaImportStatus.Status.Aborting) {
+                                importButton.setButtonData(resources.getString("SMDCRUDSearchWindow.abortingButton"));
+                                importButton.setEnabled(false);
+                            }
                             try {
                                 Thread.sleep(1000);
                             } catch (InterruptedException e) {
@@ -509,12 +501,17 @@ public class SMDCRUDSearchWindow extends Window implements Bindable {
                             }
                             status = Client.create(config).resource(HOSTURL + "/mediaimportmodules/" + selectedImporterButton.getSelectedItem().toString()).accept(MediaType.APPLICATION_JSON).get(MediaImportStatus.class);
                         }
+                        if(status != null && status.getStatus()==MediaImportStatus.Status.Failed) {
+                            if (status.getTotalNumber() > 0) {
+                                importProgressMeter.setPercentage((double) status.getCurrentNumber() / status.getTotalNumber());
+                                importProgressMeter.setText(status.getCurrentNumber() + " of " + status.getTotalNumber());
+                            }
+                            importProgressDescription.setText("Failed or aborted");
+                        }
                     } catch (UniformInterfaceException e) {
                         if (e.getResponse().getStatus() != 204) {
                             throw e;
                         }
-                    } finally {
-                        selectedImporterButton.setEnabled(true);
                     }
                     return null;
                 }
@@ -522,26 +519,29 @@ public class SMDCRUDSearchWindow extends Window implements Bindable {
             importTask.execute(new TaskAdapter<Void>(new TaskListener<Void>() {
                 @Override
                 public void taskExecuted(Task<Void> task) {
+                    MediaImportStatus status = Client.create(config).resource(HOSTURL + "/mediaimportmodules/" + selectedImporterButton.getSelectedItem().toString()).accept(MediaType.APPLICATION_JSON).get(MediaImportStatus.class);
                     importProgressMeter.setPercentage(0);
-                    importProgressMeter.setText("");
-                    importProgressMeter.setVisible(false);
-                    importButton.setButtonData(resources.getString("SMDCRUDSearchWindow.importButton"));
-                    if (importAborted) {
-                        importProgressDescription.setText("Import aborted");
-                    } else {
-                        importProgressDescription.setText("Import finished");
+                    if(status!=null && status.getTotalNumber()>0 && status.getStatus()!=MediaImportStatus.Status.FinishedOk) {
+                        importProgressMeter.setText(status.getCurrentNumber() + " of " + status.getTotalNumber());
+                        importProgressDescription.setText("Failed or aborted");
+                    }else {
+                        importProgressMeter.setText("");
+                        importProgressMeter.setVisible(false);
+                        if(status!=null && status.getTotalNumber()>0) {
+                            importProgressDescription.setText("Finished");
+                        }else {
+                            importProgressDescription.setText("");
+                        }
                     }
+                    importButton.setButtonData(resources.getString("SMDCRUDSearchWindow.importButton"));
+                    importButton.setEnabled(true);
+                    selectedImporterButton.setEnabled(true);
                     importTask = null;
                 }
 
                 @Override
                 public void executeFailed(Task<Void> task) {
-                    importProgressMeter.setPercentage(0);
-                    importProgressMeter.setText("");
-                    importProgressMeter.setVisible(false);
-                    importButton.setButtonData(resources.getString("SMDCRUDSearchWindow.importButton"));
-                    importProgressDescription.setText("Import failed");
-                    importTask = null;
+                    taskExecuted(task);
                 }
             }));
         }
