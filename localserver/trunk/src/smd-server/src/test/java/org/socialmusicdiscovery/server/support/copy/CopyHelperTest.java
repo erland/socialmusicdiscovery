@@ -74,12 +74,18 @@ public class CopyHelperTest extends BaseTestCase {
         }
     }
     public static class Primitives {
+        public enum MyEnum {
+            State1,
+            State2,
+        }
         @Expose
         private int small;
         private long large;
+        private MyEnum myEnum;
         public void init() {
             small = 1;
             large = 2L;
+            myEnum=MyEnum.State1;
         }
         @Override
         public int hashCode() {
