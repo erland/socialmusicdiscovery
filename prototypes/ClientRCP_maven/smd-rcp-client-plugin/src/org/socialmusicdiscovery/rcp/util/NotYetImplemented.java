@@ -27,11 +27,13 @@
 
 package org.socialmusicdiscovery.rcp.util;
 
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 
 /**
- * Make it easy to explain why things don't work yet.
+ * Ask user to confirm before running unstable and potentially disastrous operations.
+ * 
  * @author Peer Törngren
  *
  */
@@ -45,5 +47,16 @@ public class NotYetImplemented {
 
 	public static  void openDialog(Shell shell, String msg) {
 		MessageDialog.openWarning(shell, "Not Yet Implemented", msg);
+	}
+
+	public static boolean confirm(String op) {
+		String title = "<NOT YET IMPLEMENTED>";
+		String msg = op + " is not yet fully implemented and/or tested. Running this operation may result in a corrupt database. Proceed only if you are testing/developing this function." +
+				"\n\nRECOMMENDATION: DO NOT PROCEED!" +
+				"\n\nDo you want to proceed despite the risk of destroying your database?";
+
+		String[] buttons = { IDialogConstants.OK_LABEL, IDialogConstants.CANCEL_LABEL };
+		MessageDialog dialog = new MessageDialog(null, title, null, msg, MessageDialog.WARNING, buttons, 1);
+		return dialog.open() == 0;
 	}
 }

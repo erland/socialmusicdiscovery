@@ -25,38 +25,25 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.rcp.content;
+package org.socialmusicdiscovery.rcp.util;
 
-import java.beans.PropertyChangeEvent;
+import java.util.Comparator;
 
-import org.eclipse.ui.IEditorInput;
-import org.socialmusicdiscovery.server.business.model.SMDIdentity;
+import org.socialmusicdiscovery.rcp.content.ModelObject;
 
 /**
- * A {@link ModelObject} that can be edited in an editor.
+ * Compares the name of two objects, observing that either or both objects
+ * and/or names can be <code>null</code>.
  * 
  * @author Peer Törngren
- *
  */
-public interface ObservableEntity<T extends SMDIdentity> extends IEditorInput, ModelObject, Deletable, ItemFactory<T>, SMDIdentity {
-	
-	String PROP_dirty = "dirty"; //$NON-NLS-1$
-	
-	/**
-	 * Does this instance have unsaved changes?
-	 * 
-	 * @return boolean
-	 */
-	boolean isDirty();
+public class ModelObjectComparator implements Comparator<ModelObject> {
 
-	/**
-	 * Update the dirty status. Set to <code>true</code> when changes are made,
-	 * set to <code>false</code> when changes are saved to persistent store or
-	 * canceled ("undo"). Method must be called whenever the persistent state of
-	 * this instance changes. Implementers must fire a {@link PropertyChangeEvent}
-	 * for {@value #PROP_dirty}.
-	 * 
-	 * @param isDirty
-	 */
-	void setDirty(boolean isDirty);
+	@Override
+	public int compare(ModelObject o1, ModelObject o2) {
+		int nullComparison = Util.compareNull(o1, o2);
+		return nullComparison==0 ? Util.compare(o1.getName(), o2.getName()) : nullComparison; 
+	}
+
+
 }

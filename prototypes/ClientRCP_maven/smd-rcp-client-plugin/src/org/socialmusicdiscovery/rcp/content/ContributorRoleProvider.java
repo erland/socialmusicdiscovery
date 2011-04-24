@@ -27,36 +27,21 @@
 
 package org.socialmusicdiscovery.rcp.content;
 
-import java.beans.PropertyChangeEvent;
+import java.util.Arrays;
+import java.util.List;
 
-import org.eclipse.ui.IEditorInput;
-import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 
 /**
- * A {@link ModelObject} that can be edited in an editor.
+ * Provides a sorted list of available contributor roles.
+ * 
+ * TODO derive from meta data model, accommodate user-defined roles
  * 
  * @author Peer Törngren
- *
  */
-public interface ObservableEntity<T extends SMDIdentity> extends IEditorInput, ModelObject, Deletable, ItemFactory<T>, SMDIdentity {
+public class ContributorRoleProvider implements ElementProvider<String> {
 	
-	String PROP_dirty = "dirty"; //$NON-NLS-1$
-	
-	/**
-	 * Does this instance have unsaved changes?
-	 * 
-	 * @return boolean
-	 */
-	boolean isDirty();
-
-	/**
-	 * Update the dirty status. Set to <code>true</code> when changes are made,
-	 * set to <code>false</code> when changes are saved to persistent store or
-	 * canceled ("undo"). Method must be called whenever the persistent state of
-	 * this instance changes. Implementers must fire a {@link PropertyChangeEvent}
-	 * for {@value #PROP_dirty}.
-	 * 
-	 * @param isDirty
-	 */
-	void setDirty(boolean isDirty);
+	@Override
+	public List<String> getElements() {
+		return Arrays.asList("composer", "conductor", "performer");  
+	}
 }

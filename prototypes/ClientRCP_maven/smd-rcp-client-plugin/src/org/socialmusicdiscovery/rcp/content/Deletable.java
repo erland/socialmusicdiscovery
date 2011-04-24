@@ -27,36 +27,17 @@
 
 package org.socialmusicdiscovery.rcp.content;
 
-import java.beans.PropertyChangeEvent;
-
-import org.eclipse.ui.IEditorInput;
-import org.socialmusicdiscovery.server.business.model.SMDIdentity;
-
 /**
- * A {@link ModelObject} that can be edited in an editor.
- * 
+ * An instance that can delete itself (probably by delegating to some kind of repository).
+ *  
  * @author Peer Törngren
- *
  */
-public interface ObservableEntity<T extends SMDIdentity> extends IEditorInput, ModelObject, Deletable, ItemFactory<T>, SMDIdentity {
-	
-	String PROP_dirty = "dirty"; //$NON-NLS-1$
-	
-	/**
-	 * Does this instance have unsaved changes?
-	 * 
-	 * @return boolean
-	 */
-	boolean isDirty();
+public interface Deletable {
 
 	/**
-	 * Update the dirty status. Set to <code>true</code> when changes are made,
-	 * set to <code>false</code> when changes are saved to persistent store or
-	 * canceled ("undo"). Method must be called whenever the persistent state of
-	 * this instance changes. Implementers must fire a {@link PropertyChangeEvent}
-	 * for {@value #PROP_dirty}.
-	 * 
-	 * @param isDirty
+	 * Delete this instance. Fire events and take necessary actions to ensure that the 
+	 * model stays consistent and all listeners are notified. 
 	 */
-	void setDirty(boolean isDirty);
+	void delete();
+	
 }

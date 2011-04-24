@@ -87,12 +87,26 @@ public final class Util {
 	 */
 	@SuppressWarnings("unchecked")
 	public static int compare(Comparable c1, Comparable c2) {
-		if (c1==null) {
-			return c2==null ? 0 : -1;
-		} else if (c2==null) {
+		int nullComparison = compareNull(c1, c2);
+		return nullComparison==0 ? c1.compareTo(c2) : nullComparison; 
+	}
+	
+	/**
+	 * Convenience method to compare two objects to dcetect if either or both 
+	 * are <code>null</code>. If both are non-null, method returns zero. 
+	 * 
+	 * @param o1
+	 * @param o2
+	 * @return 0 if neither object is <code>null</code>
+	 * @see Comparator
+	 */
+	public static int compareNull(Object o1, Object o2) {
+		if (o1 == null) {
+			return o2 == null ? 0 : -1;
+		} else if (o2 == null) {
 			return 1;
 		}
-		return c1.compareTo(c2);
+		return 0;
 	}
 	
 	/**

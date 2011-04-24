@@ -217,21 +217,23 @@ public final class WorkbenchUtil {
 		return null;
 	}
 
-	public static Set<IEditorReference> findActiveEditorsInAnyWorkbenchWindow(IEditorInput editorInput) {
+	public static Set<IEditorReference> findActiveEditorsInAnyWorkbenchWindow(Object... editorInputs) {
 		try {
 			Set<IEditorReference> result = new HashSet<IEditorReference>();
 			for (IWorkbenchWindow w : PlatformUI.getWorkbench().getWorkbenchWindows()) {
 				for (IWorkbenchPage p : w.getPages()) {
 					for (IEditorReference ref : p.getEditorReferences()) {
-						if (editorInput==ref.getEditorInput()) {
-							result.add(ref);
+						for (Object input : editorInputs) {
+							if (input==ref.getEditorInput()) {
+								result.add(ref);
+							}
 						}
 					}
 				}
 			}
 			return result;
 		} catch (PartInitException e) {
-			throw new FatalApplicationException("Could not find open editors for input: "+editorInput, e);  //$NON-NLS-1$
+			throw new FatalApplicationException("Could not find open editors for inputs: "+Arrays.asList(editorInputs), e);  //$NON-NLS-1$
 		}
 	}
 
@@ -247,4 +249,29 @@ public final class WorkbenchUtil {
 		return page.getEditorReferences().length<1;
 	}
 
+	/**
+	 * Convenience method that accepts a collection, primarily to avoid errors
+	 * by passing a collection as the fiest varargs element to
+	 * {@link #closeEditors(Object...)}.
+	 * 
+	 * @param victims
+	 * @return boolean
+	 * @see #closeEditors(Object...)
+	 */
+	public static boolean closeEditors(Collection<?> victims) {
+		return closeEditors(victims.toArray(new Object[victims.size()]));
+	}
+
+	/**
+	 * Close all open editors for supplied objects, if any. Prompt to save
+	 * changes if any editor has unsaved changes.
+	 * 
+	 * @param victims
+	 * @return <code>true</code> if all editors were closed, <code>false if not</code>
+	 */
+	public static boolean closeEditors(Object... victims) {
+		Set<IEditorReference> refs = findActiveEditorsInAnyWorkbenchWindow(victims);
+		IEditorReference[] array =  refs.toArray(new IEditorReference[refs.size()]);
+		return getActivePage().closeEditors(array, true);
+	}
 }

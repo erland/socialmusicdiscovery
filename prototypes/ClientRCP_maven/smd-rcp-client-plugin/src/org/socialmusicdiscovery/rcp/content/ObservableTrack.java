@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.socialmusicdiscovery.rcp.util.ChangeMonitor;
+import org.socialmusicdiscovery.rcp.util.NotYetImplemented;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
 import org.socialmusicdiscovery.server.business.model.core.Medium;
@@ -264,6 +265,17 @@ public class ObservableTrack extends AbstractContributableEntity<Track> implemen
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public void delete() {
+		NotYetImplemented.openDialog("Cannot yet delete "+getClass().getSimpleName());
+	}
+
+	@Override
+	public Track newInstance() {
+		NotYetImplemented.openDialog("Cannot yet create "+getClass().getSimpleName());
+		return null;
 	}
 	
 }

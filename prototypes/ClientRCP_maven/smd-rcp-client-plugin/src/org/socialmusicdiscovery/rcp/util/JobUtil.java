@@ -46,7 +46,9 @@ import org.eclipse.swt.widgets.Shell;
  * @author Peer Törngren
  *
  */
-public class JobUtil {
+public final class JobUtil {
+
+	private JobUtil() {}
 
 	private static class MyJobListener extends JobChangeAdapter implements Runnable {
 

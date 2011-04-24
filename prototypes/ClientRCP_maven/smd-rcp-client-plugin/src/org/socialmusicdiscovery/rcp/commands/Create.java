@@ -25,38 +25,34 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.rcp.content;
+package org.socialmusicdiscovery.rcp.commands;
 
-import java.beans.PropertyChangeEvent;
+import java.util.ArrayList;
+import java.util.Collection;
 
-import org.eclipse.ui.IEditorInput;
-import org.socialmusicdiscovery.server.business.model.SMDIdentity;
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.IHandler;
+import org.socialmusicdiscovery.rcp.content.ItemFactory;
+import org.socialmusicdiscovery.rcp.util.CommandUtil;
+import org.socialmusicdiscovery.rcp.util.WorkbenchUtil;
 
 /**
- * A {@link ModelObject} that can be edited in an editor.
- * 
+ * Creates instance thru an {@link ItemFactory}.
  * @author Peer Törngren
  *
  */
-public interface ObservableEntity<T extends SMDIdentity> extends IEditorInput, ModelObject, Deletable, ItemFactory<T>, SMDIdentity {
-	
-	String PROP_dirty = "dirty"; //$NON-NLS-1$
-	
-	/**
-	 * Does this instance have unsaved changes?
-	 * 
-	 * @return boolean
-	 */
-	boolean isDirty();
+public class Create extends AbstractHandler implements IHandler {
 
-	/**
-	 * Update the dirty status. Set to <code>true</code> when changes are made,
-	 * set to <code>false</code> when changes are saved to persistent store or
-	 * canceled ("undo"). Method must be called whenever the persistent state of
-	 * this instance changes. Implementers must fire a {@link PropertyChangeEvent}
-	 * for {@value #PROP_dirty}.
-	 * 
-	 * @param isDirty
-	 */
-	void setDirty(boolean isDirty);
+	@Override
+	public Object execute(ExecutionEvent event) throws ExecutionException {
+		Collection<Object> newInstances = new ArrayList<Object>();
+		Collection<ItemFactory> factories = CommandUtil.getDefaultVariable(event);
+		for (ItemFactory factory : factories) {
+			newInstances.add(factory.newInstance());
+		}
+		WorkbenchUtil.openAll(newInstances);
+		return newInstances;
+	}
 }

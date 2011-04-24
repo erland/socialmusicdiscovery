@@ -25,38 +25,26 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.rcp.content;
+package org.socialmusicdiscovery.rcp.util;
 
-import java.beans.PropertyChangeEvent;
-
-import org.eclipse.ui.IEditorInput;
-import org.socialmusicdiscovery.server.business.model.SMDIdentity;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.expressions.EvaluationContext;
 
 /**
- * A {@link ModelObject} that can be edited in an editor.
+ * Some helpers for evaluating context and running commands.
  * 
  * @author Peer Törngren
  *
  */
-public interface ObservableEntity<T extends SMDIdentity> extends IEditorInput, ModelObject, Deletable, ItemFactory<T>, SMDIdentity {
-	
-	String PROP_dirty = "dirty"; //$NON-NLS-1$
-	
-	/**
-	 * Does this instance have unsaved changes?
-	 * 
-	 * @return boolean
-	 */
-	boolean isDirty();
+public final class CommandUtil {
 
-	/**
-	 * Update the dirty status. Set to <code>true</code> when changes are made,
-	 * set to <code>false</code> when changes are saved to persistent store or
-	 * canceled ("undo"). Method must be called whenever the persistent state of
-	 * this instance changes. Implementers must fire a {@link PropertyChangeEvent}
-	 * for {@value #PROP_dirty}.
-	 * 
-	 * @param isDirty
-	 */
-	void setDirty(boolean isDirty);
+	private CommandUtil() {}
+
+	@SuppressWarnings("unchecked")
+	public static <T> T getDefaultVariable(ExecutionEvent event) {
+		EvaluationContext ctx = (EvaluationContext) event.getApplicationContext();
+		T victim = (T) ctx.getDefaultVariable();
+		return victim;
+	}
+
 }

@@ -77,9 +77,9 @@ public interface ModelObject extends Observable, IAdaptable {
 	 * </p>
 	 * <p>
 	 * <b>Design note 1:</b><br>
-	 * we return a {@link List}, not a {@link Set} or a {@link Collection},
-	 * since we want the ability to modify the list - implementers may return a
-	 * {@link WritableList}. We also need a specific collection type to make
+	 * we return a {@link Set}, not a {@link List} or a {@link Collection},
+	 * since we want the ability to modify the result - implementers may return
+	 * a {@link WritableSet}. We also need a specific collection type to make
 	 * data binding easy; most/all data binding methods need to know if they
 	 * observe a {@link List} or a {@link Set}.
 	 * </p>
@@ -91,10 +91,10 @@ public interface ModelObject extends Observable, IAdaptable {
 	 * derived from "drilling criteria"; i.e. the list of children depends on
 	 * what type of children the client asks for. Example: for a Release, the
 	 * children may be Tracks, alternative Releases, Composers, performing
-	 * Artists, or .. something completely different. Hence, the returned list
-	 * is read-only; changes are made elsewhere, and reflected in this list.
+	 * Artists, or .. something completely different. Hence, the expectation is
+	 * that returned changes are made elsewhere, and reflected in this set.
 	 * Again: this is an expectation. Time will tell what we actually need. And
-	 * as stated above, some implementers may return a {@link WritableList}.
+	 * as stated above, some implementers may return a {@link WritableSet}.
 	 * </p>
 	 * <p>
 	 * <b>Nonsense note:</b><br>

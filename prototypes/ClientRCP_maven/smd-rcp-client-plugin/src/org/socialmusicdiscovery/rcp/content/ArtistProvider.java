@@ -27,68 +27,33 @@
 
 package org.socialmusicdiscovery.rcp.content;
 
-import org.socialmusicdiscovery.rcp.util.NotYetImplemented;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import org.socialmusicdiscovery.rcp.Activator;
+import org.socialmusicdiscovery.rcp.content.DataSource.Root;
+import org.socialmusicdiscovery.rcp.util.ModelObjectComparator;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
-import org.socialmusicdiscovery.server.business.model.core.Contributor;
 
-import com.google.gson.annotations.Expose;
+/**
+ * Provides a sorted list of available artists.
+ * 
+ * @author Peer Törngren
+ *
+ */
+public class ArtistProvider implements ElementProvider<ObservableArtist> {
 
-public class ObservableContributor extends AbstractObservableEntity<Contributor> implements Contributor {
+	private Comparator comparator = new ModelObjectComparator();
 
-	public static final String PROP_artist = "artist";
-	public static final String PROP_type = "type";
-	
-	@Expose private Artist artist;
-	@Expose private String type;
-
+	@SuppressWarnings("unchecked")
 	@Override
-	public String getType() {
-		return type;
-	}
-
-	@Override
-	public Artist getArtist() {
-		return artist;
-	}
-
-	public void setArtist(Artist artist) {
-		firePropertyChange(PROP_artist, this.artist, this.artist = artist);
-	}
-
-	public void setType(String type) {
-		firePropertyChange(PROP_type, this.type, this.type = type);
-	}
-
-	@Override
-	public String toString() {
-		String artistName = getArtist()==null ? "?" : getArtist().getName();
-		return getClass().getSimpleName()+"@"+hashCode()+"-"+getType()+":"+artistName + " ("+getName()+")";
-	}
-
-	@Override
-	public void delete() {
-		NotYetImplemented.openDialog("Cannot yet delete "+getClass().getSimpleName());
-	}
-
-	@Override
-	public Contributor newInstance() {
-		NotYetImplemented.openDialog("Cannot yet create "+getClass().getSimpleName());
-		return null;
-	}
-	
-	/**
-	 * Compare two contributor instances that may be of different types. Deem
-	 * them equal if the represent the the same artist and type.
-	 * 
-	 * @param c1
-	 * @param c2
-	 * @return boolean
-	 */
-	public static boolean equal(Contributor c1, Contributor c2) {
-		if (c1==null || c2==null) {
-			return c1==c2; // true if both are null
-		};
-		return c1==c2 || c1.equals(c2) || (c1.getArtist().equals(c2.getArtist()) && c1.getType().equals(c2.getType()));
+	public List<ObservableArtist> getElements() {
+		Root<Artist> root = Activator.getDefault().getDataSource().resolveRoot(Artist.class);
+		List<ObservableArtist> all = new ArrayList(root.findAll());
+		Collections.sort(all, comparator);
+		return all;
 	}
 
 }
