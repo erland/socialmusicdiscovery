@@ -29,22 +29,58 @@ package org.socialmusicdiscovery.server.api.management.mediaimport;
 
 import com.google.gson.annotations.Expose;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MediaImportStatus {
+    public enum Status {
+        /** Import module is currently executing */
+        Running,
+        /** Import module is still executing but is trying to abort, will change state to {@link #Failed} when aborted successfully */
+        Aborting,
+        /** Import module is not running or have finished successfully */
+        FinishedOk,
+        /** Import module has failed or been aborted and is no longer executing */
+        Failed,
+    }
+
+    /** Identity of import module/phase currently executing */
     @Expose
     private String module;
+
+    /** Description about currently processed item */
     @Expose
     private String currentDescription;
+
+    /** Sequence number of currently processed item within the current phase */
     @Expose
     private Long currentNumber;
+
+    /** Total number of items which are going to be processed within the current phase */
     @Expose
     private Long totalNumber;
 
+    /** The sequence number of currently executing import phase */
+    @Expose
+    Long currentPhaseNo;
+
+    /** Total number of phases which are going to be executed */
+    @Expose
+    Long totalPhaseNo;
+
+    /** Current status of this import */
+    @Expose
+    private Status status;
+
     public MediaImportStatus() {}
-    public MediaImportStatus(String module, String currentDescription, Long currentNumber, Long totalNumber) {
+    public MediaImportStatus(String module, String currentDescription, Long currentNumber, Long totalNumber, Long currentPhaseNo, Long totalPhaseNo, Status status) {
         this.module = module;
         this.currentDescription = currentDescription;
         this.currentNumber = currentNumber;
         this.totalNumber = totalNumber;
+        this.status = status;
+        this.currentPhaseNo = currentPhaseNo;
+        this.totalPhaseNo= totalPhaseNo;
     }
     public String getModule() {
         return module;
@@ -76,5 +112,13 @@ public class MediaImportStatus {
 
     public void setTotalNumber(Long totalNumber) {
         this.totalNumber = totalNumber;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }

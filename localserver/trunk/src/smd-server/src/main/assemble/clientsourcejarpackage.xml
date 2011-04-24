@@ -13,7 +13,7 @@
           <includes>
               <include>org/socialmusicdiscovery/server/support/**/*.java</include>
               <include>org/socialmusicdiscovery/server/business/model/**/*.java</include>
-              <include>org/socialmusicdiscovery/server/api/management/mediaimport/MediaImportStatus.java</include>
+              <include>org/socialmusicdiscovery/server/api/management/mediaimport/MediaImportStatus*.java</include>
               <include>org/socialmusicdiscovery/server/api/OperationStatus.java</include>
           </includes>
           <excludes>

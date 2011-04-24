@@ -52,6 +52,15 @@ public class MediaImportManager {
     /** Currently executing media importer modules */
     private Map<String, ProcessState> runningModules = new HashMap<String, ProcessState>();
 
+    /** Currently executing media importer modules which have been requested to be aborted */
+    private Map<String, ProcessState> abortingModules = new HashMap<String, ProcessState>();
+
+    /** Previously executing media importer modules which have failed */
+    private Map<String, ProcessState> failedModules = new HashMap<String, ProcessState>();
+
+    /** Previously executing media importer modules which have finished */
+    private Map<String, ProcessState> finishedModules = new HashMap<String, ProcessState>();
+
     /** Synchronization object to ensure thread safety */
     private final Object RUNNING_MODULES = new Object();
 
@@ -60,24 +69,38 @@ public class MediaImportManager {
      */
     static class ProcessState {
         ProcessingModule module;
-        public enum Phase {
+        enum Phase {
             EXECUTING,
             POSTPROCESSING,
         };
         Phase phase;
         String currentPostProcessingModule;
+        Long currentPostProcessingModuleNo=0L;
         Long started = System.currentTimeMillis();
         String currentDescription;
         Long lastUpdated = null;
         List<Long> processingTimes = new ArrayList<Long>(100);
         Long currentNo;
         Long totalNo;
+        public ProcessState(ProcessState state) {
+            this.module = state.module;
+            this.phase = state.phase;
+            this.currentPostProcessingModule = state.currentPostProcessingModule;
+            this.currentPostProcessingModuleNo = state.currentPostProcessingModuleNo;
+            this.started = state.started;
+            this.currentDescription = state.currentDescription;
+            this.lastUpdated = state.lastUpdated;
+            this.processingTimes = new ArrayList<Long>(state.processingTimes);
+            this.currentNo = state.currentNo;
+            this.totalNo = state.totalNo;
+        }
         public ProcessState(ProcessingModule module, Phase phase) {
             this.module = module;
             this.phase = phase;
             currentDescription = "";
             currentNo = 0L;
             totalNo = 0L;
+            currentPostProcessingModuleNo=0L;
         }
     }
 
@@ -97,10 +120,24 @@ public class MediaImportManager {
             ProcessState state = runningModules.get(module);
             if(state != null) {
                 if(state.phase == ProcessState.Phase.EXECUTING) {
-                    return new MediaImportStatus(state.module.getId(),state.currentDescription,state.currentNo,state.totalNo);
+                    return new MediaImportStatus(state.module.getId(),state.currentDescription,state.currentNo,state.totalNo, 1L, 1L+postProcessors.size(),MediaImportStatus.Status.Running);
                 }else if(state.phase == ProcessState.Phase.POSTPROCESSING) {
-                    state = runningModules.get(state.currentPostProcessingModule);
-                    return new MediaImportStatus(state.module.getId(),state.currentDescription,state.currentNo,state.totalNo);
+                    ProcessState postProcessState = runningModules.get(state.currentPostProcessingModule);
+                    if(abortingModules.containsKey(module)) {
+                        return new MediaImportStatus(postProcessState.module.getId(),postProcessState.currentDescription,postProcessState.currentNo,postProcessState.totalNo, 1L+state.currentPostProcessingModuleNo, 1L+postProcessors.size(), MediaImportStatus.Status.Aborting);
+                    }else {
+                        return new MediaImportStatus(postProcessState.module.getId(),postProcessState.currentDescription,postProcessState.currentNo,postProcessState.totalNo, 1L+state.currentPostProcessingModuleNo,1L+postProcessors.size(),MediaImportStatus.Status.Running);
+                    }
+                }
+            }else {
+                if(failedModules.containsKey(module)) {
+                    ProcessState failedState = failedModules.get(module);
+                    return new MediaImportStatus(failedState.module.getId(),failedState.currentDescription, failedState.currentNo, failedState.totalNo,1L+failedState.currentPostProcessingModuleNo, 1L+postProcessors.size(),MediaImportStatus.Status.Failed);
+                }else if(finishedModules.containsKey(module)) {
+                    ProcessState finishedState = finishedModules.get(module);
+                    return new MediaImportStatus(finishedState.module.getId(), finishedState.currentDescription, finishedState.currentNo, finishedState.totalNo, 1L+postProcessors.size(),1L+postProcessors.size(), MediaImportStatus.Status.FinishedOk);
+                }else {
+                    return new MediaImportStatus(module, "", 0L, 0L, 0L, 1L+postProcessors.size(),MediaImportStatus.Status.FinishedOk);
                 }
             }
         }
@@ -132,6 +169,8 @@ public class MediaImportManager {
         }
         synchronized (RUNNING_MODULES) {
             runningModules.put(module, new ProcessState(mediaImporters.get(module), ProcessState.Phase.EXECUTING));
+            abortingModules.remove(module);
+            failedModules.remove(module);
         }
         executorService.submit(new Runnable() {
             public void run() {
@@ -183,6 +222,7 @@ public class MediaImportManager {
                         public void failed(String module, String error) {
                             synchronized (RUNNING_MODULES) {
                                 System.out.println(module+" failure after "+((System.currentTimeMillis()-runningModules.get(module).started)/1000)+" seconds");
+                                failedModules.put(module, runningModules.get(module));
                                 runningModules.remove(module);
                             }
                         }
@@ -193,21 +233,26 @@ public class MediaImportManager {
                             synchronized (RUNNING_MODULES) {
                                 state = runningModules.get(module);
                                 if(!(state.module instanceof PostProcessor) && postProcessors.size()>0) {
+                                    abortingModules.put(module, new ProcessState(state));
                                     System.out.println(module+" aborted, started to execute post processors after "+((System.currentTimeMillis()-runningModules.get(module).started)/1000)+" seconds...");
                                     state.phase = ProcessState.Phase.POSTPROCESSING;
                                     postProcessing = true;
                                 }else if(postProcessors.size()==0) {
+                                    failedModules.put(module, new ProcessState(state));
                                     System.out.println(module+" aborted after "+((System.currentTimeMillis()-runningModules.get(module).started)/1000)+" seconds");
                                 }
                             }
                             if(postProcessing) {
+                                state.currentPostProcessingModuleNo = 0L;
                                 for (PostProcessor postProcessor : postProcessors.values()) {
                                     synchronized (RUNNING_MODULES) {
                                         state.currentPostProcessingModule = postProcessor.getId();
+                                        state.currentPostProcessingModuleNo++;
                                         runningModules.put(postProcessor.getId(), new ProcessState(postProcessor,ProcessState.Phase.EXECUTING));
                                     }
                                     postProcessor.execute(this);
                                 }
+                                failedModules.put(module, abortingModules.remove(module));
                                 System.out.println(module+" aborted after "+((System.currentTimeMillis()-runningModules.get(module).started)/1000)+" seconds");
                             }
 
@@ -232,8 +277,10 @@ public class MediaImportManager {
 
                             if(postProcessing) {
                                 for (PostProcessor postProcessor : postProcessors.values()) {
+                                    state.currentPostProcessingModuleNo = 0L;
                                     synchronized (RUNNING_MODULES) {
                                         state.currentPostProcessingModule = postProcessor.getId();
+                                        state.currentPostProcessingModuleNo++;
                                         runningModules.put(postProcessor.getId(), new ProcessState(postProcessor,ProcessState.Phase.EXECUTING));
                                     }
                                     postProcessor.execute(this);
@@ -242,7 +289,7 @@ public class MediaImportManager {
                             }
 
                             synchronized (RUNNING_MODULES) {
-                                runningModules.remove(module);
+                                finishedModules.put(module, runningModules.remove(module));
                             }
                         }
                     });
