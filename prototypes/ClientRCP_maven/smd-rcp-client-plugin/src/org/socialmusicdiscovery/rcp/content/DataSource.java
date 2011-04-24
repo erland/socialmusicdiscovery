@@ -226,7 +226,7 @@ public class DataSource extends AbstractObservable implements ModelObject {
 	private boolean isConnected = false;
 	private final boolean isAutoConnect;
 
-	private final DataCache cache;
+	private final DataCache cache;  // holds persistent objects that have been read from server
 
 	private List<Root<? extends SMDIdentity>> roots;
 
@@ -234,13 +234,9 @@ public class DataSource extends AbstractObservable implements ModelObject {
 	 * @author Peer Törngren
 	 *
 	 * @param <T> the common entity interface that this instance operates on
-	 * @param <U> the client-side observable type that this instance returns on queries
 	 */
-	public class Root<T extends SMDIdentity> extends AbstractObservable implements ModelObject {
+	public class Root<T extends SMDIdentity> extends AbstractObservable implements ModelObject, ItemFactory<T> {
 
-/**
-		 * 
-		 */
 		public static final String PROP_OBSERVABLE_CHILDREN = "observableChildren";
 //		private static final String PROP_children = "children";
 		
@@ -248,9 +244,15 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		private final String path; // for querying server
 		private final Class<T> distinctQueryType; // for querying server
 		private GenericType<Set<T>> genericCollectionQueryType;
+		private final Class<? extends AbstractObservableEntity<T>> observableType;
 		private final Set<ObservableEntity<T>> children = new HashSet<ObservableEntity<T>>();
 
 		private boolean isLoaded = false;
+
+		private WritableSet writableSetOfChildren;
+
+
+//		private final Set newInstances = new HashSet(); // keep track of created instances 
 
 		/**
 		 * Private constructor, roots should only be instantiated from this
@@ -260,6 +262,9 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		 * 
 		 * @param nodeName
 		 *            human readable, for display in UI listings
+		 * @param observableType
+		 *            for creating instances in the {@link ItemFactory}
+		 *            interface
 		 * @param queryPath
 		 *            for server query (see {@link #getPath()})
 		 * @param distinctElementQueryType
@@ -267,7 +272,8 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		 * @param genericCollectionQueryType
 		 *            for server query (see {@link #findAll()})
 		 */
-		private Root(String nodeName, String queryPath, Class<T> distinctElementQueryType, GenericType<Set<T>> genericCollectionQueryType) {
+		private Root(String nodeName, Class<? extends AbstractObservableEntity<T>> observableType, String queryPath, Class<T> distinctElementQueryType, GenericType<Set<T>> genericCollectionQueryType) {
+			this.observableType = observableType;
 			this.name = nodeName;
 			this.path = queryPath;
 			this.distinctQueryType = distinctElementQueryType;
@@ -311,15 +317,16 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		}
 
 		/**
-		 * Preliminary code, not sure how we want to handle add/delete if
-		 * children (we don't do that yet). 
+		 * Returns a new {@link WritableSet} in every call.
 		 */
 		public IObservableSet getObservableChildren() {
 			if (!isLoaded && (isConnected || isAutoConnect)) {
 				children.addAll(findAll());
 				isLoaded = true;
 			}
-			return isLoaded ? new WritableSet(children, getType()) : Observables.emptyObservableSet();
+			writableSetOfChildren = new WritableSet(children, observableType); 
+			return writableSetOfChildren;
+//			return isLoaded ? writableSetOfChildren : Observables.emptyObservableSet();
 		}
 
 //		public List<ObservableEntity<T>> getChildren() {
@@ -405,8 +412,9 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		private void persist(ObservableEntity entity) {
 			if (isNew(entity)) {
 				create(entity);
-			} else if (isDeleted(entity)) {
-				delete(entity);
+//			} else if (isDeleted(entity)) {
+//				We delete instantly (at least for now)
+//				delete(entity);
 			} else {
 				update(entity);
 			}
@@ -459,30 +467,67 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		 * @param entity
 		 */
 		private void delete(ObservableEntity entity) {
-			assert entity.getId()!=null && entity.getId().trim().length()>0 : "No ID: "+entity;
-			assert cache.contains(entity) : "Deleting uncached entity - should have been cached when read: "+entity;
+//			assert entity.getId()!=null && entity.getId().trim().length()>0 : "No ID: "+entity;
+			assert isNew(entity) || cache.contains(entity) : "Deleting uncached entity - should have been cached when read: "+entity;
 			
-			String entityPath = getInstancePath(entity.getId());
-			resource(entityPath).type(MediaType.APPLICATION_JSON).delete();
-			cache.delete(entity);
+			if (isNew(entity)) {
+//				newInstances.remove(entity);
+			} else {
+				String entityPath = getInstancePath(entity.getId());
+				resource(entityPath).type(MediaType.APPLICATION_JSON).delete();
+				cache.delete(entity);
+			}
+			writableSetOfChildren.remove(entity);
 			
-			assert !cache.contains(entity) : "Cache not updated - entity still present: "+entity;
-		}
-
-		private boolean isDeleted(ObservableEntity entity) {
-			return false; // FIXME implement delete status! How
+//			assert !newInstances.contains(entity) : "newInstances not updated - entity still present: "+entity;
+			assert !cache.contains(entity) : "cache not updated - entity still present: "+entity;
 		}
 
 		private boolean isNew(ObservableEntity entity) {
 			return entity.getId()==null;
+//			return newInstances.contains(entity);
 		}
 		
-		public void clear() {
-			if (children!=null) {
-				children.clear();
-				isLoaded = false;
+		public void dispose() {
+			isLoaded = false;
+			children.clear();
+			if (writableSetOfChildren!=null) {
+				writableSetOfChildren.dispose();
+				writableSetOfChildren = null;
 			}
-			firePropertyChange(PROP_OBSERVABLE_CHILDREN);
+		}
+
+		/**
+		 * CRUD: <b>C</b>reate
+		 * @return entity
+		 */
+		@SuppressWarnings("unchecked")
+		@Override
+		public T newInstance() {
+			AbstractObservableEntity<T> newInstance = createInstance();
+			newInstance.setDirty(true);
+			newInstance.markInflated();
+			newInstance.setName("<new>");
+//			newInstance.setId(newId());
+//			newInstances.add(newInstance);
+			
+//			cache.add(newInstance);
+			writableSetOfChildren.add(newInstance);
+			return (T) newInstance;
+		}
+
+//		private String newId() {
+//			return UUID.randomUUID().toString();
+//		}
+
+		private AbstractObservableEntity<T> createInstance() {
+			try {
+				return observableType.newInstance();
+			} catch (InstantiationException e) {
+				throw new FatalApplicationException("Unable to create new instance of type "+observableType, e);  //$NON-NLS-1$
+			} catch (IllegalAccessException e) {
+				throw new FatalApplicationException("Unable to create new instance of type "+observableType, e);  //$NON-NLS-1$
+			}
 		}
 
 	}
@@ -496,11 +541,11 @@ public class DataSource extends AbstractObservable implements ModelObject {
 	public List<? extends Root> getRoots() {
 		if (roots == null) {
 			roots = Arrays.asList(
-				new Root<Artist>("Artists", "/artists", Artist.class, new GenericType<Set<Artist>>() {} )
-				,new Root<Recording>("Recordings", "/recordings", Recording.class, new GenericType<Set<Recording>>() {} )
-				,new Root<Release>("Releases", "/releases", Release.class, new GenericType<Set<Release>>() {} ) 
-				,new Root<Track>("Tracks", "/tracks", Track.class, new GenericType<Set<Track>>() {} )
-				,new Root<PlayableElement>("Playables", "/playableElements", PlayableElement.class, new GenericType<Set<PlayableElement>>() {} )
+				new Root<Artist>("Artists", ObservableArtist.class, "/artists", Artist.class, new GenericType<Set<Artist>>() {} )
+				,new Root<Recording>("Recordings", ObservableRecording.class, "/recordings", Recording.class, new GenericType<Set<Recording>>() {} )
+				,new Root<Release>("Releases", ObservableRelease.class, "/releases", Release.class, new GenericType<Set<Release>>() {} ) 
+				,new Root<Track>("Tracks", ObservableTrack.class, "/tracks", Track.class, new GenericType<Set<Track>>() {} )
+				,new Root<PlayableElement>("Playables", ObservablePlayableElement.class, "/playableElements", PlayableElement.class, new GenericType<Set<PlayableElement>>() {} )
 			);
 		}
 		return roots;
@@ -605,12 +650,11 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		if (!isConnected()) {
 			throw new IllegalStateException("Not connected");
 		}
-		this.setConnected(false);
-		this.cache.clear();
+		cache.clear();
 		for (Root root : getRoots()) {
-			root.clear();
+			root.dispose();
 		}
-		fireConnectedRefreshEvent();
+		setConnected(false);
 		return isConnected();
 	}
 
@@ -675,6 +719,10 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		}
 	}
 
+	public <T extends SMDIdentity> void delete(ObservableEntity victim) {
+		resolveRoot(victim).delete(victim);
+	}
+	
 	public <T extends SMDIdentity> boolean inflate(ObservableEntity<T> shallowEntity) {
 		Root root = resolveRoot(shallowEntity);
 		@SuppressWarnings("unchecked")

@@ -36,6 +36,7 @@ import java.util.Set;
 import org.eclipse.ui.IEditorInput;
 import org.socialmusicdiscovery.rcp.content.DataSource.Root;
 import org.socialmusicdiscovery.rcp.util.ChangeMonitor;
+import org.socialmusicdiscovery.rcp.util.NotYetImplemented;
 import org.socialmusicdiscovery.rcp.util.Util;
 import org.socialmusicdiscovery.server.business.model.core.Recording;
 import org.socialmusicdiscovery.server.business.model.core.Track;
@@ -187,5 +188,16 @@ public class ObservableRecording extends AbstractContributableEntity<Recording> 
 		Set<ObservableTrack> tracks = root.findAll(this);
 		return tracks;
 	}
+	@Override
+	public void delete() {
+		NotYetImplemented.openDialog("Cannot yet delete "+getClass().getSimpleName());
+	}
+
+	@Override
+	public Recording newInstance() {
+		NotYetImplemented.openDialog("Cannot yet create "+getClass().getSimpleName());
+		return null;
+	}
+	
 
 }

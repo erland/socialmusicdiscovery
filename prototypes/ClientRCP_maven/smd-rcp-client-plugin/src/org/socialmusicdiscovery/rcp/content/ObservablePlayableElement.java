@@ -27,6 +27,7 @@
 
 package org.socialmusicdiscovery.rcp.content;
 
+import org.socialmusicdiscovery.rcp.util.NotYetImplemented;
 import org.socialmusicdiscovery.server.business.model.core.PlayableElement;
 
 import com.google.gson.annotations.Expose;
@@ -78,4 +79,17 @@ public class ObservablePlayableElement extends AbstractObservableEntity<Playable
 	public void setUri(String uri) {
 		firePropertyChange(PROP_uri, this.uri, this.uri = uri);
 	}
+	
+	@Override
+	public void delete() {
+		NotYetImplemented.openDialog("Cannot yet delete "+getClass().getSimpleName());
+	}
+
+	@Override
+	public PlayableElement newInstance() {
+		NotYetImplemented.openDialog("Cannot yet create "+getClass().getSimpleName());
+		return null;
+	}
+	
+
 }

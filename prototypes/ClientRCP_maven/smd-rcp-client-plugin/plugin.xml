@@ -261,6 +261,27 @@
                label="%popup.command.edit.label"
                mnemonic="%popup.command.edit.mnemonic"
                style="push">
+            <visibleWhen
+                  checkEnabled="true">
+            </visibleWhen>
+         </command>
+         <command
+               commandId="org.socialmusicdiscovery.rcp.commands.Delete"
+               label="%popup.command.delete.label"
+               mnemonic="%popup.command.delete.mnemonic"
+               style="push">
+            <visibleWhen
+                  checkEnabled="true">
+            </visibleWhen>
+         </command>
+         <command
+               commandId="org.socialmusicdiscovery.rcp.commands.Create"
+               label="%popup.command.create.label"
+               mnemonic="%popup.command.create.mnemonic"
+               style="push">
+            <visibleWhen
+                  checkEnabled="true">
+            </visibleWhen>
          </command>
       </menuContribution>
       <menuContribution
@@ -299,6 +320,14 @@
             name="Edit">
       </command>
       <command
+            id="org.socialmusicdiscovery.rcp.commands.Delete"
+            name="Delete">
+      </command>
+      <command
+            id="org.socialmusicdiscovery.rcp.commands.Create"
+            name="Create">
+      </command>
+      <command
             id="org.socialmusicdiscovery.rcp.commands.ImportFromSBS"
             name="Import SBS">
       </command>
@@ -314,6 +343,28 @@
                         value="org.socialmusicdiscovery.rcp.content.ObservableEntity">
                   </instanceof>
                </iterate>
+         </enabledWhen>
+      </handler>
+      <handler
+            class="org.socialmusicdiscovery.rcp.commands.Delete"
+            commandId="org.socialmusicdiscovery.rcp.commands.Delete">
+         <enabledWhen>
+            <iterate>
+               <instanceof
+                     value="org.socialmusicdiscovery.rcp.content.Deletable">
+               </instanceof>
+            </iterate>
+         </enabledWhen>
+      </handler>
+      <handler
+            class="org.socialmusicdiscovery.rcp.commands.Create"
+            commandId="org.socialmusicdiscovery.rcp.commands.Create">
+         <enabledWhen>
+            <iterate>
+               <instanceof
+                     value="org.socialmusicdiscovery.rcp.content.ItemFactory">
+               </instanceof>
+            </iterate>
          </enabledWhen>
       </handler>
      <handler

@@ -25,38 +25,39 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.rcp.content;
+package org.socialmusicdiscovery.rcp.commands;
 
-import java.beans.PropertyChangeEvent;
+import java.util.Collection;
 
-import org.eclipse.ui.IEditorInput;
-import org.socialmusicdiscovery.server.business.model.SMDIdentity;
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.IHandler;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.socialmusicdiscovery.rcp.content.Deletable;
+import org.socialmusicdiscovery.rcp.util.CommandUtil;
+import org.socialmusicdiscovery.rcp.util.WorkbenchUtil;
 
 /**
- * A {@link ModelObject} that can be edited in an editor.
+ * Deletes {@link Deletable} instances.
  * 
  * @author Peer Törngren
  *
  */
-public interface ObservableEntity<T extends SMDIdentity> extends IEditorInput, ModelObject, Deletable, ItemFactory<T>, SMDIdentity {
-	
-	String PROP_dirty = "dirty"; //$NON-NLS-1$
-	
-	/**
-	 * Does this instance have unsaved changes?
-	 * 
-	 * @return boolean
-	 */
-	boolean isDirty();
+public class Delete extends AbstractHandler implements IHandler {
 
-	/**
-	 * Update the dirty status. Set to <code>true</code> when changes are made,
-	 * set to <code>false</code> when changes are saved to persistent store or
-	 * canceled ("undo"). Method must be called whenever the persistent state of
-	 * this instance changes. Implementers must fire a {@link PropertyChangeEvent}
-	 * for {@value #PROP_dirty}.
-	 * 
-	 * @param isDirty
-	 */
-	void setDirty(boolean isDirty);
+	@Override
+	public Boolean execute(ExecutionEvent event) throws ExecutionException {
+		Collection<Deletable> victims = CommandUtil.getDefaultVariable(event);
+		boolean isConfirmed = MessageDialog.openConfirm(null, "Delete", "Delete "+victims.size()+" element(s)? This action can NOT be undone!");
+		if (isConfirmed) {
+			if (WorkbenchUtil.closeEditors(victims)) {
+				for (Deletable v : victims) {
+					v.delete();
+				}
+			}
+		}
+		return Boolean.valueOf(isConfirmed);
+	}
+
 }

@@ -38,7 +38,9 @@ import org.eclipse.core.databinding.observable.set.IObservableSet;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IPersistableElement;
 import org.socialmusicdiscovery.rcp.Activator;
+import org.socialmusicdiscovery.rcp.content.DataSource.Root;
 import org.socialmusicdiscovery.rcp.event.AbstractObservable;
+import org.socialmusicdiscovery.rcp.util.NotYetImplemented;
 import org.socialmusicdiscovery.rcp.util.TextUtil;
 import org.socialmusicdiscovery.rcp.util.Util;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
@@ -137,6 +139,29 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 	}
 
 	/**
+	 * Default implementation calls {@link DataSource#delete(ObservableEntity)}.
+	 * Subclasses should override and add behavior as necessary, e.g. to remove or notify
+	 * dependents as appropriate. 
+	 */
+	public void delete() {
+		if (NotYetImplemented.confirm("Delete")) {
+			getDataSource().delete(this);
+		}
+	}
+
+	/**
+	 * Default implementation delegates to {@link Root#newInstance()}.
+	 * Subclasses should override and add behavior as necessary, e.g. to
+	 * initialize or notify dependents as appropriate.
+	 */
+	public T newInstance() {
+		if (NotYetImplemented.confirm("Add")) {
+			return getRoot().newInstance();
+		}
+		return null;
+	}
+	
+	/**
 	 * Do any post-processing after basic inflate.
 	 * This method is called after {@link #inflate()}, 
 	 * if the instance was inflated. Default method does 
@@ -178,6 +203,15 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 	 */
 	protected DataSource getDataSource() {
 		return Activator.getDefault().getDataSource();
+	}
+
+	/**
+	 * Convenience method for subclasses. 
+	 * @return {@link Root} for this instance
+	 */
+	@SuppressWarnings("unchecked")
+	protected Root<T> getRoot() {
+		return (Root<T>) getDataSource().resolveRoot(this);
 	}
 
 	private Class getGenericType() {
@@ -264,7 +298,8 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 	 * @param backup
 	 */
 	private void assertBackup(AbstractObservableEntity backup) {
-		assert backup.getId().endsWith(getId()) : "Bad id: "+backup+". Backup="+backup.getId()+", this="+getId();
+		// id may be null
+		assert backup.getId() == getId() || backup.getId().endsWith(getId()) : "Bad id: "+backup+". Backup="+backup.getId()+", this="+getId();
 		assert backup.getClass()==getClass() : "Bad class: "+backup+". Backup="+backup.getClass()+", this="+getClass();
 	}
 
