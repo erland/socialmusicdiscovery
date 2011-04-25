@@ -133,6 +133,11 @@ sub cliPlaylistControl {
 		unshift @pathElements, $first
 	}
 
+	if (scalar(@pathElements)==0) {
+		$request->setStatusBadParams();
+		return;
+	}
+
 	main::INFOLOG && $log->is_info && $log->info("smdplaylistcontrol ",join(", ", @pathElements));
 	
 	my $http = Slim::Networking::SimpleAsyncHTTP->new(\&_playReply, \&_playError, {
@@ -173,9 +178,15 @@ sub _playReply {
 
 	if(scalar(@trackIdList)>0) {
 		$log->info("Playing tracks: ".join(",",@trackIdList));
-		Slim::Control::Request::executeRequest(
-			$params->{'client'}, ['playlistcontrol', 'cmd:'.$params->{'cmd'}, 'track_id:'.join(",",@trackIdList)]
-		);
+		if(defined($params->{'jumpIndex'})) {
+			Slim::Control::Request::executeRequest(
+				$params->{'client'}, ['playlistcontrol', 'cmd:'.$params->{'cmd'}, 'track_id:'.join(",",@trackIdList), 'play_index:'.$params->{'jumpIndex'}]
+			);
+		}else {
+			Slim::Control::Request::executeRequest(
+				$params->{'client'}, ['playlistcontrol', 'cmd:'.$params->{'cmd'}, 'track_id:'.join(",",@trackIdList)]
+			);
+		}
 	}else {
 		$log->error("Error executing smdplaylistcontrol command, no playable elements found");
 	}
@@ -288,15 +299,23 @@ sub _smd {
 			my $results = shift;
 			my @empty = ();
 			my $items = \@empty;
+			my $i = $args->{'index'} || $args->{'params'}->{'_index'} || 0;
+			my $playall = 0;
+			my $playable = 0;
 			foreach (@{$results->{'items'}}) {
 				my $item = {
 					'id' => $path."/".$_->{'id'},
+					'parent_id' => $path,
 					'name' => $_->{'name'},
 					'passthrough' => [ { searchTags => [@searchTags, "path:" . $path."/".$_->{'id'}] } ],
 				};
 				if($_->{'leaf'}) {
 					if($_->{'playable'}) {
+						$playable = 1;
+						$playall = 1;
 						$item->{'type'} = "audio";
+						$item->{'playall'} = 1;
+						$item->{'play_index'} = $i++;
 						my $playableElements = $_->{'item'}->{'playableElements'};
 						if(scalar(@$playableElements)>0) {
 							my $playableElement = shift @$playableElements;
@@ -313,6 +332,7 @@ sub _smd {
 					$item->{'url'} = \&_smd;
 					$item->{'playlist'} = \&_tracks;
 					if($_->{'playable'}) {
+						$playable = 1;
 						if($userInterfaceIdiom eq 'iPeng') {
 							$item->{'type'} = "link";
 						}else {
@@ -341,21 +361,36 @@ sub _smd {
 						%{&_tagsToParams(\@searchTags)},
 					},
 				},
-				play => {
-					command     => ['smdplaylistcontrol'],
-					fixedParams => {cmd => 'load', %$params},
-				},
-				add => {
-					command     => ['smdplaylistcontrol'],
-					fixedParams => {cmd => 'add', %$params},
-				},
-				insert => {
-					command     => ['smdplaylistcontrol'],
-					fixedParams => {cmd => 'insert', %$params},
-				},
 			);
-			$actions{'playall'} = $actions{'play'};
-			$actions{'addall'} = $actions{'add'};
+			if($playable) {
+				$actions{'play'} = {
+						command     => ['smdplaylistcontrol'],
+						fixedParams => {cmd => 'load', %$params},
+					};
+				$actions{'add'} = {
+						command     => ['smdplaylistcontrol'],
+						fixedParams => {cmd => 'add', %$params},
+					};
+				$actions{'insert'} = {
+						command     => ['smdplaylistcontrol'],
+						fixedParams => {cmd => 'insert', %$params},
+					};
+				if($playall) {
+					$actions{'playall'} = {
+							command     => ['smdplaylistcontrol'],
+							fixedParams => {cmd => 'load', %$params},
+							variables => ['path' => 'parent_id', 'play_index' => 'play_index'],
+						};
+					$actions{'addall'} = {
+							command     => ['smdplaylistcontrol'],
+							fixedParams => {cmd => 'add', %$params},
+							variables => ['path' => 'parent_id', 'play_index' => 'play_index'],
+						};
+				}else {
+					$actions{'playall'} = $actions{'play'};
+					$actions{'addall'} = $actions{'add'};
+				}
+			}
 
 			return {items => $items, actions => \%actions, sorted => 1}, $extra;
 		},
