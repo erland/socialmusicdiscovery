@@ -61,10 +61,9 @@ public class ObservableRelease extends AbstractContributableEntity<Release> impl
 	private List<Medium> mediums = new ArrayList<Medium>();
 
 	@Expose
-	private List<Track> tracks = new ArrayList<Track>();
-
-	@Expose
 	private Set<RecordingSession> recordingSessions = new HashSet<RecordingSession>();
+
+	private transient List<Track> tracks = new ArrayList<Track>();
 
 	@Override
 	public Date getDate() {
