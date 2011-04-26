@@ -38,34 +38,60 @@ public class LibraryBrowseService {
     @Inject
     ObjectTypeBrowseService objectTypeBrowseService;
 
-    private static class MenuLevel {
+    protected static class MenuLevel {
         String type;
         String format;
         Boolean playable;
+        Long criteriaDepth = null;
 
         MenuLevel(String type, String format, Boolean playable) {
             this.type = type;
             this.format = format;
             this.playable = playable;
+            this.criteriaDepth = null;
+        }
+        MenuLevel(String type, String format, Boolean playable, Long criteriaDepth) {
+            this.type = type;
+            this.format = format;
+            this.playable = playable;
+            this.criteriaDepth = criteriaDepth;
         }
     }
 
-    private static class Menu {
+    protected static class Menu {
         String name;
         String id;
+        String selectedType;
         List<MenuLevel> hierarchy;
 
         Menu(String id, String name, List<MenuLevel> hierarchy) {
             this.id = id;
             this.name = name;
             this.hierarchy = hierarchy;
+            this.selectedType = null;
+        }
+        Menu(String selectedType, String id, String name, List<MenuLevel> hierarchy) {
+            this.id = id;
+            this.name = name;
+            this.hierarchy = hierarchy;
+            this.selectedType = selectedType;
         }
     }
 
-    private List<Menu> menus = new ArrayList<Menu>();
+    private List<Menu> menus = null;
 
     public LibraryBrowseService() {
         InjectHelper.injectMembers(this);
+    }
+
+    protected List<Menu> getMenus() {
+        if(menus==null) {
+            menus = getMenuHierarchy();
+        }
+        return menus;
+    }
+    protected List<Menu> getMenuHierarchy() {
+        List<Menu> menus = new ArrayList<Menu>();
         menus.add(new Menu("artists", "Artists", Arrays.asList(
                 new MenuLevel("Artist", "%object.name", true),
                 new MenuLevel("Release", "%object.name", true),
@@ -96,8 +122,8 @@ public class LibraryBrowseService {
                 new MenuLevel("Artist", "%object.name", true),
                 new MenuLevel("Release", "%object.name", true),
                 new MenuLevel("Track", "(%object.medium.name|%object.medium.number)||[%object.medium,-]||%object.number||. ||%object.recording.works.parent.name||[%object.recording.works.parent,: ]||%object.recording.works.name", true))));
+        return menus;
     }
-
 
     public Result<Object> findChildren(Integer firstItem, Integer maxItems) {
         return findChildren(null, firstItem, maxItems, false);
@@ -112,20 +138,37 @@ public class LibraryBrowseService {
     }
 
     public Result<Object> findChildren(String parentPath, Integer firstItem, Integer maxItems, Boolean counts) {
+        return findChildren(null, parentPath, firstItem, maxItems, counts);
+    }
+
+    protected Result<Object> findChildren(String currentId, String parentPath, Integer firstItem, Integer maxItems, Boolean counts) {
         Result<Object> result = new Result<Object>();
         if (counts == null) {
             counts = false;
         }
+
+        String currentType = null;
+        if(currentId!=null && currentId.contains(":")) {
+            currentType = currentId.substring(0,currentId.indexOf(":"));
+        }
+        String currentBaseType = currentType;
+        if(currentBaseType!=null && currentBaseType.contains(".")) {
+            currentBaseType = currentBaseType.substring(0,currentBaseType.indexOf("."));
+        }
+
         if (parentPath == null) {
             List<ResultItem<Object>> items = new ArrayList<ResultItem<Object>>();
             result.setItems(items);
-            List<Menu> menus = this.menus;
+            List<Menu> menus = getMenus();
             int i = 0;
             Map<String, Long> counters = null;
             if (counts) {
                 counters = objectTypeBrowseService.findObjectTypes(new ArrayList<String>(), true);
             }
             for (Menu menu : menus) {
+                if (menu.selectedType!=null && (currentType==null || (!currentType.equals(menu.selectedType) && !currentBaseType.equals(menu.selectedType)))) {
+                    continue;
+                }
                 if ((firstItem == null || firstItem <= i) && (maxItems == null || maxItems > items.size())) {
                     if (counts) {
                         Map<String, Long> childCounters = new HashMap<String, Long>(1);
@@ -139,12 +182,15 @@ public class LibraryBrowseService {
                 }
                 i++;
             }
-            result.setCount((long) menus.size());
+            result.setCount((long) i);
         } else {
             String currentPath = parentPath;
             Menu currentMenu = null;
 
-            for (Menu menu : menus) {
+            for (Menu menu : getMenus()) {
+                if (menu.selectedType!=null && (currentType==null || (!currentType.equals(menu.selectedType) && !currentBaseType.equals(menu.selectedType)))) {
+                    continue;
+                }
                 if (currentPath.equals(menu.id) || currentPath.contains("/") && currentPath.substring(0, currentPath.indexOf("/")).equals(menu.id)) {
                     currentMenu = menu;
                     currentPath = currentPath.substring(menu.id.length());
@@ -168,6 +214,10 @@ public class LibraryBrowseService {
                 }
 
                 List<String> criterias = new ArrayList<String>();
+                if(currentId!=null) {
+                    criterias.add(currentId);
+                }
+
                 String requestedMainObjectType = null;
                 MenuLevel requestedObjectType = null;
                 String nextObjectType = null;
@@ -191,13 +241,18 @@ public class LibraryBrowseService {
                 }
 
                 if (requestedMainObjectType != null) {
+                    if(requestedObjectType.criteriaDepth!=null) {
+                        while(criterias.size()>requestedObjectType.criteriaDepth) {
+                            criterias.remove(0);
+                        }
+                    }
                     TitleFormat parser = new TitleFormat(requestedObjectType.format);
 
                     BrowseService browseService = InjectHelper.instanceWithName(BrowseService.class, requestedMainObjectType);
                     Result browseResult = browseService.findChildren(criterias, new ArrayList<String>(), firstItem, maxItems, counts);
                     Collection<ResultItem> browseResultItems = browseResult.getItems();
                     for (ResultItem item : browseResultItems) {
-                        String id = null;
+                        String id;
                         if (item.getItem() instanceof SMDIdentity) {
                             id = requestedObjectType.type + ":" + ((SMDIdentity) item.getItem()).getId();
                         } else {
