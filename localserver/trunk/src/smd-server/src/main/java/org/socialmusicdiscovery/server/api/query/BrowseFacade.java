@@ -29,10 +29,7 @@ package org.socialmusicdiscovery.server.api.query;
 
 import com.google.inject.Inject;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
-import org.socialmusicdiscovery.server.business.service.browse.BrowseService;
-import org.socialmusicdiscovery.server.business.service.browse.LibraryBrowseService;
-import org.socialmusicdiscovery.server.business.service.browse.ObjectTypeBrowseService;
-import org.socialmusicdiscovery.server.business.service.browse.ResultItem;
+import org.socialmusicdiscovery.server.business.service.browse.*;
 import org.socialmusicdiscovery.server.support.copy.CopyHelper;
 
 import javax.ws.rs.*;
@@ -147,6 +144,44 @@ public class BrowseFacade {
         }
 
         LibraryBrowseService browseService = new LibraryBrowseService();
+        org.socialmusicdiscovery.server.business.service.browse.Result result = new CopyHelper().detachedCopy(browseService.findChildren(objectId, offset, size, childs));
+
+        List<Result.ResultItem> genericResultItems = new ArrayList<Result.ResultItem>(result.getItems().size());
+        Iterator<ResultItem> itemIterator = result.getItems().iterator();
+        while (itemIterator.hasNext()) {
+            ResultItem resultItem = itemIterator.next();
+            if (resultItem.getChildItems() != null) {
+                genericResultItems.add(new Result.ResultItem(resultItem.getItem(), resultItem.getType(), resultItem.getId(), resultItem.getName(), resultItem.getPlayable(), new HashMap<String, Long>(resultItem.getChildItems())));
+            } else {
+                genericResultItems.add(new Result.ResultItem(resultItem.getItem(), resultItem.getType(), resultItem.getId(), resultItem.getName(), resultItem.getPlayable(), resultItem.getLeaf()));
+            }
+        }
+
+        if (size != null) {
+            return new Result(genericResultItems, result.getCount(), offset.longValue(), (long) result.getItems().size());
+        } else {
+            return new Result(genericResultItems, result.getCount(), 0L, (long) result.getItems().size());
+        }
+    }
+
+    /**
+     * Browse context of a specified objects by using the predefined menu structure, starting at the the parent object specified as input
+     *
+     * @param objectId   The object to start the browsing from, this needs to be the full path to this object
+     * @param offset       Offset of the first item to get, this is used to get the result in smaller chunks
+     * @param size         Number of items to get
+     * @param childs       true if child counters should be provided
+     * @return A list of matching objects
+     */
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/context/{object:.*}")
+    public Result browseContext(@PathParam("object") String objectId, @QueryParam("offset") Integer offset, @QueryParam("size") Integer size, @QueryParam("childs") Boolean childs) {
+        if (size != null && offset == null) {
+            offset = 0;
+        }
+
+        ContextBrowseService browseService = new ContextBrowseService();
         org.socialmusicdiscovery.server.business.service.browse.Result result = new CopyHelper().detachedCopy(browseService.findChildren(objectId, offset, size, childs));
 
         List<Result.ResultItem> genericResultItems = new ArrayList<Result.ResultItem>(result.getItems().size());
