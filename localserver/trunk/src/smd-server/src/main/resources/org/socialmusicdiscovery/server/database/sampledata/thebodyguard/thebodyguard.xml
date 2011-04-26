@@ -82,5 +82,19 @@
             <column header="last_updated" type="DATE"/>
             <column header="last_updated_by" type="STRING"/>
         </loadData>
+        <loadData tableName="classifications" file="org/socialmusicdiscovery/server/database/sampledata/thebodyguard/classifications.csv">
+            <column header="id" type="STRING"/>
+            <column header="type" type="STRING"/>
+            <column header="name" type="STRING"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
+        </loadData>
+        <loadData tableName="classification_references" file="org/socialmusicdiscovery/server/database/sampledata/thebodyguard/classification_references.csv">
+            <column header="id" type="STRING"/>
+            <column header="classification_id" type="STRING"/>
+            <column header="reference_to_id" type="STRING"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
+        </loadData>
     </changeSet>
 </databaseChangeLog>
