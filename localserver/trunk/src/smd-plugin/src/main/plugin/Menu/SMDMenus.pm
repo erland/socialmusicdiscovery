@@ -231,6 +231,8 @@ sub _generic {
 	
 	my $http = Slim::Networking::SimpleAsyncHTTP->new(\&_genericReply, \&_genericError, {
 		path => $path,
+		args => $args,
+		criterias => $criterias,
 		userInterfaceIdiom => $userInterfaceIdiom,
                 client => $client, 
                 callback => $callback, 
@@ -263,7 +265,7 @@ sub _genericReply {
 	my $content = $http->content();
 
 	my $jsonResult = JSON::XS::decode_json($content);
-	my ($result, $extraitems) = $params->{'resultsFunc'}->($params->{'path'}, $params->{'userInterfaceIdiom'}, $jsonResult);
+	my ($result, $extraitems) = $params->{'resultsFunc'}->($params->{'path'}, $params->{'userInterfaceIdiom'}, $jsonResult, $params->{'args'}, $params->{'criterias'});
 	$result->{'offset'} = $jsonResult->{'offset'};
 	$result->{'count'} = $jsonResult->{'size'};
 	$result->{'total'} = $jsonResult->{'totalSize'};
@@ -293,123 +295,114 @@ sub _smd {
 
 	_generic($client, $callback, $args, 
 		[@searchTags],
-		sub {
-			my $path = shift;
-			my $userInterfaceIdiom = shift;
-			my $results = shift;
-			my @empty = ();
-			my $items = \@empty;
-			my $i = $args->{'index'} || $args->{'params'}->{'_index'} || 0;
-			my $playall = 0;
-			my $playable = 0;
-			foreach (@{$results->{'items'}}) {
-				my $item = {
-					'id' => $path."/".$_->{'id'},
-					'parent_id' => $path,
-					'name' => $_->{'name'},
-					'passthrough' => [ { searchTags => [@searchTags, "path:" . $path."/".$_->{'id'}] } ],
-				};
-				if($_->{'leaf'}) {
-					if($_->{'playable'}) {
-						$playable = 1;
-						$playall = 1;
-						$item->{'type'} = "audio";
-						$item->{'playall'} = 1;
-						$item->{'play_index'} = $i++;
-						my $playableElements = $_->{'item'}->{'playableElements'};
-						if(scalar(@$playableElements)>0) {
-							my $playableElement = shift @$playableElements;
-							$item->{'audio_url'} = $playableElement->{'uri'};
-							$item->{'favorites_url'} = $playableElement->{'uri'};
-						}else {
-							$item->{'audio_url'} = 'smd:object='.$_->{'id'};
-							$item->{'favorites_url'} = 'smd:object='.$_->{'id'};
-						}
-					}else {
-						$item->{'type'} = "text";
-					}
-				}else {
-					$item->{'url'} = \&_smd;
-					$item->{'playlist'} = \&_tracks;
-					if($_->{'playable'}) {
-						$playable = 1;
-						if($userInterfaceIdiom eq 'iPeng') {
-							$item->{'type'} = "link";
-						}else {
-							$item->{'type'} = "playlist";
-						}
-						$item->{'favorites_url'} = 'smd:object='.$_->{'id'};
-					}else {
-						$item->{'type'} = "link";
-					}
-				}
-				push @$items,$item;
-			}
-			my $extra;
-			
-			my $params = _tagsToParams(\@searchTags);
-			my %actions = (
-				allAvailableActionsDefined => 1,
-				commonVariables	=> ['path' => 'id','audio_url' => 'audio_url'],
-#				info => {
-#					command     => ['artistinfo', 'items'],
-#				},
-				items => {
-					command     => ["browselibrary", 'items'],
-					fixedParams => {
-						mode       => 'smd',
-						%{&_tagsToParams(\@searchTags)},
-					},
-				},
-			);
-			if($playable) {
-				$actions{'play'} = {
-						command     => ['smdplaylistcontrol'],
-						fixedParams => {cmd => 'load', %$params},
-					};
-				$actions{'add'} = {
-						command     => ['smdplaylistcontrol'],
-						fixedParams => {cmd => 'add', %$params},
-					};
-				$actions{'insert'} = {
-						command     => ['smdplaylistcontrol'],
-						fixedParams => {cmd => 'insert', %$params},
-					};
-				if($playall) {
-					$actions{'playall'} = {
-							command     => ['smdplaylistcontrol'],
-							fixedParams => {cmd => 'load', %$params},
-							variables => ['path' => 'parent_id', 'play_index' => 'play_index'],
-						};
-					$actions{'addall'} = {
-							command     => ['smdplaylistcontrol'],
-							fixedParams => {cmd => 'add', %$params},
-							variables => ['path' => 'parent_id', 'play_index' => 'play_index'],
-						};
-				}else {
-					$actions{'playall'} = $actions{'play'};
-					$actions{'addall'} = $actions{'add'};
-				}
-			}
-
-			return {items => $items, actions => \%actions, sorted => 1}, $extra;
-		},
+		\&_renderBrowseMenu,
 	);
 }
 
+sub _renderBrowseMenu {
+	my $path = shift;
+	my $userInterfaceIdiom = shift;
+	my $results = shift;
+	my $args = shift;
+	my $searchTags = shift;
 
-sub _tracks {
-	my ($client, $callback, $args, $pt) = @_;
-	my @searchTags = $pt->{'searchTags'} ? @{$pt->{'searchTags'}} : ();
-	my $search     = $pt->{'search'};
-
-	if (!$search && !scalar @searchTags && $args->{'search'}) {
-		$search = $args->{'search'};
+	my @empty = ();
+	my $items = \@empty;
+	my $i = $args->{'index'} || $args->{'params'}->{'_index'} || 0;
+	my $playall = 0;
+	my $playable = 0;
+	foreach (@{$results->{'items'}}) {
+		my $item = {
+			'id' => $path."/".$_->{'id'},
+			'parent_id' => $path,
+			'name' => $_->{'name'},
+			'passthrough' => [ { searchTags => [@$searchTags, "path:" . $path."/".$_->{'id'}] } ],
+		};
+		if($_->{'leaf'}) {
+			if($_->{'playable'}) {
+				$playable = 1;
+				$playall = 1;
+				$item->{'type'} = "audio";
+				$item->{'playall'} = 1;
+				$item->{'play_index'} = $i++;
+				my $playableElements = $_->{'item'}->{'playableElements'};
+				if(scalar(@$playableElements)>0) {
+					my $playableElement = shift @$playableElements;
+					$item->{'audio_url'} = $playableElement->{'uri'};
+					$item->{'favorites_url'} = $playableElement->{'uri'};
+				}else {
+					$item->{'audio_url'} = 'smd:object='.$_->{'id'};
+					$item->{'favorites_url'} = 'smd:object='.$_->{'id'};
+				}
+			}else {
+				$item->{'type'} = "text";
+			}
+		}else {
+			$item->{'url'} = \&_smd;
+			$item->{'playlist'} = \&_smd;
+			if($_->{'playable'}) {
+				$playable = 1;
+				if($userInterfaceIdiom eq 'iPeng') {
+					$item->{'type'} = "link";
+				}else {
+					$item->{'type'} = "playlist";
+				}
+				$item->{'favorites_url'} = 'smd:object='.$_->{'id'};
+			}else {
+				$item->{'type'} = "link";
+			}
+		}
+		push @$items,$item;
+	}
+	my $extra;
+	
+	my $params = _tagsToParams($searchTags);
+	my %actions = (
+		allAvailableActionsDefined => 1,
+		commonVariables	=> ['path' => 'id','audio_url' => 'audio_url'],
+#				info => {
+#					command     => ['artistinfo', 'items'],
+#				},
+		items => {
+			command     => ["browselibrary", 'items'],
+			fixedParams => {
+				mode       => 'smd',
+				%{&_tagsToParams($searchTags)},
+			},
+		},
+	);
+	if($playable) {
+		$actions{'play'} = {
+				command     => ['smdplaylistcontrol'],
+				fixedParams => {cmd => 'load', %$params},
+			};
+		$actions{'add'} = {
+				command     => ['smdplaylistcontrol'],
+				fixedParams => {cmd => 'add', %$params},
+			};
+		$actions{'insert'} = {
+				command     => ['smdplaylistcontrol'],
+				fixedParams => {cmd => 'insert', %$params},
+			};
+		if($playall) {
+			$actions{'playall'} = {
+					command     => ['smdplaylistcontrol'],
+					fixedParams => {cmd => 'load', %$params},
+					variables => ['path' => 'parent_id', 'play_index' => 'play_index'],
+				};
+			$actions{'addall'} = {
+					command     => ['smdplaylistcontrol'],
+					fixedParams => {cmd => 'add', %$params},
+					variables => ['path' => 'parent_id', 'play_index' => 'play_index'],
+				};
+		}else {
+			$actions{'playall'} = $actions{'play'};
+			$actions{'addall'} = $actions{'add'};
+		}
 	}
 
-	#TODO: Implement this function, at the moment it's just a stupid placeholder
-	my $result = {};
-	$callback->($result);
+	return {items => $items, actions => \%actions, sorted => 1}, $extra;
 }
+
 
 1;
