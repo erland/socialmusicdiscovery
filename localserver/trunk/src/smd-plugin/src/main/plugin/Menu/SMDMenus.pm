@@ -360,9 +360,9 @@ sub _renderBrowseMenu {
 	my %actions = (
 		allAvailableActionsDefined => 1,
 		commonVariables	=> ['path' => 'id','audio_url' => 'audio_url'],
-#				info => {
-#					command     => ['artistinfo', 'items'],
-#				},
+		info => {
+			command     => ['smditeminfo', 'items'],
+		},
 		items => {
 			command     => ["browselibrary", 'items'],
 			fixedParams => {

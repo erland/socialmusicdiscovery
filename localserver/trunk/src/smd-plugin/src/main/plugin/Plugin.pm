@@ -44,6 +44,7 @@ if ( main::WEBUI ) {
 }
 use Plugins::SocialMusicDiscovery::Scanner;
 use Plugins::SocialMusicDiscovery::Menu::SMDMenus;
+use Plugins::SocialMusicDiscovery::Menu::SMDItemInfo;
 
 my $log = Slim::Utils::Log->addLogCategory({
 	'category'     => 'plugin.socialmusicdiscovery',
@@ -113,6 +114,7 @@ sub initPlugin
 		$log->info("Using Logitech version of BrowseLibrary");
 		Plugins::SocialMusicDiscovery::Menu::SMDMenus->init("Slim::Menu::BrowseLibrary");
 	}
+	Plugins::SocialMusicDiscovery::Menu::SMDItemInfo->init();
 
     # Find location of smd-server binary in plugin directory
     my $smdServerPath = undef;
