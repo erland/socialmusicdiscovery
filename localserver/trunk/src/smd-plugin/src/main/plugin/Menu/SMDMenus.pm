@@ -163,7 +163,7 @@ sub _playReply {
 	
 	my $content = $http->content();
 	my $jsonResult = JSON::XS::decode_json($content);
-	if($log->is_debug) $log->debug("Reply: ".Dumper($jsonResult));
+	main::DEBUGLOG && $log->is_debug && $log->debug("Reply: ".Dumper($jsonResult));
 	my @trackIdList = ();
 	foreach (@{$jsonResult->{'items'}}) {
 		my $playableElements = $_->{'item'}->{'playableElements'};
@@ -279,7 +279,7 @@ sub _genericReply {
 	$result->{'offset'} = $jsonResult->{'offset'};
 	$result->{'count'} = $jsonResult->{'size'};
 	$result->{'total'} = $jsonResult->{'totalSize'};
-	if($log->is_debug) $log->debug("Returning ".Dumper($result));
+	main::DEBUGLOG && $log->is_debug && $log->debug("Returning ".Dumper($result));
 	$params->{'callback'}->($result);
 }
 
