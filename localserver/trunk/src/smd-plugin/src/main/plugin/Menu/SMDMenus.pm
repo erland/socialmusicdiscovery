@@ -55,6 +55,21 @@ my $separateJumpCommand;
 
 my %nodeFilters;
 
+my %modeMap = (
+	'smd' => \&_smd,
+	'smdcontext' => \&_smd,
+);
+
+my %modeUrl = (
+	'smd' => "/library",
+	'smdcontext' => "/context",
+);
+
+my %modeBrowseCmd = (
+	'smd' => "browselibrary",
+	'smdcontext' => "smdbrowsecontext",
+);
+
 sub init {
 	my $class = shift;
 	my $blImplementation = shift;
@@ -86,6 +101,65 @@ sub init {
 		[ "smdplaylistcontrol"],
 	    [ 1, 0, 1, \&cliPlaylistControl ]
 	);
+	Slim::Control::Request::addDispatch(
+		[ "smdbrowsecontext", 'items', '_index', '_quantity' ],
+	    [ 0, 1, 1, \&cliBrowseContext ]
+	);
+}
+
+sub cliBrowseContext {
+ 	my $request = shift;
+	Slim::Control::XMLBrowser::cliQuery( "smdbrowsecontext", \&_contextMenu, $request );
+};
+
+my @topLevelArgs = qw();
+
+sub _contextMenu {
+	my ($client, $callback, $args) = @_;
+	my $params = $args->{'params'};
+	
+	if ($params) {
+		my %args;
+
+		if ($params->{'query'} && $params->{'query'} =~ /C<$1>=(.*)/) {
+			$params->{$1} = $2;
+		}
+
+		my @searchTags;
+		for (@topLevelArgs) {
+			push (@searchTags, $_ . ':' . $params->{$_}) if $params->{$_};
+		}
+		$args{'searchTags'}   = \@searchTags if scalar @searchTags;
+		$args{'sort'}         = 'sort:' . $params->{'sort'} if $params->{'sort'};
+		$args{'search'}       = $params->{'search'} if $params->{'search'};
+		$args{'wantMetadata'} = $params->{'wantMetadata'} if $params->{'wantMetadata'};
+		
+		if ($params->{'mode'}) {
+			my %entryParams;
+			for (@topLevelArgs, qw(sort search mode)) {
+				$entryParams{$_} = $params->{$_} if $params->{$_};
+			}
+			main::INFOLOG && $log->is_info && $log->info('params=>', join('&', map {$_ . '=' . $entryParams{$_}} keys(%entryParams)));
+			
+			my $func = $modeMap{$params->{'mode'}};
+			
+			if (ref $func ne 'CODE') {
+				$log->error('No feed method for mode: ', $params->{'mode'});
+				return;
+			}
+			
+			&$func($client,
+				sub {
+					my $opml = shift;
+					$opml->{'query'} = \%entryParams;
+					$callback->($opml, @_);
+				},
+				$args, \%args);
+			return;
+		}
+	}
+	
+	$log->error("Routing failure: node mode param");
 }
 
 sub cliPlaylistControl {
@@ -250,7 +324,7 @@ sub _generic {
                 resultsFunc => $resultsFunc, 
         });
 
-	my $url = "http://".$hostname.":".$port."/browse/library".$path;
+	my $url = "http://".$hostname.":".$port."/browse".$modeUrl{$params->{'mode'}}.$path;
 	if($index>0 || $quantity<1000000) {
 		$url .= "?offset=".$index."&size=".$quantity;
 	}
@@ -349,8 +423,8 @@ sub _renderBrowseMenu {
 				$item->{'type'} = "text";
 			}
 		}else {
-			$item->{'url'} = \&_smd;
-			$item->{'playlist'} = \&_smd;
+			$item->{'url'} = $modeMap{$args->{'params'}->{'mode'}};
+			$item->{'playlist'} = $modeMap{$args->{'params'}->{'mode'}};
 			if($_->{'playable'}) {
 				$playable = 1;
 				if($userInterfaceIdiom eq 'iPeng') {
@@ -375,9 +449,9 @@ sub _renderBrowseMenu {
 			command     => ['smditeminfo', 'items'],
 		},
 		items => {
-			command     => ["browselibrary", 'items'],
+			command     => [$modeBrowseCmd{$args->{'params'}->{'mode'}}, 'items'],
 			fixedParams => {
-				mode       => 'smd',
+				mode       => $args->{'params'}->{'mode'},
 				%{&_tagsToParams($searchTags)},
 			},
 		},
