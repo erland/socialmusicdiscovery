@@ -214,8 +214,10 @@ public class LibraryBrowseService {
                 }
 
                 List<String> criterias = new ArrayList<String>();
+                int criteriaOffset = 0;
                 if(currentId!=null) {
                     criterias.add(currentId);
+                    criteriaOffset = 1;
                 }
 
                 String requestedMainObjectType = null;
@@ -226,8 +228,8 @@ public class LibraryBrowseService {
                     if (value != null) {
                         criterias.add(objectType.type + ":" + value);
                     } else {
-                        if (currentMenu.hierarchy.size() > criterias.size() + 1) {
-                            nextObjectType = currentMenu.hierarchy.get(criterias.size() + 1).type;
+                        if (currentMenu.hierarchy.size() > criterias.size() + 1 - criteriaOffset) {
+                            nextObjectType = currentMenu.hierarchy.get(criterias.size() + 1 - criteriaOffset).type;
                         }
                         requestedObjectType = objectType;
                         if (objectType.type.contains(".")) {
