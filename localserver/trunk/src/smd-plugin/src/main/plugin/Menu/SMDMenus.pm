@@ -109,7 +109,8 @@ sub cliPlaylistControl {
 		return;
 	}
 
-	if(defined($audio_url)) {
+	if(defined($audio_url) && $audio_url ne "") {
+		$log->debug("Getting track: ".$audio_url);
 		my $track = Slim::Schema->objectForUrl({
 		        'url' => $audio_url,
 		});
