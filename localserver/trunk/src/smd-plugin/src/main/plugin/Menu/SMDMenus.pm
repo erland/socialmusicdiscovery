@@ -51,14 +51,17 @@ my $serverPrefs = preferences('server');
 my $prefs = preferences('plugin.socialmusicdiscovery');
 my $log = logger('plugin.socialmusicdiscovery');
 my $browseLibraryImplementation;
+my $separateJumpCommand;
 
 my %nodeFilters;
 
 sub init {
 	my $class = shift;
 	my $blImplementation = shift;
+	my $separateJump = shift || 0;
 	
 	$browseLibraryImplementation = $blImplementation;
+	$separateJumpCommand = $separateJump;
 
 	main::DEBUGLOG && $log->is_debug && $log->debug('init');
 	
@@ -83,7 +86,6 @@ sub init {
 		[ "smdplaylistcontrol"],
 	    [ 1, 0, 1, \&cliPlaylistControl ]
 	);
-
 }
 
 sub cliPlaylistControl {
@@ -161,12 +163,13 @@ sub _playReply {
 	
 	my $content = $http->content();
 	my $jsonResult = JSON::XS::decode_json($content);
-
+	if($log->is_debug) $log->debug("Reply: ".Dumper($jsonResult));
 	my @trackIdList = ();
 	foreach (@{$jsonResult->{'items'}}) {
 		my $playableElements = $_->{'item'}->{'playableElements'};
 		if(scalar(@$playableElements)>0) {
 			my $playableElement = shift @$playableElements;
+			$log->debug("Using: ".$playableElement->{'uri'});
 			my $track = Slim::Schema->objectForUrl({
 		                'url' => $playableElement->{'uri'},
 		        });
@@ -182,6 +185,13 @@ sub _playReply {
 			Slim::Control::Request::executeRequest(
 				$params->{'client'}, ['playlistcontrol', 'cmd:'.$params->{'cmd'}, 'track_id:'.join(",",@trackIdList), 'play_index:'.$params->{'jumpIndex'}]
 			);
+			
+			# Separate jump command is required in 7.5 since it doesn't support the "play_index" parameter
+			if($separateJumpCommand && $params->{'cmd'} eq 'load') {
+				Slim::Control::Request::executeRequest(
+					$params->{'client'}, ['playlist', 'jump', $params->{'jumpIndex'}]
+				);
+			}
 		}else {
 			Slim::Control::Request::executeRequest(
 				$params->{'client'}, ['playlistcontrol', 'cmd:'.$params->{'cmd'}, 'track_id:'.join(",",@trackIdList)]
@@ -269,7 +279,7 @@ sub _genericReply {
 	$result->{'offset'} = $jsonResult->{'offset'};
 	$result->{'count'} = $jsonResult->{'size'};
 	$result->{'total'} = $jsonResult->{'totalSize'};
-	$log->debug("Returning ".Dumper($result));
+	if($log->is_debug) $log->debug("Returning ".Dumper($result));
 	$params->{'callback'}->($result);
 }
 

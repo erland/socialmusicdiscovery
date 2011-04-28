@@ -109,7 +109,7 @@ sub initPlugin
 
 		Plugins::SocialMusicDiscovery::MenuAPI::BrowseLibrary->init();
 		Plugins::SocialMusicDiscovery::MenuAPI::Buttons::XMLBrowser->init();
-		Plugins::SocialMusicDiscovery::Menu::SMDMenus->init("Plugins::SocialMusicDiscovery::MenuAPI::BrowseLibrary");
+		Plugins::SocialMusicDiscovery::Menu::SMDMenus->init("Plugins::SocialMusicDiscovery::MenuAPI::BrowseLibrary",1);
 	}else {
 		$log->info("Using Logitech version of BrowseLibrary");
 		Plugins::SocialMusicDiscovery::Menu::SMDMenus->init("Slim::Menu::BrowseLibrary");
