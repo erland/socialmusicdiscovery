@@ -97,6 +97,12 @@ sub registerDefaultInfoProviders {
                 after    => 'addsmditemnext',
                 func      => \&playSMDItem,
         ) );
+
+        $class->registerInfoProvider( relatedsmditems => (
+                menuMode  => 1,
+                after    => 'playitem',
+                func      => \&relatedSMDItems,
+        ) );
 }
 
 sub menu {
@@ -297,6 +303,44 @@ sub addSMDItem {
                 name => $add_string,
                 jive => $jive, 
         };
+        return $items;
+}
+
+sub relatedSMDItems {
+        my ( $client, $path, $audio_url, $remoteMeta, $tags) = @_;
+
+        my $items = [];
+        my $jive;
+
+        return $items if !blessed($client);
+
+	$log->debug("Creating related to menu for: $path");
+
+	my $item = undef;        
+	if($path =~ /.*\/([^\/]+)$/) {
+		$item = "/".$1;
+	}
+
+	return $items if(!defined($item));
+
+	$log->debug("Using item: $item");
+
+        my $actions = {
+                allAvailableActionsDefined => 1,
+                items => {
+                        command     => ['smdbrowsecontext', 'items'],
+                        fixedParams => { mode => 'smdcontext', path => $item },
+                },
+        };
+
+
+        push @{$items}, {
+                type => 'link',
+		url => 'blabla',
+                name => cstring($client, 'PLUGIN_SOCIALMUSICDISCOVERY_RELATED_TO'),
+                itemActions => $actions, 
+        };
+        
         return $items;
 }
 

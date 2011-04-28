@@ -73,3 +73,5 @@ SETUP_PLUGIN_SOCIALMUSICDISCOVERY_SIMULATED_DATA
 SETUP_PLUGIN_SOCIALMUSICDISCOVERY_SIMULATED_DATA_DESC
 	EN	Use data from this data file instead of reading it from file tags, this should only be used for testing purpuses to verify logic when real files doesn't exist
 
+PLUGIN_SOCIALMUSICDISCOVERY_RELATED_TO
+	EN	Related to
