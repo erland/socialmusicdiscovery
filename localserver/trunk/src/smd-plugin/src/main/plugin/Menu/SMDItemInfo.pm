@@ -99,7 +99,6 @@ sub registerDefaultInfoProviders {
         ) );
 
         $class->registerInfoProvider( relatedsmditems => (
-                menuMode  => 1,
                 after    => 'playitem',
                 func      => \&relatedSMDItems,
         ) );
@@ -180,7 +179,6 @@ sub menu {
         }
         
         return {
-                name  => $path,
                 type  => 'opml',
                 items => $items,
                 menuComplete => 1,
@@ -322,6 +320,8 @@ sub relatedSMDItems {
 	}
 
 	return $items if(!defined($item));
+
+	$item =~ s/:/=/g;
 
 	$log->debug("Using item: $item");
 

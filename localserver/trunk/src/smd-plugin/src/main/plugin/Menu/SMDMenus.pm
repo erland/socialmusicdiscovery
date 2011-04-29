@@ -204,11 +204,21 @@ sub cliPlaylistControl {
 	$path =~ s/^\///;
 	my @pathElements = split(/\//,$path);
 
-	# Remove initial item, if it doesn't contain ":", this is not needed for play command
-	my $first = shift @pathElements;
-	if(defined($first) && $first =~ /:/) {
-		unshift @pathElements, $first
+	# Remove any item that doesn't contain ":", this is not needed for play command
+	# Only use the items after the first "." item
+	my @newItemList = ();
+	my $start = 0;
+	foreach my $part (@pathElements) {
+		if($part =~ /=/) {
+			if($start) {
+				$part =~ s/=/:/g;
+				push @newItemList,$part;
+			}
+		}else {
+			$start = 1;
+		}
 	}
+	@pathElements = @newItemList;
 
 	if (scalar(@pathElements)==0) {
 		$request->setStatusBadParams();
@@ -306,6 +316,7 @@ sub _generic {
 	my $path = "";
 	if(defined($params->{'path'})) {
 		$path = $params->{'path'};
+		$path =~ s/=/:/g;
 	}
 	my $userInterfaceIdiom = "Logitech";
 	if(defined($params->{'userInterfaceIdiom'})) {
@@ -397,11 +408,14 @@ sub _renderBrowseMenu {
 	my $playall = 0;
 	my $playable = 0;
 	foreach (@{$results->{'items'}}) {
+		my $id = $_->{'id'};
+		$id =~ s/:/=/g;
+		$path =~ s/:/=/g;
 		my $item = {
-			'id' => $path."/".$_->{'id'},
+			'id' => $path."/".$id,
 			'parent_id' => $path,
 			'name' => $_->{'name'},
-			'passthrough' => [ { searchTags => [@$searchTags, "path:" . $path."/".$_->{'id'}] } ],
+			'passthrough' => [ { searchTags => [@$searchTags, "path:" . $path."/".$id] } ],
 		};
 		if($_->{'leaf'}) {
 			if($_->{'playable'}) {
@@ -416,8 +430,8 @@ sub _renderBrowseMenu {
 					$item->{'audio_url'} = $playableElement->{'uri'};
 					$item->{'favorites_url'} = $playableElement->{'uri'};
 				}else {
-					$item->{'audio_url'} = 'smd:object='.$_->{'id'};
-					$item->{'favorites_url'} = 'smd:object='.$_->{'id'};
+					$item->{'audio_url'} = 'smd:object='.$id;
+					$item->{'favorites_url'} = 'smd:object='.$id;
 				}
 			}else {
 				$item->{'type'} = "text";
@@ -432,7 +446,7 @@ sub _renderBrowseMenu {
 				}else {
 					$item->{'type'} = "playlist";
 				}
-				$item->{'favorites_url'} = 'smd:object='.$_->{'id'};
+				$item->{'favorites_url'} = 'smd:object='.$id;
 			}else {
 				$item->{'type'} = "link";
 			}
