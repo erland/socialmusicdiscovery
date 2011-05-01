@@ -46,6 +46,7 @@ import org.socialmusicdiscovery.server.business.repository.GlobalIdentityReposit
 import org.socialmusicdiscovery.server.business.repository.SMDIdentityReferenceRepository;
 import org.socialmusicdiscovery.server.business.repository.classification.ClassificationReferenceRepository;
 import org.socialmusicdiscovery.server.business.repository.classification.ClassificationRepository;
+import org.socialmusicdiscovery.server.business.repository.config.ConfigurationParameterRepository;
 import org.socialmusicdiscovery.server.business.repository.core.*;
 import org.socialmusicdiscovery.server.business.repository.subjective.CreditRepository;
 import org.socialmusicdiscovery.server.business.repository.subjective.RelationRepository;
@@ -92,6 +93,8 @@ public class BaseTestCase {
     protected RelationRepository relationRepository;
     @Inject
     protected SMDIdentityReferenceRepository smdIdentityReferenceRepository;
+    @Inject
+    protected ConfigurationParameterRepository configurationParameterRepository;
 
     protected static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy");
 

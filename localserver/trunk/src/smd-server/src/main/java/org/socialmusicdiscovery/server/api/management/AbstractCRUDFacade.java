@@ -25,41 +25,59 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.server.api.mediaimport;
+package org.socialmusicdiscovery.server.api.management;
 
-import org.socialmusicdiscovery.server.api.ConfigurationContext;
-import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameter;
+import com.google.inject.Inject;
+import org.socialmusicdiscovery.server.business.logic.InjectHelper;
+import org.socialmusicdiscovery.server.business.logic.TransactionManager;
+import org.socialmusicdiscovery.server.business.repository.EntityRepository;
 
-import java.util.Collection;
+import javax.persistence.EntityManager;
 
-public interface ProcessingModule {
-    /**
-     * Returns the unique identity of the processing module, this is used when you want to issue a command to the processing module
-     * @return
-     */
-    String getId();
+public abstract class AbstractCRUDFacade<K, E, R extends EntityRepository<K, E>> {
+    @Inject
+    protected R repository;
 
-    /**
-     * Called when the processing module is supposed to execute its logic, the module should use the provided callback interface to
-     * report the progress of the operation
-     * @param progressHandler A callback object which the processing module should call to report the current status
-     */
-    void execute(ProcessingStatusCallback progressHandler);
+    @Inject
+    private EntityManager em;
 
-    /**
-     * Abort the current processing operation in progress
-     */
-    void abort();
+    @Inject
+    private TransactionManager transactionManager;
 
-    /**
-     * Will be called to retrieve available configuration parameters and their default value, a plugin should return all its configuration
-     * parameters in this call to make them accessible from the configuration user interface
-     * @return A list of configuration parameters with their default values
-     */
-    Collection<ConfigurationParameter> getDefaultConfiguration();
+    protected EntityManager getEntityManager() {
+        return em;
+    }
 
-    /**
-     * Will be called initially before the plugin is started or whenever a configuration parameter is changed
-     */
-    void setConfiguration(ConfigurationContext configuration);
+    protected R getRepository() {
+        return repository;
+    }
+
+    public AbstractCRUDFacade() {
+        InjectHelper.injectMembers(this);
+    }
+
+    protected E getEntity(K id) {
+        return repository.findById(id);
+    }
+
+    protected E createEntity(E entity) {
+        repository.create(entity);
+        return entity;
+    }
+
+    protected E updateEntity(E entity) {
+        entity = repository.merge(entity);
+        return entity;
+    }
+
+    protected void deleteEntity(K id) {
+        if (id != null) {
+            E entity = repository.findById(id);
+            if (entity != null) {
+                repository.remove(entity);
+            } else {
+                transactionManager.setRollbackOnly();
+            }
+        }
+    }
 }

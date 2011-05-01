@@ -27,25 +27,50 @@
 
 package org.socialmusicdiscovery.server.plugins.mediaimport.squeezeboxserver;
 
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
+import org.socialmusicdiscovery.server.business.logic.config.ConfigurationManager;
+import org.socialmusicdiscovery.server.business.logic.config.MappedConfigurationContext;
 import org.socialmusicdiscovery.server.business.model.GlobalIdentity;
+import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameter;
+import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameterEntity;
 import org.socialmusicdiscovery.server.business.model.core.Release;
 import org.socialmusicdiscovery.server.business.model.core.ReleaseEntity;
 import org.socialmusicdiscovery.server.business.model.core.Track;
 import org.socialmusicdiscovery.test.BaseTestCase;
 import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class SqueezeboxServerTest extends BaseTestCase {
     SqueezeboxServer squeezeboxServer;
 
-    @BeforeTest
+    @Inject
+    @Named("default-value")
+    ConfigurationManager defaultValueConfigurationManager;
+
+    @BeforeClass
     public void setUp() {
         super.setUp();
         squeezeboxServer = new SqueezeboxServer();
+        String pluginConfigurationPath = "org.socialmusicdiscovery.server.plugins.mediaimport."+squeezeboxServer.getId()+".";
+
+        Set<ConfigurationParameter> defaultConfiguration = new HashSet<ConfigurationParameter>();
+        for (ConfigurationParameter parameter : squeezeboxServer.getDefaultConfiguration()) {
+            ConfigurationParameterEntity entity = new ConfigurationParameterEntity(parameter);
+            if(!entity.getId().startsWith(pluginConfigurationPath)) {
+                entity.setId(pluginConfigurationPath+entity.getId());
+            }
+            entity.setDefaultValue(true);
+            defaultConfiguration.add(entity);
+        }
+        defaultValueConfigurationManager.setParametersForPath(pluginConfigurationPath, defaultConfiguration);
+        squeezeboxServer.setConfiguration(new MappedConfigurationContext(pluginConfigurationPath));
     }
 
     @AfterTest

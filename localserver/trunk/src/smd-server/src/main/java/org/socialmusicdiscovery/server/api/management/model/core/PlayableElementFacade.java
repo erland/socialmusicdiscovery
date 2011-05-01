@@ -29,7 +29,7 @@ package org.socialmusicdiscovery.server.api.management.model.core;
 
 import com.google.gson.annotations.Expose;
 import com.google.inject.Inject;
-import org.socialmusicdiscovery.server.api.management.model.AbstractCRUDFacade;
+import org.socialmusicdiscovery.server.api.management.model.AbstractSMDIdentityCRUDFacade;
 import org.socialmusicdiscovery.server.business.logic.TransactionManager;
 import org.socialmusicdiscovery.server.business.model.core.PlayableElementEntity;
 import org.socialmusicdiscovery.server.business.repository.core.PlayableElementRepository;
@@ -45,7 +45,7 @@ import java.util.Date;
  * Provides functionality to create, update, delete and find a specific track
  */
 @Path("/playableelements")
-public class PlayableElementFacade extends AbstractCRUDFacade<PlayableElementEntity, PlayableElementRepository> {
+public class PlayableElementFacade extends AbstractSMDIdentityCRUDFacade<PlayableElementEntity, PlayableElementRepository> {
     @Inject
     private TransactionManager transactionManager;
     /**

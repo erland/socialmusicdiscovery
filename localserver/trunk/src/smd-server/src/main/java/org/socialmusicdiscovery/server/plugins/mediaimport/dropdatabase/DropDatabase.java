@@ -30,6 +30,7 @@ package org.socialmusicdiscovery.server.plugins.mediaimport.dropdatabase;
 import liquibase.ClassLoaderFileOpener;
 import liquibase.Liquibase;
 import liquibase.exception.LiquibaseException;
+import org.socialmusicdiscovery.server.api.mediaimport.AbstractProcessingModule;
 import org.socialmusicdiscovery.server.api.mediaimport.MediaImporter;
 import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
@@ -41,7 +42,7 @@ import java.sql.SQLException;
 /**
  * Special importer that drops all database contents, only useful during beta testing if you like to restart everything
  */
-public class DropDatabase implements MediaImporter {
+public class DropDatabase extends AbstractProcessingModule implements MediaImporter {
     public DropDatabase() {
         InjectHelper.injectMembers(this);
     }
@@ -74,9 +75,5 @@ public class DropDatabase implements MediaImporter {
             e.printStackTrace();
             progressHandler.failed(getId(),e.getMessage());
         }
-    }
-
-    @Override
-    public void abort() {
     }
 }

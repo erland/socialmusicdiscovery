@@ -27,13 +27,23 @@
 
 package org.socialmusicdiscovery.server.business.logic;
 
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.socialmusicdiscovery.server.api.plugin.Plugin;
 import org.socialmusicdiscovery.server.api.plugin.PluginException;
+import org.socialmusicdiscovery.server.business.logic.config.ConfigurationManager;
+import org.socialmusicdiscovery.server.business.logic.config.MappedConfigurationContext;
+import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameter;
+import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameterEntity;
 
 import java.util.*;
 
 public class PluginManager {
+    @Inject
+    @Named("default-value")
+    ConfigurationManager defaultValueConfigurationManager;
+
     /**
      * Contains all available plugin modules
      */
@@ -46,6 +56,24 @@ public class PluginManager {
 
     public PluginManager(Map<String, Plugin> plugins) {
         this.plugins = plugins;
+        InjectHelper.injectMembers(this);
+        for (Plugin plugin : plugins.values()) {
+            Collection<ConfigurationParameter> defaultPluginConfiguration = plugin.getDefaultConfiguration();
+            String pluginConfigurationPath = "org.socialmusicdiscovery.server.plugins."+plugin.getId()+".";
+
+            Set<ConfigurationParameter> defaultConfiguration = new HashSet<ConfigurationParameter>();
+            for (ConfigurationParameter parameter : defaultPluginConfiguration) {
+                ConfigurationParameterEntity entity = new ConfigurationParameterEntity(parameter);
+                if(!entity.getId().startsWith(pluginConfigurationPath)) {
+                    entity.setId(pluginConfigurationPath+entity.getId());
+                }
+                entity.setDefaultValue(true);
+                defaultConfiguration.add(entity);
+            }
+            defaultValueConfigurationManager.setParametersForPath(pluginConfigurationPath, defaultConfiguration);
+
+            plugin.setConfiguration(new MappedConfigurationContext(pluginConfigurationPath));
+        }
     }
 
     public void startAll() {

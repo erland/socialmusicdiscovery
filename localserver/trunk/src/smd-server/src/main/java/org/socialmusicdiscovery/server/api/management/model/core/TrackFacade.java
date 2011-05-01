@@ -29,7 +29,7 @@ package org.socialmusicdiscovery.server.api.management.model.core;
 
 import com.google.gson.annotations.Expose;
 import com.google.inject.Inject;
-import org.socialmusicdiscovery.server.api.management.model.AbstractCRUDFacade;
+import org.socialmusicdiscovery.server.api.management.model.AbstractSMDIdentityCRUDFacade;
 import org.socialmusicdiscovery.server.business.logic.TransactionManager;
 import org.socialmusicdiscovery.server.business.model.core.TrackEntity;
 import org.socialmusicdiscovery.server.business.repository.core.TrackRepository;
@@ -45,7 +45,7 @@ import java.util.Date;
  * Provides functionality to create, update, delete and find a specific track
  */
 @Path("/tracks")
-public class TrackFacade extends AbstractCRUDFacade<TrackEntity, TrackRepository> {
+public class TrackFacade extends AbstractSMDIdentityCRUDFacade<TrackEntity, TrackRepository> {
     @Inject
     private TransactionManager transactionManager;
     /**

@@ -37,6 +37,8 @@ import org.socialmusicdiscovery.server.business.model.SMDIdentityReference;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
 import org.socialmusicdiscovery.server.business.model.classification.Classification;
 import org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity;
+import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameter;
+import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameterEntity;
 import org.socialmusicdiscovery.server.business.model.core.*;
 import org.socialmusicdiscovery.server.business.model.subjective.*;
 import org.socialmusicdiscovery.server.support.json.AbstractJSONProvider;
@@ -74,6 +76,7 @@ public class ClientConfigModule extends AbstractModule {
             converters.put(Credit.class, CreditEntity.class);
             converters.put(Series.class, SeriesEntity.class);
             converters.put(PlayableElement.class, PlayableElementEntity.class);
+            converters.put(ConfigurationParameter.class, ConfigurationParameterEntity.class);
 
             return converters;
         }

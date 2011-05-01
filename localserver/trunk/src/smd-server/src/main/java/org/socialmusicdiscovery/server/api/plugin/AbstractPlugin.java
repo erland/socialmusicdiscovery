@@ -27,10 +27,17 @@
 
 package org.socialmusicdiscovery.server.api.plugin;
 
+import org.socialmusicdiscovery.server.api.ConfigurationContext;
+import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameter;
+
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 public abstract class AbstractPlugin implements Plugin {
+
+    protected ConfigurationContext configuration = null;
     /**
      * Default implementation that returns {@link Class#getSimpleName()}}
      * Override this if you want to use another identity for your plugin.
@@ -72,5 +79,29 @@ public abstract class AbstractPlugin implements Plugin {
     @Override
     public void stop() throws PluginException {
         // Do nothing
+    }
+
+    /**
+     * Default implementation which can be used by plugins that doesn't have any configuration parameters, override this if the plugin
+     * offers configuration parameters
+     * @return
+     */
+    @Override
+    public Collection<ConfigurationParameter> getDefaultConfiguration() {
+        return new HashSet<ConfigurationParameter>();
+    }
+
+    /**
+     * Default implementation that just stores the configuration context and makes them accessible through the
+     * {@link #getConfiguration} method
+     * @param configuration A collection with configuraiton parameters
+     */
+    @Override
+    public void setConfiguration(ConfigurationContext configuration) {
+        this.configuration = configuration;
+    }
+
+    protected ConfigurationContext getConfiguration() {
+        return configuration;
     }
 }
