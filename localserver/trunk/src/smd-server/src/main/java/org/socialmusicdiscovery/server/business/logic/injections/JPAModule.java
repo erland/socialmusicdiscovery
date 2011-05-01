@@ -37,8 +37,6 @@ import org.socialmusicdiscovery.server.business.logic.injections.database.Databa
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import java.util.HashMap;
-import java.util.Map;
 
 public class JPAModule extends AbstractModule {
     private static final ThreadLocal<EntityManager> ENTITY_MANAGER_CACHE = new ThreadLocal<EntityManager>();
