@@ -29,9 +29,6 @@ package org.socialmusicdiscovery.server.api.management.mediaimport;
 
 import com.google.gson.annotations.Expose;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class MediaImportStatus {
     public enum Status {
         /** Import module is currently executing */
