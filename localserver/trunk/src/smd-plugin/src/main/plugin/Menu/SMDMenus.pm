@@ -51,6 +51,7 @@ my $serverPrefs = preferences('server');
 my $prefs = preferences('plugin.socialmusicdiscovery');
 my $log = logger('plugin.socialmusicdiscovery');
 my $browseLibraryImplementation;
+my $xmlBrowserImplementation;
 my $separateJumpCommand;
 
 my %nodeFilters;
@@ -73,9 +74,11 @@ my %modeBrowseCmd = (
 sub init {
 	my $class = shift;
 	my $blImplementation = shift;
+	my $xmlBrowserImpl = shift;
 	my $separateJump = shift || 0;
 	
 	$browseLibraryImplementation = $blImplementation;
+	$xmlBrowserImplementation = $xmlBrowserImpl;
 	$separateJumpCommand = $separateJump;
 
 	main::DEBUGLOG && $log->is_debug && $log->debug('init');
@@ -109,7 +112,9 @@ sub init {
 
 sub cliBrowseContext {
  	my $request = shift;
-	Slim::Control::XMLBrowser::cliQuery( "smdbrowsecontext", \&_contextMenu, $request );
+	no strict 'refs';
+        &{"${xmlBrowserImplementation}::cliQuery"}( 'smdbrowsecontext', \&_contextMenu, $request );
+	use strict 'refs';
 };
 
 my @topLevelArgs = qw();
