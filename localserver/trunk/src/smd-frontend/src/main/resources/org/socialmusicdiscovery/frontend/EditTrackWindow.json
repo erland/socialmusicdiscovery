@@ -1,0 +1,10 @@
+{
+    trackNumber: "Number",
+    recordingName: "Recording name",
+    recordingYear: "Recording year",
+    workName: "Work name",
+    contributorName: "Name",
+    contributorType: "Role",
+    mainArtist: "Main",
+    cancelButton: "Cancel"
+}

@@ -31,6 +31,8 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.config.ClientConfig;
+import org.apache.pivot.beans.BXML;
+import org.apache.pivot.beans.Bindable;
 import org.apache.pivot.collections.ArrayList;
 import org.apache.pivot.collections.List;
 import org.apache.pivot.collections.Sequence;
@@ -40,8 +42,6 @@ import org.apache.pivot.util.concurrent.TaskExecutionException;
 import org.apache.pivot.util.concurrent.TaskListener;
 import org.apache.pivot.wtk.*;
 import org.apache.pivot.wtk.content.ListItem;
-import org.apache.pivot.wtkx.Bindable;
-import org.apache.pivot.wtkx.WTKX;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -53,6 +53,7 @@ import org.socialmusicdiscovery.server.business.model.core.Label;
 import org.socialmusicdiscovery.server.support.format.TitleFormat;
 
 import javax.ws.rs.core.MediaType;
+import java.net.URL;
 import java.util.*;
 
 public class SMDListViewWindow extends Window implements Bindable {
@@ -69,27 +70,27 @@ public class SMDListViewWindow extends Window implements Bindable {
      */
     private String HOSTURL = null;
 
-    @WTKX
+    @BXML
     PushButton closeButton;
 
-    @WTKX
+    @BXML
     ActivityIndicator searchActivity;
 
-    @WTKX
+    @BXML
     ListButton list1Button;
-    @WTKX
+    @BXML
     ListButton list2Button;
-    @WTKX
+    @BXML
     ListButton list3Button;
 
-    @WTKX
+    @BXML
     TableView list1TableView;
-    @WTKX
+    @BXML
     TableView list2TableView;
-    @WTKX
+    @BXML
     TableView list3TableView;
 
-    @WTKX
+    @BXML
     TableView tracksTableView;
 
     @Inject
@@ -155,7 +156,7 @@ public class SMDListViewWindow extends Window implements Bindable {
     }
 
     @Override
-    public void initialize(Resources resources) {
+    public void initialize(org.apache.pivot.collections.Map<String, Object> stringObjectMap, URL url, Resources resources) {
         this.resources = resources;
         InjectHelper.injectMembers(this);
         HOSTURL = "http://" + SMDSERVER + ":" + SMDSERVERPORT;
@@ -254,17 +255,17 @@ public class SMDListViewWindow extends Window implements Bindable {
                     artistIndex = i;
                 }
             }
-            list1Button.getListButtonSelectionListeners().add(new ListButtonSelectionListener() {
+            list1Button.getListButtonSelectionListeners().add(new ListButtonSelectionListener.Adapter() {
                 public void selectedIndexChanged(ListButton listButton, int i) {
                     updateSearchList(listButton);
                 }
             });
-            list2Button.getListButtonSelectionListeners().add(new ListButtonSelectionListener() {
+            list2Button.getListButtonSelectionListeners().add(new ListButtonSelectionListener.Adapter() {
                 public void selectedIndexChanged(ListButton listButton, int i) {
                     updateSearchList(listButton);
                 }
             });
-            list3Button.getListButtonSelectionListeners().add(new ListButtonSelectionListener() {
+            list3Button.getListButtonSelectionListeners().add(new ListButtonSelectionListener.Adapter() {
                 public void selectedIndexChanged(ListButton listButton, int i) {
                     updateSearchList(listButton);
                 }

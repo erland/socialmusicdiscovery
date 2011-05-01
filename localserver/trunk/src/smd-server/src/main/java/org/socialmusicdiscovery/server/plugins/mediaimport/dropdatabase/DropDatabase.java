@@ -27,9 +27,10 @@
 
 package org.socialmusicdiscovery.server.plugins.mediaimport.dropdatabase;
 
-import liquibase.ClassLoaderFileOpener;
 import liquibase.Liquibase;
+import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
+import liquibase.resource.ClassLoaderResourceAccessor;
 import org.socialmusicdiscovery.server.api.mediaimport.AbstractProcessingModule;
 import org.socialmusicdiscovery.server.api.mediaimport.MediaImporter;
 import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
@@ -60,13 +61,13 @@ public class DropDatabase extends AbstractProcessingModule implements MediaImpor
             progressHandler.progress(getId(),"Deleting database contents",1L,2L);
             Connection connection = provider.getConnection();
             Liquibase liquibase = new Liquibase("org/socialmusicdiscovery/server/database/smd-database-drop.xml", new
-                    ClassLoaderFileOpener(),
-                    connection);
+                    ClassLoaderResourceAccessor(),
+                    new JdbcConnection(connection));
             liquibase.update("");
             progressHandler.progress(getId(), "Creating fresh database", 2L, 2L);
             liquibase = new Liquibase("org/socialmusicdiscovery/server/database/smd-database.changelog.xml", new
-                    ClassLoaderFileOpener(),
-                    connection);
+                    ClassLoaderResourceAccessor(),
+                    new JdbcConnection(connection));
             liquibase.update("");
             progressHandler.finished(getId());
         } catch (LiquibaseException e) {

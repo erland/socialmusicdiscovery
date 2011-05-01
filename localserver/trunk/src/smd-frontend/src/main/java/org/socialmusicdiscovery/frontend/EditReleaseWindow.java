@@ -32,6 +32,9 @@ import com.google.inject.name.Named;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.config.ClientConfig;
+import org.apache.pivot.beans.BXML;
+import org.apache.pivot.beans.BXMLSerializer;
+import org.apache.pivot.beans.Bindable;
 import org.apache.pivot.collections.ArrayList;
 import org.apache.pivot.collections.List;
 import org.apache.pivot.serialization.SerializationException;
@@ -39,14 +42,12 @@ import org.apache.pivot.util.Resources;
 import org.apache.pivot.util.concurrent.Task;
 import org.apache.pivot.util.concurrent.TaskExecutionException;
 import org.apache.pivot.wtk.*;
-import org.apache.pivot.wtkx.Bindable;
-import org.apache.pivot.wtkx.WTKX;
-import org.apache.pivot.wtkx.WTKXSerializer;
 import org.socialmusicdiscovery.server.business.model.core.*;
 
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -68,26 +69,26 @@ public class EditReleaseWindow extends Window implements Bindable {
     @Inject
     private ClientConfig config;
 
-    @WTKX
+    @BXML
     TextInput releaseNameTextInput;
-    @WTKX
+    @BXML
     TextInput yearTextInput;
-    @WTKX
+    @BXML
     TextInput composersTextInput;
-    @WTKX
+    @BXML
     TextInput conductorsTextInput;
-    @WTKX
+    @BXML
     TextInput performersTextInput;
-    @WTKX
+    @BXML
     TableView tracksTableView;
-    @WTKX
+    @BXML
     PushButton cancelButton;
 
-    @WTKX
+    @BXML
     PushButton searchComposersButton;
-    @WTKX
+    @BXML
     PushButton searchConductorsButton;
-    @WTKX
+    @BXML
     PushButton searchPerformersButton;
 
     public class TrackData {
@@ -161,7 +162,7 @@ public class EditReleaseWindow extends Window implements Bindable {
     private Resources resources;
 
     @Override
-    public void initialize(Resources resources) {
+    public void initialize(org.apache.pivot.collections.Map<String, Object> stringObjectMap, URL url, Resources resources) {
         this.resources = resources;
         InjectHelper.injectMembers(this);
     }
@@ -206,8 +207,8 @@ public class EditReleaseWindow extends Window implements Bindable {
                 try {
                     if (count == 2) {
                         TrackData trackData = (TrackData) tracksTableView.getSelectedRow();
-                        WTKXSerializer wtkxSerializer = new WTKXSerializer(resources);
-                        EditTrackWindow window = (EditTrackWindow) wtkxSerializer.readObject(this, "EditTrackWindow.wtkx");
+                        BXMLSerializer wtkxSerializer = new BXMLSerializer();
+                        EditTrackWindow window = (EditTrackWindow) wtkxSerializer.readObject(getClass().getResource("EditTrackWindow.bxml"),new Resources(resources, EditTrackWindow.class.getName()));
                         window.open(getDisplay(), getWindow(), trackData.track);
                         return true;
                     }
@@ -230,40 +231,40 @@ public class EditReleaseWindow extends Window implements Bindable {
         updateTracks(release.getTracks());
 
         // Add suggestion popup for performer
-        performersTextInput.getTextInputCharacterListeners().add(new TextInputCharacterListener() {
+        performersTextInput.getTextInputContentListeners().add(new TextInputContentListener.Adapter() {
             @Override
-            public void charactersInserted(TextInput textInput, int index, int count) {
+            public void textInserted(TextInput textInput, int index, int count) {
                 suggestArtists("performer", textInput);
             }
 
             @Override
-            public void charactersRemoved(TextInput textInput, int index, int count) {
+            public void textRemoved(TextInput textInput, int index, int count) {
                 suggestArtists("performer", textInput);
             }
         });
 
         // Add suggestion popup for conductor
-        conductorsTextInput.getTextInputCharacterListeners().add(new TextInputCharacterListener() {
+        conductorsTextInput.getTextInputContentListeners().add(new TextInputContentListener.Adapter() {
             @Override
-            public void charactersInserted(TextInput textInput, int index, int count) {
+            public void textInserted(TextInput textInput, int index, int count) {
                 suggestArtists("conductor", textInput);
             }
 
             @Override
-            public void charactersRemoved(TextInput textInput, int index, int count) {
+            public void textRemoved(TextInput textInput, int index, int count) {
                 suggestArtists("conductor", textInput);
             }
         });
 
         // Add suggestion popup for composer
-        composersTextInput.getTextInputCharacterListeners().add(new TextInputCharacterListener() {
+        composersTextInput.getTextInputContentListeners().add(new TextInputContentListener.Adapter() {
             @Override
-            public void charactersInserted(TextInput textInput, int index, int count) {
+            public void textInserted(TextInput textInput, int index, int count) {
                 suggestArtists("composer", textInput);
             }
 
             @Override
-            public void charactersRemoved(TextInput textInput, int index, int count) {
+            public void textRemoved(TextInput textInput, int index, int count) {
                 suggestArtists("composer", textInput);
             }
         });
@@ -293,7 +294,7 @@ public class EditReleaseWindow extends Window implements Bindable {
                             suggestedArtists.add(artist.getName());
                         }
                         if (suggestedArtists.getLength() > 0) {
-                            suggestionPopup.setSuggestions(suggestedArtists);
+                            suggestionPopup.setSuggestionData(suggestedArtists);
                             suggestionPopup.open(textInput);
                         }
                         if (!textInput.getText().equals(text)) {

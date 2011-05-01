@@ -27,9 +27,10 @@
 
 package org.socialmusicdiscovery.server.plugins.testdataloader;
 
-import liquibase.ClassLoaderFileOpener;
 import liquibase.Liquibase;
+import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
+import liquibase.resource.ClassLoaderResourceAccessor;
 import org.socialmusicdiscovery.server.api.plugin.AbstractPlugin;
 import org.socialmusicdiscovery.server.api.plugin.Plugin;
 import org.socialmusicdiscovery.server.api.plugin.PluginException;
@@ -64,8 +65,8 @@ public class TestDataLoaderPlugin extends AbstractPlugin {
     void execute(Connection connection) throws PluginException {
         try {
             Liquibase liquibase = new Liquibase("org/socialmusicdiscovery/server/database/sampledata/smd-database.sampledata.xml", new
-                    ClassLoaderFileOpener(),
-                    connection);
+                    ClassLoaderResourceAccessor(),
+                    new JdbcConnection(connection));
             liquibase.update("");
         } catch (LiquibaseException e) {
             e.printStackTrace();

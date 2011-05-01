@@ -27,7 +27,7 @@
 
 package org.socialmusicdiscovery.server.database.sampledata;
 
-import liquibase.csv.opencsv.CSVReader;
+import liquibase.util.csv.opencsv.CSVReader;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
 import org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity;
 import org.socialmusicdiscovery.server.business.model.classification.ClassificationReferenceEntity;

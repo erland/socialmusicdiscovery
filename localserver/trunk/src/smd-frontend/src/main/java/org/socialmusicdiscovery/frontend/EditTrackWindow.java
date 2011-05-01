@@ -32,20 +32,21 @@ import com.google.inject.name.Named;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.config.ClientConfig;
+import org.apache.pivot.beans.BXML;
+import org.apache.pivot.beans.Bindable;
 import org.apache.pivot.collections.ArrayList;
 import org.apache.pivot.collections.List;
 import org.apache.pivot.util.Resources;
 import org.apache.pivot.util.concurrent.Task;
 import org.apache.pivot.util.concurrent.TaskExecutionException;
 import org.apache.pivot.wtk.*;
-import org.apache.pivot.wtkx.Bindable;
-import org.apache.pivot.wtkx.WTKX;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
 import org.socialmusicdiscovery.server.business.model.core.Track;
 import org.socialmusicdiscovery.server.business.model.core.Work;
 
 import javax.ws.rs.core.MediaType;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -70,19 +71,19 @@ public class EditTrackWindow extends Window implements Bindable {
     @Inject
     private ClientConfig config;
 
-    @WTKX
+    @BXML
     TextInput trackNumberTextInput;
-    @WTKX
+    @BXML
     TextInput recordingNameTextInput;
-    @WTKX
+    @BXML
     TextInput recordingYearTextInput;
-    @WTKX
+    @BXML
     TextInput workNameTextInput;
-    @WTKX
+    @BXML
     TableView contributorsTableView;
-    @WTKX
+    @BXML
     PushButton cancelButton;
-    @WTKX
+    @BXML
     PushButton searchWorksButton;
 
     public class ContributorData {
@@ -132,7 +133,7 @@ public class EditTrackWindow extends Window implements Bindable {
     private Resources resources;
 
     @Override
-    public void initialize(Resources resources) {
+    public void initialize(org.apache.pivot.collections.Map<String, Object> stringObjectMap, URL url, Resources resources) {
         this.resources = resources;
         InjectHelper.injectMembers(this);
     }
@@ -158,7 +159,7 @@ public class EditTrackWindow extends Window implements Bindable {
         if (track.getNumber() != null) {
             trackNumberTextInput.setText(track.getNumber().toString());
         }
-        recordingNameTextInput.setText(track.getRecording().getName());
+        recordingNameTextInput.setText(track.getRecording().getName()!=null?track.getRecording().getName():"");
         Work work = null;
         if (track.getRecording().getWorks() != null && track.getRecording().getWorks().size()>0) {
             work = track.getRecording().getWorks().iterator().next();
@@ -177,14 +178,14 @@ public class EditTrackWindow extends Window implements Bindable {
         updateContributors(contributors);
 
         // Add a suggestion popup on the work name field
-        workNameTextInput.getTextInputCharacterListeners().add(new TextInputCharacterListener() {
+        workNameTextInput.getTextInputContentListeners().add(new TextInputContentListener.Adapter() {
             @Override
-            public void charactersInserted(TextInput textInput, int index, int count) {
+            public void textInserted(TextInput textInput, int index, int count) {
                 suggestWorks("work", textInput);
             }
 
             @Override
-            public void charactersRemoved(TextInput textInput, int index, int count) {
+            public void textRemoved(TextInput textInput, int index, int count) {
                 suggestWorks("work", textInput);
             }
         });
@@ -214,7 +215,7 @@ public class EditTrackWindow extends Window implements Bindable {
                             suggestedArtists.add(work.getName());
                         }
                         if (suggestedArtists.getLength() > 0) {
-                            suggestionPopup.setSuggestions(suggestedArtists);
+                            suggestionPopup.setSuggestionData(suggestedArtists);
                             suggestionPopup.open(textInput);
                         } else {
                             suggestionPopup.close();

@@ -27,26 +27,27 @@
 
 package org.socialmusicdiscovery.frontend;
 
+import org.apache.pivot.beans.BXML;
+import org.apache.pivot.beans.BXMLSerializer;
+import org.apache.pivot.beans.Bindable;
 import org.apache.pivot.serialization.SerializationException;
 import org.apache.pivot.util.Resources;
 import org.apache.pivot.wtk.*;
-import org.apache.pivot.wtkx.Bindable;
-import org.apache.pivot.wtkx.WTKX;
-import org.apache.pivot.wtkx.WTKXSerializer;
 
 import java.io.IOException;
+import java.net.URL;
 
 public class SMDApplicationWindow extends Window implements Bindable {
-    @WTKX
+    @BXML
     PushButton listViewButton;
 
-    @WTKX
+    @BXML
     PushButton crudSearchButton;
 
     private Resources resources;
 
     @Override
-    public void initialize(Resources resources) {
+    public void initialize(org.apache.pivot.collections.Map<String, Object> stringObjectMap, URL url, Resources resources) {
         this.resources = resources;
         InjectHelper.injectMembers(this);
     }
@@ -59,8 +60,8 @@ public class SMDApplicationWindow extends Window implements Bindable {
              @Override
              public void buttonPressed(Button button) {
                  try {
-                     WTKXSerializer wtkxSerializer = new WTKXSerializer(resources);
-                     SMDCRUDSearchWindow window = (SMDCRUDSearchWindow) wtkxSerializer.readObject(this, "SMDCRUDSearchWindow.wtkx");
+                     BXMLSerializer wtkxSerializer = new BXMLSerializer();
+                     SMDCRUDSearchWindow window = (SMDCRUDSearchWindow) wtkxSerializer.readObject(getClass().getResource("SMDCRUDSearchWindow.bxml"),new Resources(resources,SMDCRUDSearchWindow.class.getName()));
                      window.open(getDisplay(), getWindow());
                  } catch (IOException e) {
                      throw new RuntimeException(e);
@@ -74,8 +75,8 @@ public class SMDApplicationWindow extends Window implements Bindable {
              @Override
              public void buttonPressed(Button button) {
                  try {
-                     WTKXSerializer wtkxSerializer = new WTKXSerializer(resources);
-                     SMDListViewWindow window = (SMDListViewWindow) wtkxSerializer.readObject(this, "SMDListViewWindow.wtkx");
+                     BXMLSerializer wtkxSerializer = new BXMLSerializer();
+                     SMDListViewWindow window = (SMDListViewWindow) wtkxSerializer.readObject(getClass().getResource("SMDListViewWindow.bxml"),new Resources(resources,SMDListViewWindow.class.getName()));
                      window.open(getDisplay(), getWindow());
                  } catch (IOException e) {
                      throw new RuntimeException(e);

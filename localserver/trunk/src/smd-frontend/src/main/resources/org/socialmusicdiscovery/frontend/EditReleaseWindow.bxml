@@ -1,5 +1,5 @@
-<smdfrontend:EditReleaseWindow title="%EditReleaseWindow.windowTitle" maximized="true"
-                               xmlns:wtkx="http://pivot.apache.org/wtkx"
+<smdfrontend:EditReleaseWindow title="%windowTitle" maximized="true"
+                               xmlns:bxml="http://pivot.apache.org/wtkx"
                                xmlns:content="org.apache.pivot.wtk.content"
                                xmlns:smdfrontend="org.socialmusicdiscovery.frontend"
                                xmlns="org.apache.pivot.wtk">
@@ -15,21 +15,21 @@
                     <rows>
                         <TablePane.Row height="-1">
                             <BoxPane orientation="horizontal">
-                                <Label text="%EditReleaseWindow.releaseName"/>
-                                <TextInput wtkx:id="releaseNameTextInput"/>
+                                <Label text="%releaseName"/>
+                                <TextInput bxml:id="releaseNameTextInput"/>
                             </BoxPane>
                         </TablePane.Row>
                         <TablePane.Row height="-1">
                             <BoxPane orientation="horizontal">
-                                <Label text="%EditReleaseWindow.year"/>
-                                <TextInput wtkx:id="yearTextInput"/>
+                                <Label text="%year"/>
+                                <TextInput bxml:id="yearTextInput"/>
                             </BoxPane>
                         </TablePane.Row>
                         <TablePane.Row height="-1">
                             <BoxPane orientation="horizontal">
-                                <Label text="%EditReleaseWindow.composers"/>
-                                <TextInput wtkx:id="composersTextInput"/>
-                                <PushButton wtkx:id="searchComposersButton" styles="{padding:4}">
+                                <Label text="%composers"/>
+                                <TextInput bxml:id="composersTextInput"/>
+                                <PushButton bxml:id="searchComposersButton" styles="{padding:4}">
                                     <buttonData>
                                         <content:ButtonData icon="@magnifier.png"/>
                                     </buttonData>
@@ -38,9 +38,9 @@
                         </TablePane.Row>
                         <TablePane.Row height="-1">
                             <BoxPane orientation="horizontal">
-                                <Label text="%EditReleaseWindow.conductors"/>
-                                <TextInput wtkx:id="conductorsTextInput"/>
-                                <PushButton wtkx:id="searchConductorsButton" styles="{padding:4}">
+                                <Label text="%conductors"/>
+                                <TextInput bxml:id="conductorsTextInput"/>
+                                <PushButton bxml:id="searchConductorsButton" styles="{padding:4}">
                                     <buttonData>
                                         <content:ButtonData icon="@magnifier.png"/>
                                     </buttonData>
@@ -49,9 +49,9 @@
                         </TablePane.Row>
                         <TablePane.Row height="-1">
                             <BoxPane orientation="horizontal">
-                                <Label text="%EditReleaseWindow.performers"/>
-                                <TextInput wtkx:id="performersTextInput"/>
-                                <PushButton wtkx:id="searchPerformersButton" styles="{padding:4}">
+                                <Label text="%performers"/>
+                                <TextInput bxml:id="performersTextInput"/>
+                                <PushButton bxml:id="searchPerformersButton" styles="{padding:4}">
                                     <buttonData>
                                         <content:ButtonData icon="@magnifier.png"/>
                                     </buttonData>
@@ -61,18 +61,18 @@
                         <TablePane.Row height="1*">
                             <ScrollPane horizontalScrollBarPolicy="fill" verticalScrollBarPolicy="fill_to_capacity">
                                 <view>
-                                    <TableView wtkx:id="tracksTableView">
+                                    <TableView bxml:id="tracksTableView">
                                         <columns>
                                             <TableView.Column name="number" width="1*"
-                                                              headerData="%EditReleaseWindow.trackNumber"/>
+                                                              headerData="%trackNumber"/>
                                             <TableView.Column name="title" width="5*"
-                                                              headerData="%EditReleaseWindow.trackTitle"/>
+                                                              headerData="%trackTitle"/>
                                             <TableView.Column name="composers" width="3*"
-                                                              headerData="%EditReleaseWindow.composers"/>
+                                                              headerData="%composers"/>
                                             <TableView.Column name="conductors" width="3*"
-                                                              headerData="%EditReleaseWindow.conductors"/>
+                                                              headerData="%conductors"/>
                                             <TableView.Column name="performers" width="4*"
-                                                              headerData="%EditReleaseWindow.performers"/>
+                                                              headerData="%performers"/>
                                         </columns>
                                     </TableView>
                                 </view>
@@ -82,8 +82,8 @@
                             </ScrollPane>
                         </TablePane.Row>
                         <TablePane.Row height="-1">
-                            <PushButton wtkx:id="cancelButton" enabled="true" styles="{padding:4}"
-                                        buttonData="%EditReleaseWindow.cancelButton"/>
+                            <PushButton bxml:id="cancelButton" enabled="true" styles="{padding:4}"
+                                        buttonData="%cancelButton"/>
                         </TablePane.Row>
                     </rows>
                 </TablePane>
