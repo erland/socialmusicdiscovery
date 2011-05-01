@@ -25,41 +25,31 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.server.api.mediaimport;
+package org.socialmusicdiscovery.server.business.logic.injections;
 
-import org.socialmusicdiscovery.server.api.ConfigurationContext;
-import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameter;
+import com.google.inject.AbstractModule;
+import com.google.inject.Inject;
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
+import com.google.inject.name.Named;
+import org.socialmusicdiscovery.server.business.logic.config.ConfigurationManager;
+import org.socialmusicdiscovery.server.business.repository.config.ConfigurationParameterRepository;
 
-import java.util.Collection;
+public class ConfigurationManagerModule extends AbstractModule {
+    ConfigurationManager configurationManager;
 
-public interface ProcessingModule {
-    /**
-     * Returns the unique identity of the processing module, this is used when you want to issue a command to the processing module
-     * @return
-     */
-    String getId();
+    @Override
+    protected void configure() {
+    }
 
-    /**
-     * Called when the processing module is supposed to execute its logic, the module should use the provided callback interface to
-     * report the progress of the operation
-     * @param progressHandler A callback object which the processing module should call to report the current status
-     */
-    void execute(ProcessingStatusCallback progressHandler);
-
-    /**
-     * Abort the current processing operation in progress
-     */
-    void abort();
-
-    /**
-     * Will be called to retrieve available configuration parameters and their default value, a plugin should return all its configuration
-     * parameters in this call to make them accessible from the configuration user interface
-     * @return A list of configuration parameters with their default values
-     */
-    Collection<ConfigurationParameter> getDefaultConfiguration();
-
-    /**
-     * Will be called initially before the plugin is started or whenever a configuration parameter is changed
-     */
-    void setConfiguration(ConfigurationContext configuration);
+    @Inject
+    @Provides
+    @Singleton
+    @Named("default-value")
+    public ConfigurationManager provideDefaultValueConfigurationManager(ConfigurationParameterRepository configurationParameterRepository) {
+        if(configurationManager==null) {
+            configurationManager = new ConfigurationManager();
+        }
+        return configurationManager;
+     }
 }

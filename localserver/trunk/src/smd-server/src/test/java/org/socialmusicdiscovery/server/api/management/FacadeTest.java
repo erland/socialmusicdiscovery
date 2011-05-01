@@ -34,13 +34,17 @@ import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.container.grizzly.GrizzlyWebContainerFactory;
 import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
+import org.socialmusicdiscovery.server.business.logic.InjectHelper;
 import org.socialmusicdiscovery.server.business.logic.SearchRelationPostProcessor;
+import org.socialmusicdiscovery.server.business.logic.config.ConfigurationManager;
 import org.socialmusicdiscovery.server.business.model.GlobalIdentity;
 import org.socialmusicdiscovery.server.business.model.GlobalIdentityEntity;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReference;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
 import org.socialmusicdiscovery.server.business.model.classification.Classification;
 import org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity;
+import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameter;
+import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameterEntity;
 import org.socialmusicdiscovery.server.business.model.core.*;
 import org.socialmusicdiscovery.server.business.model.subjective.*;
 import org.socialmusicdiscovery.server.support.json.AbstractJSONProvider;
@@ -51,10 +55,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 import java.lang.reflect.Method;
 import java.net.URI;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class FacadeTest extends BaseTestCase {
     private static final String HOST = "http://localhost";
@@ -89,6 +90,7 @@ public class FacadeTest extends BaseTestCase {
             converters.put(Credit.class, CreditEntity.class);
             converters.put(Series.class, SeriesEntity.class);
             converters.put(PlayableElement.class, PlayableElementEntity.class);
+            converters.put(ConfigurationParameter.class, ConfigurationParameterEntity.class);
 
             return converters;
         }
@@ -907,5 +909,82 @@ public class FacadeTest extends BaseTestCase {
             }
         }
         assert !found;
+    }
+    @Test
+    public void testCRUDConfig() throws Exception {
+        ConfigurationManager defaultValueConfigurationManager = InjectHelper.instanceWithName(ConfigurationManager.class, "default-value");
+        defaultValueConfigurationManager.setParametersForPath("",new ArrayList<ConfigurationParameter>());
+
+        ConfigurationParameter myBooleanConfig = new ConfigurationParameterEntity();
+        myBooleanConfig.setId("somebooleanconfig");
+        myBooleanConfig.setType(ConfigurationParameter.Type.BOOLEAN);
+        myBooleanConfig.setValue("true");
+        ConfigurationParameter  p = Client.create(config).resource(HOSTURL+"/configurations").type(MediaType.APPLICATION_JSON).post(ConfigurationParameter.class,myBooleanConfig);
+        assert p!=null;
+        assert p.getType().equals(ConfigurationParameter.Type.BOOLEAN);
+        assert p.getValue().equals("true");
+        p = Client.create(config).resource(HOSTURL+"/configurations/"+p.getId()).accept(MediaType.APPLICATION_JSON).get(ConfigurationParameter.class);
+        assert p!=null;
+        assert p.getType().equals(ConfigurationParameter.Type.BOOLEAN);
+        assert p.getValue().equals("true");
+
+        ConfigurationParameter myNumberConfig = new ConfigurationParameterEntity();
+        myNumberConfig.setId("somenumberconfig");
+        myNumberConfig.setType(ConfigurationParameter.Type.INTEGER);
+        myNumberConfig.setValue("42");
+        p = Client.create(config).resource(HOSTURL+"/configurations").type(MediaType.APPLICATION_JSON).post(ConfigurationParameter.class,myNumberConfig);
+        assert p!=null;
+        assert p.getType().equals(ConfigurationParameter.Type.INTEGER);
+        assert p.getValue().equals("42");
+        p = Client.create(config).resource(HOSTURL+"/configurations/"+p.getId()).accept(MediaType.APPLICATION_JSON).get(ConfigurationParameter.class);
+        assert p!=null;
+        assert p.getType().equals(ConfigurationParameter.Type.INTEGER);
+        assert p.getValue().equals("42");
+
+        ConfigurationParameter myStringConfig = new ConfigurationParameterEntity();
+        myStringConfig.setId("somestringconfig");
+        myStringConfig.setType(ConfigurationParameter.Type.STRING);
+        myStringConfig.setValue("hello");
+        p = Client.create(config).resource(HOSTURL+"/configurations").type(MediaType.APPLICATION_JSON).post(ConfigurationParameter.class,myStringConfig);
+        assert p!=null;
+        assert p.getType().equals(ConfigurationParameter.Type.STRING);
+        assert p.getValue().equals("hello");
+        p = Client.create(config).resource(HOSTURL+"/configurations/"+p.getId()).accept(MediaType.APPLICATION_JSON).get(ConfigurationParameter.class);
+        assert p!=null;
+        assert p.getType().equals(ConfigurationParameter.Type.STRING);
+        assert p.getValue().equals("hello");
+
+        p.setValue("good bye");
+        p = Client.create(config).resource(HOSTURL+"/configurations/"+p.getId()).type(MediaType.APPLICATION_JSON).put(ConfigurationParameter.class, p);
+        assert p!=null;
+        assert p.getValue().equals("good bye");
+        p = Client.create(config).resource(HOSTURL+"/configurations/"+p.getId()).accept(MediaType.APPLICATION_JSON).get(ConfigurationParameter.class);
+        assert p!=null;
+        assert p.getType().equals(ConfigurationParameter.Type.STRING);
+        assert p.getValue().equals("good bye");
+
+        Collection<ConfigurationParameter> configurations = Client.create(config).resource(HOSTURL+"/configurations").accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<ConfigurationParameter>>() {});
+        assert configurations.contains(myBooleanConfig);
+        assert configurations.contains(myStringConfig);
+        assert configurations.contains(myNumberConfig);
+
+        configurations = Client.create(config).resource(HOSTURL+"/configurations?path=someboolean").accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<ConfigurationParameter>>() {});
+        assert configurations.contains(myBooleanConfig);
+        assert !configurations.contains(myStringConfig);
+        assert !configurations.contains(myNumberConfig);
+
+        Client.create(config).resource(HOSTURL+"/configurations/"+myBooleanConfig.getId()).type(MediaType.APPLICATION_JSON).delete();
+        configurations = Client.create(config).resource(HOSTURL+"/configurations").accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<ConfigurationParameter>>() {});
+        assert !configurations.contains(myBooleanConfig);
+        assert configurations.contains(myStringConfig);
+        assert configurations.contains(myNumberConfig);
+
+        Client.create(config).resource(HOSTURL+"/configurations").type(MediaType.APPLICATION_JSON).delete();
+        configurations = Client.create(config).resource(HOSTURL+"/configurations").accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<ConfigurationParameter>>() {});
+        assert !configurations.contains(myBooleanConfig);
+        assert !configurations.contains(myStringConfig);
+        assert !configurations.contains(myNumberConfig);
+
+        assert configurations.size()==0;
     }
 }

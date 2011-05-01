@@ -25,41 +25,28 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.server.api.mediaimport;
+package org.socialmusicdiscovery.server.business.model.config;
 
-import org.socialmusicdiscovery.server.api.ConfigurationContext;
-import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameter;
-
-import java.util.Collection;
-
-public interface ProcessingModule {
-    /**
-     * Returns the unique identity of the processing module, this is used when you want to issue a command to the processing module
-     * @return
-     */
+public interface ConfigurationParameter {
+    public enum Type {
+        STRING,
+        INTEGER,
+        DOUBLE,
+        BOOLEAN,
+    }
     String getId();
 
-    /**
-     * Called when the processing module is supposed to execute its logic, the module should use the provided callback interface to
-     * report the progress of the operation
-     * @param progressHandler A callback object which the processing module should call to report the current status
-     */
-    void execute(ProcessingStatusCallback progressHandler);
+    void setId(String id);
 
-    /**
-     * Abort the current processing operation in progress
-     */
-    void abort();
+    Type getType();
 
-    /**
-     * Will be called to retrieve available configuration parameters and their default value, a plugin should return all its configuration
-     * parameters in this call to make them accessible from the configuration user interface
-     * @return A list of configuration parameters with their default values
-     */
-    Collection<ConfigurationParameter> getDefaultConfiguration();
+    void setType(Type type);
 
-    /**
-     * Will be called initially before the plugin is started or whenever a configuration parameter is changed
-     */
-    void setConfiguration(ConfigurationContext configuration);
+    String getValue();
+
+    void setValue(String value);
+
+    Boolean getDefaultValue();
+
+    void setDefaultValue(Boolean value);
 }

@@ -27,6 +27,10 @@
 
 package org.socialmusicdiscovery.server.api.plugin;
 
+import org.socialmusicdiscovery.server.api.ConfigurationContext;
+import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameter;
+
+import java.util.Collection;
 import java.util.List;
 
 public interface Plugin {
@@ -71,4 +75,16 @@ public interface Plugin {
      * @throws PluginException If an error occurs that results in that the plugin couldn't be stopped
      */
     void stop() throws PluginException;
+
+    /**
+     * Will be called to retrieve available configuration parameters and their default value, a plugin should return all its configuration
+     * parameters in this call to make them accessible from the configuration user interface
+     * @return A list of configuration parameters with their default values
+     */
+    Collection<ConfigurationParameter> getDefaultConfiguration();
+
+    /**
+     * Will be called initially before the plugin is started or whenever a configuration parameter is changed
+     */
+    void setConfiguration(ConfigurationContext configuration);
 }

@@ -28,6 +28,7 @@
 package org.socialmusicdiscovery.server.business.logic;
 
 import com.google.inject.Inject;
+import org.socialmusicdiscovery.server.api.mediaimport.AbstractProcessingModule;
 import org.socialmusicdiscovery.server.api.mediaimport.PostProcessor;
 import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
@@ -47,7 +48,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class SearchRelationPostProcessor implements PostProcessor {
+public class SearchRelationPostProcessor extends AbstractProcessingModule implements PostProcessor {
     @Inject
     private EntityManager entityManager;
 

@@ -35,6 +35,8 @@
         <class>org.socialmusicdiscovery.server.business.model.search.RecordingClassificationSearchRelationEntity</class>
         <class>org.socialmusicdiscovery.server.business.model.search.PersonSearchRelationEntity</class>
 
+        <class>org.socialmusicdiscovery.server.business.model.config.ConfigurationParameterEntity</class>
+
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <!-- Database provider properties are configured in the code -->

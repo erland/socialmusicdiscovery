@@ -25,41 +25,48 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.server.api.mediaimport;
+package org.socialmusicdiscovery.server.business.logic.config;
 
 import org.socialmusicdiscovery.server.api.ConfigurationContext;
-import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameter;
+import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameterEntity;
 
-import java.util.Collection;
+import java.util.Set;
 
-public interface ProcessingModule {
-    /**
-     * Returns the unique identity of the processing module, this is used when you want to issue a command to the processing module
-     * @return
-     */
-    String getId();
+public class MappedConfigurationContext implements ConfigurationContext {
+    String pluginConfigurationPath;
 
-    /**
-     * Called when the processing module is supposed to execute its logic, the module should use the provided callback interface to
-     * report the progress of the operation
-     * @param progressHandler A callback object which the processing module should call to report the current status
-     */
-    void execute(ProcessingStatusCallback progressHandler);
+    public MappedConfigurationContext(String pluginConfigurationPath) {
+        this.pluginConfigurationPath = pluginConfigurationPath;
+    }
 
-    /**
-     * Abort the current processing operation in progress
-     */
-    void abort();
+    @Override
+    public String getStringParameter(String id) {
+        return new MergedConfigurationContext().getStringParameter(pluginConfigurationPath+id);
+    }
 
-    /**
-     * Will be called to retrieve available configuration parameters and their default value, a plugin should return all its configuration
-     * parameters in this call to make them accessible from the configuration user interface
-     * @return A list of configuration parameters with their default values
-     */
-    Collection<ConfigurationParameter> getDefaultConfiguration();
+    @Override
+    public Boolean getBooleanParameter(String id) {
+        return new MergedConfigurationContext().getBooleanParameter(pluginConfigurationPath + id);
+    }
 
-    /**
-     * Will be called initially before the plugin is started or whenever a configuration parameter is changed
-     */
-    void setConfiguration(ConfigurationContext configuration);
+    @Override
+    public Integer getIntegerParameter(String id) {
+        return new MergedConfigurationContext().getIntegerParameter(pluginConfigurationPath + id);
+    }
+
+    @Override
+    public Double getDoubleParameter(String id) {
+        return new MergedConfigurationContext().getDoubleParameter(pluginConfigurationPath + id);
+    }
+
+    public ConfigurationParameterEntity getParameter(String id) {
+        return new MergedConfigurationContext().getParameter(id);
+    }
+    public Set<ConfigurationParameterEntity> getParameters() {
+        return new MergedConfigurationContext().getParameters();
+    }
+
+    public Set<ConfigurationParameterEntity> getParametersByPath(String path) {
+        return new MergedConfigurationContext().getParametersByPath(pluginConfigurationPath + path);
+    }
 }

@@ -25,41 +25,34 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.server.api.mediaimport;
+package org.socialmusicdiscovery.server.api;
 
-import org.socialmusicdiscovery.server.api.ConfigurationContext;
-import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameter;
-
-import java.util.Collection;
-
-public interface ProcessingModule {
+public interface ConfigurationContext {
     /**
-     * Returns the unique identity of the processing module, this is used when you want to issue a command to the processing module
-     * @return
+     * Get the string configuration parameter with specified identity
+     * @param id The identity of the configuration parameter
+     * @return The value of the configuration parameter
      */
-    String getId();
+    String getStringParameter(String id);
 
     /**
-     * Called when the processing module is supposed to execute its logic, the module should use the provided callback interface to
-     * report the progress of the operation
-     * @param progressHandler A callback object which the processing module should call to report the current status
+     * Get the boolean configuration parameter with specified identity
+     * @param id The identity of the configuration parameter
+     * @return The value of the configuration parameter
      */
-    void execute(ProcessingStatusCallback progressHandler);
+    Boolean getBooleanParameter(String id);
 
     /**
-     * Abort the current processing operation in progress
+     * Get the integer configuration parameter with specified identity
+     * @param id The identity of the configuration parameter
+     * @return The value of the configuration parameter
      */
-    void abort();
+    Integer getIntegerParameter(String id);
 
     /**
-     * Will be called to retrieve available configuration parameters and their default value, a plugin should return all its configuration
-     * parameters in this call to make them accessible from the configuration user interface
-     * @return A list of configuration parameters with their default values
+     * Get the double configuration parameter with specified identity
+     * @param id The identity of the configuration parameter
+     * @return The value of the configuration parameter
      */
-    Collection<ConfigurationParameter> getDefaultConfiguration();
-
-    /**
-     * Will be called initially before the plugin is started or whenever a configuration parameter is changed
-     */
-    void setConfiguration(ConfigurationContext configuration);
+    Double getDoubleParameter(String id);
 }

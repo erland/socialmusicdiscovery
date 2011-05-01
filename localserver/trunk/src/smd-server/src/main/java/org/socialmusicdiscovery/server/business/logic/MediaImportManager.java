@@ -34,6 +34,10 @@ import org.socialmusicdiscovery.server.api.mediaimport.MediaImporter;
 import org.socialmusicdiscovery.server.api.mediaimport.PostProcessor;
 import org.socialmusicdiscovery.server.api.mediaimport.ProcessingModule;
 import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
+import org.socialmusicdiscovery.server.business.logic.config.ConfigurationManager;
+import org.socialmusicdiscovery.server.business.logic.config.MappedConfigurationContext;
+import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameter;
+import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameterEntity;
 
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -42,6 +46,10 @@ public class MediaImportManager {
     @Inject
     @Named("mediaimport")
     private ExecutorService executorService;
+
+    @Inject
+    @Named("default-value")
+    private ConfigurationManager defaultValueConfigurationManager;
 
     /** Available media importer modules */
     private Map<String,MediaImporter> mediaImporters;
@@ -108,6 +116,24 @@ public class MediaImportManager {
         this.mediaImporters = mediaImporters;
         this.postProcessors = postProcessors;
         InjectHelper.injectMembers(this);
+
+        for (MediaImporter mediaImporter : mediaImporters.values()) {
+            Collection<ConfigurationParameter> defaultPluginConfiguration = mediaImporter.getDefaultConfiguration();
+            String pluginConfigurationPath = "org.socialmusicdiscovery.server.plugins.mediaimport."+mediaImporter.getId()+".";
+
+            Set<ConfigurationParameter> defaultConfiguration = new HashSet<ConfigurationParameter>();
+            for (ConfigurationParameter parameter : defaultPluginConfiguration) {
+                ConfigurationParameterEntity entity = new ConfigurationParameterEntity(parameter);
+                if(!entity.getId().startsWith(pluginConfigurationPath)) {
+                    entity.setId(pluginConfigurationPath+entity.getId());
+                }
+                entity.setDefaultValue(true);
+                defaultConfiguration.add(entity);
+            }
+            defaultValueConfigurationManager.setParametersForPath(pluginConfigurationPath, defaultConfiguration);
+
+            mediaImporter.setConfiguration(new MappedConfigurationContext(pluginConfigurationPath));
+        }
     }
 
     /**

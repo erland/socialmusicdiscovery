@@ -31,35 +31,40 @@ import org.socialmusicdiscovery.server.api.ConfigurationContext;
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameter;
 
 import java.util.Collection;
+import java.util.HashSet;
 
-public interface ProcessingModule {
+public abstract class AbstractProcessingModule implements ProcessingModule {
+
+    protected ConfigurationContext configuration = null;
+
     /**
-     * Returns the unique identity of the processing module, this is used when you want to issue a command to the processing module
+     * Default implementation that does nothing, override this if tye processing module supports to be aborted
+     */
+    @Override
+    public void abort() {
+    }
+
+    /**
+     * Default implementation which can be used by processing modules that doesn't have any configuration parameters, override this if the
+     * processing module offers configuration parameters
      * @return
      */
-    String getId();
+    @Override
+    public Collection<ConfigurationParameter> getDefaultConfiguration() {
+        return new HashSet<ConfigurationParameter>();
+    }
 
     /**
-     * Called when the processing module is supposed to execute its logic, the module should use the provided callback interface to
-     * report the progress of the operation
-     * @param progressHandler A callback object which the processing module should call to report the current status
+     * Default implementation that just stores the configuration context and makes them accessible through the
+     * {@link #getConfiguration} method
+     * @param configuration A collection with configuraiton parameters
      */
-    void execute(ProcessingStatusCallback progressHandler);
+    @Override
+    public void setConfiguration(ConfigurationContext configuration) {
+        this.configuration = configuration;
+    }
 
-    /**
-     * Abort the current processing operation in progress
-     */
-    void abort();
-
-    /**
-     * Will be called to retrieve available configuration parameters and their default value, a plugin should return all its configuration
-     * parameters in this call to make them accessible from the configuration user interface
-     * @return A list of configuration parameters with their default values
-     */
-    Collection<ConfigurationParameter> getDefaultConfiguration();
-
-    /**
-     * Will be called initially before the plugin is started or whenever a configuration parameter is changed
-     */
-    void setConfiguration(ConfigurationContext configuration);
+    protected ConfigurationContext getConfiguration() {
+        return configuration;
+    }
 }

@@ -36,6 +36,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.socialmusicdiscovery.server.api.mediaimport.AbstractProcessingModule;
 import org.socialmusicdiscovery.server.api.mediaimport.MediaImporter;
 import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
@@ -45,6 +46,8 @@ import org.socialmusicdiscovery.server.business.model.SMDIdentityReference;
 import org.socialmusicdiscovery.server.business.model.classification.Classification;
 import org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity;
 import org.socialmusicdiscovery.server.business.model.classification.ClassificationReferenceEntity;
+import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameter;
+import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameterEntity;
 import org.socialmusicdiscovery.server.business.model.core.*;
 import org.socialmusicdiscovery.server.business.repository.GlobalIdentityRepository;
 import org.socialmusicdiscovery.server.business.repository.classification.ClassificationReferenceRepository;
@@ -61,7 +64,7 @@ import java.util.*;
 /**
  * Media import module for Squeezebox Server, require the Social Music Discovery plugin installed in Squeezebox Server to work
  */
-public class SqueezeboxServer implements MediaImporter {
+public class SqueezeboxServer extends AbstractProcessingModule implements MediaImporter {
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy");
     private static final DateFormat DATE_FORMAT_WITH_DATE = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -314,10 +317,12 @@ public class SqueezeboxServer implements MediaImporter {
 
                 // Create Work entity and add composers to it if it didn't already exist
                 if (existingWorks.size() == 0) {
-                    Set<Contributor> workContributors = getContributorsForTag(tags.get(TagData.COMPOSER), Contributor.COMPOSER);
-                    if (workContributors.size() > 0) {
-                        saveContributors(workContributors);
-                        work.setContributors(workContributors);
+                    if(getConfiguration().getBooleanParameter("composers")) {
+                        Set<Contributor> workContributors = getContributorsForTag(tags.get(TagData.COMPOSER), Contributor.COMPOSER);
+                        if (workContributors.size() > 0) {
+                            saveContributors(workContributors);
+                            work.setContributors(workContributors);
+                        }
                     }
                     workRepository.create(work);
                 }
@@ -333,7 +338,10 @@ public class SqueezeboxServer implements MediaImporter {
                 Set<Contributor> artistContributors = getContributorsForTag(tags.get(TagData.ARTIST), Contributor.PERFORMER);
                 Set<Contributor> trackArtistContributors = getContributorsForTag(tags.get(TagData.TRACKARTIST), Contributor.PERFORMER);
                 Set<Contributor> performerContributors = getContributorsForTag(tags.get(TagData.PERFORMER), Contributor.PERFORMER);
-                Set<Contributor> conductorContributors = getContributorsForTag(tags.get(TagData.CONDUCTOR), Contributor.CONDUCTOR);
+                Set<Contributor> conductorContributors = new HashSet<Contributor>();
+                if(getConfiguration().getBooleanParameter("conductors")) {
+                    conductorContributors = getContributorsForTag(tags.get(TagData.CONDUCTOR), Contributor.CONDUCTOR);
+                }
                 Set<Contributor> recordingContributors = new HashSet<Contributor>();
 
                 if (artistContributors.size() == 1 && tags.containsKey(TagData.MUSICBRAINZ_ARTIST_ID)) {
@@ -389,13 +397,13 @@ public class SqueezeboxServer implements MediaImporter {
                 recordingRepository.create(recording);
 
                 // Add GENRE, STYLE and MOOD Classification entities and related them to the created Recording entity
-                if (tags.containsKey(TagData.GENRE)) {
+                if (tags.containsKey(TagData.GENRE) && getConfiguration().getBooleanParameter("genres")) {
                     createClassificationsForTag(tags.get(TagData.GENRE), Classification.GENRE, recording.getReference());
                 }
-                if (tags.containsKey(TagData.STYLE)) {
+                if (tags.containsKey(TagData.STYLE) && getConfiguration().getBooleanParameter("styles")) {
                     createClassificationsForTag(tags.get(TagData.STYLE), Classification.STYLE, recording.getReference());
                 }
-                if (tags.containsKey(TagData.MOOD)) {
+                if (tags.containsKey(TagData.MOOD) && getConfiguration().getBooleanParameter("moods")) {
                     createClassificationsForTag(tags.get(TagData.MOOD), Classification.MOOD, recording.getReference());
                 }
 
@@ -667,5 +675,16 @@ public class SqueezeboxServer implements MediaImporter {
                 }
             }
         }
+    }
+
+    @Override
+    public Collection<ConfigurationParameter> getDefaultConfiguration() {
+        return Arrays.asList(
+                (ConfigurationParameter)new ConfigurationParameterEntity("genres", ConfigurationParameter.Type.BOOLEAN, "true"),
+                (ConfigurationParameter)new ConfigurationParameterEntity("styles", ConfigurationParameter.Type.BOOLEAN, "true"),
+                (ConfigurationParameter)new ConfigurationParameterEntity("moods", ConfigurationParameter.Type.BOOLEAN, "true"),
+                (ConfigurationParameter)new ConfigurationParameterEntity("composers", ConfigurationParameter.Type.BOOLEAN, "true"),
+                (ConfigurationParameter)new ConfigurationParameterEntity("conductors", ConfigurationParameter.Type.BOOLEAN, "true")
+        );
     }
 }
