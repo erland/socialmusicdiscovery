@@ -50,10 +50,14 @@ use Data::Dumper;
 my $serverPrefs = preferences('server');
 my $prefs = preferences('plugin.socialmusicdiscovery');
 my $log = logger('plugin.socialmusicdiscovery');
+my $xmlBrowserImplementation;
 
 sub init {
         my $class = shift;
+	my $xmlBrowserImpl = shift;
         $class->SUPER::init();
+
+	$xmlBrowserImplementation = $xmlBrowserImpl;
         
         Slim::Control::Request::addDispatch(
                 [ 'smditeminfo', 'items', '_index', '_quantity' ],
@@ -382,7 +386,9 @@ sub cliQuery {
         
         my $feed = Plugins::SocialMusicDiscovery::Menu::SMDItemInfo->menu( $client, $path, $audio_url, $tags );
         
-        Slim::Control::XMLBrowser::cliQuery( 'smditeminfo', $feed, $request );
+	no strict 'refs';
+        &{"${xmlBrowserImplementation}::cliQuery"}( 'smditeminfo', $feed, $request );
+	use strict 'refs';
 }
 
 1;

@@ -106,15 +106,17 @@ sub initPlugin
 		$log->info("BrowseLibrary not found, using custom BrowseLibrary implementation");
 		require Plugins::SocialMusicDiscovery::MenuAPI::BrowseLibrary;
 		require Plugins::SocialMusicDiscovery::MenuAPI::Buttons::XMLBrowser;
+		require Plugins::SocialMusicDiscovery::MenuAPI::Control::XMLBrowser;
 
 		Plugins::SocialMusicDiscovery::MenuAPI::BrowseLibrary->init();
 		Plugins::SocialMusicDiscovery::MenuAPI::Buttons::XMLBrowser->init();
-		Plugins::SocialMusicDiscovery::Menu::SMDMenus->init("Plugins::SocialMusicDiscovery::MenuAPI::BrowseLibrary",1);
+		Plugins::SocialMusicDiscovery::Menu::SMDMenus->init("Plugins::SocialMusicDiscovery::MenuAPI::BrowseLibrary","Plugins::SocialMusicDiscovery::MenuAPI::Control::XMLBrowser",1);
+		Plugins::SocialMusicDiscovery::Menu::SMDItemInfo->init("Plugins::SocialMusicDiscovery::MenuAPI::Control::XMLBrowser");
 	}else {
 		$log->info("Using Logitech version of BrowseLibrary");
-		Plugins::SocialMusicDiscovery::Menu::SMDMenus->init("Slim::Menu::BrowseLibrary");
+		Plugins::SocialMusicDiscovery::Menu::SMDMenus->init("Slim::Menu::BrowseLibrary","Slim::Control::XMLBrowser");
+		Plugins::SocialMusicDiscovery::Menu::SMDItemInfo->init("Slim::Control::XMLBrowser");
 	}
-	Plugins::SocialMusicDiscovery::Menu::SMDItemInfo->init();
 
     # Find location of smd-server binary in plugin directory
     my $smdServerPath = undef;
