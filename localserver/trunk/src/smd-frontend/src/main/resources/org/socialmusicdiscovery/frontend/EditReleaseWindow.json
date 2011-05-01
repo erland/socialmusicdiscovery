@@ -1,0 +1,10 @@
+{
+    releaseName: "Release name",
+    year: "Year",
+    composers: "Composers",
+    conductors: "Conductors",
+    performers: "Performers",
+    trackNumber: "No",
+    trackTitle: "Title",
+    cancelButton: "Cancel"
+}

@@ -27,10 +27,10 @@
 
 package org.socialmusicdiscovery.server.database.sampledata;
 
-import liquibase.ClassLoaderFileOpener;
 import liquibase.Liquibase;
-import liquibase.exception.JDBCException;
+import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
+import liquibase.resource.ClassLoaderResourceAccessor;
 import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
 import org.socialmusicdiscovery.server.business.logic.SearchRelationPostProcessor;
@@ -138,14 +138,14 @@ public class DiscogsLargeDatabaseSampleCreator extends SampleCreator {
             provider.start();
             Connection connection = provider.getConnection();
             Liquibase liquibase = new Liquibase("org/socialmusicdiscovery/server/database/smd-database.changelog.xml", new
-                    ClassLoaderFileOpener(),
-                    connection);
+                    ClassLoaderResourceAccessor(),
+                    new JdbcConnection(connection));
             if (System.getProperty("liquibase") == null || !System.getProperty("liquibase").equals("false")) {
                 liquibase.update("");
             }
             liquibase = new Liquibase("org/socialmusicdiscovery/server/database/sampledata/large/large.xml", new
-                    ClassLoaderFileOpener(),
-                    connection);
+                    ClassLoaderResourceAccessor(),
+                    new JdbcConnection(connection));
             liquibase.update("");
 
             // Ensure that we don't delete the database contents
@@ -170,8 +170,6 @@ public class DiscogsLargeDatabaseSampleCreator extends SampleCreator {
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (JDBCException e) {
             throw new RuntimeException(e);
         } catch (LiquibaseException e) {
             throw new RuntimeException(e);

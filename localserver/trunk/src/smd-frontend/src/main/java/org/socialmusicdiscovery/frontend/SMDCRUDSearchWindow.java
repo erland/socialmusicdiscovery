@@ -33,6 +33,9 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.config.ClientConfig;
+import org.apache.pivot.beans.BXML;
+import org.apache.pivot.beans.BXMLSerializer;
+import org.apache.pivot.beans.Bindable;
 import org.apache.pivot.collections.List;
 import org.apache.pivot.collections.Sequence;
 import org.apache.pivot.serialization.SerializationException;
@@ -41,9 +44,6 @@ import org.apache.pivot.util.concurrent.Task;
 import org.apache.pivot.util.concurrent.TaskExecutionException;
 import org.apache.pivot.util.concurrent.TaskListener;
 import org.apache.pivot.wtk.*;
-import org.apache.pivot.wtkx.Bindable;
-import org.apache.pivot.wtkx.WTKX;
-import org.apache.pivot.wtkx.WTKXSerializer;
 import org.socialmusicdiscovery.server.api.OperationStatus;
 import org.socialmusicdiscovery.server.api.management.mediaimport.MediaImportStatus;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
@@ -53,6 +53,7 @@ import org.socialmusicdiscovery.server.business.model.core.Work;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.Map;
@@ -85,30 +86,30 @@ public class SMDCRUDSearchWindow extends Window implements Bindable {
      */
     private boolean importAborted = false;
 
-    @WTKX
+    @BXML
     Meter importProgressMeter;
-    @WTKX
+    @BXML
     Label importProgressDescription;
-    @WTKX
+    @BXML
     ListButton selectedImporterButton;
-    @WTKX
+    @BXML
     PushButton importButton;
 
-    @WTKX
+    @BXML
     TextInput searchTextInput;
-    @WTKX
+    @BXML
     PushButton searchButton;
-    @WTKX
+    @BXML
     ActivityIndicator searchActivity;
 
-    @WTKX
+    @BXML
     TableView artistResultsTableView;
-    @WTKX
+    @BXML
     TableView releaseResultsTableView;
-    @WTKX
+    @BXML
     TableView workResultsTableView;
 
-    @WTKX
+    @BXML
     PushButton closeButton;
 
     private Resources resources;
@@ -117,7 +118,7 @@ public class SMDCRUDSearchWindow extends Window implements Bindable {
     private ClientConfig config;
 
     @Override
-    public void initialize(Resources resources) {
+    public void initialize(org.apache.pivot.collections.Map<String, Object> stringObjectMap, URL url, Resources resources) {
         this.resources = resources;
         InjectHelper.injectMembers(this);
         HOSTURL = "http://" + SMDSERVER + ":" + SMDSERVERPORT;
@@ -171,7 +172,7 @@ public class SMDCRUDSearchWindow extends Window implements Bindable {
         });
 
         // When search field is changed, we want to search for both artists, releases and works
-        searchTextInput.getTextInputTextListeners().add(new TextInputTextListener() {
+        searchTextInput.getTextInputContentListeners().add(new TextInputContentListener.Adapter() {
             @Override
             public void textChanged(TextInput textInput) {
                 if (textInput.getText() != null && textInput.getText().length() > 2) {
@@ -187,9 +188,11 @@ public class SMDCRUDSearchWindow extends Window implements Bindable {
             @Override
             public void selectedRangesChanged(TableView tableView, Sequence<Span> spanSequence) {
                 Release release = (Release) tableView.getSelectedRow();
-                searchTextInput.setText("");
-                searchArtists(null, null, release.getId());
-                searchWorks(null, null, release.getId());
+                if(release!=null) {
+                    searchTextInput.setText("");
+                    searchArtists(null, null, release.getId());
+                    searchWorks(null, null, release.getId());
+                }
             }
         });
 
@@ -198,9 +201,11 @@ public class SMDCRUDSearchWindow extends Window implements Bindable {
             @Override
             public void selectedRangesChanged(TableView tableView, Sequence<Span> spanSequence) {
                 Artist artist = (Artist) tableView.getSelectedRow();
-                searchTextInput.setText("");
-                searchReleases(null, artist.getId(), null);
-                searchWorks(null, artist.getId(), null);
+                if(artist!=null) {
+                    searchTextInput.setText("");
+                    searchReleases(null, artist.getId(), null);
+                    searchWorks(null, artist.getId(), null);
+                }
             }
         });
 
@@ -209,9 +214,11 @@ public class SMDCRUDSearchWindow extends Window implements Bindable {
             @Override
             public void selectedRangesChanged(TableView tableView, Sequence<Span> spanSequence) {
                 Work work = (Work) tableView.getSelectedRow();
-                searchTextInput.setText("");
-                searchReleases(null, null, work.getId());
-                searchArtists(null, work.getId(), null);
+                if(work!=null) {
+                    searchTextInput.setText("");
+                    searchReleases(null, null, work.getId());
+                    searchArtists(null, work.getId(), null);
+                }
             }
         });
 
@@ -222,8 +229,8 @@ public class SMDCRUDSearchWindow extends Window implements Bindable {
                 try {
                     if (count == 2) {
                         Release release = (Release) releaseResultsTableView.getSelectedRow();
-                        WTKXSerializer wtkxSerializer = new WTKXSerializer(resources);
-                        EditReleaseWindow window = (EditReleaseWindow) wtkxSerializer.readObject(this, "EditReleaseWindow.wtkx");
+                        BXMLSerializer wtkxSerializer = new BXMLSerializer();
+                        EditReleaseWindow window = (EditReleaseWindow) wtkxSerializer.readObject(getClass().getResource("EditReleaseWindow.bxml"),new Resources(resources,EditReleaseWindow.class.getName()));
                         window.open(getDisplay(), getWindow(), release);
                         return true;
                     }
@@ -235,7 +242,7 @@ public class SMDCRUDSearchWindow extends Window implements Bindable {
                 return false;
             }
         });
-        selectedImporterButton.getListButtonSelectionListeners().add(new ListButtonSelectionListener() {
+        selectedImporterButton.getListButtonSelectionListeners().add(new ListButtonSelectionListener.Adapter() {
             @Override
             public void selectedIndexChanged(ListButton listButton, int i) {
                 MediaImportStatus status = Client.create(config).resource(HOSTURL + "/mediaimportmodules/" + selectedImporterButton.getSelectedItem()).accept(MediaType.APPLICATION_JSON).get(MediaImportStatus.class);
@@ -479,7 +486,7 @@ public class SMDCRUDSearchWindow extends Window implements Bindable {
                 public Void execute() throws TaskExecutionException {
                     try {
                         selectedImporterButton.setEnabled(false);
-                        importButton.setButtonData(resources.getString("SMDCRUDSearchWindow.abortButton"));
+                        importButton.setButtonData(resources.get("abortButton"));
                         importProgressMeter.setPercentage(0);
                         importProgressMeter.setText("");
                         importProgressMeter.setVisible(true);
@@ -491,7 +498,7 @@ public class SMDCRUDSearchWindow extends Window implements Bindable {
                             }
                             importProgressDescription.setText(status.getCurrentDescription());
                             if(status.getStatus()==MediaImportStatus.Status.Aborting) {
-                                importButton.setButtonData(resources.getString("SMDCRUDSearchWindow.abortingButton"));
+                                importButton.setButtonData(resources.get("abortingButton"));
                                 importButton.setEnabled(false);
                             }
                             try {
@@ -533,7 +540,7 @@ public class SMDCRUDSearchWindow extends Window implements Bindable {
                             importProgressDescription.setText("");
                         }
                     }
-                    importButton.setButtonData(resources.getString("SMDCRUDSearchWindow.importButton"));
+                    importButton.setButtonData(resources.get("importButton"));
                     importButton.setEnabled(true);
                     selectedImporterButton.setEnabled(true);
                     importTask = null;

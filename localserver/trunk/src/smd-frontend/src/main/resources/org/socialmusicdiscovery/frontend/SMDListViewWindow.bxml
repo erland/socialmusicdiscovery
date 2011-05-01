@@ -1,5 +1,5 @@
-<smdfrontend:SMDListViewWindow title="%SMDListViewWindow.windowTitle" maximized="true"
-                               xmlns:wtkx="http://pivot.apache.org/wtkx"
+<smdfrontend:SMDListViewWindow title="%windowTitle" maximized="true"
+                               xmlns:bxml="http://pivot.apache.org/wtkx"
                                xmlns:content="org.apache.pivot.wtk.content"
                                xmlns:smdfrontend="org.socialmusicdiscovery.frontend"
                                xmlns="org.apache.pivot.wtk">
@@ -16,13 +16,13 @@
                         <!-- Search box -->
                         <TablePane.Row height="-1">
                             <BoxPane styles="{verticalAlignment:'center', horizontalAlignment:'left'}">
-                                <TextInput wtkx:id="searchTextInput" enabled="false"/>
-                                <PushButton wtkx:id="searchButton" enabled="false" styles="{padding:4}">
+                                <TextInput bxml:id="searchTextInput" enabled="false"/>
+                                <PushButton bxml:id="searchButton" enabled="false" styles="{padding:4}">
                                     <buttonData>
                                         <content:ButtonData icon="@magnifier.png"/>
                                     </buttonData>
                                 </PushButton>
-                                <ActivityIndicator wtkx:id="searchActivity"
+                                <ActivityIndicator bxml:id="searchActivity"
                                                    preferredWidth="24" preferredHeight="24"/>
                             </BoxPane>
                         </TablePane.Row>
@@ -45,13 +45,13 @@
 
                                             <rows>
                                                 <TablePane.Row height="-1">
-                                                    <ListButton wtkx:id="list1Button" />
+                                                    <ListButton bxml:id="list1Button" />
                                                 </TablePane.Row>
                                                 <TablePane.Row height="1*">
                                                     <ScrollPane horizontalScrollBarPolicy="fill"
                                                                 verticalScrollBarPolicy="fill_to_capacity">
                                                         <view>
-                                                            <TableView wtkx:id="list1TableView">
+                                                            <TableView bxml:id="list1TableView">
                                                                 <columns>
                                                                     <TableView.Column name="name" width="1*"/>
                                                                 </columns>
@@ -68,13 +68,13 @@
 
                                             <rows>
                                                 <TablePane.Row height="-1">
-                                                    <ListButton wtkx:id="list2Button"/>
+                                                    <ListButton bxml:id="list2Button"/>
                                                 </TablePane.Row>
                                                 <TablePane.Row height="1*">
                                                     <ScrollPane horizontalScrollBarPolicy="fill"
                                                                 verticalScrollBarPolicy="fill_to_capacity">
                                                         <view>
-                                                            <TableView wtkx:id="list2TableView">
+                                                            <TableView bxml:id="list2TableView">
                                                                 <columns>
                                                                     <TableView.Column name="name" width="1*"/>
                                                                 </columns>
@@ -91,13 +91,13 @@
 
                                             <rows>
                                                 <TablePane.Row height="-1">
-                                                    <ListButton wtkx:id="list3Button"/>
+                                                    <ListButton bxml:id="list3Button"/>
                                                 </TablePane.Row>
                                                 <TablePane.Row height="1*">
                                                     <ScrollPane horizontalScrollBarPolicy="fill"
                                                                 verticalScrollBarPolicy="fill_to_capacity">
                                                         <view>
-                                                            <TableView wtkx:id="list3TableView">
+                                                            <TableView bxml:id="list3TableView">
                                                                 <columns>
                                                                     <TableView.Column name="name" width="1*"/>
                                                                 </columns>
@@ -117,7 +117,7 @@
                             <ScrollPane horizontalScrollBarPolicy="fill"
                                         verticalScrollBarPolicy="fill_to_capacity">
                                 <view>
-                                    <TableView wtkx:id="tracksTableView">
+                                    <TableView bxml:id="tracksTableView">
                                         <columns>
                                             <TableView.Column name="name" width="1*"/>
                                         </columns>
@@ -132,8 +132,8 @@
                         <!-- Close button row -->
                         <TablePane.Row height="-1">
                             <BoxPane styles="{verticalAlignment:'center', horizontalAlignment:'right'}">
-                                <PushButton wtkx:id="closeButton" enabled="true" styles="{padding:4}"
-                                            buttonData="%SMDListViewWindow.closeButton">
+                                <PushButton bxml:id="closeButton" enabled="true" styles="{padding:4}"
+                                            buttonData="%closeButton">
                                 </PushButton>
                             </BoxPane>
                         </TablePane.Row>

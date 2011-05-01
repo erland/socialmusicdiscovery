@@ -1,5 +1,5 @@
-<smdfrontend:SMDCRUDSearchWindow title="%SMDCRUDSearchWindow.windowTitle" maximized="true"
-    xmlns:wtkx="http://pivot.apache.org/wtkx"
+<smdfrontend:SMDCRUDSearchWindow title="%windowTitle" maximized="true"
+    xmlns:bxml="http://pivot.apache.org/wtkx"
     xmlns:content="org.apache.pivot.wtk.content"
     xmlns:smdfrontend="org.socialmusicdiscovery.frontend"
     xmlns="org.apache.pivot.wtk">
@@ -25,14 +25,14 @@
                                 <rows>
                                     <TablePane.Row height="-1">
                                         <BoxPane styles="{verticalAlignment:'center'}">
-                                            <ListButton wtkx:id="selectedImporterButton"
+                                            <ListButton bxml:id="selectedImporterButton"
                                                                 listData="['squeezeboxserver','dropdatabase']"/>
-                                            <PushButton wtkx:id="importButton" enabled="true"
-                                                styles="{padding:4}" buttonData="%SMDCRUDSearchWindow.importButton"/>
+                                            <PushButton bxml:id="importButton" enabled="true"
+                                                styles="{padding:4}" buttonData="%importButton"/>
                                         </BoxPane>
                                         <BoxPane orientation="vertical" styles="{padding:6, spacing:6, fill:true}">
-                                            <Meter wtkx:id="importProgressMeter" preferredHeight="16"/>
-                                            <Label wtkx:id="importProgressDescription" text=""/>
+                                            <Meter bxml:id="importProgressMeter" preferredHeight="16"/>
+                                            <Label bxml:id="importProgressDescription" text=""/>
                                         </BoxPane>
                                     </TablePane.Row>
                                 </rows>
@@ -42,13 +42,13 @@
                         <!-- Search box row-->
                         <TablePane.Row height="-1">
                             <BoxPane styles="{verticalAlignment:'center', horizontalAlignment:'left'}">
-                                <TextInput wtkx:id="searchTextInput"/>
-                                <PushButton wtkx:id="searchButton" enabled="true" styles="{padding:4}">
+                                <TextInput bxml:id="searchTextInput"/>
+                                <PushButton bxml:id="searchButton" enabled="true" styles="{padding:4}">
                                     <buttonData>
                                         <content:ButtonData icon="@magnifier.png"/>
                                     </buttonData>
                                 </PushButton>
-                                <ActivityIndicator wtkx:id="searchActivity"
+                                <ActivityIndicator bxml:id="searchActivity"
                                     preferredWidth="24" preferredHeight="24"/>
                             </BoxPane>
                         </TablePane.Row>
@@ -57,7 +57,7 @@
                         <TablePane.Row height="1*">
                             <ScrollPane horizontalScrollBarPolicy="fill" verticalScrollBarPolicy="fill_to_capacity">
                                 <view>
-                                    <TableView wtkx:id="artistResultsTableView">
+                                    <TableView bxml:id="artistResultsTableView">
                                         <columns>
                                             <TableView.Column name="name" width="1*" headerData="Artists"/>
                                         </columns>
@@ -73,7 +73,7 @@
                         <TablePane.Row height="1*">
                             <ScrollPane horizontalScrollBarPolicy="fill" verticalScrollBarPolicy="fill_to_capacity">
                                 <view>
-                                    <TableView wtkx:id="releaseResultsTableView">
+                                    <TableView bxml:id="releaseResultsTableView">
                                         <columns>
                                             <TableView.Column name="name" width="1*" headerData="Releases"/>
                                         </columns>
@@ -89,7 +89,7 @@
                         <TablePane.Row height="2*">
                             <ScrollPane horizontalScrollBarPolicy="fill" verticalScrollBarPolicy="fill_to_capacity">
                                 <view>
-                                    <TableView wtkx:id="workResultsTableView">
+                                    <TableView bxml:id="workResultsTableView">
                                         <columns>
                                             <TableView.Column name="name" width="3*" headerData="Work"/>
                                         </columns>
@@ -104,7 +104,7 @@
                         <!-- Close button row -->
                         <TablePane.Row height="-1">
                             <BoxPane styles="{verticalAlignment:'center', horizontalAlignment:'right'}">
-                                <PushButton wtkx:id="closeButton" enabled="true" styles="{padding:4}" buttonData="%SMDCRUDSearchWindow.closeButton">
+                                <PushButton bxml:id="closeButton" enabled="true" styles="{padding:4}" buttonData="%closeButton">
                                 </PushButton>
                             </BoxPane>
                         </TablePane.Row>

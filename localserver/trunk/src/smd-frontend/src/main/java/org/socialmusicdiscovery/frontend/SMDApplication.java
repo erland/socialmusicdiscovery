@@ -27,10 +27,12 @@
 
 package org.socialmusicdiscovery.frontend;
 
+import org.apache.pivot.beans.BXMLSerializer;
 import org.apache.pivot.collections.Map;
 import org.apache.pivot.util.Resources;
-import org.apache.pivot.wtk.*;
-import org.apache.pivot.wtkx.WTKXSerializer;
+import org.apache.pivot.wtk.Application;
+import org.apache.pivot.wtk.DesktopApplicationContext;
+import org.apache.pivot.wtk.Display;
 import org.socialmusicdiscovery.frontend.injections.PropertiesModule;
 
 import java.util.Locale;
@@ -50,9 +52,9 @@ public class SMDApplication implements Application {
             Locale.setDefault(new Locale(language));
         }
         PropertiesModule.init(properties);
-        Resources resources = new Resources(SMDApplication.class.getName());
-        WTKXSerializer wtkxSerializer = new WTKXSerializer(resources);
-        window = (SMDApplicationWindow) wtkxSerializer.readObject(this, "SMDApplicationWindow.wtkx");
+        Resources resources = new Resources(SMDApplicationWindow.class.getName());
+        BXMLSerializer wtkxSerializer = new BXMLSerializer();
+        window = (SMDApplicationWindow) wtkxSerializer.readObject(getClass().getResource("SMDApplicationWindow.bxml"), resources);
         window.open(display);
     }
 

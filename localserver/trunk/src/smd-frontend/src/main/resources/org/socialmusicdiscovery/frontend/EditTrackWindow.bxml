@@ -1,5 +1,5 @@
-<smdfrontend:EditTrackWindow title="%EditTrackWindow.windowTitle" maximized="true"
-    xmlns:wtkx="http://pivot.apache.org/wtkx"
+<smdfrontend:EditTrackWindow title="%windowTitle" maximized="true"
+    xmlns:bxml="http://pivot.apache.org/wtkx"
     xmlns:content="org.apache.pivot.wtk.content"
     xmlns:smdfrontend="org.socialmusicdiscovery.frontend"
     xmlns="org.apache.pivot.wtk">
@@ -15,21 +15,21 @@
                     <rows>
                         <TablePane.Row height="-1">
                             <BoxPane orientation="horizontal">
-                                <Label text="%EditTrackWindow.trackNumber"/>
-                                <TextInput wtkx:id="trackNumberTextInput"/>
+                                <Label text="%trackNumber"/>
+                                <TextInput bxml:id="trackNumberTextInput"/>
                             </BoxPane>
                         </TablePane.Row>
                         <TablePane.Row height="-1">
                             <BoxPane orientation="horizontal">
-                                <Label text="%EditTrackWindow.recordingName"/>
-                                <TextInput wtkx:id="recordingNameTextInput"/>
+                                <Label text="%recordingName"/>
+                                <TextInput bxml:id="recordingNameTextInput"/>
                             </BoxPane>
                         </TablePane.Row>
                         <TablePane.Row height="-1">
                             <BoxPane orientation="horizontal">
-                                <Label text="%EditTrackWindow.workName"/>
-                                <TextInput wtkx:id="workNameTextInput"/>
-                                <PushButton wtkx:id="searchWorksButton" enabled="true" styles="{padding:4}">
+                                <Label text="%workName"/>
+                                <TextInput bxml:id="workNameTextInput"/>
+                                <PushButton bxml:id="searchWorksButton" enabled="true" styles="{padding:4}">
                                     <buttonData>
                                         <content:ButtonData icon="@magnifier.png"/>
                                     </buttonData>
@@ -38,17 +38,17 @@
                         </TablePane.Row>
                         <TablePane.Row height="-1">
                             <BoxPane orientation="horizontal">
-                                <Label text="%EditTrackWindow.recordingYear"/>
-                                <TextInput wtkx:id="recordingYearTextInput"/>
+                                <Label text="%recordingYear"/>
+                                <TextInput bxml:id="recordingYearTextInput"/>
                             </BoxPane>
                         </TablePane.Row>
                         <TablePane.Row height="1*">
                             <ScrollPane horizontalScrollBarPolicy="fill" verticalScrollBarPolicy="fill_to_capacity">
                                 <view>
-                                    <TableView wtkx:id="contributorsTableView">
+                                    <TableView bxml:id="contributorsTableView">
                                         <columns>
-                                            <TableView.Column name="type" width="1*" headerData="%EditTrackWindow.contributorType"/>
-                                            <TableView.Column name="name" width="3*" headerData="%EditTrackWindow.contributorName"/>
+                                            <TableView.Column name="type" width="1*" headerData="%contributorType"/>
+                                            <TableView.Column name="name" width="3*" headerData="%contributorName"/>
                                         </columns>
                                     </TableView>
                                 </view>
@@ -58,7 +58,7 @@
                             </ScrollPane>
                         </TablePane.Row>
                         <TablePane.Row height="-1">
-                            <PushButton wtkx:id="cancelButton" enabled="true" styles="{padding:4}" buttonData="%EditTrackWindow.cancelButton"/>
+                            <PushButton bxml:id="cancelButton" enabled="true" styles="{padding:4}" buttonData="%cancelButton"/>
                         </TablePane.Row>
                     </rows>
                 </TablePane>

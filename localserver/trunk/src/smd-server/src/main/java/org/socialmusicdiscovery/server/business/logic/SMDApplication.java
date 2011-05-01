@@ -29,8 +29,9 @@ package org.socialmusicdiscovery.server.business.logic;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import liquibase.ClassLoaderFileOpener;
 import liquibase.Liquibase;
+import liquibase.database.jvm.JdbcConnection;
+import liquibase.resource.ClassLoaderResourceAccessor;
 import org.socialmusicdiscovery.server.api.management.mediaimport.MediaImportStatus;
 import org.socialmusicdiscovery.server.business.logic.injections.database.DatabaseProvider;
 
@@ -121,8 +122,8 @@ public class SMDApplication {
             provider.start();
             Connection connection = provider.getConnection();
             Liquibase liquibase = new Liquibase("org/socialmusicdiscovery/server/database/smd-database.changelog.xml", new
-                    ClassLoaderFileOpener(),
-                    connection);
+                    ClassLoaderResourceAccessor(),
+                    new JdbcConnection(connection));
             if (System.getProperty("liquibase") == null || !System.getProperty("liquibase").equals("false")) {
                 liquibase.update("");
             }
