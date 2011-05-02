@@ -188,7 +188,7 @@ public class AbstractJSONProviderTest extends BaseTestCase {
         }
     }
 
-    public static interface ClientList<T> extends List<T> {
+    public static interface ClientList<T> extends List {
     }
 
     public static interface ClientSet<T> extends Set<T> {
