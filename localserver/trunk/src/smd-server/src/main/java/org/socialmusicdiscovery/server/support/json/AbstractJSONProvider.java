@@ -36,6 +36,7 @@ import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.MessageBodyWriter;
 import java.io.*;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Map;
@@ -61,8 +62,6 @@ public abstract class AbstractJSONProvider implements MessageBodyReader<Object>,
         }
     }
 
-    ;
-
     /**
      * Provides a JSON deserializer for the specified implementation class
      */
@@ -75,6 +74,45 @@ public abstract class AbstractJSONProvider implements MessageBodyReader<Object>,
 
         public Object deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
             return jsonDeserializationContext.deserialize(jsonElement, implementationClass);
+        }
+    }
+
+    /**
+     * Provides a JSON deserializer for the specified Collection based implementation class
+     */
+    public static class ImplementationCollectionDeserializer implements JsonDeserializer {
+        private Class<? extends Collection> implementationClass;
+
+        public ImplementationCollectionDeserializer(Class<? extends Collection> implementationClass) {
+            this.implementationClass = implementationClass;
+        }
+
+        public Object deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+            if (jsonElement.isJsonNull()) {
+              return null;
+            }
+
+            try {
+                Collection collection = implementationClass.newInstance();
+                if(!(type instanceof ParameterizedType)) {
+                    throw new JsonParseException("Unable to deserialize "+type+" no element type information available");
+                }
+                Type childType = ((ParameterizedType) type).getActualTypeArguments()[0];
+                for (JsonElement childElement : jsonElement.getAsJsonArray()) {
+                  if (childElement == null || childElement.isJsonNull()) {
+                    collection.add(null);
+                  } else {
+                    Object value = jsonDeserializationContext.deserialize(childElement, childType);
+                    collection.add(value);
+                  }
+                }
+
+                return collection;
+            } catch (InstantiationException e) {
+                throw new JsonParseException(e);
+            } catch (IllegalAccessException e) {
+                throw new JsonParseException(e);
+            }
         }
     }
 
@@ -134,7 +172,11 @@ public abstract class AbstractJSONProvider implements MessageBodyReader<Object>,
         for (Map.Entry<Class, Class> entry : converters.entrySet()) {
             gsonBuilder.registerTypeAdapter(entry.getKey(), new ImplementationSerializer(entry.getValue()));
             gsonBuilder.registerTypeAdapter(entry.getKey(), new ImplementationCreator(entry.getValue()));
-            gsonBuilder.registerTypeAdapter(entry.getKey(), new ImplementationDeserializer(entry.getValue()));
+            if(Collection.class.isAssignableFrom(entry.getKey())) {
+                gsonBuilder.registerTypeAdapter(entry.getKey(), new ImplementationCollectionDeserializer(entry.getValue()));
+            }else {
+                gsonBuilder.registerTypeAdapter(entry.getKey(), new ImplementationDeserializer(entry.getValue()));
+            }
         }
     }
 
@@ -188,6 +230,10 @@ public abstract class AbstractJSONProvider implements MessageBodyReader<Object>,
     }
 
     public <T> T fromJson(String jsonString, Class<T> type) {
+        return gsonBuilder.create().fromJson(jsonString, type);
+    }
+
+    public Object fromJson(String jsonString, Type type) {
         return gsonBuilder.create().fromJson(jsonString, type);
     }
 
