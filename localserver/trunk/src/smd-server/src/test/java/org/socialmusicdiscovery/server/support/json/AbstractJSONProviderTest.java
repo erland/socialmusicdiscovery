@@ -160,6 +160,34 @@ public class AbstractJSONProviderTest extends BaseTestCase {
         }
     }
 
+    public static class ConcreteObjectInstance implements ObjectInterface {
+        @Expose
+        ConcreteLinkedList<ItemInterface> list = new ConcreteLinkedList<ItemInterface>();
+        @Expose
+        ConcreteTreeSet<ItemInterface> set = new ConcreteTreeSet<ItemInterface>();
+
+        public ConcreteObjectInstance() {
+        }
+
+        public List<ItemInterface> getList() {
+            return list;
+        }
+
+        public void setList(List<ItemInterface> list) {
+            this.list.clear();
+            this.list.addAll(list);
+        }
+
+        public Set<ItemInterface> getSet() {
+            return set;
+        }
+
+        public void setSet(Set<ItemInterface> set) {
+            this.set.clear();
+            this.set.addAll(set);
+        }
+    }
+
     public static class ServiceObjectInstance implements ObjectInterface {
         @Expose
         List<ItemInterface> list = new ArrayList<ItemInterface>();
@@ -191,15 +219,26 @@ public class AbstractJSONProviderTest extends BaseTestCase {
     public static interface ClientList<T> extends List {
     }
 
+    public static interface ConcreteList extends List {
+    }
+
     public static interface ClientSet<T> extends Set<T> {
+    }
+
+    public static interface ConcreteSet extends Set {
     }
 
     public static class ClientLinkedList extends LinkedList implements ClientList {
     }
 
+    public static class ConcreteLinkedList<T> extends LinkedList implements ConcreteList {
+    }
+
     public static class ClientTreeSet<T> extends TreeSet<T> implements ClientSet<T> {
     }
 
+    public static class ConcreteTreeSet<T> extends TreeSet implements ConcreteSet {
+    }
 
     public static class ClientJSONProvider extends AbstractJSONProvider {
         public ClientJSONProvider() {
@@ -215,6 +254,23 @@ public class AbstractJSONProviderTest extends BaseTestCase {
             converters.put(ClientSet.class, ClientTreeSet.class);
             converters.put(ClientList.class, ClientLinkedList.class);
             converters.put(Collection.class, ArrayList.class);
+            return converters;
+        }
+    }
+
+    public static class ConcreteJSONProvider extends AbstractJSONProvider {
+        public ConcreteJSONProvider() {
+            super(true);
+        }
+
+        @Override
+        protected Map<Class, Class> getConversionMap() {
+            Map<Class, Class> converters = new HashMap<Class, Class>();
+
+            converters.put(ItemInterface.class, ClientItemInstance.class);
+            converters.put(ObjectInterface.class, ConcreteObjectInstance.class);
+            converters.put(ConcreteLinkedList.class, ConcreteLinkedList.class);
+            converters.put(ConcreteTreeSet.class, ConcreteTreeSet.class);
             return converters;
         }
     }
@@ -484,4 +540,122 @@ public class AbstractJSONProviderTest extends BaseTestCase {
         assert json.contains("eight");
         assert json.contains("thgie");
     }
+
+    @Test
+    public void testConcreteFromJson() {
+        String json = "[\n" +
+                "\t{\n" +
+                "\t\tlist: [\n" +
+                "\t\t\t{\n" +
+                "\t\t\t\tid: \"first\",\n" +
+                "\t\t\t\treversedId: \"tsrif\"\n" +
+                "\t\t\t},\n" +
+                "\t\t\t{\n" +
+                "\t\t\t\tid: \"second\",\n" +
+                "\t\t\t\treversedId: \"dnoces\"\n" +
+                "\t\t\t}\n" +
+                "\t\t],\n" +
+                "\t\tset: [\n" +
+                "\t\t\t{\n" +
+                "\t\t\t\tid: \"third\",\n" +
+                "\t\t\t\treversedId: \"driht\"\n" +
+                "\t\t\t},\n" +
+                "\t\t\t{\n" +
+                "\t\t\t\tid: \"forth\",\n" +
+                "\t\t\t\treversedId: \"htrof\"\n" +
+                "\t\t\t}\n" +
+                "\t\t]\n" +
+                "\t},\n" +
+                "\t{\n" +
+                "\t\tlist: [\n" +
+                "\t\t\t{\n" +
+                "\t\t\t\tid: \"fifth\"\n" +
+                "\t\t\t},\n" +
+                "\t\t\t{\n" +
+                "\t\t\t\tid: \"sixth\"\n" +
+                "\t\t\t}\n" +
+                "\t\t],\n" +
+                "\t\tset: [\n" +
+                "\t\t\t{\n" +
+                "\t\t\t\tid: \"seventh\"\n" +
+                "\t\t\t},\n" +
+                "\t\t\t{\n" +
+                "\t\t\t\tid: \"eight\"\n" +
+                "\t\t\t}\n" +
+                "\t\t]\n" +
+                "\t}\n" +
+                "]";
+        Collection<ObjectInterface> result = (Collection<ObjectInterface>) new ConcreteJSONProvider().fromJson(json, new TypeToken<Collection<ObjectInterface>>() {
+        }.getType());
+        assert result != null;
+        assert result.size() == 2;
+        Iterator iterator = result.iterator();
+        Object first = iterator.next();
+        Object second = iterator.next();
+
+        assert first instanceof ConcreteObjectInstance;
+        assert second instanceof ConcreteObjectInstance;
+
+        assert ((ConcreteObjectInstance) first).getList() instanceof ConcreteLinkedList;
+        assert ((ConcreteObjectInstance) first).getList().size() == 2;
+        assert ((ConcreteObjectInstance) first).getList().iterator().next() instanceof ClientItemInstance;
+        assert ((ClientItemInstance) ((ConcreteObjectInstance) first).getList().iterator().next()).getReversedId() == null;
+        assert ((ConcreteObjectInstance) second).getList() instanceof ConcreteLinkedList;
+        assert ((ConcreteObjectInstance) second).getList().size() == 2;
+        assert ((ConcreteObjectInstance) second).getList().iterator().next() instanceof ClientItemInstance;
+        assert ((ClientItemInstance) ((ConcreteObjectInstance) second).getList().iterator().next()).getReversedId() == null;
+
+        assert ((ConcreteObjectInstance) first).getSet() instanceof ConcreteTreeSet;
+        assert ((ConcreteObjectInstance) first).getSet().size() == 2;
+        assert ((ConcreteObjectInstance) first).getSet().iterator().next() instanceof ClientItemInstance;
+        assert ((ClientItemInstance) ((ConcreteObjectInstance) first).getSet().iterator().next()).getReversedId() == null;
+        assert ((ConcreteObjectInstance) second).getSet() instanceof ConcreteTreeSet;
+        assert ((ConcreteObjectInstance) second).getSet().size() == 2;
+        assert ((ConcreteObjectInstance) second).getSet().iterator().next() instanceof ClientItemInstance;
+        assert ((ClientItemInstance) ((ConcreteObjectInstance) second).getSet().iterator().next()).getReversedId() == null;
+    }
+
+    @Test
+    public void testConcreteToJson() {
+        ConcreteObjectInstance firstInstance = new ConcreteObjectInstance();
+        firstInstance.getList().add(new ClientItemInstance("first"));
+        firstInstance.getList().add(new ClientItemInstance("second"));
+        firstInstance.getSet().add(new ClientItemInstance("third"));
+        firstInstance.getSet().add(new ClientItemInstance("forth"));
+
+        ConcreteObjectInstance secondInstance = new ConcreteObjectInstance();
+        secondInstance.getList().add(new ClientItemInstance("fifth"));
+        secondInstance.getList().add(new ClientItemInstance("sixth"));
+        secondInstance.getSet().add(new ClientItemInstance("seventh"));
+        secondInstance.getSet().add(new ClientItemInstance("eight"));
+
+        Collection<ConcreteObjectInstance> instance = new ArrayList<ConcreteObjectInstance>();
+        instance.add(firstInstance);
+        instance.add(secondInstance);
+
+        String json = new ConcreteJSONProvider().toJson(instance);
+        assert json != null;
+        assert json.length() > 0;
+        assert !json.contains("Client");
+        assert !json.contains("Service");
+        assert !json.contains("SetItem");
+        assert !json.contains("ListItem");
+        assert json.contains("first");
+        assert !json.contains("tsrif");
+        assert json.contains("second");
+        assert !json.contains("dnoces");
+        assert json.contains("third");
+        assert !json.contains("driht");
+        assert json.contains("forth");
+        assert !json.contains("htrof");
+        assert json.contains("fifth");
+        assert !json.contains("htfif");
+        assert json.contains("sixth");
+        assert !json.contains("htxis");
+        assert json.contains("seventh");
+        assert !json.contains("htneves");
+        assert json.contains("eight");
+        assert !json.contains("thgie");
+    }
+
 }
