@@ -403,8 +403,6 @@ public class ContentDirectory extends AbstractContentDirectoryService  {
 			return search(objectId, searchCriteria,
 					filter, firstResult.getValue(), maxResults.getValue(),
 					orderByCriteria);
-		} catch (ContentDirectoryException ex) {
-			throw ex;
 		} catch (Exception ex) {
 			throw new ContentDirectoryException(ErrorCode.ACTION_FAILED,
 					ex.toString());
@@ -419,7 +417,7 @@ public class ContentDirectory extends AbstractContentDirectoryService  {
     public BrowseResult search(String objectID, String searchCriteria,
             String filter,
             long firstResult, long maxResults,
-            SortCriterion[] orderby) throws Exception {
+            SortCriterion[] orderby)  {
     	
 		System.err.println("Received: Search objectid="+objectID+" searchCriteria="+searchCriteria+" filter="+ filter
 				+ " indice="+firstResult + " nbresults="+maxResults);
@@ -491,7 +489,13 @@ public class ContentDirectory extends AbstractContentDirectoryService  {
 				upnpTrack.addResource(upnpResource);
 				didl.addItem(upnpTrack);
 			}
-			return new BrowseResult(new DIDLParser().generate(didl), searchResult.getItems().size(), searchResult.getCount().intValue());			
+			try {
+				return new BrowseResult(new DIDLParser().generate(didl), searchResult.getItems().size(), searchResult.getCount().intValue());
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				System.err.println("Parse error in DIDL Ojbect");
+			}			
 		}
     	return new BrowseResult(null, 0L, 0L, 0L);
     }
