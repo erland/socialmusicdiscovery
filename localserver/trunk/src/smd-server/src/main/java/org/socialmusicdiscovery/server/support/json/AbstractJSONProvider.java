@@ -170,7 +170,9 @@ public abstract class AbstractJSONProvider implements MessageBodyReader<Object>,
         }
 
         for (Map.Entry<Class, Class> entry : converters.entrySet()) {
-            gsonBuilder.registerTypeAdapter(entry.getKey(), new ImplementationSerializer(entry.getValue()));
+            if(!entry.getKey().equals(entry.getValue())) {
+                gsonBuilder.registerTypeAdapter(entry.getKey(), new ImplementationSerializer(entry.getValue()));
+            }
             gsonBuilder.registerTypeAdapter(entry.getKey(), new ImplementationCreator(entry.getValue()));
             if(Collection.class.isAssignableFrom(entry.getKey())) {
                 gsonBuilder.registerTypeAdapter(entry.getKey(), new ImplementationCollectionDeserializer(entry.getValue()));
