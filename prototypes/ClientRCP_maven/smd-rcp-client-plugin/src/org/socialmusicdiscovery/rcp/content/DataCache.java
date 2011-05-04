@@ -31,7 +31,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
@@ -106,21 +110,42 @@ import com.google.gson.annotations.Expose;
 	}
 
 	/**
+	 * <p>
 	 * Cache is used to ensure that client has only one instance of each server
-	 * object. We use a {@link WeakHashMap} in an attempt to let go of instance
-	 * no longer held by anyone, but this is probably not enough to free up
-	 * resources - as long as the navigator holds the list of root objects, all
-	 * "inflated" objects (and all children and offsprings at any level) will
-	 * most likely live forever. If memory consumption becomes a problem, we may
-	 * have to invent some way to "deflate" objects that are only visible in the
-	 * navigator (perhaps by using some kind of weak link in the navigator?).
+	 * object. We could use a {@link WeakHashMap} in an attempt to let go of
+	 * instance no longer held by anyone, but this is probably not enough to
+	 * free up resources - as long as the navigator holds the list of root
+	 * objects, all "inflated" objects (and all children and offsprings at any
+	 * level) will most likely live forever. If memory consumption becomes a
+	 * problem, we may have to invent some way to "deflate" objects that are
+	 * only visible in the navigator (perhaps by using some kind of weak link in
+	 * the navigator?).
+	 * </p>
+	 * 
+	 * <p>
+	 * Note: using a {@link WeakHashMap} causes problems in current
+	 * implementation; objects can get dropped and reloaded. One example is that
+	 * a loaded track is no longer in the cache when its owning release is
+	 * deleted. Not thoroughly investigated, but problem went away when
+	 * switching from {@link WeakHashMap} to regular {@link HashMap}.
+	 * </p>
 	 */
-	private final Map<String, SMDIdentity> cache = new WeakHashMap<String, SMDIdentity>();
+	private final Map<String, SMDIdentity> cache = new HashMap<String, SMDIdentity>();
 
 	/* Internal, use primarily for assertions (not only by this class) */
 	/* package */ boolean contains(SMDIdentity anObject) {
 		String key = anObject.getId();
 		return cache.containsKey(key) && cache.get(key)==anObject;
+	}
+	
+	/* Internal, use primarily for assertions (not only by this class) */
+	/* package */ boolean containsAll(Collection<? extends SMDIdentity> someObjects) {
+		for (SMDIdentity anObject : someObjects) {
+			if (!contains(anObject)) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	// TODO fix generics, eliminate warning
@@ -263,6 +288,28 @@ import com.google.gson.annotations.Expose;
             type = type.getSuperclass();
         }
         return fields;
+	}
+
+	public String dump() {
+		List<SMDIdentity> values = new ArrayList<SMDIdentity>(cache.values());
+		Collections.sort(values, new Comparator<SMDIdentity>() {
+			@Override
+			public int compare(SMDIdentity o1, SMDIdentity o2) {
+				return String.valueOf(o1).compareTo(String.valueOf(o2));
+			}
+		});
+		
+		StringBuilder sb = new StringBuilder();
+		for (SMDIdentity value : values) {
+			sb.append("\t");
+			sb.append(value);
+			sb.append("/");
+			sb.append(value.getId());
+			sb.append("#");
+			sb.append(value.hashCode());
+			sb.append("\n");
+		}
+		return sb.toString();
 	}
 
 }
