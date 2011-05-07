@@ -30,6 +30,8 @@ package org.socialmusicdiscovery.server.business.logic.injections;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import org.hibernate.SessionFactory;
+import org.hibernate.ejb.HibernateEntityManagerFactory;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
 import org.socialmusicdiscovery.server.business.logic.TransactionManager;
 import org.socialmusicdiscovery.server.business.logic.injections.database.DatabaseProvider;
@@ -64,7 +66,15 @@ public class JPAModule extends AbstractModule {
         return emFactory;
      }
 
-    @Provides 
+    @Provides
+    public SessionFactory provideSessionFactory(EntityManagerFactory entityManagerFactory) {
+        if(entityManagerFactory instanceof HibernateEntityManagerFactory) {
+            return ((HibernateEntityManagerFactory)entityManagerFactory).getSessionFactory();
+        }
+        return null;
+    }
+
+    @Provides
     public EntityManager provideEntityManager(EntityManagerFactory entityManagerFactory) {
         EntityManager entityManager = ENTITY_MANAGER_CACHE.get();
         if (entityManager == null) {

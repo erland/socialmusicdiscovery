@@ -28,6 +28,7 @@
 package org.socialmusicdiscovery.server.business.model.core;
 
 import com.google.gson.annotations.Expose;
+import org.hibernate.Hibernate;
 import org.socialmusicdiscovery.server.business.model.AbstractSMDIdentityEntity;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
 import org.socialmusicdiscovery.server.business.model.search.ReleaseSearchRelationEntity;
@@ -47,13 +48,11 @@ public class ReleaseEntity extends AbstractSMDIdentityEntity implements Release 
     @JoinColumn(name = "label_id")
     @Expose
     private Label label;
-    @OneToMany(targetEntity = MediumEntity.class, cascade = {CascadeType.ALL})
+    @OneToMany(targetEntity = MediumEntity.class, mappedBy = "release", cascade = {CascadeType.ALL})
     @OrderBy("number, name")
-    @JoinColumn(name = "release_id", nullable = false)
     @Expose
     private List<Medium> mediums = new ArrayList<Medium>();
-    @OneToMany(targetEntity = TrackEntity.class)
-    @JoinColumn(name = "release_id")
+    @OneToMany(targetEntity = TrackEntity.class, mappedBy = "release")
     @OrderBy("number")
     private List<Track> tracks = new ArrayList<Track>();
     @ManyToMany(targetEntity = RecordingSessionEntity.class)
@@ -132,5 +131,19 @@ public class ReleaseEntity extends AbstractSMDIdentityEntity implements Release 
 
     public void setSearchRelations(Set<ReleaseSearchRelationEntity> searchRelations) {
         this.searchRelations = searchRelations;
+    }
+
+    public void addTrack(TrackEntity track) {
+        if(Hibernate.isInitialized(tracks)) {
+            this.tracks.add(track);
+        }
+        track.setRelease(this);
+    }
+
+    public void addMedium(MediumEntity medium) {
+        if(Hibernate.isInitialized(mediums)) {
+            this.mediums.add(medium);
+        }
+        medium.setRelease(this);
     }
 }

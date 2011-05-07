@@ -36,6 +36,7 @@ import org.socialmusicdiscovery.server.api.mediaimport.ProcessingModule;
 import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
 import org.socialmusicdiscovery.server.business.logic.config.ConfigurationManager;
 import org.socialmusicdiscovery.server.business.logic.config.MappedConfigurationContext;
+import org.socialmusicdiscovery.server.business.logic.injections.StatisticsLogger;
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameter;
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameterEntity;
 
@@ -50,6 +51,9 @@ public class MediaImportManager {
     @Inject
     @Named("default-value")
     private ConfigurationManager defaultValueConfigurationManager;
+
+    @Inject
+    private StatisticsLogger statisticsLogger;
 
     /** Available media importer modules */
     private Map<String,MediaImporter> mediaImporters;
@@ -201,6 +205,7 @@ public class MediaImportManager {
         executorService.submit(new Runnable() {
             public void run() {
                 try {
+                    statisticsLogger.start();
                     mediaImporters.get(module).execute(new ProcessingStatusCallback() {
                         public void progress(String module, String currentDescription, Long currentNo, Long totalNo) {
                             long processingTime;
@@ -246,6 +251,7 @@ public class MediaImportManager {
                         }
 
                         public void failed(String module, String error) {
+                            statisticsLogger.finish();
                             synchronized (RUNNING_MODULES) {
                                 System.out.println(module+" failure after "+((System.currentTimeMillis()-runningModules.get(module).started)/1000)+" seconds");
                                 failedModules.put(module, runningModules.get(module));
@@ -254,6 +260,7 @@ public class MediaImportManager {
                         }
 
                         public void aborted(String module) {
+                            statisticsLogger.finish();
                             boolean postProcessing = false;
                             ProcessState state = null;
                             synchronized (RUNNING_MODULES) {
@@ -276,6 +283,7 @@ public class MediaImportManager {
                                         state.currentPostProcessingModuleNo++;
                                         runningModules.put(postProcessor.getId(), new ProcessState(postProcessor,ProcessState.Phase.EXECUTING));
                                     }
+                                    statisticsLogger.start();
                                     postProcessor.execute(this);
                                 }
                                 failedModules.put(module, abortingModules.remove(module));
@@ -288,6 +296,7 @@ public class MediaImportManager {
                         }
 
                         public void finished(String module) {
+                            statisticsLogger.finish();
                             boolean postProcessing = false;
                             ProcessState state = null;
                             synchronized (RUNNING_MODULES) {
@@ -309,6 +318,7 @@ public class MediaImportManager {
                                         state.currentPostProcessingModuleNo++;
                                         runningModules.put(postProcessor.getId(), new ProcessState(postProcessor,ProcessState.Phase.EXECUTING));
                                     }
+                                    statisticsLogger.start();
                                     postProcessor.execute(this);
                                 }
                                 System.out.println(module+" finished after "+((System.currentTimeMillis()-state.started)/1000)+" seconds");

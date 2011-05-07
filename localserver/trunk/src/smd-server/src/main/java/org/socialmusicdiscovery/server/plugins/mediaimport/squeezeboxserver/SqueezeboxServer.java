@@ -42,6 +42,7 @@ import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
 import org.socialmusicdiscovery.server.business.model.GlobalIdentity;
 import org.socialmusicdiscovery.server.business.model.GlobalIdentityEntity;
+import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReference;
 import org.socialmusicdiscovery.server.business.model.classification.Classification;
 import org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity;
@@ -50,6 +51,7 @@ import org.socialmusicdiscovery.server.business.model.config.ConfigurationParame
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameterEntity;
 import org.socialmusicdiscovery.server.business.model.core.*;
 import org.socialmusicdiscovery.server.business.repository.GlobalIdentityRepository;
+import org.socialmusicdiscovery.server.business.repository.SMDIdentityRepository;
 import org.socialmusicdiscovery.server.business.repository.classification.ClassificationReferenceRepository;
 import org.socialmusicdiscovery.server.business.repository.classification.ClassificationRepository;
 import org.socialmusicdiscovery.server.business.repository.core.*;
@@ -88,10 +90,10 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
         }
     }
 
-    private Map<TypeIdentity, Collection<ClassificationEntity>> classificationCache = new HashMap<TypeIdentity, Collection<ClassificationEntity>>();
-    private Map<String, Collection<ArtistEntity>> artistCache = new HashMap<String, Collection<ArtistEntity>>();
+    private Map<TypeIdentity, Collection<String>> classificationCache = new HashMap<TypeIdentity, Collection<String>>();
+    private Map<String, Collection<String>> artistCache = new HashMap<String, Collection<String>>();
     private Set<String> artistMusicbrainzCache = new HashSet<String>();
-    private Map<String, Collection<ReleaseEntity>> releaseCache = new HashMap<String, Collection<ReleaseEntity>>();
+    private Map<String, Collection<String>> releaseCache = new HashMap<String, Collection<String>>();
     private Set<String> releaseMusicbrainzCache = new HashSet<String>();
 
     private boolean abort = false;
@@ -183,11 +185,6 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                     }
                     entityManager.flush();
                     entityManager.clear();
-                    artistCache.clear();
-                    artistMusicbrainzCache.clear();
-                    classificationCache.clear();
-                    releaseCache.clear();
-                    releaseMusicbrainzCache.clear();
                     entityManager.getTransaction().commit();
                     if (offset + trackList.getTracks().size() < trackList.getCount()) {
                         offset = offset + trackList.getTracks().size();
@@ -347,7 +344,7 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                 if (artistContributors.size() == 1 && tags.containsKey(TagData.MUSICBRAINZ_ARTIST_ID)) {
                     String artistId = tags.get(TagData.MUSICBRAINZ_ARTIST_ID).iterator().next();
                     if (!artistMusicbrainzCache.contains(artistId)) {
-                        Artist artist = artistCache.get(tags.get(TagData.ARTIST).iterator().next().toLowerCase()).iterator().next();
+                        Artist artist = artistRepository.findById(artistCache.get(tags.get(TagData.ARTIST).iterator().next().toLowerCase()).iterator().next());
                         GlobalIdentityEntity identity = globalIdentityRepository.findBySourceAndEntity(GlobalIdentity.SOURCE_MUSICBRAINZ, artist);
                         if (identity == null) {
                             identity = new GlobalIdentityEntity();
@@ -364,7 +361,7 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                 if (albumArtistContributors.size() == 1 && tags.containsKey(TagData.MUSICBRAINZ_ALBUMARTIST_ID)) {
                     String artistId = tags.get(TagData.MUSICBRAINZ_ALBUMARTIST_ID).iterator().next();
                     if (!artistMusicbrainzCache.contains(artistId)) {
-                        Artist artist = artistCache.get(tags.get(TagData.ALBUMARTIST).iterator().next().toLowerCase()).iterator().next();
+                        Artist artist = artistRepository.findById(artistCache.get(tags.get(TagData.ALBUMARTIST).iterator().next().toLowerCase()).iterator().next());
                         GlobalIdentityEntity identity = globalIdentityRepository.findBySourceAndEntity(GlobalIdentity.SOURCE_MUSICBRAINZ, artist);
                         if (identity == null) {
                             identity = new GlobalIdentityEntity();
@@ -419,11 +416,11 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
 
                     // Create a new Release entity if it isn't already available
                     //TODO: We need to implement handling of greatest hits album here which might have exactly the same name
-                    Collection<ReleaseEntity> releases = this.releaseCache.get(albumName.toLowerCase());
+                    Collection<ReleaseEntity> releases = lookup(this.releaseCache.get(albumName.toLowerCase()), releaseRepository);
                     if (releases == null) {
                         releases = releaseRepository.findByName(albumName);
                         if (releases.size() > 0) {
-                            this.releaseCache.put(albumName.toLowerCase(), releases);
+                            this.releaseCache.put(albumName.toLowerCase(), idList(releases));
                         }
                     }
                     ReleaseEntity release = null;
@@ -448,7 +445,7 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                             release.setContributors(albumArtistContributors);
                         }
                         releaseRepository.create(release);
-                        this.releaseCache.put(albumName.toLowerCase(), Arrays.asList(release));
+                        this.releaseCache.put(albumName.toLowerCase(), Arrays.asList(release.getId()));
                     } else {
                         // We use the first Release entity found if it already existsted
                         release = releases.iterator().next();
@@ -491,6 +488,7 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                     }
                     track.getPlayableElements().addAll(playableElements);
                     track.setRecording(recording);
+                    release.addTrack(track);
                     trackRepository.create(track);
 
                     if (tags.containsKey(TagData.MUSICBRAINZ_TRACK_ID)) {
@@ -540,12 +538,13 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                             } catch (NumberFormatException e) {
                                 medium.setName(discNo);
                             }
-                            release.getMediums().add(medium);
-                            mediumRepository.create((MediumEntity)medium);
+                            medium.addTrack(track);
+                            release.addMedium(medium);
+                            mediumRepository.create(medium);
+                        }else {
+                            medium.addTrack(track);
                         }
-                        ((MediumEntity)medium).getTracks().add(track);
                     }
-                    release.getTracks().add(track);
                 }
             }
         }
@@ -592,11 +591,11 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
         if (artistNames != null) {
             Collection<Artist> artists = new ArrayList<Artist>();
             for (String artistName : artistNames) {
-                Collection<ArtistEntity> existingArtists = this.artistCache.get(artistName.toLowerCase());
+                Collection<ArtistEntity> existingArtists = lookup(this.artistCache.get(artistName.toLowerCase()), artistRepository);
                 if (existingArtists == null) {
                     existingArtists = artistRepository.findByName(artistName);
                     if (existingArtists.size() > 0) {
-                        this.artistCache.put(artistName.toLowerCase(), existingArtists);
+                        this.artistCache.put(artistName.toLowerCase(), idList(existingArtists));
                     }
                 }
                 if (existingArtists.size() == 0) {
@@ -606,7 +605,7 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                     artist.setLastUpdatedBy(getId());
                     artistRepository.create(artist);
                     artists.add(artist);
-                    this.artistCache.put(artistName.toLowerCase(), Arrays.asList(artist));
+                    this.artistCache.put(artistName.toLowerCase(), Arrays.asList(artist.getId()));
                 } else {
                     artists.addAll(existingArtists);
                 }
@@ -621,6 +620,28 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
             }
         }
         return contributors;
+    }
+
+    private Collection<String> idList(Collection<? extends SMDIdentity> entityList) {
+        if(entityList==null || entityList.size()==0) {
+            return null;
+        }
+        List<String> idList = new ArrayList<String>(entityList.size());
+        for (SMDIdentity artist : entityList) {
+            idList.add(artist.getId());
+        }
+        return idList;
+    }
+
+    private <T> Collection<T> lookup(Collection<String> idList, SMDIdentityRepository<T> repository) {
+        if(idList==null || idList.size()==0) {
+            return null;
+        }
+        List<T> result = new ArrayList<T>(idList.size());
+        for (String id : idList) {
+            result.add(repository.findById(id));
+        }
+        return result;
     }
 
     /**
@@ -647,11 +668,11 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
         if (classificationNames != null) {
             for (String classificationName : classificationNames) {
                 TypeIdentity classificationId = new TypeIdentity(classificationType.toLowerCase(), classificationName.toLowerCase());
-                Collection<ClassificationEntity> existingClassifications = this.classificationCache.get(classificationId);
+                Collection<ClassificationEntity> existingClassifications = lookup(this.classificationCache.get(classificationId), classificationRepository);
                 if (existingClassifications == null) {
                     existingClassifications = classificationRepository.findByNameAndType(classificationName, classificationType);
                     if (existingClassifications.size() > 0) {
-                        this.classificationCache.put(classificationId, existingClassifications);
+                        this.classificationCache.put(classificationId, idList(existingClassifications));
                     }
                 }
                 ClassificationReferenceEntity classificationReference = new ClassificationReferenceEntity();
@@ -662,14 +683,15 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                     ClassificationEntity classification = new ClassificationEntity();
                     classification.setName(classificationName);
                     classification.setType(classificationType);
-                    classification.getReferences().add(classificationReference);
                     classification.setLastUpdated(new Date());
                     classification.setLastUpdatedBy(getId());
                     classificationRepository.create(classification);
-                    this.classificationCache.put(classificationId, Arrays.asList(classification));
+                    classification.addReference(classificationReference);
+                    classificationReferenceRepository.create(classificationReference);
+                    this.classificationCache.put(classificationId, Arrays.asList(classification.getId()));
                 } else {
                     for (ClassificationEntity classification : existingClassifications) {
-                        classification.getReferences().add(classificationReference);
+                        classification.addReference(classificationReference);
                         classificationReferenceRepository.create(classificationReference);
                     }
                 }

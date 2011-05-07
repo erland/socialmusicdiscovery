@@ -32,7 +32,10 @@ import org.socialmusicdiscovery.server.business.model.AbstractSMDIdentityEntity;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReference;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
 
-import javax.persistence.*;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @javax.persistence.Entity
 @Table(name = "classification_references")
@@ -43,11 +46,23 @@ public class ClassificationReferenceEntity extends AbstractSMDIdentityEntity imp
     @JoinColumn(name = "reference_to_id", nullable = false)
     private SMDIdentityReference referenceTo;
 
+    @ManyToOne(targetEntity = ClassificationEntity.class, optional = false)
+    @JoinColumn(name ="classification_id", nullable = false)
+    private Classification classification;
+
     public SMDIdentityReference getReferenceTo() {
         return referenceTo;
     }
 
     public void setReferenceTo(SMDIdentityReference referenceTo) {
         this.referenceTo = referenceTo;
+    }
+
+    public Classification getClassification() {
+        return classification;
+    }
+
+    public void setClassification(Classification classification) {
+        this.classification = classification;
     }
 }

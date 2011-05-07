@@ -68,6 +68,16 @@ public class InjectHelper {
     }
 
     /**
+     * Get an instance of specified class
+     *
+     * @param T    The interface of the instance to get
+     * @return The instance represented by the specified name
+     */
+    public static <T> T instance(Class T) {
+        return (T) injector.getInstance(Key.get(T));
+    }
+
+    /**
      * Check if there are an instance represented by the specified name
      *
      * @param T    The interface of the instance to check
