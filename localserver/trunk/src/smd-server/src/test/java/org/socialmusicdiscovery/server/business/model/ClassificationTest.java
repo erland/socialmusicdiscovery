@@ -74,7 +74,7 @@ public class ClassificationTest extends BaseTestCase {
             classificationReference.setReferenceTo(SMDIdentityReferenceEntity.forEntity(release));
             classificationReference.setLastUpdated(new Date());
             classificationReference.setLastUpdatedBy("JUnit");
-            classification.getReferences().add(classificationReference);
+            classification.addReference(classificationReference);
             classification.setLastUpdated(new Date());
             classification.setLastUpdatedBy("JUnit");
 
@@ -83,7 +83,7 @@ public class ClassificationTest extends BaseTestCase {
                 classificationReference.setReferenceTo(SMDIdentityReferenceEntity.forEntity(track));
                 classificationReference.setLastUpdated(new Date());
                 classificationReference.setLastUpdatedBy("JUnit");
-                classification.getReferences().add(classificationReference);
+                classification.addReference(classificationReference);
             }
             classificationRepository.create(classification);
 
@@ -118,9 +118,11 @@ public class ClassificationTest extends BaseTestCase {
 
         } catch (Exception e) {
             em.getTransaction().rollback();
-            e.printStackTrace();
+            throw e;
         } finally {
-            em.getTransaction().commit();
+            if(em.getTransaction().isActive()) {
+                em.getTransaction().commit();
+            }
         }
     }
 }

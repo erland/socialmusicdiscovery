@@ -68,6 +68,7 @@ public class JPAClassificationRepository extends AbstractJPASMDIdentityRepositor
 
     @Override
     public void create(ClassificationEntity entity) {
+        super.create(entity);
         for (ClassificationReference classificationReference : entity.getReferences()) {
             if(!entityManager.contains(classificationReference)) {
                 if(((ClassificationReferenceEntity)classificationReference).getLastUpdated()==null) {
@@ -76,11 +77,10 @@ public class JPAClassificationRepository extends AbstractJPASMDIdentityRepositor
                 if(((ClassificationReferenceEntity)classificationReference).getLastUpdatedBy()==null) {
                     ((ClassificationReferenceEntity)classificationReference).setLastUpdatedBy(entity.getLastUpdatedBy());
                 }
+                ((ClassificationReferenceEntity) classificationReference).setClassification(entity);
                 classificationReferenceRepository.create((ClassificationReferenceEntity) classificationReference);
             }
         }
-
-        super.create(entity);
     }
 
     @Override
@@ -93,6 +93,7 @@ public class JPAClassificationRepository extends AbstractJPASMDIdentityRepositor
                 if(((ClassificationReferenceEntity)classificationReference).getLastUpdatedBy()==null) {
                     ((ClassificationReferenceEntity)classificationReference).setLastUpdatedBy(entity.getLastUpdatedBy());
                 }
+                ((ClassificationReferenceEntity) classificationReference).setClassification(entity);
                 classificationReferenceRepository.merge((ClassificationReferenceEntity) classificationReference);
             }
         }

@@ -1,6 +1,7 @@
 org.socialmusicdiscovery.server.business.logic.injections.PropertiesModule
 org.socialmusicdiscovery.server.business.logic.injections.JPAModule
 org.socialmusicdiscovery.server.business.logic.injections.ConfigurationManagerModule
+org.socialmusicdiscovery.server.business.logic.injections.JPAStatisticsLoggerModule
 org.socialmusicdiscovery.server.business.logic.injections.ExecutorServiceModule
 org.socialmusicdiscovery.server.business.logic.injections.MediaImportManagerModule
 org.socialmusicdiscovery.server.business.logic.injections.database.DerbyProviderModule

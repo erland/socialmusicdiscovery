@@ -28,13 +28,11 @@
 package org.socialmusicdiscovery.server.business.model.core;
 
 import com.google.gson.annotations.Expose;
+import org.hibernate.Hibernate;
 import org.socialmusicdiscovery.server.business.model.AbstractSMDIdentityEntity;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
 
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,10 +44,13 @@ public class MediumEntity extends AbstractSMDIdentityEntity implements Medium {
     private Integer number;
     @Expose
     private String name;
-    @OneToMany(targetEntity = TrackEntity.class)
-    @JoinColumn(name = "medium_id")
+    @OneToMany(targetEntity = TrackEntity.class, mappedBy = "medium")
     @OrderBy("number")
     private List<Track> tracks = new ArrayList<Track>();
+
+    @ManyToOne(targetEntity = ReleaseEntity.class, optional = false)
+    @JoinColumn(name = "release_id", nullable = false)
+    private Release release;
 
     public Integer getNumber() {
         return number;
@@ -73,5 +74,20 @@ public class MediumEntity extends AbstractSMDIdentityEntity implements Medium {
 
     public void setTracks(List<Track> tracks) {
         this.tracks = tracks;
+    }
+
+    public Release getRelease() {
+        return release;
+    }
+
+    public void setRelease(Release release) {
+        this.release = release;
+    }
+
+    public void addTrack(TrackEntity track) {
+        if(Hibernate.isInitialized(this.tracks)) {
+            this.tracks.add(track);
+        }
+        track.setMedium(this);
     }
 }

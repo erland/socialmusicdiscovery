@@ -28,10 +28,14 @@
 package org.socialmusicdiscovery.server.business.model.classification;
 
 import com.google.gson.annotations.Expose;
+import org.hibernate.Hibernate;
 import org.socialmusicdiscovery.server.business.model.AbstractSMDIdentityEntity;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -50,8 +54,7 @@ public class ClassificationEntity extends AbstractSMDIdentityEntity implements C
     @Expose
     private Set<Classification> childs = new HashSet<Classification>();
 
-    @OneToMany(targetEntity = ClassificationReferenceEntity.class)
-    @JoinColumn(name = "classification_id", nullable = true)
+    @OneToMany(targetEntity = ClassificationReferenceEntity.class, mappedBy = "classification")
     private Set<ClassificationReference> references = new HashSet<ClassificationReference>();
 
     public String getType() {
@@ -85,4 +88,12 @@ public class ClassificationEntity extends AbstractSMDIdentityEntity implements C
     public void setReferences(Set<ClassificationReference> references) {
         this.references = references;
     }
+
+    public void addReference(ClassificationReferenceEntity reference) {
+        if(Hibernate.isInitialized(this.references)) {
+            this.references.add(reference);
+        }
+        reference.setClassification(this);
+    }
+
 }
