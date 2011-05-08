@@ -59,9 +59,9 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.sonatype.tycho</groupId>
+        <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-maven-plugin</artifactId>
-        <version>0.10.0</version>
+        <version>0.12.0</version>
         <extensions>true</extensions>
         <configuration>
           <resolver>p2</resolver>
@@ -80,9 +80,9 @@
       <build>
         <plugins>
           <plugin>
-            <groupId>org.sonatype.tycho</groupId>
+            <groupId>org.eclipse.tycho</groupId>
             <artifactId>target-platform-configuration</artifactId>
-            <version>0.10.0</version>
+            <version>0.12.0</version>
             <configuration>
               <resolver>p2</resolver>
               <pomDependencies>consider</pomDependencies>
@@ -113,9 +113,9 @@
       <build>
         <plugins>
           <plugin>
-            <groupId>org.sonatype.tycho</groupId>
+            <groupId>org.eclipse.tycho</groupId>
             <artifactId>target-platform-configuration</artifactId>
-            <version>0.10.0</version>
+            <version>0.12.0</version>
             <configuration>
               <resolver>p2</resolver>
               <pomDependencies>consider</pomDependencies>
@@ -147,9 +147,9 @@
       <build>
         <plugins>
           <plugin>
-            <groupId>org.sonatype.tycho</groupId>
+            <groupId>org.eclipse.tycho</groupId>
             <artifactId>target-platform-configuration</artifactId>
-            <version>0.10.0</version>
+            <version>0.12.0</version>
             <configuration>
               <resolver>p2</resolver>
               <pomDependencies>consider</pomDependencies>
@@ -175,9 +175,9 @@
       <build>
         <plugins>
           <plugin>
-            <groupId>org.sonatype.tycho</groupId>
+            <groupId>org.eclipse.tycho</groupId>
             <artifactId>target-platform-configuration</artifactId>
-            <version>0.10.0</version>
+            <version>0.12.0</version>
             <configuration>
               <resolver>p2</resolver>
               <pomDependencies>consider</pomDependencies>
