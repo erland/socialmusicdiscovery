@@ -25,28 +25,72 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.rcp.content;
+package org.socialmusicdiscovery.rcp.util;
 
-import org.socialmusicdiscovery.server.business.model.core.Artist;
-import org.socialmusicdiscovery.server.business.model.core.Contributor;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+
+import org.junit.Test;
+import org.socialmusicdiscovery.rcp.content.AbstractTestCase;
 
 /**
- * Extends the {@link Contributor} with info on what the {@link Artist} contributes <b>to</b>.
- * 
  * @author Peer Törngren
+ *
  */
-public class ObservableContribution extends ObservableContributor {
+public class GenericWritableListTest extends AbstractTestCase {
 
-	private static final String PROP_entity = "entity";
-	
-	private AbstractContributableEntity entity; 
+	private GenericWritableList<String> list;
 
-	public AbstractContributableEntity getEntity() {
-		return entity;
+	@Override
+	protected void setUp() throws Exception {
+		super.setUp();
+		list = new GenericWritableList<String>();
 	}
-	
-	public void setEntity(AbstractContributableEntity entity) {
-		firePropertyChange(PROP_entity, this.entity, this.entity = entity);
+
+	@Test
+	public void testAddRemove() {
+		list.addListChangeListener(listener);
+		list.add("A");
+		assertTrue(list.contains("A"));
+		assertTrue(listener.isChanged());
+		
+		list.remove("A");
+		assertFalse(list.contains("A"));
+		assertTrue(list.isEmpty());
+		assertTrue(listener.isChanged());
+
 	}
-	
+
+	/**
+	 * This is not really a test, but rather a verification that the code
+	 * compiles, and an example on how to loop over the set.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testIterate1() {
+		list.addAll(Arrays.asList("A", "B"));
+		String actual = "";
+		for (String s : (List<String>)list) {
+			actual+=s;
+		}
+		assertEquals("Bad loop", "AB", actual);
+	}
+
+	/**
+	 * This is not really a test, but rather a verification that the code
+	 * compiles, and an example on how to loop over the set.
+	 */
+	@Test
+	public void testIterate2() {
+		list.addAll(Arrays.asList("A", "B"));
+		Iterator<String> iter = list.iterator();
+		String actual = "";
+		while(iter.hasNext()) {
+			actual+=iter.next();
+		}
+		assertEquals("Bad loop", "AB", actual);
+	}
+
+			
 }

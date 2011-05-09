@@ -28,10 +28,12 @@
 package org.socialmusicdiscovery.rcp.content;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
+import org.eclipse.core.databinding.observable.set.IObservableSet;
+import org.socialmusicdiscovery.rcp.util.GenericWritableSet;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
-import org.socialmusicdiscovery.server.business.model.core.Contributor;
 import org.socialmusicdiscovery.server.business.model.core.Person;
 import org.socialmusicdiscovery.server.business.model.core.Recording;
 import org.socialmusicdiscovery.server.business.model.core.Release;
@@ -39,14 +41,13 @@ import org.socialmusicdiscovery.server.business.model.core.Release;
 import com.google.gson.annotations.Expose;
 
 public class ObservableArtist extends AbstractObservableEntity<Artist> implements Artist {
-
 	public static final String PROP_person = "person";
 	public static final String PROP_aliases = "aliases";
 	public static final String PROP_contributions = "contributions";
 	
 	@Expose private Person person;
 	@Expose private Set<Artist> aliases = new HashSet<Artist>();
-	private transient Set<ObservableContribution> contributions;
+	private transient volatile GenericWritableSet<ObservableContributor> contributions;
 
 	@Override
 	public Person getPerson() {
@@ -66,23 +67,29 @@ public class ObservableArtist extends AbstractObservableEntity<Artist> implement
 		firePropertyChange(PROP_aliases, this.aliases, this.aliases = aliases);
 	}
 
-	public Set<ObservableContribution> getContributions() {
-		if (contributions==null) {
+	public GenericWritableSet<ObservableContributor> getContributions() {
+		if (!isContributionsLoaded()) {
 			contributions = resolveContributions();
 		}
 		return contributions;
 	}
 
-	public void setContributions(Set<ObservableContribution> contributions) {
-		if (this.contributions==null) {
-			this.contributions = new HashSet<ObservableContribution>();
-		}
-		updateSet(PROP_contributions, this.contributions, contributions);
+	/**
+	 * Use to determine if and when to resolve {@link #getContributions()} 
+	 * @return boolean
+	 */
+	public boolean isContributionsLoaded() {
+		return contributions!=null;
 	}
 
-	@SuppressWarnings("unchecked")
-	private Set<ObservableContribution> resolveContributions() {
-		Set<ObservableContribution> result = new HashSet();
+	/** ONLY FOR TESTING! */
+	/* package */ void setContributions(Set<ObservableContributor> contributions) {
+		assert this.contributions==null || this.contributions.isEmpty() : "Attempt to reassing contributions!";
+		this.contributions = new GenericWritableSet<ObservableContributor>(contributions, ObservableContributor.class);
+	}
+
+	private GenericWritableSet<ObservableContributor> resolveContributions() {
+		GenericWritableSet<ObservableContributor> result = new GenericWritableSet<ObservableContributor>();
 		Class[] contributableTypes = {
 			Release.class, 
 			Recording.class, 
@@ -96,26 +103,39 @@ public class ObservableArtist extends AbstractObservableEntity<Artist> implement
 	}
 
 	@SuppressWarnings("unchecked")
-	private Set<ObservableContribution> getContributions(Class type) {
-		Set<ObservableContribution> result = new HashSet<ObservableContribution>();
+	private Set<ObservableContributor> getContributions(Class type) {
+		Set<ObservableContributor> result = new HashSet<ObservableContributor>();
 		Set<AbstractContributableEntity> contributedEntities = getDataSource().resolveRoot(type).findAll(this);
 		
 		for (AbstractContributableEntity contributedEntity : contributedEntities) {
 			contributedEntity.inflate();
 			for (Object o : contributedEntity.getContributors()) {
-				Contributor contributor = (Contributor) o;
+				ObservableContributor contributor = (ObservableContributor) o;
 				Artist contributingArtist = contributor.getArtist();
 				if (contributingArtist.equals(this)) {
-                    ObservableContribution observableContribution = new ObservableContribution();
-                    observableContribution.setArtist(this);
-                    observableContribution.setEntity(contributedEntity);
-                    observableContribution.setType(contributor.getType());
-					result.add(observableContribution);
+                    result.add(contributor);
 				}
 			}
 		}
 		
 		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void delete() {
+		if (contributions!=null) {
+			Set<ObservableContributor> tmp = new HashSet<ObservableContributor>(contributions);
+			for (Iterator<ObservableContributor> iterator = tmp.iterator(); iterator.hasNext();) {
+				ObservableContributor c = iterator.next();
+				AbstractContributableEntity entity = c.getEntity();
+				IObservableSet contributors = entity.getContributors();
+				boolean removed = contributors.remove(c);
+				assert removed : "Contribution not removed from entity contributors: " + c; 
+			}
+			assert contributions.isEmpty() : "Collection should have been cleared when all contributions are removed: "+contributions;
+		}
+		super.delete();
 	}
 
 }

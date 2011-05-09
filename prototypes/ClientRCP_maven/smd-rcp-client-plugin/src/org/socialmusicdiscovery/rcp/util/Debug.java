@@ -40,15 +40,22 @@ public final class Debug {
 
 	private Debug() {}
 
-	public static void debug(Object source, String msg, Object... objects) {
-		debug(source, msg, Arrays.asList(objects));
+	/**
+	 * @return <code>false</code> to allow use for tracing in conditional breakpoints
+	 */
+	public static boolean debug(Object source, String msg, Object... objects) {
+		return debug(source, msg, Arrays.asList(objects));
 	}
 
-	public static void debug(Object source, String msg, Collection objects) {
+	/**
+	 * @return <code>false</code> to allow use for tracing in conditional breakpoints
+	 */
+	public static boolean debug(Object source, String msg, Collection objects) {
 		System.out.println("*DEBUG* "+source+": "+msg);
 		for (Object each: objects) {
 			System.out.println("\t"+each);
 		}
+		return false;
 	}
 
 }

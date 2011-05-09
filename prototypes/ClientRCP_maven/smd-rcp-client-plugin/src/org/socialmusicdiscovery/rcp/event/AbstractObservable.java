@@ -31,6 +31,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import org.socialmusicdiscovery.rcp.error.FatalApplicationException;
@@ -154,6 +155,27 @@ public abstract class AbstractObservable implements Observable {
 			throw new FatalApplicationException("Unable to clone set: "+existingSet, e);  //$NON-NLS-1$
 		} catch (IllegalAccessException e) {
 			throw new FatalApplicationException("Unable to clone set: "+existingSet, e);  //$NON-NLS-1$
+		}
+	}
+
+	/**
+	 * Update content of existing list, retaining the instance.
+	 * @param propertyName
+	 * @param existingList
+	 * @param newContent
+	 */
+	@SuppressWarnings("unchecked")
+	protected void updateList(String propertyName, List existingList, Collection newContent) {
+		try {
+			List oldContent = existingList.getClass().newInstance();
+			oldContent.addAll(existingList);
+			existingList.clear();
+			existingList.addAll(newContent);
+			firePropertyChange(propertyName, oldContent, existingList);
+		} catch (InstantiationException e) {
+			throw new FatalApplicationException("Unable to clone list: "+existingList, e);  //$NON-NLS-1$
+		} catch (IllegalAccessException e) {
+			throw new FatalApplicationException("Unable to clone list: "+existingList, e);  //$NON-NLS-1$
 		}
 	}
 }

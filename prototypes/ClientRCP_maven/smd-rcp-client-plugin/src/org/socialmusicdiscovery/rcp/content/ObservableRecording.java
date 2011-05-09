@@ -29,6 +29,7 @@ package org.socialmusicdiscovery.rcp.content;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -36,6 +37,7 @@ import java.util.Set;
 import org.eclipse.ui.IEditorInput;
 import org.socialmusicdiscovery.rcp.content.DataSource.Root;
 import org.socialmusicdiscovery.rcp.util.ChangeMonitor;
+import org.socialmusicdiscovery.rcp.util.GenericWritableSet;
 import org.socialmusicdiscovery.rcp.util.NotYetImplemented;
 import org.socialmusicdiscovery.rcp.util.Util;
 import org.socialmusicdiscovery.server.business.model.core.Recording;
@@ -72,6 +74,7 @@ public class ObservableRecording extends AbstractContributableEntity<Recording> 
 	public static final String PROP_works = "works";
 	public static final String PROP_derivedName = "derivedName";
 	public static final String PROP_isDerivedNameUsed = "derivedNameUsed";
+	public static final String PROP_tracks = "tracks";
 	
 	private transient String derivedName;
 	private boolean isDerivedNameUsed;
@@ -79,9 +82,11 @@ public class ObservableRecording extends AbstractContributableEntity<Recording> 
 	@Expose private Date date;
 	@Expose private Recording mixOf;
 	@Expose private Set<Work> works = new HashSet<Work>();
+	private transient GenericWritableSet<ObservableTrack> tracks = null; // initial null triggers lazy load
 
 	@Override
 	protected void postInflate() {
+		super.postInflate();
 		hookListeners();
 	}
 
@@ -182,15 +187,39 @@ public class ObservableRecording extends AbstractContributableEntity<Recording> 
 		return Util.composeTitle(getWorks());
 	}
 
-	public Set<ObservableTrack> getTracks() {
-		Root<Track> root = getDataSource().resolveRoot(Track.class);
-		// FIXME return stable, observable collection where changes propagate to Release.getTracks()
-		Set<ObservableTrack> tracks = root.findAll(this);
-		return tracks;
+	public GenericWritableSet<ObservableTrack> getTracks() {
+		if (tracks==null) {
+			Root<Track> root = getDataSource().resolveRoot(Track.class);
+			Set<ObservableTrack> all = root.findAll(this);
+			this.tracks = new GenericWritableSet<ObservableTrack>(all, ObservableTrack.class);
+		}
+		return this.tracks;
 	}
+
+	/** ONLY FOR UNIT TESTING! */
+	/* package */ void setTracks(Collection<ObservableTrack> tracks) {
+		assert this.tracks==null : "Attempt to re-initialize tracks";
+		this.tracks = new GenericWritableSet<ObservableTrack>(tracks, ObservableTrack.class);;
+	}
+
+	@SuppressWarnings("unchecked")
 	@Override
 	public void delete() {
-		NotYetImplemented.openDialog("Cannot yet delete "+getClass().getSimpleName());
+		if (tracks!=null) {
+			Collection<ObservableTrack> tmpTracks = getTracks();
+			for (ObservableTrack track : tmpTracks) {
+				track.delete();
+			}
+			assert getTracks().isEmpty() : "All tracks should have been removed when deleted: "+getTracks();
+		}
+
+		super.delete();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Collection<ObservableTrack> getDependentsToDelete() {
+		return getTracks();
 	}
 
 	@Override
@@ -198,6 +227,5 @@ public class ObservableRecording extends AbstractContributableEntity<Recording> 
 		NotYetImplemented.openDialog("Cannot yet create "+getClass().getSimpleName());
 		return null;
 	}
-	
 
 }

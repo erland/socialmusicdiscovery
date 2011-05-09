@@ -25,42 +25,29 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.rcp.util;
+package org.socialmusicdiscovery.rcp.content;
 
-import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 
 /**
- * Ask user to confirm before running unstable and potentially disastrous operations.
- * 
  * @author Peer Törngren
  *
  */
-public class NotYetImplemented {
+public class DataSourceForTesting extends DataSource {
 
-	private NotYetImplemented() {}
-
-	public static  void openDialog(String msg) {
-		MessageDialog.openWarning(null, "Not Yet Implemented", msg);
+	public DataSourceForTesting() {
+		super(false);
 	}
 
-	public static  void openDialog(Shell shell, String msg) {
-		MessageDialog.openWarning(shell, "Not Yet Implemented", msg);
+	@Override
+	public boolean persist(Shell shell, ObservableEntity... entities) {
+		return true;
 	}
 
-	public static boolean confirm(String op) {
-		if (Display.getCurrent()==null) {
-			return true; // avoid dialog if running unit tests
-		}
-		String title = "<NOT YET IMPLEMENTED>";
-		String msg = op + " is not yet fully implemented and/or tested. Running this operation may result in a corrupt database. Proceed only if you are testing/developing this function." +
-				"\n\nRECOMMENDATION: DO NOT PROCEED!" +
-				"\n\nDo you want to proceed despite the risk of destroying your database?";
-
-		String[] buttons = { IDialogConstants.OK_LABEL, IDialogConstants.CANCEL_LABEL };
-		MessageDialog dialog = new MessageDialog(null, title, null, msg, MessageDialog.WARNING, buttons, 1);
-		return dialog.open() == 0;
+	@Override
+	public <T extends SMDIdentity> void delete(ObservableEntity victim) {
+		// no-op;
 	}
+
 }

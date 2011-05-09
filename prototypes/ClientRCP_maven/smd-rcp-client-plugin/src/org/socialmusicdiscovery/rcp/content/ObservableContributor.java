@@ -27,6 +27,9 @@
 
 package org.socialmusicdiscovery.rcp.content;
 
+import java.util.Arrays;
+
+import org.eclipse.core.databinding.observable.set.IObservableSet;
 import org.socialmusicdiscovery.rcp.util.NotYetImplemented;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
@@ -37,10 +40,18 @@ public class ObservableContributor extends AbstractObservableEntity<Contributor>
 
 	public static final String PROP_artist = "artist";
 	public static final String PROP_type = "type";
+	public static final String PROP_entity = "entity";
 	
 	@Expose private Artist artist;
 	@Expose private String type;
+	protected AbstractContributableEntity entity;
 
+	/**
+	 * Default constructor.
+	 */
+	public ObservableContributor() {
+	}
+	
 	@Override
 	public String getType() {
 		return type;
@@ -62,12 +73,15 @@ public class ObservableContributor extends AbstractObservableEntity<Contributor>
 	@Override
 	public String toString() {
 		String artistName = getArtist()==null ? "?" : getArtist().getName();
-		return getClass().getSimpleName()+"@"+hashCode()+"-"+getType()+":"+artistName + " ("+getName()+")";
+		String entityName = getEntity()==null ? "?" : getEntity().getName();
+		return getClass().getSimpleName()+"@"+hashCode()+"/"+entityName+"-"+getType()+":"+artistName + " ("+getName()+")";
 	}
 
 	@Override
 	public void delete() {
-		NotYetImplemented.openDialog("Cannot yet delete "+getClass().getSimpleName());
+		IObservableSet contributors = getEntity().getContributors();
+		boolean removed = contributors.remove(this);
+		assert removed : "Contributor not removed from entity: "+this+": "+Arrays.asList(contributors);
 	}
 
 	@Override
@@ -76,19 +90,12 @@ public class ObservableContributor extends AbstractObservableEntity<Contributor>
 		return null;
 	}
 	
-	/**
-	 * Compare two contributor instances that may be of different types. Deem
-	 * them equal if the represent the the same artist and type.
-	 * 
-	 * @param c1
-	 * @param c2
-	 * @return boolean
-	 */
-	public static boolean equal(Contributor c1, Contributor c2) {
-		if (c1==null || c2==null) {
-			return c1==c2; // true if both are null
-		};
-		return c1==c2 || c1.equals(c2) || (c1.getArtist().equals(c2.getArtist()) && c1.getType().equals(c2.getType()));
+	public AbstractContributableEntity getEntity() {
+		return entity;
+	}
+
+	public void setEntity(AbstractContributableEntity entity) {
+		firePropertyChange(PROP_entity, this.entity, this.entity = entity);
 	}
 
 }

@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.socialmusicdiscovery.rcp.content.DataSource.Root;
+import org.socialmusicdiscovery.rcp.util.GenericWritableList;
 import org.socialmusicdiscovery.server.business.model.core.Label;
 import org.socialmusicdiscovery.server.business.model.core.Medium;
 import org.socialmusicdiscovery.server.business.model.core.RecordingSession;
@@ -63,7 +64,7 @@ public class ObservableRelease extends AbstractContributableEntity<Release> impl
 	@Expose
 	private Set<RecordingSession> recordingSessions = new HashSet<RecordingSession>();
 
-	private transient List<Track> tracks = new ArrayList<Track>();
+	private transient GenericWritableList<Track> tracks = new GenericWritableList<Track>();
 
 	@Override
 	public Date getDate() {
@@ -77,11 +78,21 @@ public class ObservableRelease extends AbstractContributableEntity<Release> impl
 	 * tracks. And we also want the track numbers etc.
 	 */
 	@Override
-	public void postInflate() {
+	protected void postInflate() {
+		super.postInflate();
 		Root<Track> trackRoot = getDataSource().resolveRoot(Track.class);
 		Collection<ObservableTrack> allTracks = trackRoot.findAll(this);
 		inflateAll(allTracks);
 		tracks.addAll(allTracks);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <D extends Deletable> Collection<D> getDependentsToDelete() {
+		List result = new ArrayList();
+		result.addAll(getTracks());
+		result.addAll(getContributors());
+		return result;
 	}
 
 	@Override
@@ -95,10 +106,10 @@ public class ObservableRelease extends AbstractContributableEntity<Release> impl
 	}
 
 	@Override
-	public List<Track> getTracks() {
+	public GenericWritableList<Track> getTracks() {
 		return tracks;
 	}
-
+	
 	@Override
 	public Set<RecordingSession> getRecordingSessions() {
 		return recordingSessions;
@@ -117,7 +128,7 @@ public class ObservableRelease extends AbstractContributableEntity<Release> impl
 	}
 
 	public void setTracks(List<Track> tracks) {
-		firePropertyChange(PROP_tracks, this.tracks, this.tracks = tracks);
+		updateList(PROP_tracks, this.tracks, tracks);
 	}
 
 	public void setRecordingSessions(Set<RecordingSession> recordingSessions) {

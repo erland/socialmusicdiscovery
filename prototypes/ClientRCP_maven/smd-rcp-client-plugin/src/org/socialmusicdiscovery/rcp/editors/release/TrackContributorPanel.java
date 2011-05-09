@@ -52,7 +52,7 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.socialmusicdiscovery.rcp.content.AbstractObservableEntity;
-import org.socialmusicdiscovery.rcp.content.ObservableContribution;
+import org.socialmusicdiscovery.rcp.content.ObservableContributor;
 import org.socialmusicdiscovery.rcp.content.ObservableTrack;
 import org.socialmusicdiscovery.rcp.editors.widgets.ContributorPanel;
 import org.socialmusicdiscovery.rcp.views.util.AbstractComposite;
@@ -69,10 +69,10 @@ public class TrackContributorPanel extends AbstractComposite<ObservableTrack> {
 
 		@Override
 		public boolean select(Viewer viewer, Object parentElement, Object element) {
-			return element instanceof ObservableContribution ? accept((ObservableContribution) element) : true; 
+			return element instanceof ObservableContributor ? accept((ObservableContributor) element) : true; 
 		}
 
-		private boolean accept(ObservableContribution c) {
+		private boolean accept(ObservableContributor c) {
 			return getModel().isEffectiveContributor(c);
 		}
 
@@ -92,10 +92,10 @@ public class TrackContributorPanel extends AbstractComposite<ObservableTrack> {
 
 		@Override
 		public boolean select(Viewer viewer, Object parentElement, Object element) {
-			return element instanceof ObservableContribution ? accept((ObservableContribution) element) : true; 
+			return element instanceof ObservableContributor ? accept((ObservableContributor) element) : true; 
 		}
 
-		private boolean accept(ObservableContribution c) {
+		private boolean accept(ObservableContributor c) {
 			for (Entry<Class, Boolean> entry: settings.entrySet()) {
 				if (entry.getKey().isInstance(c.getEntity())) {
 					return entry.getValue().booleanValue();

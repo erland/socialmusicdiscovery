@@ -27,17 +27,35 @@
 
 package org.socialmusicdiscovery.rcp.content;
 
+import java.util.Collection;
+
+import org.socialmusicdiscovery.server.business.model.core.Contributor;
+
 /**
- * An instance that can delete itself (probably by delegating to some kind of repository).
- *  
+ * An instance that can delete itself and all affected (dependent) instances,
+ * probably by notifying dependent elements and delegating the actual suicide to
+ * the {@link DataSource}.
+ * 
  * @author Peer Törngren
  */
 public interface Deletable {
 
 	/**
-	 * Delete this instance. Fire events and take necessary actions to ensure that the 
-	 * model stays consistent and all listeners are notified. 
+	 * Delete this instance. Fire events and take necessary actions to ensure
+	 * that the model stays consistent and all listeners are notified. The
+	 * recommended approach is that "core" entities delete themselves and all
+	 * dependents by calling {@link DataSource#delete(ObservableEntity)}, and
+	 * that dependent instances (like a {@link Contributor}) asks its owner to
+	 * be removed from the concerned property (typically a collection of some
+	 * sort).
 	 */
 	void delete();
-	
+
+	/**
+	 * Get other {@link Deletable} elements that must be deleted with this
+	 * instance, in deletion order (if it matters).
+	 * 
+	 * @return Collection
+	 */
+	<T extends Deletable> Collection<T> getDependentsToDelete();	
 }

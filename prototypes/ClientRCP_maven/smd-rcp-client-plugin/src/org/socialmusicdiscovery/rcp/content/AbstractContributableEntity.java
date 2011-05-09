@@ -27,9 +27,12 @@
 
 package org.socialmusicdiscovery.rcp.content;
 
-import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.core.databinding.observable.set.IObservableSet;
+import org.eclipse.core.databinding.observable.set.ISetChangeListener;
+import org.eclipse.core.databinding.observable.set.SetChangeEvent;
+import org.socialmusicdiscovery.rcp.util.GenericWritableSet;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
 
@@ -46,16 +49,99 @@ import com.google.gson.annotations.Expose;
  */
 public abstract class AbstractContributableEntity<T extends SMDIdentity>  extends AbstractObservableEntity<T> {
 
-	public static final String PROP_contributors = "contributors";
+	private class MyContributorListener implements ISetChangeListener {
 
-	@Expose private Set<Contributor> contributors = new HashSet<Contributor>();
-	
-	public Set<Contributor> getContributors() {
-		return contributors;
+		@SuppressWarnings("unchecked")
+		@Override
+		public void handleSetChange(SetChangeEvent event) {
+			handleAdditions(event.diff.getAdditions());
+			handleRemovals(event.diff.getRemovals());
+			if (!event.diff.isEmpty()) {
+				setDirty(true);
+			}
+		}
+
+		private void handleRemovals(Set<ObservableContributor> removals) {
+			for (ObservableContributor c : removals) {
+				ObservableArtist a = (ObservableArtist) c.getArtist();
+				if (a.isContributionsLoaded()) {
+					a.getContributions().remove(c);
+				}
+			}
+		}
+
+		private void handleAdditions(Set<ObservableContributor> additions) {
+			for (ObservableContributor c : additions) {
+//				assert c.getEntity() == AbstractContributableEntity.this : "Wrong entity, expected: "+AbstractContributableEntity.this+", found: "+c.getEntity();
+				ObservableArtist a = (ObservableArtist) c.getArtist();
+				// do NOT check resolution state - we must resolve set before adding to ensure consistency   
+				a.getContributions().add(c);
+			}
+		}
+
 	}
 
+	public static final String PROP_contributors = "contributors";
+
+	@Expose private GenericWritableSet<Contributor> contributors = new GenericWritableSet<Contributor>();
+
+	public AbstractContributableEntity() {
+		super();
+	}
+
+	public IObservableSet getContributors() {
+		return contributors;		
+	}
+
+	/**
+	 * This method is really superfluous since we sport a {@link GenericWritableSet},
+	 * but as the interface declares it we need to implement it. For databinding, use 
+	 * the {@link GenericWritableSet} directly instead of binding to this property; binding 
+	 * to this property will effectively wrap an observable set in another observable set. 
+	 *      
+	 * @param contributors
+	 */
 	public void setContributors(Set<Contributor> contributors) {
 		updateSet(PROP_contributors, this.contributors, contributors);
 	}
 
+	/**
+	 * Override to hook listener after inflating an existing instance.
+	 */
+	@Override
+	protected void postInflate() {
+		super.postInflate();
+		for (Object o : contributors) {
+			ObservableContributor c = (ObservableContributor) o;
+			c.setEntity(this);
+		}
+		hookContributorListener();
+	}
+
+	/**
+	 * Override to hook listener after creating a new instance.
+	 */
+	@Override
+	protected void postCreate() {
+		super.postCreate();
+		hookContributorListener();
+	}
+	
+	/**
+	 * Hook listener <b>after</b> inflating, or we will end up in an infinite
+	 * loop.
+	 */
+	private void hookContributorListener() {
+		contributors.addSetChangeListener(new MyContributorListener());
+	}
+
+	/**
+	 * Default implementation removes contributors and contributions (thru the attached listener). 
+	 */
+	public void delete() {
+		contributors.clear();
+		super.delete();
+	}
+
+	
 }

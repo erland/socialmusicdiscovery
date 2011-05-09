@@ -31,6 +31,8 @@ import java.beans.PropertyChangeListener;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.observable.Observables;
@@ -81,12 +83,15 @@ import com.google.gson.annotations.Expose;
  * @param <T> the interface the subclass implements
  */
 public abstract class AbstractObservableEntity<T extends SMDIdentity> extends AbstractObservable implements ObservableEntity<T> {
+	private DataSource dataSource;
+
 	private static final String PROP_id = "id"; //$NON-NLS-1$
 	private static final String PROP_isDirty = "dirty"; //$NON-NLS-1$
 	
-	private boolean isDirty;
-	private boolean isInflated = false;
-	
+	private transient boolean isDirty;
+	private transient boolean isDirtyEnabled = true;
+	private transient boolean isInflated = false;
+
 	@Expose
 	private String id;
 
@@ -100,7 +105,8 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 		rootType = resolveRootType();
 	}
 
-	private Class resolveRootType() {
+	@SuppressWarnings("unchecked")
+	private Class<? extends AbstractObservableEntity> resolveRootType() {
 		for (Class type : getClass().getInterfaces()) {
 			//			Class superclass = type.getSuperclass(); // null!?
 			if (SMDIdentity.class.isAssignableFrom(type)) {
@@ -139,14 +145,20 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 	}
 
 	/**
+	 * Returns an empty list. Subclasses should override as necessary.
+	 * @return {@link List}, empty 
+	 */
+	public <D extends Deletable> Collection<D> getDependentsToDelete() {
+		return Collections.emptyList();
+	}
+	
+	/**
 	 * Default implementation calls {@link DataSource#delete(ObservableEntity)}.
 	 * Subclasses should override and add behavior as necessary, e.g. to remove or notify
 	 * dependents as appropriate. 
 	 */
 	public void delete() {
-		if (NotYetImplemented.confirm("Delete")) {
-			getDataSource().delete(this);
-		}
+		getDataSource().delete(this);
 	}
 
 	/**
@@ -162,12 +174,10 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 	}
 	
 	/**
-	 * Do any post-processing after basic inflate.
-	 * This method is called after {@link #inflate()}, 
-	 * if the instance was inflated. Default method does 
-	 * nothing, subclasses should override as necessary, 
-	 * typically to load any properties not loaded by the 
-	 * default inflation.  
+	 * Do any post-processing after basic inflate. This method is called after
+	 * {@link #inflate()}, if the instance was inflated. Default method does
+	 * nothing, subclasses should override as necessary, typically to load any
+	 * properties not loaded by the default inflation.
 	 */
 	protected void postInflate() {
 		// no-op
@@ -197,14 +207,25 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 		return "["+typeName+"] "+getName()+isModified ;
 	}
 
-	/**
-	 * Convenience method for subclasses. 
-	 * @return {@link DataSource}
-	 */
 	protected DataSource getDataSource() {
-		return Activator.getDefault().getDataSource();
+		assert !(dataSource==null && Activator.getDefault()==null) : "DataSource not initialized and workbench not running";
+		return dataSource==null ? Activator.getDefault().getDataSource() : dataSource;
 	}
 
+	/**
+	 * Initializer for exclusive and one-time use for unit testing.
+	 * 
+	 * @param dataSource
+	 */
+	/* package */ void setTestDataSource(DataSource dataSource) {
+		if (this.dataSource!=null) {
+			throw new IllegalStateException("DataSource already initialized");
+		}
+		if (Activator.getDefault()!=null) {
+			throw new IllegalStateException("Must not set data source with workbench running");
+		}
+		this.dataSource = dataSource;
+	}
 	/**
 	 * Convenience method for subclasses. 
 	 * @return {@link Root} for this instance
@@ -214,10 +235,11 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 		return (Root<T>) getDataSource().resolveRoot(this);
 	}
 
-	private Class getGenericType() {
+	@SuppressWarnings("unchecked")
+	private Class<? extends AbstractObservableEntity> getGenericType() {
 		for (Type type : getClass().getGenericInterfaces()) {
 			if (type instanceof Class) {
-				Class genericClass = (Class) type;
+				Class<? extends AbstractObservableEntity> genericClass = (Class<? extends AbstractObservableEntity>) type;
 				if (SMDIdentity.class.isAssignableFrom(genericClass)) {
 					return genericClass;
 				}
@@ -259,10 +281,6 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 		return rootType.getSimpleName();
 	}
 
-	public boolean isDirty() {
-		return isDirty;
-	}
-	
 	/**
 	 * Create a backup of the entity. Backup only holds the persistent data.
 	 * @return {@link AbstractObservableEntity}
@@ -305,24 +323,78 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 
 	
 	/**
-	 * Mark instance as dirty (or not). Method must be called whenever the persistent state of this instance changes.
+	 * Mark instance as dirty (or not). Method must be called whenever the
+	 * persistent state of this instance changes. Subclasses may disable dirty
+	 * handling while setting derived attributes that should fire property
+	 * change events but not alter the dirty status.
+	 * 
 	 * @param isDirty
+	 * @see #setDirtyEnabled(boolean)
 	 */
 	@Override
 	public void setDirty(boolean isDirty) {
-		super.firePropertyChange(PROP_isDirty, this.isDirty, this.isDirty = isDirty);
+		if (isDirtyEnabled) {
+			super.firePropertyChange(PROP_isDirty, this.isDirty, this.isDirty = isDirty);
+		}
+	}
+
+	public boolean isDirty() {
+		return isDirty;
+	}
+	
+	protected boolean isDirtyEnabled() {
+		return isDirtyEnabled;
 	}
 
 	/**
-	 * Mark instance as inflated. <b>Use ONLY for testing!</b>
+	 * Enable or disable dirty handling. Subclasses may need to disable dirty
+	 * handling while setting derived attributes that should fire property
+	 * change events but not alter the dirty status.
+	 * 
+	 * @param isDirtyEnabled
 	 */
-	/* package */ void markInflated() {
+	protected void setDirtyEnabled(boolean isDirtyEnabled) {
+		this.isDirtyEnabled = isDirtyEnabled;
+	}
+	
+	/**
+	 * <p>
+	 * Do any processing necessary after creating a new instance. Since we need
+	 * to run parameter-free constructors, we may not be able to do all we want
+	 * in the constructor. After running this method, the instance is ready for
+	 * use.
+	 * </p>
+	 * 
+	 * <p>
+	 * Note: this method should <b>only</b> be called by {@link Root},
+	 * subclasses or test classes after creating a new instance!
+	 * </p>
+	 */
+	protected void postCreate() {
 		isInflated = true;
 	}
 	
+	/**
+	 * Is this instance fully loaded? If not, it will only hold fundamental
+	 * identity properties like {@link #getId()} and {@link #getName()}.
+	 * 
+	 * @return boolean
+	 * @see #inflate()
+	 */
+	public boolean isInflated() {
+		return isInflated;
+	}
+
 	@Override
 	public String toString() {
-		return getClass().getSimpleName()+"/'"+getName()+"'";
+		String n = getName();
+		if (n==null) {
+			n=getId();
+		}
+		if (n==null) {
+			n="@"+hashCode();
+		}
+		return getClass().getSimpleName()+"/'"+n+"'";
 	}
 	
 	protected void fireIndexedPropertyChange(String propertyName, int index, boolean oldValue, boolean newValue) {
