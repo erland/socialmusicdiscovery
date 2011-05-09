@@ -245,11 +245,12 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		private final Class<T> distinctQueryType; // for querying server
 		private GenericType<Set<T>> genericCollectionQueryType;
 		private final Class<? extends AbstractObservableEntity<T>> observableType;
-		private final Set<ObservableEntity<T>> children = new HashSet<ObservableEntity<T>>();
+		private final IObservableSet children = new WritableSet();
 
 		private boolean isLoaded = false;
 
-		private WritableSet writableSetOfChildren;
+//		private final WritableSet writableSetOfChildren; 
+
 
 
 //		private final Set newInstances = new HashSet(); // keep track of created instances 
@@ -278,6 +279,7 @@ public class DataSource extends AbstractObservable implements ModelObject {
 			this.path = queryPath;
 			this.distinctQueryType = distinctElementQueryType;
 			this.genericCollectionQueryType = genericCollectionQueryType;
+//			this.writableSetOfChildren = new SMDWritableSet(children, observableType);
 		}
 
 		/**
@@ -285,7 +287,7 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		 * @return {@link List<T>}, possibly empty
 		 */
 		final public synchronized <O extends ObservableEntity<T>> Set<O> findAll() {
-	        Set<O> result = new HashSet<O>();
+			Set<O> result = new HashSet<O>();
 			for (T serverObject : get(genericCollectionQueryType)) {
 				O clientObject = getOrStore(serverObject);
 				result.add(clientObject);
@@ -310,6 +312,7 @@ public class DataSource extends AbstractObservable implements ModelObject {
 			}
 			return result;
 		}
+		
 		// TODO fix generics, eliminate warning
 		@SuppressWarnings("unchecked")
 		private <O extends ObservableEntity<T>> O getOrStore(T serverObject) {
@@ -317,29 +320,15 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		}
 
 		/**
-		 * Returns a new {@link WritableSet} in every call.
+		 * Returns a {@link WritableSet}.
 		 */
 		public IObservableSet getObservableChildren() {
 			if (!isLoaded && (isConnected || isAutoConnect)) {
 				children.addAll(findAll());
 				isLoaded = true;
 			}
-			writableSetOfChildren = new WritableSet(children, observableType); 
-			return writableSetOfChildren;
-//			return isLoaded ? writableSetOfChildren : Observables.emptyObservableSet();
+			return children;
 		}
-
-//		public List<ObservableEntity<T>> getChildren() {
-//			return children;
-//		}
-
-//		public void setChildren(List<ObservableEntity<T>> children) {
-//			// TODO abstract, pull up
-//			List<ObservableEntity<T>> old = new ArrayList<ObservableEntity<T>>(this.children);
-//			this.children.clear();
-//			this.children.addAll(children);
-//			firePropertyChange(PROP_children, old, children);
-//		}
 
 		public String getName() {
 			return name;
@@ -382,9 +371,9 @@ public class DataSource extends AbstractObservable implements ModelObject {
 			return result;
 		}
 
-		protected Set<T> get(GenericType<Set<T>> genericType) {
+		protected Set<T> get(GenericType<Set<T>> genericCollectionQueryType) {
 			try {
-				Set<T> set = Client.create(config).resource(getPath()).accept(MediaType.APPLICATION_JSON).get(genericType);
+				Set<T> set = Client.create(config).resource(getPath()).accept(MediaType.APPLICATION_JSON).get(genericCollectionQueryType);
 				isConnected = true;
 				return set;
 			} catch (ClientHandlerException e) {
@@ -425,6 +414,7 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		 * @param entity
 		 */
 		private void create(ObservableEntity entity) {
+			assert isNew(entity) : "Not a new entity: "+entity;
 			T echo = resource(getPath()).type(MediaType.APPLICATION_JSON).post(getType(), entity);
 			entity.setId(echo.getId());
 			entity.setDirty(false);
@@ -467,9 +457,7 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		 * @param entity
 		 */
 		private void delete(ObservableEntity entity) {
-//			assert entity.getId()!=null && entity.getId().trim().length()>0 : "No ID: "+entity;
-			assert isNew(entity) || cache.contains(entity) : "Deleting uncached entity - should have been cached when read: "+entity;
-			
+			assert (isNew(entity) || cache.contains(entity)) : "Deleting uncached entity - should have been cached when read:\n\t"+entity+"#"+entity.hashCode()+"\nCache content:\n"+cache.dump();
 			if (isNew(entity)) {
 //				newInstances.remove(entity);
 			} else {
@@ -477,24 +465,18 @@ public class DataSource extends AbstractObservable implements ModelObject {
 				resource(entityPath).type(MediaType.APPLICATION_JSON).delete();
 				cache.delete(entity);
 			}
-			writableSetOfChildren.remove(entity);
+			children.remove(entity);
 			
-//			assert !newInstances.contains(entity) : "newInstances not updated - entity still present: "+entity;
 			assert !cache.contains(entity) : "cache not updated - entity still present: "+entity;
 		}
 
 		private boolean isNew(ObservableEntity entity) {
 			return entity.getId()==null;
-//			return newInstances.contains(entity);
 		}
 		
 		public void dispose() {
 			isLoaded = false;
 			children.clear();
-			if (writableSetOfChildren!=null) {
-				writableSetOfChildren.dispose();
-				writableSetOfChildren = null;
-			}
 		}
 
 		/**
@@ -506,13 +488,9 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		public T newInstance() {
 			AbstractObservableEntity<T> newInstance = createInstance();
 			newInstance.setDirty(true);
-			newInstance.markInflated();
+			newInstance.postCreate();
 			newInstance.setName("<new>");
-//			newInstance.setId(newId());
-//			newInstances.add(newInstance);
-			
-//			cache.add(newInstance);
-			writableSetOfChildren.add(newInstance);
+			children.add(newInstance);
 			return (T) newInstance;
 		}
 
@@ -724,6 +702,7 @@ public class DataSource extends AbstractObservable implements ModelObject {
 	}
 	
 	public <T extends SMDIdentity> boolean inflate(ObservableEntity<T> shallowEntity) {
+		assert cache.contains(shallowEntity) : "Cache does not contain entity to inflate:\n\t"+shallowEntity+"Cache content:\n"+cache.dump();
 		Root root = resolveRoot(shallowEntity);
 		@SuppressWarnings("unchecked")
 		T richEntity = (T) root.read(shallowEntity.getId());

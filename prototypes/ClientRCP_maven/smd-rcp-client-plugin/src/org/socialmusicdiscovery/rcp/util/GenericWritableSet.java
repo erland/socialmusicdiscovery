@@ -27,40 +27,50 @@
 
 package org.socialmusicdiscovery.rcp.util;
 
-import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Set;
+
+import org.eclipse.core.databinding.observable.IObservableCollection;
+import org.eclipse.core.databinding.observable.Realm;
+import org.eclipse.core.databinding.observable.set.WritableSet;
 
 /**
- * Ask user to confirm before running unstable and potentially disastrous operations.
+ * <p>
+ * Neither the standard {@link IObservableCollection} interface nor any of its
+ * subtypes or implementation classes are generic. Unfortunately, the Gson
+ * serializer requires generic collections to instantiate, and we want to
+ * convert standard collections into observable sets without this error:
+ * <code>java.lang.IllegalArgumentException: Collection objects need to be 
+ * parameterized unless you use a custom serializer. Use the com.google.gson.reflect.TypeToken 
+ * to extract the ParameterizedType.</code>
+ * </p>
+ * 
+ * <p>
+ * Unfortunately, we cannot make this class behave in a "for each" loop since
+ * the superclass implements a standard {@link Set} (no generic parameter); we cannot
+ * state that it implements <code>Iterator&lt;T&gt;</code>. Alas, to loop over
+ * this set, caller must cast element type just as when calling the superclass.
+ * </p>
  * 
  * @author Peer Törngren
- *
  */
-public class NotYetImplemented {
+public class GenericWritableSet<T> extends WritableSet {
 
-	private NotYetImplemented() {}
-
-	public static  void openDialog(String msg) {
-		MessageDialog.openWarning(null, "Not Yet Implemented", msg);
+	public GenericWritableSet() {
+		super();
+	}
+	public GenericWritableSet(Collection<T> c, Object elementType) {
+		super(c, elementType);
 	}
 
-	public static  void openDialog(Shell shell, String msg) {
-		MessageDialog.openWarning(shell, "Not Yet Implemented", msg);
+	public GenericWritableSet(Realm realm, Collection<T> c, Object elementType) {
+		super(realm, c, elementType);
 	}
-
-	public static boolean confirm(String op) {
-		if (Display.getCurrent()==null) {
-			return true; // avoid dialog if running unit tests
-		}
-		String title = "<NOT YET IMPLEMENTED>";
-		String msg = op + " is not yet fully implemented and/or tested. Running this operation may result in a corrupt database. Proceed only if you are testing/developing this function." +
-				"\n\nRECOMMENDATION: DO NOT PROCEED!" +
-				"\n\nDo you want to proceed despite the risk of destroying your database?";
-
-		String[] buttons = { IDialogConstants.OK_LABEL, IDialogConstants.CANCEL_LABEL };
-		MessageDialog dialog = new MessageDialog(null, title, null, msg, MessageDialog.WARNING, buttons, 1);
-		return dialog.open() == 0;
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public Iterator<T> iterator() {
+		return super.iterator();
 	}
 }

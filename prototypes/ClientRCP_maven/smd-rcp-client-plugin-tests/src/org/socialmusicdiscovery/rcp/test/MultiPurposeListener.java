@@ -27,34 +27,46 @@
 
 package org.socialmusicdiscovery.rcp.test;
 
-import org.eclipse.core.databinding.observable.Realm;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
-import junit.framework.TestCase;
+import org.eclipse.core.databinding.observable.list.IListChangeListener;
+import org.eclipse.core.databinding.observable.list.ListChangeEvent;
+import org.eclipse.core.databinding.observable.set.ISetChangeListener;
+import org.eclipse.core.databinding.observable.set.SetChangeEvent;
 
 /**
- * Abstract test case for UI-related testing; sets up and tears down a
- * {@link Realm} to enable jface data binding.
+ * An aid for tracking events in test cases.
  * 
  * @author Peer Törngren
- * 
+ *
  */
-public abstract class AbstractTestCase extends TestCase {
-	private TestRealm realm;
+public class MultiPurposeListener implements PropertyChangeListener, IListChangeListener, ISetChangeListener {
 
-	/**
-	 * Creates a new default realm for every test.
-	 */
-	protected void setUp() throws Exception {
-		super.setUp();
-		realm = new TestRealm();
+	private boolean isChanged = false;
+
+	public MultiPurposeListener() {
 	}
 
-	/**
-	 * Removes the default realm.
-	 */
-	protected void tearDown() throws Exception {
-		super.tearDown();
-		realm.dispose();
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		this.isChanged = true;
+	}
+
+	public boolean isChanged() {
+		boolean result = isChanged;
+		isChanged = false;
+		return result;
+	}
+
+	@Override
+	public void handleListChange(ListChangeEvent event) {
+		this.isChanged = true;
+	}
+
+	@Override
+	public void handleSetChange(SetChangeEvent event) {
+		this.isChanged = true;
 	}
 
 }

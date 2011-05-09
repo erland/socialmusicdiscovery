@@ -33,6 +33,7 @@ import org.eclipse.core.databinding.beans.BeanProperties;
 import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.beans.IBeanValueProperty;
 import org.eclipse.core.databinding.observable.list.WritableList;
+import org.eclipse.core.databinding.observable.set.WritableSet;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
@@ -254,11 +255,11 @@ public class RecordingUI extends AbstractComposite<ObservableRecording> {
 	}
 
 	private void bindTracks() {
-		WritableList list = new WritableList(getModel().getTracks(), ObservableTrack.class);
+		WritableSet tracks = getModel().getTracks();
 		IBeanValueProperty medium = BeanProperties.value(ObservableTrack.class, "medium.number");
 		IBeanValueProperty track = BeanProperties.value(ObservableTrack.class, "number");
 		IBeanValueProperty release = BeanProperties.value(ObservableTrack.class, "release.name");
-		ViewerUtil.bind(tracksViewer, list, release, medium, track);
+		ViewerUtil.bind(tracksViewer, tracks, release, medium, track);
 	}
 
 	public ContributorPanel getArtistPanel() {

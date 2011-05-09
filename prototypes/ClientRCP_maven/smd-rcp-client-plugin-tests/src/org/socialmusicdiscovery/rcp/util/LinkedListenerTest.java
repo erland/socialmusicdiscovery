@@ -34,7 +34,7 @@ import static org.socialmusicdiscovery.rcp.test.AnObservable.NAME;
 import java.util.Set;
 
 import org.junit.Test;
-import org.socialmusicdiscovery.rcp.test.AbstractTestCase;
+import org.socialmusicdiscovery.rcp.content.AbstractTestCase;
 import org.socialmusicdiscovery.rcp.test.AnObservable;
 import org.socialmusicdiscovery.rcp.util.ChangeMonitor.PropertyData;
 

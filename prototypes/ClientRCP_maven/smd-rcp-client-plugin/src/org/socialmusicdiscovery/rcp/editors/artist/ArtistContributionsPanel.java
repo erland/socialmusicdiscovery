@@ -54,7 +54,7 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.socialmusicdiscovery.rcp.content.ObservableArtist;
-import org.socialmusicdiscovery.rcp.content.ObservableContribution;
+import org.socialmusicdiscovery.rcp.content.ObservableContributor;
 import org.socialmusicdiscovery.rcp.views.util.AbstractComposite;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
@@ -87,10 +87,10 @@ import org.socialmusicdiscovery.server.business.model.core.Work;
 
 		@Override
 		public boolean select(Viewer viewer, Object parentElement, Object element) {
-			return element instanceof ObservableContribution ? accept((ObservableContribution) element) : true; 
+			return element instanceof ObservableContributor ? accept((ObservableContributor) element) : true; 
 		}
 
-		private boolean accept(ObservableContribution c) {
+		private boolean accept(ObservableContributor c) {
 			for (Entry<Class, Boolean> entry: settings.entrySet()) {
 				if (entry.getKey().isInstance(c.getEntity())) {
 					return entry.getValue().booleanValue();

@@ -27,14 +27,11 @@
 
 package org.socialmusicdiscovery.rcp.content;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Test;
-import org.socialmusicdiscovery.rcp.test.AbstractTestCase;
+import org.socialmusicdiscovery.rcp.test.MultiPurposeListener;
 import org.socialmusicdiscovery.server.business.model.core.Work;
 
 /**
@@ -43,31 +40,8 @@ import org.socialmusicdiscovery.server.business.model.core.Work;
 @SuppressWarnings("unchecked")
 public class ObservableRecordingTest extends AbstractTestCase {
 
-	private class MyPropertyChangeListener implements PropertyChangeListener {
-
-		private boolean isChanged = false;
-
-		@Override
-		public void propertyChange(PropertyChangeEvent evt) {
-			this.isChanged = true;
-		}
-
-		public boolean isChanged() {
-			boolean result = isChanged;
-			isChanged = false;
-			return result;
-		}
-
-	}
-	private ObservableRecording recording;
-	private ObservableWork work1;
-	private ObservableWork work2;
-	private MyPropertyChangeListener listener;
-
 	public void setUp() throws Exception {
 		super.setUp();
-		
-		listener = new MyPropertyChangeListener();
 		
 		recording = recording(1, null);
 		work1 = work(1, "work1");
@@ -75,26 +49,9 @@ public class ObservableRecordingTest extends AbstractTestCase {
 		recording.setWorks(asSet(work1, work2));
 		recording.addPropertyChangeListener(ObservableTrack.PROP_name, listener);
 		recording.setDirty(false);
-	}
-	
-	private ObservableRecording recording(int id, String name) {
-		ObservableRecording r = new ObservableRecording();
-		r.setId(String.valueOf(id));
-		r.setName(name);
-		r.markInflated();
-		r.postInflate();
-		return r;
-	}
-
-	private ObservableWork work(int id, String name) {
-		ObservableWork w = new ObservableWork();
-		w.setId(String.valueOf(id));
-		w.setName(name);
-		return w;
-	}
-
-	private Set asSet(Object... elements) {
-		return new HashSet(Arrays.asList(elements));
+		release = release();
+		
+		track = track(1, release, recording);
 	}
 
 	@Test
@@ -143,6 +100,25 @@ public class ObservableRecordingTest extends AbstractTestCase {
 		assertTrue(listener.isChanged());
 		assertTrue(recording.isDirty());
 	}
+
+	@Test
+	public void testDelete() throws Exception {
+		assertTrue("Bad setup? Track not found", recording.getTracks().contains(track));
+		assertTrue("Bad setup? Track not found", release.getTracks().contains(track));
+
+		MultiPurposeListener recordingListener = listener(recording.getTracks());
+		MultiPurposeListener releaseListener = listener(release.getTracks());
+
+		recording.delete();
+
+		assertFalse("Track still present", recording.getTracks().contains(track));
+		assertTrue("No event fired", recordingListener.isChanged());
+
+		assertFalse("Track still present", release.getTracks().contains(track));
+		assertTrue("No event fired", releaseListener.isChanged());
+	}
+	
+	
 	private void remove(ObservableWork w) {
 		Set<Work> set = new HashSet(recording.getWorks());
 		set.remove(w);
@@ -161,5 +137,4 @@ public class ObservableRecordingTest extends AbstractTestCase {
 		return name.indexOf(probe)>=0;
 	}
 	
-
 }

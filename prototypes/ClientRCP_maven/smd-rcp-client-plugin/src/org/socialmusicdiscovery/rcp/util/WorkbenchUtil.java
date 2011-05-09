@@ -51,7 +51,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.services.IEvaluationService;
 import org.socialmusicdiscovery.rcp.content.ObservableArtist;
-import org.socialmusicdiscovery.rcp.content.ObservableContribution;
+import org.socialmusicdiscovery.rcp.content.ObservableContributor;
 import org.socialmusicdiscovery.rcp.content.ObservableRecording;
 import org.socialmusicdiscovery.rcp.content.ObservableRelease;
 import org.socialmusicdiscovery.rcp.editors.artist.ArtistEditor;
@@ -177,8 +177,8 @@ public final class WorkbenchUtil {
 			Object target = currentEditorInput instanceof Recording ? track.getRelease() : track.getRecording();
 			return resolveEditableElement(currentEditorInput, target);
 		}
-		if (selectedElement instanceof ObservableContribution) {
-			ObservableContribution c = (ObservableContribution) selectedElement;
+		if (selectedElement instanceof ObservableContributor) {
+			ObservableContributor c = (ObservableContributor) selectedElement;
 			// what to open next depends on where we're currently editing the contribution
 			// Artist => Entity, anything else => Artist
 			Object target = currentEditorInput instanceof Artist ? c.getEntity() : c.getArtist();

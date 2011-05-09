@@ -31,8 +31,6 @@ import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.beans.PojoObservables;
-import org.eclipse.core.databinding.observable.Realm;
-import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.databinding.observable.map.IObservableMap;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.SWTObservables;
@@ -331,9 +329,7 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 		//
 		IObservableMap[] observeMaps = BeansObservables.observeMaps(listContentProvider.getKnownElements(), ObservableTrack.class, new String[]{"medium.number", "number", "title"});
 		gridViewerTracks.setLabelProvider(new ObservableMapLabelProvider(observeMaps));
-		//
-		IObservableList getReleaseTracksObserveList = BeansObservables.observeList(Realm.getDefault(), getRelease(), "tracks");
-		gridViewerTracks.setInput(getReleaseTracksObserveList);
+		gridViewerTracks.setInput(getRelease().getTracks());
 		//
 		IObservableValue gridViewerTracksObserveSingleSelection = ViewersObservables.observeDelayedValue(200, ViewersObservables.observeSingleSelection(gridViewerTracks));
 		IObservableValue trackContributorPanelModelObserveValue = BeansObservables.observeValue(trackContributorPanel, "model");

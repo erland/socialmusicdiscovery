@@ -25,42 +25,44 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.rcp.util;
+package org.socialmusicdiscovery.rcp.content;
 
-import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
+import org.junit.Test;
+import org.socialmusicdiscovery.rcp.test.MultiPurposeListener;
 
 /**
- * Ask user to confirm before running unstable and potentially disastrous operations.
- * 
  * @author Peer Törngren
- *
  */
-public class NotYetImplemented {
+@SuppressWarnings("unchecked")
+public class ObservableArtistTest extends AbstractTestCase {
 
-	private NotYetImplemented() {}
 
-	public static  void openDialog(String msg) {
-		MessageDialog.openWarning(null, "Not Yet Implemented", msg);
+	private ObservableContributor contributor;
+
+	public void setUp() throws Exception {
+		super.setUp();
+		release = release();
+		artist = artist();
+		contributor = contributor(release, artist, COMPOSER);
+		
+//		artist.setContributions(asSet(contribution));
+		release.setContributors(asSet(contributor));
+		assert artist.getContributions().contains(contributor);
+		assert artist.getContributions().size()==release.getContributors().size();
 	}
+	
+	@Test
+	public void testDelete() throws Exception {
+		assertTrue("Bad setup?", release.getContributors().contains(contributor));
+		assertTrue("Bad setup?", artist.getContributions().contains(contributor));
+		
+		MultiPurposeListener releaseListener = listener(release.getContributors());
 
-	public static  void openDialog(Shell shell, String msg) {
-		MessageDialog.openWarning(shell, "Not Yet Implemented", msg);
+		artist.delete();
+		
+		assertFalse(release.getContributors().contains(contributor));
+		assertFalse(artist.getContributions().contains(contributor));
+		assertTrue(releaseListener.isChanged());
 	}
-
-	public static boolean confirm(String op) {
-		if (Display.getCurrent()==null) {
-			return true; // avoid dialog if running unit tests
-		}
-		String title = "<NOT YET IMPLEMENTED>";
-		String msg = op + " is not yet fully implemented and/or tested. Running this operation may result in a corrupt database. Proceed only if you are testing/developing this function." +
-				"\n\nRECOMMENDATION: DO NOT PROCEED!" +
-				"\n\nDo you want to proceed despite the risk of destroying your database?";
-
-		String[] buttons = { IDialogConstants.OK_LABEL, IDialogConstants.CANCEL_LABEL };
-		MessageDialog dialog = new MessageDialog(null, title, null, msg, MessageDialog.WARNING, buttons, 1);
-		return dialog.open() == 0;
-	}
+	
 }

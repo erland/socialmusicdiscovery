@@ -33,7 +33,6 @@ import java.util.Set;
 import org.eclipse.core.databinding.beans.BeanProperties;
 import org.eclipse.core.databinding.beans.IBeanValueProperty;
 import org.eclipse.core.databinding.observable.set.IObservableSet;
-import org.eclipse.core.databinding.observable.set.WritableSet;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.StructuredViewer;
@@ -148,7 +147,7 @@ public class ContributorPanel extends AbstractComposite<AbstractContributableEnt
 	protected void afterSetModel(AbstractContributableEntity model) {
 		IBeanValueProperty roleProperty = BeanProperties.value(ObservableContributor.class, "type");
 		IBeanValueProperty artistProperty = BeanProperties.value(ObservableContributor.class, "artist.name");
-		IObservableSet set = new WritableSet(getModel().getContributors(), ObservableContributor.class);
+		IObservableSet set = getModel().getContributors();
 		ViewerUtil.bind(gridTableViewer, set, roleProperty, artistProperty);
 	}
 

@@ -27,19 +27,13 @@
 
 package org.socialmusicdiscovery.rcp.content;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.junit.Test;
-import org.socialmusicdiscovery.rcp.test.AbstractTestCase;
+import org.socialmusicdiscovery.rcp.test.MultiPurposeListener;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
-import org.socialmusicdiscovery.server.business.model.core.Track;
 
 /**
  * @author Peer Törngren
@@ -47,37 +41,9 @@ import org.socialmusicdiscovery.server.business.model.core.Track;
 @SuppressWarnings("unchecked")
 public class ObservableTrackTest extends AbstractTestCase {
 
-	private class MyPropertyChangeListener implements PropertyChangeListener {
-
-		private boolean isChanged = false;
-
-		@Override
-		public void propertyChange(PropertyChangeEvent evt) {
-			this.isChanged = true;
-		}
-
-		public boolean isChanged() {
-			boolean result = isChanged;
-			isChanged = false;
-			return result;
-		}
-
-	}
-
-	private static final String CONDUCTOR = "conductor";
-	private static final String COMPOSER = "composer";
-	private static final String PRODUCER = "producer";
-	private static final String PERFORMER = "performer";
-	private static final String LYRICS = "lyrics";
-	
 	private Set<Contributor> releaseContributors;
-	private ObservableRelease release;
 	private ObservableArtist releaseArtist;
-	private ObservableTrack track;
-	private ObservableRecording recording;
 	private ObservableContributor releasePerformer;
-	private ObservableWork work1;
-	private ObservableWork work2;
 	private ObservableArtist recordingArtist;
 	private ObservableArtist workArtist1;
 	private ObservableContributor recordingProducer;
@@ -86,13 +52,10 @@ public class ObservableTrackTest extends AbstractTestCase {
 	private Set workContributors1;
 	private ObservableContributor workAuthor2;
 	private Set workContributors2;
-	private MyPropertyChangeListener listener;
 	private ObservableArtist workArtist2;
 
 	public void setUp() throws Exception {
 		super.setUp();
-		
-		listener = new MyPropertyChangeListener();
 		
 		// artists
 		releaseArtist = artist(1, "releaseArtist");
@@ -110,81 +73,29 @@ public class ObservableTrackTest extends AbstractTestCase {
 		release = release();
 		
 		// release contributors
-		releasePerformer = createContributor(releaseArtist, PERFORMER);
+		releasePerformer = contributor(release, releaseArtist, PERFORMER);
 		releaseContributors = asSet(releasePerformer);
 		release.setContributors(releaseContributors);
 		
 		// recording contributors
-		recordingProducer = createContributor(recordingArtist, PRODUCER);
+		recordingProducer = contributor(recording, recordingArtist, PRODUCER);
 		recordingContributors = asSet(recordingProducer);
 		recording.setContributors(recordingContributors);
 
 		// work contributors
-		workComposer1 = createContributor(workArtist1, COMPOSER);
+		workComposer1 = contributor(work1, workArtist1, COMPOSER);
 		workContributors1 = asSet(workComposer1);
 		work1.setContributors(workContributors1);
 		
-		workAuthor2 = createContributor(workArtist2, LYRICS);
+		workAuthor2 = contributor(work2, workArtist2, LYRICS);
 		workContributors2 = asSet(workAuthor2);
 		work2.setContributors(workContributors2);
 
 		// The Track To Test
 		track = track(1, release, recording);
+		assert !track.isDirty() : "Bad setup, track is dirty";
 	}
 	
-	private ObservableTrack track(int trackNumber, ObservableRelease release, ObservableRecording recording) {
-		ObservableTrack t = new ObservableTrack();
-		t.setId(String.valueOf(trackNumber));
-		t.setNumber(Integer.valueOf(trackNumber));
-		t.setRelease(release);
-		t.setRecording(recording);
-		t.postInflate(); // hook listeners
-		
-		List<Track> moreTracks = new ArrayList(release.getTracks());
-		moreTracks.add(t);
-		release.setTracks(moreTracks );
-		return t;
-	}
-
-	private ObservableRecording recording(int id, String name) {
-		ObservableRecording r = new ObservableRecording();
-		r.setId(String.valueOf(id));
-		r.setName(name);
-		r.markInflated();
-		return r;
-	}
-
-	private ObservableWork work(int id, String name) {
-		ObservableWork w = new ObservableWork();
-		w.setId(String.valueOf(id));
-		w.setName(name);
-		return w;
-	}
-
-	private ObservableRelease release() {
-		ObservableRelease r = new ObservableRelease();
-		return r;
-	}
-
-	private ObservableArtist artist(int id, String name) {
-		ObservableArtist a = new ObservableArtist();
-		a.setId(String.valueOf(id));
-		a.setName(name);
-		return a;
-	}
-	
-	private Set asSet(Object... elements) {
-		return new HashSet(Arrays.asList(elements));
-	}
-
-	private ObservableContributor createContributor(ObservableArtist a, String role) {
-		ObservableContributor c = new ObservableContributor();
-		c.setId(a.getId());
-		c.setArtist(a);
-		c.setType(role);
-		return c;
-	}
-
 	@Test
 	public void testSetup() throws Exception {
 		assertTrue(release.getContributors().contains(releasePerformer));
@@ -225,6 +136,8 @@ public class ObservableTrackTest extends AbstractTestCase {
 		
 		clear(release, recording, work1, work2);
 		assertTrue("Not empty", track.getContributors().isEmpty());
+		
+		assertFalse("Dirty", track.isDirty());
 	}
 
 	@Test
@@ -254,6 +167,8 @@ public class ObservableTrackTest extends AbstractTestCase {
 
 		add(work2, workAuthor2);
 		assertTrue("Not changed", listener.isChanged());
+
+		assertFalse("Dirty", track.isDirty());
 	}
 	
 	@Test
@@ -272,6 +187,7 @@ public class ObservableTrackTest extends AbstractTestCase {
 		workAuthor2.getArtist().setName("other");
 		assertTrue("Not changed", listener.isChanged());
 
+		assertFalse("Dirty", track.isDirty());
 	}
 	
 	@Test
@@ -290,6 +206,7 @@ public class ObservableTrackTest extends AbstractTestCase {
 		workAuthor2.setType(COMPOSER);
 		assertTrue("Not changed", listener.isChanged());
 
+		assertFalse("Dirty", track.isDirty());
 	}
 
 	@Test
@@ -308,11 +225,29 @@ public class ObservableTrackTest extends AbstractTestCase {
 		workAuthor2.setArtist(recordingArtist);
 		assertTrue("Not changed", listener.isChanged());
 
+		assertFalse("Dirty", track.isDirty());
 	}
 	
+	@Test
+	public void testDelete() throws Exception {
+		assertTrue("Bad setup? Track not found", release.getTracks().contains(track));
+
+		assertTrue("Bad setup? Track not found", recording.getTracks().contains(track));
+
+		MultiPurposeListener releaseListener = listener(release.getTracks());
+		MultiPurposeListener recordingListener = listener(recording.getTracks());
+
+		track.delete();
+
+		assertFalse("Track still present", release.getTracks().contains(track));
+		assertTrue("No event fired", releaseListener.isChanged());
+
+		assertFalse("Track still present", recording.getTracks().contains(track));
+		assertTrue("No event fired", recordingListener.isChanged());
+	}
 	
 	private ObservableContributor add(AbstractContributableEntity e, ObservableArtist a, String role) {
-		ObservableContributor contributor = createContributor(a, role);
+		ObservableContributor contributor = contributor(e, a, role);
 		add(e, contributor);
 		return contributor;
 	}

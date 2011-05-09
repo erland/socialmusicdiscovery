@@ -27,7 +27,9 @@
 
 package org.socialmusicdiscovery.rcp.commands;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -36,6 +38,7 @@ import org.eclipse.core.commands.IHandler;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.socialmusicdiscovery.rcp.content.Deletable;
 import org.socialmusicdiscovery.rcp.util.CommandUtil;
+import org.socialmusicdiscovery.rcp.util.NotYetImplemented;
 import org.socialmusicdiscovery.rcp.util.WorkbenchUtil;
 
 /**
@@ -48,8 +51,10 @@ public class Delete extends AbstractHandler implements IHandler {
 
 	@Override
 	public Boolean execute(ExecutionEvent event) throws ExecutionException {
-		Collection<Deletable> victims = CommandUtil.getDefaultVariable(event);
-		boolean isConfirmed = MessageDialog.openConfirm(null, "Delete", "Delete "+victims.size()+" element(s)? This action can NOT be undone!");
+		@SuppressWarnings("unchecked")
+		List<? extends Deletable> victims = resolveDependents((Collection<Deletable>) CommandUtil.getDefaultVariable(event));
+		boolean isConfirmed = MessageDialog.openConfirm(null, "Delete", "Delete "+victims.size()+" element(s) and all dependents? This action can NOT be undone!");
+		isConfirmed &= NotYetImplemented.confirm("Delete");
 		if (isConfirmed) {
 			if (WorkbenchUtil.closeEditors(victims)) {
 				for (Deletable v : victims) {
@@ -58,6 +63,17 @@ public class Delete extends AbstractHandler implements IHandler {
 			}
 		}
 		return Boolean.valueOf(isConfirmed);
+	}
+
+	
+	private <T extends Deletable> List<T> resolveDependents(Collection<T> primaryVictims) {
+		List<T> result = new ArrayList<T>();
+		for (Deletable deletable : primaryVictims) {
+			Collection<T> dependentsToDelete = deletable.getDependentsToDelete();
+			result.addAll(dependentsToDelete);
+		}
+		result.addAll(primaryVictims);
+		return result;
 	}
 
 }

@@ -37,6 +37,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.databinding.observable.Diffs;
+import org.eclipse.core.databinding.observable.set.IObservableSet;
+import org.eclipse.core.databinding.observable.set.SetDiff;
 import org.socialmusicdiscovery.rcp.util.ChangeMonitor;
 import org.socialmusicdiscovery.rcp.util.NotYetImplemented;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
@@ -68,7 +71,7 @@ public class ObservableTrack extends AbstractContributableEntity<Track> implemen
 	 */
 	@SuppressWarnings("unchecked")
 	private class MyContributorFacade extends AbstractContributableEntity implements Runnable {
-		private EffectiveContributorsResolver<ObservableContribution> effectiveContributorsResolver;
+		private EffectiveContributorsResolver<ObservableContributor> effectiveContributorsResolver;
 		private MyContributorFacade() {
 			update();
 			ChangeMonitor.observe(this, ObservableTrack.this, PROP_release, PROP_contributors, PROP_artist, PROP_name);
@@ -80,8 +83,8 @@ public class ObservableTrack extends AbstractContributableEntity<Track> implemen
 		}
 
 		private void update() {
-			List<Collection<ObservableContribution>> orderedContributors = getContributorsInOrderOfPrecedence();
-			effectiveContributorsResolver = new EffectiveContributorsResolver<ObservableContribution>(orderedContributors);
+			List<Collection<ObservableContributor>> orderedContributors = getContributorsInOrderOfPrecedence();
+			effectiveContributorsResolver = new EffectiveContributorsResolver<ObservableContributor>(orderedContributors);
 			setContributors(effectiveContributorsResolver.getEffectiveContributors());
 		}
 
@@ -90,8 +93,8 @@ public class ObservableTrack extends AbstractContributableEntity<Track> implemen
 			update(); // TODO refine, only update the affected set of contributors
 		}
 		
-		private List<Collection<ObservableContribution>> getContributorsInOrderOfPrecedence() {
-			List<Collection<ObservableContribution>> result = new ArrayList<Collection<ObservableContribution>>();
+		private List<Collection<ObservableContributor>> getContributorsInOrderOfPrecedence() {
+			List<Collection<ObservableContributor>> result = new ArrayList<Collection<ObservableContributor>>();
 			result.add(getRecordingContributors());
 			result.add(getWorkContributors());
 			result.add(getRecordingSessionContributors());
@@ -99,37 +102,33 @@ public class ObservableTrack extends AbstractContributableEntity<Track> implemen
 			return result;
 		}
 
-		private Collection<ObservableContribution> getWorkContributors() {
-			Set<ObservableContribution> result = new HashSet<ObservableContribution>();
+		private Collection<ObservableContributor> getWorkContributors() {
+			Set<ObservableContributor> result = new HashSet<ObservableContributor>();
 			for (Work w : getRecording().getWorks()) {
-				result.addAll(compile(Work.class, w));
+				result.addAll(compile(w));
 			}
 			return result;
 		}
 
-		private Collection<ObservableContribution> getReleaseContributors() {
-			return compile(Release.class, getRelease());
+		private Collection<ObservableContributor> getReleaseContributors() {
+			return compile(getRelease());
 		}
 
-		private Collection<ObservableContribution> getRecordingSessionContributors() {
-			return compile(RecordingSession.class, resolveRecordingSession(getRecording()));
+		private Collection<ObservableContributor> getRecordingSessionContributors() {
+			return compile(resolveRecordingSession(getRecording()));
 		}
 
-		private Collection<ObservableContribution> getRecordingContributors() {
-			return compile(Recording.class, getRecording());
+		private Collection<ObservableContributor> getRecordingContributors() {
+			return compile(getRecording());
 		}
 
-		private Collection<ObservableContribution> compile(Class<? extends SMDIdentity> type, SMDIdentity entity) {
+		private Collection<ObservableContributor> compile(SMDIdentity entity) {
 			Set result = new HashSet();
 			if (entity!=null) {
 				AbstractContributableEntity c = (AbstractContributableEntity) entity;
 				Set<Contributor> contributors = c.getContributors();
 				for (Contributor contributor: contributors) {
-					ObservableContribution r = new ObservableContribution();
-					r.setArtist(contributor.getArtist());
-					r.setType(contributor.getType());
-					r.setEntity(c);
-					result.add(r);
+					result.add(contributor);
 				}
 			}
 			return result;
@@ -145,16 +144,24 @@ public class ObservableTrack extends AbstractContributableEntity<Track> implemen
 		}
 
 		@Override
-		public Set<ObservableContribution> getContributors() {
-			// TODO make typesafe, use generics in signature
-			Set contributors = ObservableTrack.this.getContributors();
-			return contributors;
+		public IObservableSet getContributors() {
+			return ObservableTrack.this.getContributors();
 		}
 
+		/**
+		 * Do <b>NOT</b> call superclass; we must fire event even if no elements have changed since 
+		 * we need to update if a contributor name has changed. Also, we do <b>NOT</b> thus instance 
+		 * to become dirty because of a change in a derived property.  
+		 */
 		@Override
-		public void setContributors(Set contributors) {
-			// TODO make typesafe, use generics in signature
-			ObservableTrack.this.setContributors(contributors);
+		public void setContributors(Set newContributors) {
+			ObservableTrack.this.setDirtyEnabled(false);
+			IObservableSet myContributors = ObservableTrack.this.getContributors();
+			SetDiff diff = Diffs.computeSetDiff(myContributors, newContributors);
+			myContributors.removeAll(diff.getRemovals());
+			myContributors.addAll(diff.getAdditions());
+			ObservableTrack.this.firePropertyChange(PROP_contributors); // "refresh event"
+			ObservableTrack.this.setDirtyEnabled(true);
 		}
 
 	}
@@ -258,9 +265,10 @@ public class ObservableTrack extends AbstractContributableEntity<Track> implemen
 	 * 
 	 * @param contributor
 	 */
+	@SuppressWarnings("unchecked")
 	public boolean isEffectiveContributor(Contributor contributor) {
-		for (Contributor c : getContributors()) {
-			if (ObservableContributor.equal(c, contributor)) {
+		for (Contributor c : (Collection<Contributor>) getContributors()) {
+			if (c.equals(contributor)) {
 				return true;
 			}
 		}
@@ -269,13 +277,23 @@ public class ObservableTrack extends AbstractContributableEntity<Track> implemen
 
 	@Override
 	public void delete() {
-		NotYetImplemented.openDialog("Cannot yet delete "+getClass().getSimpleName());
-	}
+		ObservableRecording recording = (ObservableRecording) getRecording();
+		if (recording.isInflated()) {
+			recording.getTracks().remove(this);  
+		}
 
+		ObservableRelease release = (ObservableRelease) getRelease();
+		if (release.isInflated()) {
+			release.getTracks().remove(this);
+		}
+		
+		super.delete();
+	}
+	
 	@Override
 	public Track newInstance() {
 		NotYetImplemented.openDialog("Cannot yet create "+getClass().getSimpleName());
 		return null;
 	}
-	
+
 }

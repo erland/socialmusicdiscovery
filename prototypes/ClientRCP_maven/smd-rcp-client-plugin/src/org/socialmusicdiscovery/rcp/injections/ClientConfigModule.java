@@ -27,9 +27,17 @@
 
 package org.socialmusicdiscovery.rcp.injections;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.eclipse.core.databinding.observable.list.IObservableList;
+import org.eclipse.core.databinding.observable.list.WritableList;
+import org.eclipse.core.databinding.observable.set.IObservableSet;
+import org.eclipse.core.databinding.observable.set.WritableSet;
 import org.socialmusicdiscovery.rcp.content.DataSource;
 import org.socialmusicdiscovery.rcp.content.ObservableArtist;
 import org.socialmusicdiscovery.rcp.content.ObservableContributor;
@@ -42,6 +50,8 @@ import org.socialmusicdiscovery.rcp.content.ObservableRecordingSession;
 import org.socialmusicdiscovery.rcp.content.ObservableRelease;
 import org.socialmusicdiscovery.rcp.content.ObservableTrack;
 import org.socialmusicdiscovery.rcp.content.ObservableWork;
+import org.socialmusicdiscovery.rcp.util.GenericWritableList;
+import org.socialmusicdiscovery.rcp.util.GenericWritableSet;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
 import org.socialmusicdiscovery.server.business.model.core.Label;
@@ -60,9 +70,37 @@ import com.google.inject.Provides;
 import com.sun.jersey.api.client.config.ClientConfig;
 
 /**
+ * <p>
  * Configure how to map from server API classes to concrete client classes.
+ * </p>
+ * <p>
+ * <b>Note on collection conversion:</b><br>
+ * We need to do a seemingly strange mapping where we convert a concrete class
+ * to itself. This is logic buried deeply inside Gson so there is no obvious or
+ * easy way around it.
+ * 
+ * The logic is that Gson:
+ * <ol>
+ * <li>Tries to find an exact mapping among the converters we provide.</li>
+ * <li>If it can't find an exact mapping it tries to find a mapping from the
+ * standard type converters for {@link Collection}, {@link List}, {@link Set}
+ * etc.</li>
+ * </ol>
+ * 
+ * 
+ * We need to make it match in point 1 because else it will create a
+ * {@link LinkedList} instead of {@link GenericWritableList}, and the only way
+ * to do that is to register a converter for the exact match, which would be
+ * {@link GenericWritableList}. Converters have to be specified for a specific
+ * class/interface, you can't register generic converters that have logic inside
+ * them that decide what to convert and what to not convert. So it looks a bit
+ * strange to have a mapping from {@link GenericWritableList} to
+ * {@link GenericWritableList} but it's needed to make Gson do what we want.
+ * </p>
+ * 
+ * 
  * @author Peer Törngren
- *
+ * 
  */
 public class ClientConfigModule extends AbstractModule {
 	private static ClientConfig clientConfig;
@@ -93,6 +131,13 @@ public class ClientConfigModule extends AbstractModule {
 			// converters.put(Series.class, ObservableSeries.class);
 			converters.put(Track.class, ObservableTrack.class);
 			converters.put(Work.class, ObservableWork.class);
+			
+			
+			// handle type conversion of collection attributes
+			converters.put(IObservableList.class, WritableList.class);
+			converters.put(IObservableSet.class, WritableSet.class);
+			converters.put(GenericWritableList.class, GenericWritableList.class);
+			converters.put(GenericWritableSet.class, GenericWritableSet.class);
 
 			return converters;
 		}
