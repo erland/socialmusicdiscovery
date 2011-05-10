@@ -28,6 +28,7 @@
 package org.socialmusicdiscovery.server.business.model.core;
 
 import com.google.gson.annotations.Expose;
+import org.hibernate.Hibernate;
 import org.socialmusicdiscovery.server.business.model.AbstractSMDIdentityEntity;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
 
@@ -42,11 +43,10 @@ import java.util.Set;
 @javax.persistence.Entity
 @Table(name = "recording_sessions")
 @SMDIdentityReferenceEntity.ReferenceType(type = RecordingSession.class)
-public class RecordingSessionEntity extends AbstractSMDIdentityEntity implements RecordingSession {
+public class RecordingSessionEntity extends AbstractSMDIdentityEntity implements RecordingSession, ContributorOwner {
     @Expose
     private Date date;
-    @OneToMany(targetEntity = ContributorEntity.class, cascade = {CascadeType.ALL})
-    @JoinColumn(name = "session_id")
+    @OneToMany(targetEntity = ContributorEntity.class, mappedBy = "recordingSession", cascade = {CascadeType.REMOVE}, orphanRemoval = true)
     @Expose
     private Set<Contributor> contributors = new HashSet<Contributor>();
 
@@ -78,4 +78,18 @@ public class RecordingSessionEntity extends AbstractSMDIdentityEntity implements
     public void setRecordings(Set<Recording> recordings) {
         this.recordings = recordings;
     }
+
+    public void addContributor(ContributorEntity contributor) {
+        if(Hibernate.isInitialized(contributors)) {
+            this.contributors.add(contributor);
+        }
+        contributor.setRecordingSession(this);
+    }
+    public void removeContributor(ContributorEntity contributor) {
+        if(Hibernate.isInitialized(contributors)) {
+            this.contributors.remove(contributor);
+        }
+        contributor.setRecordingSession(null);
+    }
+
 }

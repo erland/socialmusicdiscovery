@@ -27,6 +27,8 @@
 
 package org.socialmusicdiscovery.server.business.model;
 
+import com.google.gson.annotations.Expose;
+
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -42,9 +44,11 @@ public class SMDIdentityReferenceEntity implements SMDIdentityReference {
     };
 
     @Id
+    @Expose
     @Column(length = 36)
     private String id;
 
+    @Expose
     @Column(nullable = false)
     private String type;
 

@@ -78,7 +78,8 @@ public class JPAWorkRepository extends AbstractJPASMDIdentityRepository<WorkEnti
         if (entity.getParent() != null && !entityManager.contains(entity.getParent())) {
             entity.setParent(findById(entity.getParent().getId()));
         }
-        for (Contributor contributor : entity.getContributors()) {
+        super.create(entity);
+         for (Contributor contributor : entity.getContributors()) {
             if(!entityManager.contains(contributor)) {
                 if(((ContributorEntity)contributor).getLastUpdated()==null) {
                     ((ContributorEntity)contributor).setLastUpdated(entity.getLastUpdated());
@@ -86,10 +87,10 @@ public class JPAWorkRepository extends AbstractJPASMDIdentityRepository<WorkEnti
                 if(((ContributorEntity)contributor).getLastUpdatedBy()==null) {
                     ((ContributorEntity)contributor).setLastUpdatedBy(entity.getLastUpdatedBy());
                 }
+                entity.addContributor((ContributorEntity) contributor);
                 contributorRepository.create((ContributorEntity) contributor);
             }
         }
-        super.create(entity);
     }
 
     @Override
@@ -105,6 +106,7 @@ public class JPAWorkRepository extends AbstractJPASMDIdentityRepository<WorkEnti
                 if(((ContributorEntity)contributor).getLastUpdatedBy()==null) {
                     ((ContributorEntity)contributor).setLastUpdatedBy(entity.getLastUpdatedBy());
                 }
+                entity.addContributor((ContributorEntity) contributor);
                 contributorRepository.merge((ContributorEntity) contributor);
             }
         }
