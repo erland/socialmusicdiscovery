@@ -245,7 +245,7 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		private final Class<T> distinctQueryType; // for querying server
 		private GenericType<Set<T>> genericCollectionQueryType;
 		private final Class<? extends AbstractObservableEntity<T>> observableType;
-		private final IObservableSet children = new WritableSet();
+		private IObservableSet children;
 
 		private boolean isLoaded = false;
 
@@ -320,11 +320,28 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		}
 
 		/**
-		 * Returns a {@link WritableSet}.
+		 * <p>
+		 * Returns a {@link WritableSet}. Loads children and updates
+		 * {@link #isLoaded} status if connected but not loaded. Do <b>NOT</b>
+		 * maintain the same set across sessions; set must be replaced when Root
+		 * is reloaded.
+		 * </p>
+		 * 
+		 * <p>
+		 * Rationale: the returned set is used as observable input in a viewer.
+		 * When the input is assigned, the first thing the viewer does is to
+		 * dispose all elements/nodes of the current input, which effectively is
+		 * out set. The next time we access it we get an error (
+		 * <code>org.eclipse.core.runtime.AssertionFailedException: assertion failed: Getter called on disposed observable</code>
+		 * ). Hence we need to replace the old set with a brand new one when we
+		 * reassign the input.
+		 * </p>
+		 * 
+		 * @see #dispose()
 		 */
 		public IObservableSet getObservableChildren() {
 			if (!isLoaded && (isConnected || isAutoConnect)) {
-				children.addAll(findAll());
+				children = new WritableSet(findAll(), getType());
 				isLoaded = true;
 			}
 			return children;
@@ -474,9 +491,14 @@ public class DataSource extends AbstractObservable implements ModelObject {
 			return entity.getId()==null;
 		}
 		
+		/**
+		 * Do <b>NOT</b> maintain the same set of children across sessions; set
+		 * must be replaced when Root is reloaded. See comments on
+		 * {@link #getObservableChildren()}.
+		 */
 		public void dispose() {
+			children = null;
 			isLoaded = false;
-			children.clear();
 		}
 
 		/**
@@ -646,20 +668,16 @@ public class DataSource extends AbstractObservable implements ModelObject {
 	 * @throws IllegalStateException
 	 */
 	public boolean connect() {
-		if (isConnected()) {
+		if (isConnected) {
 			throw new IllegalStateException("Already connected");
 		}
-		this.setConnected(true);
+		isConnected = true; // do NOT fire events, but tell roots that they can load data
 		for (Root root : getVisibleRoots()) {
 			root.getObservableChildren();
 		}
-		fireConnectedRefreshEvent();
-		return isConnected();
-	}
-
-	private void fireConnectedRefreshEvent() {
-		// fire "refresh event" to make sure listeners get notified even if we already were disconnected 
+		// now fire a "refresh event" to notify listeners and refresh input 
 		firePropertyChange(new PropertyChangeEvent(this, PROP_IS_CONNECTED, null, null));
+		return isConnected();
 	}
 
 	@Override
