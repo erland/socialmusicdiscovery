@@ -39,6 +39,7 @@ import org.eclipse.core.databinding.observable.Observables;
 import org.eclipse.core.databinding.observable.set.IObservableSet;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IPersistableElement;
+import org.eclipse.ui.PlatformUI;
 import org.socialmusicdiscovery.rcp.Activator;
 import org.socialmusicdiscovery.rcp.content.DataSource.Root;
 import org.socialmusicdiscovery.rcp.event.AbstractObservable;
@@ -221,8 +222,8 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 		if (this.dataSource!=null) {
 			throw new IllegalStateException("DataSource already initialized");
 		}
-		if (Activator.getDefault()!=null) {
-			throw new IllegalStateException("Must not set data source with workbench running");
+		if (PlatformUI.isWorkbenchRunning()) {
+			throw new IllegalStateException("Must not set data source with workbench running - this method is ONLY for use while testing");
 		}
 		this.dataSource = dataSource;
 	}
