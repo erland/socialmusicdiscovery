@@ -27,11 +27,7 @@
 
 package org.socialmusicdiscovery.server.business.model;
 
-public interface SMDIdentityReference {
-    String getId();
-
-    void setId(String id);
-
+public interface SMDIdentityReference extends SMDIdentity {
     String getType();
 
     void setType(String type);
