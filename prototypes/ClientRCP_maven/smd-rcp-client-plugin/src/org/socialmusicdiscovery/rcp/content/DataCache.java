@@ -245,7 +245,11 @@ import com.google.gson.annotations.Expose;
 		SMDIdentity fromValue = getFieldValue(f, fromInstance);
 		SMDIdentity cachedValue = getOrStore(fromValue); 
 		if (toValue!=cachedValue) {
-			setFieldValue(f, toInstance, cachedValue);
+			if(cachedValue==null || f.getType().isAssignableFrom(cachedValue.getClass())) {
+				setFieldValue(f, toInstance, cachedValue);
+			}else {
+				setFieldValue(f, toInstance, toValue);
+			}
 		}
 	}
 
