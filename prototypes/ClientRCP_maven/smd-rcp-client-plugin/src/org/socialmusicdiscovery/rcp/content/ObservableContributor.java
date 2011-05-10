@@ -31,6 +31,7 @@ import java.util.Arrays;
 
 import org.eclipse.core.databinding.observable.set.IObservableSet;
 import org.socialmusicdiscovery.rcp.util.NotYetImplemented;
+import org.socialmusicdiscovery.server.business.model.SMDIdentityReference;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
 
@@ -38,10 +39,12 @@ import com.google.gson.annotations.Expose;
 
 public class ObservableContributor extends AbstractObservableEntity<Contributor> implements Contributor {
 
+	public static final String PROP_owner = "owner";
 	public static final String PROP_artist = "artist";
 	public static final String PROP_type = "type";
 	public static final String PROP_entity = "entity";
 	
+	@Expose private SMDIdentityReference owner;
 	@Expose private Artist artist;
 	@Expose private String type;
 	protected AbstractContributableEntity entity;
@@ -66,6 +69,15 @@ public class ObservableContributor extends AbstractObservableEntity<Contributor>
 		firePropertyChange(PROP_artist, this.artist, this.artist = artist);
 	}
 
+	@Override
+	public SMDIdentityReference getOwner() {
+		return owner;
+	}
+	
+	public void setOwner(SMDIdentityReference owner) {
+		firePropertyChange(PROP_owner, this.owner, this.owner = owner);
+	}
+	
 	public void setType(String type) {
 		firePropertyChange(PROP_type, this.type, this.type = type);
 	}

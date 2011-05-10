@@ -50,6 +50,7 @@ import org.socialmusicdiscovery.rcp.content.ObservableRecordingSession;
 import org.socialmusicdiscovery.rcp.content.ObservableRelease;
 import org.socialmusicdiscovery.rcp.content.ObservableTrack;
 import org.socialmusicdiscovery.rcp.content.ObservableWork;
+import org.socialmusicdiscovery.rcp.content.ObservableSMDIdentityReference;
 import org.socialmusicdiscovery.rcp.util.GenericWritableList;
 import org.socialmusicdiscovery.rcp.util.GenericWritableSet;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
@@ -63,6 +64,7 @@ import org.socialmusicdiscovery.server.business.model.core.RecordingSession;
 import org.socialmusicdiscovery.server.business.model.core.Release;
 import org.socialmusicdiscovery.server.business.model.core.Track;
 import org.socialmusicdiscovery.server.business.model.core.Work;
+import org.socialmusicdiscovery.server.business.model.SMDIdentityReference;
 import org.socialmusicdiscovery.server.support.json.AbstractJSONProvider;
 
 import com.google.inject.AbstractModule;
@@ -131,6 +133,7 @@ public class ClientConfigModule extends AbstractModule {
 			// converters.put(Series.class, ObservableSeries.class);
 			converters.put(Track.class, ObservableTrack.class);
 			converters.put(Work.class, ObservableWork.class);
+			converters.put(SMDIdentityReference.class, ObservableSMDIdentityReference.class);
 			
 			
 			// handle type conversion of collection attributes
