@@ -59,14 +59,19 @@ public class PlayableElementFacade extends AbstractSMDIdentityCRUDFacade<Playabl
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Collection<PlayableElementEntity> search(@QueryParam("uri") String uri, @QueryParam("uriContains") String uriContains, @QueryParam("smdID") String smdID) {
-        if (uri != null) {
-            return new CopyHelper().detachedCopy(repository.findByURIWithRelations(uri, Arrays.asList("reference"), null),Expose.class);
-        }else if (uriContains != null) {
-            return new CopyHelper().detachedCopy(repository.findByPartialURIWithRelations(uriContains, Arrays.asList("reference"), null),Expose.class);
-        } else if (smdID != null) {
-            return new CopyHelper().detachedCopy(repository.findBySmdIDWithRelations(smdID, Arrays.asList("reference"), null),Expose.class);
-        } else {
-            return new CopyHelper().detachedCopy(repository.findAllWithRelations(Arrays.asList("reference"), null),Expose.class);
+        try {
+            transactionManager.begin();
+            if (uri != null) {
+                return new CopyHelper().detachedCopy(repository.findByURIWithRelations(uri, Arrays.asList("reference"), null),Expose.class);
+            }else if (uriContains != null) {
+                return new CopyHelper().detachedCopy(repository.findByPartialURIWithRelations(uriContains, Arrays.asList("reference"), null),Expose.class);
+            } else if (smdID != null) {
+                return new CopyHelper().detachedCopy(repository.findBySmdIDWithRelations(smdID, Arrays.asList("reference"), null),Expose.class);
+            } else {
+                return new CopyHelper().detachedCopy(repository.findAllWithRelations(Arrays.asList("reference"), null),Expose.class);
+            }
+        }finally {
+            transactionManager.end();
         }
     }
 
@@ -80,7 +85,12 @@ public class PlayableElementFacade extends AbstractSMDIdentityCRUDFacade<Playabl
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
     public PlayableElementEntity get(@PathParam("id") String id) {
-        return new CopyHelper().copy(super.getEntity(id), Expose.class);
+        try {
+            transactionManager.begin();
+            return new CopyHelper().copy(super.getEntity(id), Expose.class);
+        }finally {
+            transactionManager.end();
+        }
     }
 
     /**

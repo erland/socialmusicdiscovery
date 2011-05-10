@@ -31,8 +31,8 @@ import com.google.gson.annotations.Expose;
 import com.google.inject.Inject;
 import org.socialmusicdiscovery.server.api.management.model.AbstractSMDIdentityCRUDFacade;
 import org.socialmusicdiscovery.server.business.logic.TransactionManager;
-import org.socialmusicdiscovery.server.business.model.core.PersonEntity;
-import org.socialmusicdiscovery.server.business.repository.core.PersonRepository;
+import org.socialmusicdiscovery.server.business.model.core.ContributorEntity;
+import org.socialmusicdiscovery.server.business.repository.core.ContributorRepository;
 import org.socialmusicdiscovery.server.support.copy.CopyHelper;
 
 import javax.ws.rs.*;
@@ -42,28 +42,37 @@ import java.util.Collection;
 import java.util.Date;
 
 /**
- * Provides functionality to create, update, delete and find a specific person
+ * Provides functionality to create, update, delete and find a specific recording
  */
-@Path("/persons")
-public class PersonFacade extends AbstractSMDIdentityCRUDFacade<PersonEntity, PersonRepository> {
+@Path("/contributors")
+public class ContributorFacade extends AbstractSMDIdentityCRUDFacade<ContributorEntity, ContributorRepository> {
     @Inject
     private TransactionManager transactionManager;
     /**
-     * Search for persons matching the search criterias
+     * Search for contributors matching specified search criterias
      *
-     * @param name         Exact name of person
-     * @param nameContains The name of the person has to contain this string
-     * @return List of matching persons
+     * @param release      The identity of the release which the contributor is related to
+     * @param work      The identity of the work which the contributor is related to
+     * @param recording      The identity of the recording which the contributor is related to
+     * @param recordingSession      The identity of the recording session which the contributor is related to
+     * @param artist     The identity of the artist which the contributor is related to
+     * @return List of matching recordings
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Collection<PersonEntity> search(@QueryParam("name") String name, @QueryParam("nameContains") String nameContains) {
+    public Collection<ContributorEntity> search(@QueryParam("release") String release, @QueryParam("work") String work, @QueryParam("recording") String recording, @QueryParam("recordingSession") String recordingSession, @QueryParam("artist") String artist) {
         try {
             transactionManager.begin();
-            if (name != null) {
-                return new CopyHelper().detachedCopy(repository.findByNameWithRelations(name, Arrays.asList("reference"), null), Expose.class);
-            } else if (nameContains != null) {
-                return new CopyHelper().detachedCopy(repository.findByPartialNameWithRelations(nameContains, Arrays.asList("reference"), null), Expose.class);
+            if(release!=null) {
+                return new CopyHelper().detachedCopy(repository.findByReleaseWithRelations(release, Arrays.asList("reference"), null), Expose.class);
+            }else if (work != null) {
+                return new CopyHelper().detachedCopy(repository.findByWorkWithRelations(work, Arrays.asList("reference"), null), Expose.class);
+            }else if (recording != null) {
+                return new CopyHelper().detachedCopy(repository.findByRecordingWithRelations(recording, Arrays.asList("reference"), null), Expose.class);
+            }else if (recordingSession != null) {
+                return new CopyHelper().detachedCopy(repository.findByRecordingSessionWithRelations(recordingSession, Arrays.asList("reference"), null), Expose.class);
+            }else if (artist!=null) {
+                return new CopyHelper().detachedCopy(repository.findByArtistWithRelations(release, Arrays.asList("reference"), null), Expose.class);
             } else {
                 return new CopyHelper().detachedCopy(repository.findAllWithRelations(Arrays.asList("reference"), null), Expose.class);
             }
@@ -73,15 +82,15 @@ public class PersonFacade extends AbstractSMDIdentityCRUDFacade<PersonEntity, Pe
     }
 
     /**
-     * Get information about a specific person
+     * Get information about a specific contributor
      *
-     * @param id Identity of the person
-     * @return Information about the person
+     * @param id Identity of contributor
+     * @return Information about contributor
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
-    public PersonEntity get(@PathParam("id") String id) {
+    public ContributorEntity get(@PathParam("id") String id) {
         try {
             transactionManager.begin();
             return new CopyHelper().copy(super.getEntity(id), Expose.class);
@@ -91,20 +100,20 @@ public class PersonFacade extends AbstractSMDIdentityCRUDFacade<PersonEntity, Pe
     }
 
     /**
-     * Create a new person
+     * Create a new contributor
      *
-     * @param person Information about the person to create
-     * @return Information about newly created person including its generated identity
+     * @param contributor Information about contributor to create
+     * @return Information about newly created contributor including its generated identity
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public PersonEntity create(PersonEntity person) {
+    public ContributorEntity create(ContributorEntity contributor) {
         try {
             transactionManager.begin();
-            person.setLastUpdated(new Date());
-            person.setLastUpdatedBy(super.CHANGED_BY);
-            return new CopyHelper().copy(super.createEntity(person), Expose.class);
+            contributor.setLastUpdated(new Date());
+            contributor.setLastUpdatedBy(super.CHANGED_BY);
+            return new CopyHelper().copy(super.createEntity(contributor), Expose.class);
         }catch (RuntimeException e) {
             transactionManager.setRollbackOnly();
             throw e;
@@ -114,22 +123,22 @@ public class PersonFacade extends AbstractSMDIdentityCRUDFacade<PersonEntity, Pe
     }
 
     /**
-     * Update an existing person
+     * Update an existing contributor
      *
-     * @param id     Identity of person
-     * @param person Updated information about the person
-     * @return Updated information about the person
+     * @param id        Identity of contributor
+     * @param contributor Information about contributor
+     * @return Information about contributor
      */
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
-    public PersonEntity update(@PathParam("id") String id, PersonEntity person) {
+    public ContributorEntity update(@PathParam("id") String id, ContributorEntity contributor) {
         try {
             transactionManager.begin();
-            person.setLastUpdated(new Date());
-            person.setLastUpdatedBy(super.CHANGED_BY);
-            return new CopyHelper().copy(super.updateEntity(id, person), Expose.class);
+            contributor.setLastUpdated(new Date());
+            contributor.setLastUpdatedBy(super.CHANGED_BY);
+            return new CopyHelper().copy(super.updateEntity(id, contributor), Expose.class);
         }catch (RuntimeException e) {
             transactionManager.setRollbackOnly();
             throw e;
@@ -139,9 +148,9 @@ public class PersonFacade extends AbstractSMDIdentityCRUDFacade<PersonEntity, Pe
     }
 
     /**
-     * Delete an existing person
+     * Delete an existing contributor
      *
-     * @param id Identity of person
+     * @param id Identity of contributor
      */
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)

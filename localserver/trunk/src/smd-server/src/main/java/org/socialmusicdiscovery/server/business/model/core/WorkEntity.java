@@ -28,6 +28,7 @@
 package org.socialmusicdiscovery.server.business.model.core;
 
 import com.google.gson.annotations.Expose;
+import org.hibernate.Hibernate;
 import org.socialmusicdiscovery.server.business.model.AbstractSMDIdentityEntity;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
 
@@ -39,7 +40,7 @@ import java.util.Set;
 @javax.persistence.Entity
 @Table(name = "works")
 @SMDIdentityReferenceEntity.ReferenceType(type = Work.class)
-public class WorkEntity extends AbstractSMDIdentityEntity implements Work {
+public class WorkEntity extends AbstractSMDIdentityEntity implements Work, ContributorOwner {
     @Column(nullable = false)
     @Expose
     private String name;
@@ -53,8 +54,7 @@ public class WorkEntity extends AbstractSMDIdentityEntity implements Work {
     @Expose
     private Work parent;
 
-    @OneToMany(targetEntity = ContributorEntity.class, cascade = {CascadeType.ALL})
-    @JoinColumn(name = "work_id")
+    @OneToMany(targetEntity = ContributorEntity.class, mappedBy = "work", cascade = {CascadeType.REMOVE}, orphanRemoval = true)
     @Expose
     private Set<Contributor> contributors = new HashSet<Contributor>();
 
@@ -96,5 +96,19 @@ public class WorkEntity extends AbstractSMDIdentityEntity implements Work {
 
     public void setContributors(Set<Contributor> contributors) {
         this.contributors = contributors;
+    }
+
+    public void addContributor(ContributorEntity contributor) {
+        if(Hibernate.isInitialized(contributors)) {
+            this.contributors.add(contributor);
+        }
+        contributor.setWork(this);
+    }
+
+    public void removeContributor(ContributorEntity contributor) {
+        if(Hibernate.isInitialized(contributors)) {
+            this.contributors.remove(contributor);
+        }
+        contributor.setWork(null);
     }
 }

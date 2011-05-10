@@ -317,8 +317,7 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                     if(getConfiguration().getBooleanParameter("composers")) {
                         Set<Contributor> workContributors = getContributorsForTag(tags.get(TagData.COMPOSER), Contributor.COMPOSER);
                         if (workContributors.size() > 0) {
-                            saveContributors(workContributors);
-                            work.setContributors(workContributors);
+                            saveContributors(work,workContributors);
                         }
                     }
                     workRepository.create(work);
@@ -388,8 +387,7 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                 recordingContributors.addAll(performerContributors);
 
                 if (recordingContributors.size() > 0) {
-                    saveContributors(recordingContributors);
-                    recording.setContributors(recordingContributors);
+                    saveContributors(recording, recordingContributors);
                 }
                 recordingRepository.create(recording);
 
@@ -441,8 +439,7 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                             }
                         }
                         if (albumArtistContributors.size() > 0) {
-                            saveContributors(albumArtistContributors);
-                            release.setContributors(albumArtistContributors);
+                            saveContributors(release, albumArtistContributors);
                         }
                         releaseRepository.create(release);
                         this.releaseCache.put(albumName.toLowerCase(), Arrays.asList(release.getId()));
@@ -647,10 +644,12 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
     /**
      * Store Contributor entities for the set of contributors specified
      *
+     * @param owner The owning entity
      * @param contributors The list of contributors to create
      */
-    private void saveContributors(Set<Contributor> contributors) {
+    private void saveContributors(ContributorOwner owner, Set<Contributor> contributors) {
         for (Contributor contributor : contributors) {
+            owner.addContributor((ContributorEntity) contributor);
             contributorRepository.create((ContributorEntity)contributor);
         }
     }

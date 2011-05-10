@@ -56,7 +56,12 @@ public class RecordingSessionFacade extends AbstractSMDIdentityCRUDFacade<Record
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Collection<RecordingSessionEntity> search() {
-        return new CopyHelper().detachedCopy(repository.findAllWithRelations(Arrays.asList("reference"), null), Expose.class);
+        try {
+            transactionManager.begin();
+            return new CopyHelper().detachedCopy(repository.findAllWithRelations(Arrays.asList("reference"), null), Expose.class);
+        }finally {
+            transactionManager.end();
+        }
     }
 
     /**
@@ -69,7 +74,12 @@ public class RecordingSessionFacade extends AbstractSMDIdentityCRUDFacade<Record
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
     public RecordingSessionEntity get(@PathParam("id") String id) {
-        return new CopyHelper().copy(super.getEntity(id), Expose.class);
+        try {
+            transactionManager.begin();
+            return new CopyHelper().copy(super.getEntity(id), Expose.class);
+        }finally {
+            transactionManager.end();
+        }
     }
 
     /**

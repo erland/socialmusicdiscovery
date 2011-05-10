@@ -145,7 +145,7 @@ public class CoreTest extends BaseTestCase {
             setLastChanged(contributorDollyParton);
             contributorRepository.create(contributorDollyParton);
 
-            work.getContributors().add(contributorDollyParton);
+            work.addContributor(contributorDollyParton);
             workRepository.create(work);
 
             RecordingEntity recording = new RecordingEntity();
@@ -173,7 +173,9 @@ public class CoreTest extends BaseTestCase {
             setLastChanged(contributorRickyMinor);
             contributorRepository.create(contributorRickyMinor);
 
-            recording.getContributors().addAll(Arrays.asList(contributorWhitneyHouston,contributorRickyMinor));
+            for (ContributorEntity contributorEntity : Arrays.asList(contributorWhitneyHouston, contributorRickyMinor)) {
+                recording.addContributor(contributorEntity);
+            }
             recordingRepository.create(recording);
 
             TrackEntity track = new TrackEntity();

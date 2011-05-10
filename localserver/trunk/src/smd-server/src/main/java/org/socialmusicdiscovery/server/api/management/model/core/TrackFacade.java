@@ -61,20 +61,25 @@ public class TrackFacade extends AbstractSMDIdentityCRUDFacade<TrackEntity, Trac
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Collection<TrackEntity> search(@QueryParam("name") String name, @QueryParam("nameContains") String nameContains, @QueryParam("release") String release, @QueryParam("artist") String artist, @QueryParam("work") String work, @QueryParam("recording") String recording) {
-        if (name != null) {
-            return new CopyHelper().detachedCopy(repository.findByNameWithRelations(name, Arrays.asList("reference"), Arrays.asList("medium")),Expose.class);
-        } else if (nameContains != null) {
-            return new CopyHelper().detachedCopy(repository.findByPartialNameWithRelations(nameContains, Arrays.asList("reference"), Arrays.asList("medium")),Expose.class);
-        } else if (release != null) {
-            return new CopyHelper().detachedCopy(repository.findByReleaseWithRelations(release, Arrays.asList("reference","recording","recording.works"), Arrays.asList("medium")),Expose.class);
-        } else if (artist != null) {
-            return new CopyHelper().detachedCopy(repository.findByArtistWithRelations(artist, Arrays.asList("reference","recording","recording.works"), Arrays.asList("medium")),Expose.class);
-        } else if (recording != null) {
-            return new CopyHelper().detachedCopy(repository.findByRecordingWithRelations(recording, Arrays.asList("reference"), Arrays.asList("medium")),Expose.class);
-        } else if (work != null) {
-            return new CopyHelper().detachedCopy(repository.findByWorkWithRelations(work, Arrays.asList("reference"), Arrays.asList("medium")),Expose.class);
-        } else {
-            return new CopyHelper().detachedCopy(repository.findAllWithRelations(Arrays.asList("reference","recording","recording.works"), Arrays.asList("medium")),Expose.class);
+        try {
+            transactionManager.begin();
+            if (name != null) {
+                return new CopyHelper().detachedCopy(repository.findByNameWithRelations(name, Arrays.asList("reference"), Arrays.asList("medium")),Expose.class);
+            } else if (nameContains != null) {
+                return new CopyHelper().detachedCopy(repository.findByPartialNameWithRelations(nameContains, Arrays.asList("reference"), Arrays.asList("medium")),Expose.class);
+            } else if (release != null) {
+                return new CopyHelper().detachedCopy(repository.findByReleaseWithRelations(release, Arrays.asList("reference","recording","recording.works"), Arrays.asList("medium")),Expose.class);
+            } else if (artist != null) {
+                return new CopyHelper().detachedCopy(repository.findByArtistWithRelations(artist, Arrays.asList("reference","recording","recording.works"), Arrays.asList("medium")),Expose.class);
+            } else if (recording != null) {
+                return new CopyHelper().detachedCopy(repository.findByRecordingWithRelations(recording, Arrays.asList("reference"), Arrays.asList("medium")),Expose.class);
+            } else if (work != null) {
+                return new CopyHelper().detachedCopy(repository.findByWorkWithRelations(work, Arrays.asList("reference"), Arrays.asList("medium")),Expose.class);
+            } else {
+                return new CopyHelper().detachedCopy(repository.findAllWithRelations(Arrays.asList("reference","recording","recording.works"), Arrays.asList("medium")),Expose.class);
+            }
+        }finally {
+            transactionManager.end();
         }
     }
 
@@ -88,7 +93,12 @@ public class TrackFacade extends AbstractSMDIdentityCRUDFacade<TrackEntity, Trac
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
     public TrackEntity get(@PathParam("id") String id) {
-        return new CopyHelper().copy(super.getEntity(id), Expose.class);
+        try {
+            transactionManager.begin();
+            return new CopyHelper().copy(super.getEntity(id), Expose.class);
+        }finally {
+            transactionManager.end();
+        }
     }
 
     /**

@@ -98,6 +98,7 @@ public class JPAReleaseRepository extends AbstractJPASMDIdentityRepository<Relea
                 ((MediumEntity) medium).setRelease(entity);
             }
         }
+        super.create(entity);
         for (Contributor contributor : entity.getContributors()) {
             if(!entityManager.contains(contributor)) {
                 if(((ContributorEntity)contributor).getLastUpdated()==null) {
@@ -106,10 +107,10 @@ public class JPAReleaseRepository extends AbstractJPASMDIdentityRepository<Relea
                 if(((ContributorEntity)contributor).getLastUpdatedBy()==null) {
                     ((ContributorEntity)contributor).setLastUpdatedBy(entity.getLastUpdatedBy());
                 }
+                entity.addContributor((ContributorEntity) contributor);
                 contributorRepository.create((ContributorEntity) contributor);
             }
         }
-        super.create(entity);
     }
 
     @Override
@@ -137,6 +138,7 @@ public class JPAReleaseRepository extends AbstractJPASMDIdentityRepository<Relea
                 if(((ContributorEntity)contributor).getLastUpdatedBy()==null) {
                     ((ContributorEntity)contributor).setLastUpdatedBy(entity.getLastUpdatedBy());
                 }
+                entity.addContributor((ContributorEntity) contributor);
                 contributorRepository.merge((ContributorEntity) contributor);
             }
         }

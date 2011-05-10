@@ -58,12 +58,17 @@ public class RecordingFacade extends AbstractSMDIdentityCRUDFacade<RecordingEnti
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Collection<RecordingEntity> search(@QueryParam("name") String name, @QueryParam("nameContains") String nameContains) {
-        if (name != null) {
-            return new CopyHelper().detachedCopy(repository.findByNameWithRelations(name, Arrays.asList("reference"), null), Expose.class);
-        } else if (nameContains != null) {
-            return new CopyHelper().detachedCopy(repository.findByPartialNameWithRelations(nameContains, Arrays.asList("reference"), null), Expose.class);
-        } else {
-            return new CopyHelper().detachedCopy(repository.findAllWithRelations(Arrays.asList("reference"), null), Expose.class);
+        try {
+            transactionManager.begin();
+            if (name != null) {
+                return new CopyHelper().detachedCopy(repository.findByNameWithRelations(name, Arrays.asList("reference"), null), Expose.class);
+            } else if (nameContains != null) {
+                return new CopyHelper().detachedCopy(repository.findByPartialNameWithRelations(nameContains, Arrays.asList("reference"), null), Expose.class);
+            } else {
+                return new CopyHelper().detachedCopy(repository.findAllWithRelations(Arrays.asList("reference"), null), Expose.class);
+            }
+        }finally {
+            transactionManager.end();
         }
     }
 
@@ -77,7 +82,12 @@ public class RecordingFacade extends AbstractSMDIdentityCRUDFacade<RecordingEnti
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
     public RecordingEntity get(@PathParam("id") String id) {
-        return new CopyHelper().copy(super.getEntity(id), Expose.class);
+        try {
+            transactionManager.begin();
+            return new CopyHelper().copy(super.getEntity(id), Expose.class);
+        }finally {
+            transactionManager.end();
+        }
     }
 
     /**

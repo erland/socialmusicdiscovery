@@ -28,6 +28,7 @@
 package org.socialmusicdiscovery.server.business.model.core;
 
 import com.google.gson.annotations.Expose;
+import org.hibernate.Hibernate;
 import org.socialmusicdiscovery.server.business.model.AbstractSMDIdentityEntity;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
 import org.socialmusicdiscovery.server.business.model.search.*;
@@ -40,7 +41,7 @@ import java.util.Set;
 @javax.persistence.Entity
 @Table(name = "recordings")
 @SMDIdentityReferenceEntity.ReferenceType(type = Recording.class)
-public class RecordingEntity extends AbstractSMDIdentityEntity implements Recording {
+public class RecordingEntity extends AbstractSMDIdentityEntity implements Recording, ContributorOwner {
     @Expose
     private String name;
     @Expose
@@ -49,8 +50,7 @@ public class RecordingEntity extends AbstractSMDIdentityEntity implements Record
     @JoinColumn(name = "mixof_id")
     @Expose
     private Recording mixOf;
-    @OneToMany(targetEntity = ContributorEntity.class, cascade = {CascadeType.ALL})
-    @JoinColumn(name = "recording_id")
+    @OneToMany(targetEntity = ContributorEntity.class, mappedBy = "recording", cascade = {CascadeType.REMOVE}, orphanRemoval = true)
     @Expose
     private Set<Contributor> contributors = new HashSet<Contributor>();
     @ManyToMany(targetEntity = WorkEntity.class, fetch = FetchType.EAGER)
@@ -188,5 +188,18 @@ public class RecordingEntity extends AbstractSMDIdentityEntity implements Record
 
     public void setRecordingSession(RecordingSession recordingSession) {
         this.recordingSession = recordingSession;
+    }
+
+    public void addContributor(ContributorEntity contributor) {
+        if(Hibernate.isInitialized(contributors)) {
+            this.contributors.add(contributor);
+        }
+        contributor.setRecording(this);
+    }
+    public void removeContributor(ContributorEntity contributor) {
+        if(Hibernate.isInitialized(contributors)) {
+            this.contributors.remove(contributor);
+        }
+        contributor.setRecording(null);
     }
 }

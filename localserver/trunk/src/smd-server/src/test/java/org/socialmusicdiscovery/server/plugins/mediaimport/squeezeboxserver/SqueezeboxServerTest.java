@@ -34,6 +34,7 @@ import org.socialmusicdiscovery.server.business.logic.config.MappedConfiguration
 import org.socialmusicdiscovery.server.business.model.GlobalIdentity;
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameter;
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameterEntity;
+import org.socialmusicdiscovery.server.business.model.core.Contributor;
 import org.socialmusicdiscovery.server.business.model.core.Release;
 import org.socialmusicdiscovery.server.business.model.core.ReleaseEntity;
 import org.socialmusicdiscovery.server.business.model.core.Track;
@@ -79,7 +80,7 @@ public class SqueezeboxServerTest extends BaseTestCase {
     }
 
     @Test
-    public void testBodyguard() throws Exception {
+    public void testImport() throws Exception {
         loadTestData("org.socialmusicdiscovery.server.business.model", "Empty Tables.xml");
         em.getTransaction().begin();
         try {
@@ -246,6 +247,16 @@ public class SqueezeboxServerTest extends BaseTestCase {
         assert release.getTracks().size() == 3;
         assert release.getMediums() != null;
         assert release.getMediums().size() == 2;
+        assert release.getContributors().size() == 0;
+        assert release.getTracks().size() == 3;
+        for (Track track : release.getTracks()) {
+            assert track.getRecording()!=null;
+            assert track.getRecording().getContributors().size()==2;
+            for (Contributor contributor : track.getRecording().getContributors()) {
+                assert contributor.getArtist()!=null;
+                assert contributor.getType().equals(Contributor.PERFORMER);
+            }
+        }
     }
     void validateTheBodyguard(Release release) {
         assert release.getTracks() != null;

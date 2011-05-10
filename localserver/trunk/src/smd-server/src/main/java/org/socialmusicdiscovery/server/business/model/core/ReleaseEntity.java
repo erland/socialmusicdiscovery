@@ -39,7 +39,7 @@ import java.util.*;
 @javax.persistence.Entity
 @Table(name = "releases")
 @SMDIdentityReferenceEntity.ReferenceType(type = Release.class)
-public class ReleaseEntity extends AbstractSMDIdentityEntity implements Release {
+public class ReleaseEntity extends AbstractSMDIdentityEntity implements Release, ContributorOwner {
     private Date date;
     @Column(nullable = false)
     @Expose
@@ -61,8 +61,7 @@ public class ReleaseEntity extends AbstractSMDIdentityEntity implements Release 
             inverseJoinColumns = @JoinColumn(name = "session_id"))
     @Expose
     private Set<RecordingSession> recordingSessions = new HashSet<RecordingSession>();
-    @OneToMany(targetEntity = ContributorEntity.class, cascade = {CascadeType.ALL})
-    @JoinColumn(name = "release_id")
+    @OneToMany(targetEntity = ContributorEntity.class, mappedBy = "release", cascade = {CascadeType.REMOVE}, orphanRemoval = true)
     @Expose
     private Set<Contributor> contributors = new HashSet<Contributor>();
 
@@ -139,11 +138,36 @@ public class ReleaseEntity extends AbstractSMDIdentityEntity implements Release 
         }
         track.setRelease(this);
     }
+    public void removeTrack(TrackEntity track) {
+        if(Hibernate.isInitialized(tracks)) {
+            this.tracks.remove(track);
+        }
+        track.setRelease(null);
+    }
 
     public void addMedium(MediumEntity medium) {
         if(Hibernate.isInitialized(mediums)) {
             this.mediums.add(medium);
         }
         medium.setRelease(this);
+    }
+    public void removeMedium(MediumEntity medium) {
+        if(Hibernate.isInitialized(mediums)) {
+            this.mediums.remove(medium);
+        }
+        medium.setRelease(null);
+    }
+
+    public void addContributor(ContributorEntity contributor) {
+        if(Hibernate.isInitialized(contributors)) {
+            this.contributors.add(contributor);
+        }
+        contributor.setRelease(this);
+    }
+    public void removeContributor(ContributorEntity contributor) {
+        if(Hibernate.isInitialized(contributors)) {
+            this.contributors.remove(contributor);
+        }
+        contributor.setRelease(null);
     }
 }
