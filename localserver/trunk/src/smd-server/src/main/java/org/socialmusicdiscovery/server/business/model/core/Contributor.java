@@ -28,6 +28,7 @@
 package org.socialmusicdiscovery.server.business.model.core;
 
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
+import org.socialmusicdiscovery.server.business.model.SMDIdentityReference;
 
 public interface Contributor extends SMDIdentity {
     final static String PERFORMER = "performer";
@@ -41,4 +42,8 @@ public interface Contributor extends SMDIdentity {
     Artist getArtist();
 
     void setArtist(Artist artist);
+
+    SMDIdentityReference getOwner();
+
+    void setOwner(SMDIdentityReference owner);
 }
