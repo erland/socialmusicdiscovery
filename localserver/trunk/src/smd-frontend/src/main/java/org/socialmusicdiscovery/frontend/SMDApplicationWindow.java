@@ -39,6 +39,9 @@ import java.net.URL;
 
 public class SMDApplicationWindow extends Window implements Bindable {
     @BXML
+    PushButton preferencesButton;
+
+    @BXML
     PushButton listViewButton;
 
     @BXML
@@ -77,6 +80,21 @@ public class SMDApplicationWindow extends Window implements Bindable {
                  try {
                      BXMLSerializer wtkxSerializer = new BXMLSerializer();
                      SMDListViewWindow window = (SMDListViewWindow) wtkxSerializer.readObject(getClass().getResource("SMDListViewWindow.bxml"),new Resources(resources,SMDListViewWindow.class.getName()));
+                     window.open(getDisplay(), getWindow());
+                 } catch (IOException e) {
+                     throw new RuntimeException(e);
+                 } catch (SerializationException e) {
+                     throw new RuntimeException(e);
+                 }
+             }
+         });
+
+        preferencesButton.getButtonPressListeners().add(new ButtonPressListener() {
+             @Override
+             public void buttonPressed(Button button) {
+                 try {
+                     BXMLSerializer wtkxSerializer = new BXMLSerializer();
+                     SMDPreferencesWindow window = (SMDPreferencesWindow) wtkxSerializer.readObject(getClass().getResource("SMDPreferencesWindow.bxml"),new Resources(resources,SMDPreferencesWindow.class.getName()));
                      window.open(getDisplay(), getWindow());
                  } catch (IOException e) {
                      throw new RuntimeException(e);
