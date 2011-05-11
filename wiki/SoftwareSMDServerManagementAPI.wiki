@@ -99,6 +99,8 @@ The above examples illustrates how it looks like for artists, the complete list 
   * persons
   * works
   * playableelements
+  * configurations
+  * contributors
 
 More objects will be added, but this is what we have at the moment.
 
