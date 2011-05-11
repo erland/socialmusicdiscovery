@@ -9,8 +9,8 @@
 			<title lang="EN">Social Music Discovery (perl only) *Alpha*</title>
 			<desc lang="EN">Support plugin for the Social Music Discovery application</desc>
 			<creator>Social Music Discovery project</creator>
-			<url>http://socialmusicdiscovery.googlecode.com/files/smd-plugin-perl-0.1.388.zip</url>
-			<sha>8741944fbd4cf94e96c61671f8a7034816869da5</sha>
+			<url>http://socialmusicdiscovery.googlecode.com/files/smd-plugin-0.1.675-perl.zip</url>
+			<sha>197f24a33977ed129e1100bc41029de0817e3912</sha>
 			<link>http://socialmusicdiscovery.googlecode.com</link>
 		</plugin>
 	</plugins>
