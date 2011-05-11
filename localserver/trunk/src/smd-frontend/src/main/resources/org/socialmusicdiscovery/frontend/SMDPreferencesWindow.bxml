@@ -1,0 +1,57 @@
+<smdfrontend:SMDPreferencesWindow title="%windowTitle" maximized="true"
+                               xmlns:bxml="http://pivot.apache.org/wtkx"
+                               xmlns:content="org.apache.pivot.wtk.content"
+                               xmlns:smdfrontend="org.socialmusicdiscovery.frontend"
+                               xmlns="org.apache.pivot.wtk">
+
+    <content>
+        <Border styles="{color:10}">
+            <content>
+                <TablePane styles="{padding:6, verticalSpacing:6}">
+                    <columns>
+                        <TablePane.Column width="1*"/>
+                    </columns>
+
+                    <rows>
+                        <!-- Main table view -->
+                        <TablePane.Row height="1*">
+                                <ScrollPane horizontalScrollBarPolicy="fill"
+                                            verticalScrollBarPolicy="fill_to_capacity">
+                                    <view>
+                                        <TableView bxml:id="preferencesTableView">
+                                            <columns>
+                                                <TableView.Column name="name" width="4*" headerData="%name"/>
+                                                <TableView.Column name="type" width="1*" headerData="%type"/>
+                                                <TableView.Column name="value" width="1*" headerData="%value"/>
+                                            </columns>
+                                            <rowEditor>
+                                                <content:TableViewRowEditor editEffect="horizontal_slide">
+                                                    <cellEditors>
+                                                        <value>
+                                                            <TextInput textKey="value"/>
+                                                        </value>
+                                                    </cellEditors>
+                                                </content:TableViewRowEditor>
+                                            </rowEditor>
+                                        </TableView>
+                                    </view>
+                                    <columnHeader>
+                                        <TableViewHeader tableView="$preferencesTableView" styles="{headersPressable:false}"/>
+                                    </columnHeader>
+                                </ScrollPane>
+                        </TablePane.Row>
+
+                        <!-- Close button row -->
+                        <TablePane.Row height="-1">
+                            <BoxPane styles="{verticalAlignment:'center', horizontalAlignment:'right'}">
+                                <PushButton bxml:id="closeButton" enabled="true" styles="{padding:4}"
+                                            buttonData="%closeButton">
+                                </PushButton>
+                            </BoxPane>
+                        </TablePane.Row>
+                    </rows>
+                </TablePane>
+            </content>
+        </Border>
+    </content>
+</smdfrontend:SMDPreferencesWindow>

@@ -12,6 +12,8 @@
                     </PushButton>
                     <PushButton bxml:id="listViewButton" enabled="true" styles="{padding:4}" buttonData="%listViewButton">
                     </PushButton>
+                    <PushButton bxml:id="preferencesButton" enabled="true" styles="{padding:4}" buttonData="%preferencesButton">
+                    </PushButton>
                 </BoxPane>
             </content>
         </Border>

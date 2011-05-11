@@ -1,0 +1,7 @@
+{
+    windowTitle: "Social Music Discovery - Configuration",
+    name: "Parameter name",
+    type: "Parameter type",
+    value: "Parameter value",
+    closeButton: "Close"
+}
