@@ -43,7 +43,15 @@ public class JPAConfigurationParameterRepository extends AbstractJPAEntityReposi
 
     public Collection<ConfigurationParameterEntity> findByPath(String path) {
         Query query = entityManager.createQuery("from ConfigurationParameterEntity where id like :path");
-        query.setParameter("path", path+"%");
+        if(isCacheable()) {
+            query.setHint("org.hibernate.cacheable", true);
+        }
+        query.setParameter("path", path + "%");
         return query.getResultList();
+    }
+
+    @Override
+    protected boolean isCacheable() {
+        return true;
     }
 }

@@ -27,9 +27,6 @@
 
 package org.socialmusicdiscovery.server.plugins.upnp;
 
-import java.io.IOException;
-
-
 import org.socialmusicdiscovery.server.api.plugin.AbstractPlugin;
 import org.socialmusicdiscovery.server.api.plugin.PluginException;
 import org.teleal.cling.UpnpService;
@@ -38,26 +35,23 @@ import org.teleal.cling.binding.LocalServiceBindingException;
 import org.teleal.cling.binding.annotations.AnnotationLocalServiceBinder;
 import org.teleal.cling.model.DefaultServiceManager;
 import org.teleal.cling.model.ValidationException;
-import org.teleal.cling.model.meta.DeviceDetails;
-import org.teleal.cling.model.meta.DeviceIdentity;
-import org.teleal.cling.model.meta.LocalDevice;
-import org.teleal.cling.model.meta.LocalService;
-import org.teleal.cling.model.meta.ManufacturerDetails;
-import org.teleal.cling.model.meta.ModelDetails;
+import org.teleal.cling.model.meta.*;
 import org.teleal.cling.model.types.DeviceType;
 import org.teleal.cling.model.types.UDADeviceType;
 import org.teleal.cling.model.types.UDN;
 import org.teleal.cling.support.connectionmanager.ConnectionManagerService;
 
+import java.io.IOException;
+
 public class UpnpPlugin extends AbstractPlugin implements Runnable {
 	
-	final UpnpService upnpService =  new UpnpServiceImpl();
+	UpnpService upnpService;
 	
 	@Override
 	public boolean start() throws PluginException {
 
 		System.err.println("UPnP plugin: starting");
-
+        upnpService = new UpnpServiceImpl();
 		Thread serverThread = new Thread(this);
 		serverThread.setDaemon(false);
 		serverThread.start();

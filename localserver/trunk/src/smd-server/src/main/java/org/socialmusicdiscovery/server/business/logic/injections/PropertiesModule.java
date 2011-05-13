@@ -28,6 +28,8 @@
 package org.socialmusicdiscovery.server.business.logic.injections;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
+import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 
 import java.io.FileInputStream;
@@ -38,9 +40,10 @@ import java.util.Enumeration;
 import java.util.Properties;
 
 public class PropertiesModule extends AbstractModule {
+    Properties properties = new Properties();
+
     @Override
     protected void configure() {
-        Properties properties = new Properties();
         try {
             InputStream defaultFile = getClass().getResourceAsStream("/socialmusicdiscovery-default.properties");
             properties.load(defaultFile);
@@ -67,5 +70,11 @@ public class PropertiesModule extends AbstractModule {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Provides
+    @Named("smd-default-configuration")
+    public Properties getDefaultConfiguration() {
+        return properties;
     }
 }

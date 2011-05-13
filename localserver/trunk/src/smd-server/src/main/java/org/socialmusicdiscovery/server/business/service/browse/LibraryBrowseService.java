@@ -29,6 +29,7 @@ package org.socialmusicdiscovery.server.business.service.browse;
 
 import com.google.inject.Inject;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
+import org.socialmusicdiscovery.server.business.logic.config.MappedConfigurationContext;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.support.format.TitleFormat;
 
@@ -92,36 +93,43 @@ public class LibraryBrowseService {
     }
     protected List<Menu> getMenuHierarchy() {
         List<Menu> menus = new ArrayList<Menu>();
-        menus.add(new Menu("artists", "Artists", Arrays.asList(
-                new MenuLevel("Artist", "%object.name", true),
-                new MenuLevel("Release", "%object.name", true),
-                new MenuLevel("Track", "(%object.medium.name|%object.medium.number)||[%object.medium,-]||%object.number||. ||%object.recording.works.parent.name||[%object.recording.works.parent,: ]||%object.recording.works.name", true))));
-        menus.add(new Menu("artists.composers", "Composers", Arrays.asList(
-                new MenuLevel("Artist.composer", "%object.name", true),
-                new MenuLevel("Release", "%object.name", true),
-                new MenuLevel("Track", "(%object.medium.name|%object.medium.number)||[%object.medium,-]||%object.number||. ||%object.recording.works.parent.name||[%object.recording.works.parent,: ]||%object.recording.works.name", true))));
-        menus.add(new Menu("artists.conductors", "Conductors", Arrays.asList(
-                new MenuLevel("Artist.conductor", "%object.name", true),
-                new MenuLevel("Release", "%object.name", true),
-                new MenuLevel("Track", "(%object.medium.name|%object.medium.number)||[%object.medium,-]||%object.number||. ||%object.recording.works.parent.name||[%object.recording.works.parent,: ]||%object.recording.works.name", true))));
-        menus.add(new Menu("releases", "Releases", Arrays.asList(
-                new MenuLevel("Release", "%object.name", true),
-                new MenuLevel("Track", "(%object.medium.name|%object.medium.number)||[%object.medium,-]||%object.number||. ||%object.recording.works.parent.name||[%object.recording.works.parent,: ]||%object.recording.works.name", true))));
-        menus.add(new Menu("classifications.genres", "Genres", Arrays.asList(
-                new MenuLevel("Classification.genre", "%object.name", false),
-                new MenuLevel("Artist", "%object.name", true),
-                new MenuLevel("Release", "%object.name", true),
-                new MenuLevel("Track", "(%object.medium.name|%object.medium.number)||[%object.medium,-]||%object.number||. ||%object.recording.works.parent.name||[%object.recording.works.parent,: ]||%object.recording.works.name", true))));
-        menus.add(new Menu("classifications.styles", "Styles", Arrays.asList(
-                new MenuLevel("Classification.style", "%object.name", false),
-                new MenuLevel("Artist", "%object.name", true),
-                new MenuLevel("Release", "%object.name", true),
-                new MenuLevel("Track", "(%object.medium.name|%object.medium.number)||[%object.medium,-]||%object.number||. ||%object.recording.works.parent.name||[%object.recording.works.parent,: ]||%object.recording.works.name", true))));
-        menus.add(new Menu("classifications.moods", "Moods", Arrays.asList(
-                new MenuLevel("Classification.mood", "%object.name", false),
-                new MenuLevel("Artist", "%object.name", true),
-                new MenuLevel("Release", "%object.name", true),
-                new MenuLevel("Track", "(%object.medium.name|%object.medium.number)||[%object.medium,-]||%object.number||. ||%object.recording.works.parent.name||[%object.recording.works.parent,: ]||%object.recording.works.name", true))));
+
+        MappedConfigurationContext config = new MappedConfigurationContext(getClass().getName()+".");
+
+        int i=1;
+        while(config.getParametersByPath(""+i).size()>0 && config.getBooleanParameter(""+i+".enabled")) {
+            String menuId = config.getStringParameter(""+i+".id");
+            String menuName = config.getStringParameter(""+i+".name");
+            List<MenuLevel> levels = new ArrayList<MenuLevel>();
+            int j=1;
+            while(config.getParametersByPath(""+i+"."+j).size()>0) {
+                String objectType = config.getStringParameter(""+i+"."+j+".type");
+                String format = config.getStringParameter(""+i+"."+j+".format");
+                Boolean playable = config.getBooleanParameter(""+i+"."+j+".playable");
+                Integer parentCriterias = config.getIntegerParameter(""+i+"."+j+".parentcriterias");
+
+                if(objectType!=null && format!=null && playable!=null) {
+                    if(parentCriterias!=null) {
+                        levels.add(new MenuLevel(objectType, format, playable,parentCriterias.longValue()));
+                    }else {
+                        levels.add(new MenuLevel(objectType, format, playable));
+                    }
+                }
+                j++;
+            }
+            if(levels.size()>0 && menuId!=null && menuName!=null) {
+                String context = config.getStringParameter(""+i+"."+j+".context");
+                if(context!=null) {
+                    String[] contexts = context.split(",");
+                    for (String item : contexts) {
+                        menus.add(new Menu(context,menuId, menuName, levels));
+                    }
+                }else {
+                    menus.add(new Menu(menuId, menuName, levels));
+                }
+            }
+            i++;
+        }
         return menus;
     }
 

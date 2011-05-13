@@ -51,6 +51,10 @@ public class ConfigurationManager {
         }
     }
 
+    public void setParameter(ConfigurationParameter parameter) {
+        this.parameters.put(parameter.getId(), new ConfigurationParameterEntity(parameter));
+    }
+
     public Set<ConfigurationParameterEntity> getParameters() {
         Set<ConfigurationParameterEntity> resultParameters = new HashSet<ConfigurationParameterEntity>();
         resultParameters.addAll(parameters.values());
@@ -74,5 +78,15 @@ public class ConfigurationManager {
         }else {
             return null;
         }
+    }
+
+    public Collection<ConfigurationParameterEntity> getParametersForPath(String path) {
+        List<ConfigurationParameterEntity> result = new ArrayList<ConfigurationParameterEntity>();
+        for (Map.Entry<String, ConfigurationParameterEntity> entry : parameters.entrySet()) {
+            if(entry.getKey().startsWith(path)) {
+                result.add(entry.getValue());
+            }
+        }
+        return result;
     }
 }
