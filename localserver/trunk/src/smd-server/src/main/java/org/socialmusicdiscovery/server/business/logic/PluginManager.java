@@ -34,6 +34,7 @@ import org.socialmusicdiscovery.server.api.plugin.Plugin;
 import org.socialmusicdiscovery.server.api.plugin.PluginException;
 import org.socialmusicdiscovery.server.business.logic.config.ConfigurationManager;
 import org.socialmusicdiscovery.server.business.logic.config.MappedConfigurationContext;
+import org.socialmusicdiscovery.server.business.logic.config.MergedConfigurationContext;
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameter;
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameterEntity;
 
@@ -43,6 +44,11 @@ public class PluginManager {
     @Inject
     @Named("default-value")
     ConfigurationManager defaultValueConfigurationManager;
+
+    /**
+     * The configuration path where plugin configurations are stored
+     */
+    private static final String PLUGIN_CONFIGURATION_PATH = "org.socialmusicdiscovery.server.plugins.";
 
     /**
      * Contains all available plugin modules
@@ -59,7 +65,7 @@ public class PluginManager {
         InjectHelper.injectMembers(this);
         for (Plugin plugin : plugins.values()) {
             Collection<ConfigurationParameter> defaultPluginConfiguration = plugin.getDefaultConfiguration();
-            String pluginConfigurationPath = "org.socialmusicdiscovery.server.plugins."+plugin.getId()+".";
+            String pluginConfigurationPath = PLUGIN_CONFIGURATION_PATH+plugin.getId()+".";
 
             Set<ConfigurationParameter> defaultConfiguration = new HashSet<ConfigurationParameter>();
             for (ConfigurationParameter parameter : defaultPluginConfiguration) {
@@ -72,6 +78,10 @@ public class PluginManager {
             }
             defaultValueConfigurationManager.setParametersForPath(pluginConfigurationPath, defaultConfiguration);
 
+            // Enable plugins by default unless they have specifically requested a specific default state
+            if(defaultValueConfigurationManager.getParameter(pluginConfigurationPath+"enabled")==null) {
+                defaultValueConfigurationManager.setParameter(new ConfigurationParameterEntity(pluginConfigurationPath+"enabled", ConfigurationParameter.Type.BOOLEAN, "true", true));
+            }
             plugin.setConfiguration(new MappedConfigurationContext(pluginConfigurationPath));
         }
     }
@@ -89,10 +99,12 @@ public class PluginManager {
 
         for (String pluginId : pluginIdentities) {
             if (!runningPlugins.containsKey(pluginId)) {
-                try {
-                    startPlugin(pluginId);
-                } catch (PluginException e) {
-                    System.err.println("Failed to start: " + pluginId + ": " + e.toString());
+                if(new MergedConfigurationContext().getBooleanParameter(PLUGIN_CONFIGURATION_PATH+pluginId+".enabled")) {
+                    try {
+                        startPlugin(pluginId);
+                    } catch (PluginException e) {
+                        System.err.println("Failed to start: " + pluginId + ": " + e.toString());
+                    }
                 }
             }
         }

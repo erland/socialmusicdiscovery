@@ -33,6 +33,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @javax.persistence.Entity
+@org.hibernate.annotations.Cache(usage = org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "configurations")
 public class ConfigurationParameterEntity implements ConfigurationParameter, Serializable {
     @Id

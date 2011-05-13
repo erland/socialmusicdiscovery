@@ -32,8 +32,16 @@ import com.google.inject.Inject;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
+import org.socialmusicdiscovery.server.business.logic.InjectHelper;
 import org.socialmusicdiscovery.server.business.logic.config.ConfigurationManager;
+import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameter;
+import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameterEntity;
 import org.socialmusicdiscovery.server.business.repository.config.ConfigurationParameterRepository;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 public class ConfigurationManagerModule extends AbstractModule {
     ConfigurationManager configurationManager;
@@ -49,6 +57,30 @@ public class ConfigurationManagerModule extends AbstractModule {
     public ConfigurationManager provideDefaultValueConfigurationManager(ConfigurationParameterRepository configurationParameterRepository) {
         if(configurationManager==null) {
             configurationManager = new ConfigurationManager();
+            Properties defaultProperties = InjectHelper.instanceWithName(Properties.class, "smd-default-configuration");
+            if(defaultProperties!=null) {
+                List<ConfigurationParameter> parameters = new ArrayList<ConfigurationParameter>();
+                for (Map.Entry<Object, Object> entry : defaultProperties.entrySet()) {
+                    String property = entry.getKey().toString();
+                    String value = entry.getValue().toString();
+                    if(value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false")) {
+                        parameters.add(new ConfigurationParameterEntity(property, ConfigurationParameter.Type.BOOLEAN, value));
+                    }else {
+                        try {
+                            if(value.contains(".")) {
+                                Double.parseDouble(value);
+                                parameters.add(new ConfigurationParameterEntity(property, ConfigurationParameter.Type.DOUBLE, value));
+                            }else {
+                                Integer.parseInt(value);
+                                parameters.add(new ConfigurationParameterEntity(property, ConfigurationParameter.Type.INTEGER, value));
+                            }
+                        }catch (NumberFormatException e) {
+                            parameters.add(new ConfigurationParameterEntity(property, ConfigurationParameter.Type.STRING, value));
+                        }
+                    }
+                }
+                configurationManager.setParametersForPath("",parameters);
+            }
         }
         return configurationManager;
      }

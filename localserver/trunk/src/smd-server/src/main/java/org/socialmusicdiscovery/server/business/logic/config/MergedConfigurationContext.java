@@ -35,8 +35,9 @@ import org.socialmusicdiscovery.server.business.model.config.ConfigurationParame
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameterEntity;
 import org.socialmusicdiscovery.server.business.repository.config.ConfigurationParameterRepository;
 
-import java.util.HashSet;
+import java.util.Comparator;
 import java.util.Set;
+import java.util.TreeSet;
 
 public class MergedConfigurationContext implements ConfigurationContext {
     @Inject
@@ -86,13 +87,25 @@ public class MergedConfigurationContext implements ConfigurationContext {
     }
 
     public Set<ConfigurationParameterEntity> getParameters() {
-        Set<ConfigurationParameterEntity> resultParameters = new HashSet<ConfigurationParameterEntity>(configurationParameterRepository.findAll());
+        Set<ConfigurationParameterEntity> resultParameters = new TreeSet<ConfigurationParameterEntity>(new Comparator<ConfigurationParameterEntity>() {
+            @Override
+            public int compare(ConfigurationParameterEntity entity1, ConfigurationParameterEntity entity2) {
+                return entity1.getId().compareTo(entity2.getId());
+            }
+        });
+        resultParameters.addAll(configurationParameterRepository.findAll());
         resultParameters.addAll(defaultValuesConfigurationManager.getParameters());
         return resultParameters;
     }
 
     public Set<ConfigurationParameterEntity> getParametersByPath(String path) {
-        Set<ConfigurationParameterEntity> resultParameters = new HashSet<ConfigurationParameterEntity>(configurationParameterRepository.findByPath(path));
+        Set<ConfigurationParameterEntity> resultParameters = new TreeSet<ConfigurationParameterEntity>(new Comparator<ConfigurationParameterEntity>() {
+            @Override
+            public int compare(ConfigurationParameterEntity entity1, ConfigurationParameterEntity entity2) {
+                return entity1.getId().compareTo(entity2.getId());
+            }
+        });
+        resultParameters.addAll(configurationParameterRepository.findByPath(path));
         resultParameters.addAll(defaultValuesConfigurationManager.getParametersByPath(path));
         return resultParameters;
     }

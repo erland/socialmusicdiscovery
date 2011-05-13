@@ -70,6 +70,9 @@ public abstract class AbstractJPAEntityRepository<K, E> implements EntityReposit
 
     public Collection<E> findAll() {
         Query query = entityManager.createQuery("from "+entityClass.getSimpleName());
+        if(isCacheable()) {
+            query.setHint("org.hibernate.cacheable",true);
+        }
         return query.getResultList();
     }
 
@@ -122,6 +125,13 @@ public abstract class AbstractJPAEntityRepository<K, E> implements EntityReposit
     
     public Collection<E> findAllWithRelations(Collection<String> mandatoryRelations, Collection<String> optionalRelations) {
         Query query = entityManager.createQuery(queryStringFor("e",mandatoryRelations,optionalRelations));
+        if(isCacheable()) {
+            query.setHint("org.hibernate.cacheable",true);
+        }
         return query.getResultList();
+    }
+
+    protected boolean isCacheable() {
+        return false;
     }
 }
