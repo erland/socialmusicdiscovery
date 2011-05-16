@@ -1,0 +1,255 @@
+#summary Description how to add new entities to the server
+
+= Creating a new entity =
+This is a description that tries to describe the different steps needed to add a new entity to the system.
+
+== Entity class/interface ==
+An entity consists of a class and and interface, for example
+{{{
+public interface Something extends SMDIdentity {
+    String getName();
+
+    void setName(String name);
+}
+}}}
+
+The important things to note here is:
+ * All entities which should be possible to manage individually should have an interface that inherits from [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/java/org/socialmusicdiscovery/server/business/model/SMDIdentity.java SMDIdentity].
+ * Only the attributes which might be of interested to a client should generally be part of the interface, the main purpose of the interface is to hide stuff which the client doesn't have to know.
+ * The naming of the interface can never end with *"Entity"* as this will be interpreted as an implementation class in the maven build scripts and won't be included in the client jar file exposed to external Java clients.
+
+The class part of the above entity might look like this:
+{{{
+@javax.persistence.Entity
+@Table(name = "somethings")
+@SMDIdentityReferenceEntity.ReferenceType(type = Something.class)
+public class SomethingEntity extends AbstractSMDIdentityEntity implements Something {
+    @Column(nullable = false)
+    @Expose
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}
+}}}
+
+The important things to note here is:
+ * The table name specified in the *@Table* annotation should be defined in its pluralist form, in this case *somethings* and not *something* 
+ * The class name should always end with *"Entity"* as this will make sure it isn't exposed to external clients
+ * Assuming the entity interface inherits from [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/java/org/socialmusicdiscovery/server/business/model/SMDIdentity.java SMDIdentity] its implementation class should inherit from [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/java/org/socialmusicdiscovery/server/business/model/AbstractSMDIdentityEntity.java AbstractSMDIdentityEntity]
+ * The *@SMDIdentityReferenceEntity.ReferenceType* annotation is important for entities inheriting from [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/java/org/socialmusicdiscovery/server/business/model/AbstractSMDIdentityEntity.java AbstractSMDIdentityEntity] as it will make sure the *type* column in the [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/java/org/socialmusicdiscovery/server/business/model/SMDIdentityReferenceEntity.java SMDIdentityReferenceEntity] field named "reference" in [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/java/org/socialmusicdiscovery/server/business/model/AbstractSMDIdentityEntity.java AbstractSMDIdentityEntity] is set appropriately.
+
+== persistence.xml ==
+To make sure our entity is actually persisted and JPA knows about it, we need to add it to the persistence.xml files, to do this we just have to add a row like:
+{{{
+<class>org.socialmusicdiscovery.server.business.model.subjective.SomethingEntity</class>
+}}}
+
+Note that there are two persistence xml files and both needs to be updated:
+ * [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/resources/META-INF/persistence.xml src/main/resources/META-INF/persistence.xml]
+ * [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/test/resources/META-INF/persistence.xml src/test/resources/META-INF/persistence.xml]
+
+== Creating database tables ==
+Database tables during unit testing are created automatically through the JPA annotations, so to run unit tests nothing more is needed. When running the complete server, we instead use Liquibase scripts to create database tables. The reason for this is because JPA isn't able to handle database upgrades correctly in all cases, especially not without loosing data, so this will be important in production usage.
+
+To add your entity to the Liquibase scripts, you need to:
+ * Add your table to the [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/resources/org/socialmusicdiscovery/server/database/smd-database-drop.xml smd-database-drop.xml] script
+ * Add a new change set script under [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/resources/org/socialmusicdiscovery/server/database/changesets/ src/main/resources/org/socialmusicdiscovery/server/database/changesets/]
+ * Add a reference to your new change set script in the [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/resources/org/socialmusicdiscovery/server/database/smd-database.changelog.xml smd-database.changelog.xml] script.
+
+== Data access through repository class ==
+All entities are accessed through a repository class which consists of an interface and an implementation.
+
+The interface might look like this:
+{{{
+@ImplementedBy(JPASomethingRepository.class)
+public interface SomethingRepository extends SMDIdentityRepository<SomethingEntity> {
+    Collection<SomethingEntity> findByName(String name);
+}
+}}}
+
+Some important things to note:
+ * The main purpose of having an interface is to make it possible to have some entities that are handled through JPA and others which are stored some other way and make this transparent to the business logic using the entity. We will probably just have JPA entities, but it is a way to prepare for a future we don't know yet.
+ * The *@ImplementedBy* annotation is needed to make it possible to lookup the repository implementation class automatically using Google Guice when it's used in other places.
+ * The interface should inherit from [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/java/org/socialmusicdiscovery/server/business/repository/SMDIdentityRepository.java SMDIdentityRepository] if its entity implements the [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/java/org/socialmusicdiscovery/server/business/model/SMDIdentity.java SMDIdentity] interface. The *SMDIdentityRepository* only specifies that this entity have a *String* primary key, all the other functions are inherited from the more generic [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/java/org/socialmusicdiscovery/server/business/repository/EntityRepository.java EntityRepository] interface.
+ * The find methods should return the entity implementation class and not the interface class, this is because the repository classes are only used within the server and to avoid unnecessary type castings it works better to return the implementation class. So in this sample the return is *Collection < SomethingEntity > * instead of *Collection < Something >*
+
+And the corresponding repository implementation class might look something like this:
+{{{
+public class JPASomethingRepository extends AbstractJPASMDIdentityRepository<SomethingEntity> 
+  implements SomethingRepository {
+    private PersonRepository personRepository;
+
+    @Inject
+    public JPASomethingRepository(EntityManager em, PersonRepository personRepository) {
+        super(em);
+        this.personRepository = personRepository;
+    }
+
+    public Collection<SomethingEntity> findByName(String name) {
+        Query query = entityManager.createQuery(
+                         queryStringFor("e", null, null) + 
+                         " where lower(e.name)=:name order by e.name");
+        query.setParameter("name", name.toLowerCase());
+        return query.getResultList();
+    }
+}}}
+
+Some important things to note:
+ * We prefix the class name with something that describes the storage type, in this case we use *JPA* as prefix.
+ * It inherits from [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/java/org/socialmusicdiscovery/server/business/repository/AbstractJPASMDIdentityRepository.java AbstractJPASMDIdentityRepository] to get a basic implementation of the functions in [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/java/org/socialmusicdiscovery/server/business/repository/SMDIdentityRepository.java SMDIdentityRepository] and [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/java/org/socialmusicdiscovery/server/business/repository/EntityRepository.java EntityRepository]
+ * The constructor takes two parameters, since it has the Google Guice *@Inject* annotation these will be filled with the relevant implementation classes automatically.  
+ * The queryStringFor method is optional to use, it just makes it easy to automatically create a join query string with related entities. In this case we could have implemented it directly here instead as:
+{{{
+Query query = entityManager.createQuery("from SomethingEntity where lower(name)=:name order by name");
+}}}
+
+== JSON management interface ==
+To provide a JSON interface to create, update, delete and search/find an entity some different things are needed.
+
+=== Expose annotation ===
+Only fields which have been annotated with *@Expose* will be serialized/deserialized to/from JSON, so in the above case it means that the *name* attribute in the *SomethingEntity* class will be serialized and also the *id* attribute in the inherited *[http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/java/org/socialmusicdiscovery/server/business/model/AbstractSMDIdentityEntity.java AbstractSMDIdentityEntity]* class. The other attributes also defined in *AbstractSMDIdentityEntity* will however not be included in the JSON communication. Typically the *@Expose* annotations should match the get/set methods defined in the interface.
+
+=== Management Facade interface ===
+To provide the JSON interface, we need a facade implementation that defines and implements the possible operations. This could look something like this, its methods are defined below separately to make it easier to describe one feature at the time, the class definition comes here:
+{{{
+@Path("/somethings")
+public class SomethingFacade extends AbstractSMDIdentityCRUDFacade<SomethingEntity, SomethingRepository> {
+    @Inject
+    private TransactionManager transactionManager;
+
+}
+}}}
+
+Some important parts to note here are:
+ * The *@Path* annotation defines how this facade is access, in this case it will be accessed through `http://localhost:9998/somethings`
+ * We extend from [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/java/org/socialmusicdiscovery/server/api/management/model/AbstractSMDIdentityCRUDFacade.java AbstractSMDIdentityCRUDFacade] to get the connection between the facade and repository classes more or less for free.
+ * The TransactionManager variable is annotated with *@Inject*, this will make sure it's filled with a real implementation class at runtime. Since the facade class is created by Jersey this is handled manually in the constructor of the super class by calling *InjectHelper.injectMembers(this)*.
+
+Now over to the actual method which were left out in the above class implementation.
+
+The search methods to return a matching list of entities could look something like this:
+{{{
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Collection<TrackEntity> search(@QueryParam("name") String name) {
+        try {
+            transactionManager.begin();
+            if (name != null) {
+                return new CopyHelper().detachedCopy(repository.findByName(name),Expose.class);
+            } else {
+                return new CopyHelper().detachedCopy(repository.findAll(),Expose.class);
+            }
+        }finally {
+            transactionManager.end();
+        }
+    }
+}}}
+The important things to note are:
+ * The *@GET* annotation will instruct Jersey that this method is called when a HTTP GET request is received. 
+ * The *@Produces* annotation will instruct Jersey that the result of this method should be converted to JSON
+ * The *@QueryParam* annotation will specify the names of possible query parameters, in this case it means that we can use url's like: *`http://localhost:9998/somethings?name=Test`*, which will result in that the *name* in-parameter will be filled with the string *"Test"*.
+ * The calls to *transactionManager.begin()* and *transactionManager.end()* is important as these will make sure we get a fresh *EntityManager* instance and not an old one with cached inaccurate data.
+ * The calls to *new CopyHelper().detachedCopy(...)* will result in that the entities are cloned and only the attributes with *@Expose* annotations are copied to the detached object. This is important because else the JSON transformation will follow all JPA annotations which can result in a lot of extra SQL statements during JSON serialization and besides performance issues also result in that a lot more data is sent over JSON than intended. If we really want some relations to be returned, look at how other repository classes implement a *findByNameWithRelations* and *findAllWithRelations* method to make sure they have been retrieved before the call to *CopyHelper*.
+
+Now over to the get method that will get an individual instance of our entity
+{{{
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{id}")
+    public SomethingEntity get(@PathParam("id") String id) {
+        try {
+            transactionManager.begin();
+            return new CopyHelper().copy(super.getEntity(id), Expose.class);
+        }finally {
+            transactionManager.end();
+        }
+    }
+}}}
+Some important things to notice:
+ * The *@Path* annotation will instruct Jersey to call this method if a HTTP GET is issued to `http://localhost:9998/somethings/1234-5678` where the *@PathParam* annotation will make sure the *id* in-parameter will be filled with the string *"1234-5678"*
+
+
+And the create method which is used to create new entity instances
+{{{
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public SomethingEntity create(SomethingEntity track) {
+        try {
+            transactionManager.begin();
+            return new CopyHelper().copy(super.createEntity(track), Expose.class);
+        }catch (RuntimeException e) {
+            transactionManager.setRollbackOnly();
+            throw e;
+        }finally {
+            transactionManager.end();
+        }
+    }
+}}}
+The additional things to notice here are:
+ * We use a *@Post* annotation to indicate to Jersey to call this method when a HTTP POST is received
+ * We have defined a *@Consumes* annotation which instruct Jersey to deserialize the JSON data posted in the POST request into our *SomethingEntity* object
+ * The *setLastUpdated* and *setLastUpdatedBy* is called to make sure we store who created this instance and when, we might try to move these calls into AbstractSMDIdentityCRUDFacade in the future to avoid that each facade needs to handle them.
+ * We catch any exception and call *transactionmanager.setRollbackOnly* to make sure any changes is rolled back.
+
+And the corresponding update method would look something like this:
+{{{
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{id}")
+    public SomethingEntity update(@PathParam("id") String id, SomethingEntity track) {
+        try {
+            transactionManager.begin();
+            track.setLastUpdated(new Date());
+            track.setLastUpdatedBy(super.CHANGED_BY);
+            return new CopyHelper().copy(super.updateEntity(id, track), Expose.class);
+        }catch (RuntimeException e) {
+            transactionManager.setRollbackOnly();
+            throw e;
+        }finally {
+            transactionManager.end();
+        }
+    }
+}}}
+The additional things to note are:
+ * We use *@PUT* to instruct Jersey to call this when a HTTP PUT request is received and we have defined *@Path* to make sure the url contains the identity. So this method will be called if we get a HTTP PUT request to an url like *`http://localhost:9998/somethings/1234-5678`* where the *@PathParam* annotation will make sure the string *"1234-5678"* is passed to our *id* in-parameter.
+
+And finally, the delete method would look something like:
+{{{
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{id}")
+    public void delete(@PathParam("id") String id) {
+        try {
+            transactionManager.begin();
+            super.deleteEntity(id);
+        }catch (RuntimeException e) {
+            transactionManager.setRollbackOnly();
+            throw e;
+        }finally {
+            transactionManager.end();
+        }
+    }
+}
+}}}
+And the only thing to additionally notice here is:
+ * We use the *@DELETE* annotation to make sure Jersey knows to call this method if a HTTP DELETE request is received.
+
+=== JSON conversion ===
+The final part to make the JSON management interface to work is that we need to instruct Jersey how to convert JSON data to a *Something* interface. The issue is that *Something* is an interface and can't be instantiated since Jersey doesn't have any clue which implementation class to use.
+
+To do this, we have implemented a custom JSON converter which is based on Google Gson, this is implemented in the [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/java/org/socialmusicdiscovery/server/business/logic/jersey/JSONProvider.java JSONProvider] class which hooks into Jersey by implementing *MessageBodyReader* and *MessageBodyWriter* interfaces.
+
+In our case, it's enough to add the following row to the *getConversionMap* function in [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/java/org/socialmusicdiscovery/server/business/logic/jersey/JSONProvider.java JSONProvider]:
+{{{
+        converters.put(Something.class, SomethingEntity.class);
+}}}
+
+The client have a corresponding mapping where it can map the *Something* interface to its implementation class. Each client will typically have its own interface but have the option to reuse the interface class provided from the server.
