@@ -127,7 +127,7 @@ This will make sure objects are regularly flushed and committed to the database,
 A new importer class is registered by adding it to the file:
  * [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/resources/META-INF/services/org.socialmusicdiscovery.server.api.mediaimport.MediaImporter src/main/resources/META-INF/services/org.socialmusicdiscovery.server.api.mediaimport.MediaImporter]
 
-This file will be used by the standard Java *[http://download.oracle.com/javase/6/docs/api/java/util/ServiceLoader.html ServiceLoader]* class inside [https://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/java/org/socialmusicdiscovery/server/business/logic/injections/MediaImportManagerModule.java MediaImportManagerModule] to load all registered media importers.
+This file will be used by the standard Java *[http://download.oracle.com/javase/6/docs/api/java/util/ServiceLoader.html ServiceLoader]* class inside [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/java/org/socialmusicdiscovery/server/business/logic/injections/MediaImportManagerModule.java MediaImportManagerModule] to load all registered media importers.
 
 == Creating a new post processing module ==
 
