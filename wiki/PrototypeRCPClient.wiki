@@ -2,10 +2,10 @@
 
 = Introduction =
 A first RCP client is available in the prototype directory, the source can be found here:
-  * http://socialmusicdiscovery.googlecode.com/svn/prototypes/ClientRCP/
+  * http://socialmusicdiscovery.googlecode.com/svn/prototypes/ClientRCP_maven/
 
 Brief instructions on what you need to do to get it running is available in the Readme-file:
-  * http://socialmusicdiscovery.googlecode.com/svn/prototypes/ClientRCP/ReadMe.txt
+  * http://socialmusicdiscovery.googlecode.com/svn/prototypes/ClientRCP_maven/smd-rcp-client-plugin/ReadMe.txt
 
 Latest pre-compiled nightly builds of RCP Client can be found here:
   * http://downloads.socialmusicdiscovery.org/smd-rcpclient/
