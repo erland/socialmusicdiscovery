@@ -136,7 +136,7 @@ A post processing module is implemented exactly the same way as a standard impor
 
 So the class implementation would look something like this:
 {{{
-public class SomethingImporter extends AbstractProcessingModule 
+public class SomethingPostProcessor extends AbstractProcessingModule 
              implements PostProcessor {
 
 
