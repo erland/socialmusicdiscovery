@@ -1,0 +1,109 @@
+#summary Description of how to create a new plugin
+
+= Creating a new plugin =
+
+There are two main type of plugins:
+ * Plugins that does something at startup and end when the operation is finished
+ * Plugins that continue to execute in background and provides some kind of service
+
+== Creating the plugin class ==
+The plugin class can look something like this, methods will be described separately below:
+{{{
+public class DoSomethingPlugin extends AbstractPlugin {
+    @Inject
+    ReleaseRepository releaseRepository;
+
+}
+}}}
+The things to note here are:
+ * It inherits from [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/java/org/socialmusicdiscovery/server/api/plugin/AbstractPlugin.java AbstractPlugin] which implements generic functionality common for most plugins. It is possible to make a plugin that doesn't have this inheritence and instead just implements the [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/java/org/socialmusicdiscovery/server/api/plugin/Plugin.java Plugin] interface.
+ * It will be created through Google Guice which means that the *@Inject* annotation will result in that releaseRepository is initialized with a real repository instance.
+
+Now over to the methods, let's start with *getStartPriority* which might look like this:
+{{{
+    @Override
+    public int getStartPriority() {
+        return Plugin.START_PRIORITY_LATE + 1;
+    }
+}}}
+The important things to note are:
+ * This method should return the startup priority when the system requests to start several plugins simultaneously. The plugin which returns the lowest value will start first, there are three main priority categories which can be used:
+   * START_PRIORITY_EARLY - Priority for plugins which other plugins are dependent on
+   * START_PRIORITY_LATE - Priority which doesn't care about the start order or is dependent on other plugins which needs to be started first
+
+If you don't care about the start order, you can use the default implementation in [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/java/org/socialmusicdiscovery/server/api/plugin/AbstractPlugin.java AbstractPlugin].
+
+Regarding dependencies to other plugin, it's useful to implement the *getDependencies* method, which might look like this:
+{{{
+    @Override
+    public List<String> getDependencies() {
+        return Arrays.asList(JSONPlugin.class.getSimpleName());
+    }
+
+}}}
+The important things to note are:
+ * Our plugin is dependent on that the JSON interface is started, so we have specified it as a dependency. This will make sure it's started before our plugin and this will also make it unneccesary to implement the *getStartPriority* method described above.
+
+Regarding configuration parameters, it's interesting to implement the *getDefaultConfiguration* method which might look like this:
+{{{
+    @Override
+    public Collection<ConfigurationParameter> getDefaultConfiguration() {
+        return Arrays.asList(
+           (ConfigurationParameter)new ConfigurationParameterEntity(
+                                        "someparameter", 
+                                        ConfigurationParameter.Type.BOOLEAN, 
+                                        "true")
+     }
+
+}}}
+The important things to notice are:
+ * The *getDefaultConfiguration* should return all configuration parameters together with a default value. The value can be overridden by the user and the configured value can be retrieved through the *getConfiguration* method
+
+If you like your plugin to be disabled until a user explicitly select to enable it, you can do this by providing a configuration parameter named "enabled" defined like:
+{{{
+new ConfigurationParameterEntity(
+        "enabled", 
+        ConfigurationParameter.Type.BOOLEAN, 
+        "false")
+}}}
+
+This means that your plugin won't be started until the user have changed this configuration parameter to "true".
+
+Now over to the interesting stuff, the *start* method which can look something like this:
+{{{
+    @Override
+    public boolean start() throws PluginException {
+        if(getConfiguration().getBooleanParameter("someparameter")) {
+            //TODO: Implement some interesting logic
+        } else {
+            //TODO: Implement some other interesting logic
+        }
+        return false;
+    }
+}}}
+Important things to notice here are:
+ * The *start* method should return:
+   * *false* - If the plugin as completed is work
+   * *true* - If the plugin has started threads or other mechanisms and will continue to execute in the background
+ * It's important to notice that the next plugin in the sequence won't be started until you have returned from the *start* method. So if you like to continue to run in background you need to create a new thread
+ * The *getConfiguration* parameter can be used to get the value of configuration parameters you have registered earlier in the *getDefaultConfiguration* method.
+ * It's important to not start any background thread or heavy initialization in the constructor and the constructor always will be called, even if the plugin isn't enabled. For the same reason it's also important to don't do any initialization in the constructor that depends on other plugins since only the start order is guaranteed, not the construction order.
+
+And finally, if your plugin is running in background it's also important to implement the *stop* method which might look like this:
+{{{
+    @Override
+    public void stop() throws PluginException {
+        //TODO: Implement something that will shutdown the background thread
+    }
+}}}
+
+== Registration of plugin ==
+A new plugin class is registered by adding it to the file:
+ * [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/resources/META-INF/services/org.socialmusicdiscovery.server.api.plugin.Plugin src/main/resources/META-INF/services/org.socialmusicdiscovery.server.api.plugin.Plugin]
+
+This file will be used by the standard Java *[http://download.oracle.com/javase/6/docs/api/java/util/ServiceLoader.html ServiceLoader]* class inside [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/java/org/socialmusicdiscovery/server/business/logic/injections/PluginManagerModule.java PluginManagerModule] to load all registered plugins.
+
+== Usage ==
+Currently there isn't any possibility to dynamically activate plugins but this might be implemented in a future version.
+
+At the moment the [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/java/org/socialmusicdiscovery/server/business/logic/PluginManager.java PluginManager] will basically just start all enabled plugins in the correct order at server startup and shutdown all running plugins at server shutdown.
