@@ -353,7 +353,9 @@ public class CoreTest extends BaseTestCase {
     @Test
     public void testModelDeleteRelease() throws Exception {
         loadTestData(getClass().getPackage().getName(),"The Bodyguard.xml");
-        new SearchRelationPostProcessor().execute(new ProcessingStatusCallback() {
+        SearchRelationPostProcessor searchRelationPostProcessor = new SearchRelationPostProcessor();
+        searchRelationPostProcessor.init();
+        searchRelationPostProcessor.execute(new ProcessingStatusCallback() {
             public void progress(String module, String currentDescription, Long currentNo, Long totalNo) {}
             public void failed(String module, String error) {}
             public void finished(String module) {}
@@ -396,7 +398,9 @@ public class CoreTest extends BaseTestCase {
     @Test
     public void testModelDeletePerson() throws Exception {
         loadTestData(getClass().getPackage().getName(),"The Bodyguard.xml");
-        new SearchRelationPostProcessor().execute(new ProcessingStatusCallback() {
+        SearchRelationPostProcessor searchRelationPostProcessor = new SearchRelationPostProcessor();
+        searchRelationPostProcessor.init();
+        searchRelationPostProcessor.execute(new ProcessingStatusCallback() {
             public void progress(String module, String currentDescription, Long currentNo, Long totalNo) {}
             public void failed(String module, String error) {}
             public void finished(String module) {}
@@ -433,7 +437,9 @@ public class CoreTest extends BaseTestCase {
     @Test
     public void testModelDeleteArtist() throws Exception {
         loadTestData(getClass().getPackage().getName(),"The Bodyguard.xml");
-        new SearchRelationPostProcessor().execute(new ProcessingStatusCallback() {
+        SearchRelationPostProcessor searchRelationPostProcessor = new SearchRelationPostProcessor();
+        searchRelationPostProcessor.init();
+        searchRelationPostProcessor.execute(new ProcessingStatusCallback() {
             public void progress(String module, String currentDescription, Long currentNo, Long totalNo) {}
             public void failed(String module, String error) {}
             public void finished(String module) {}
@@ -468,7 +474,9 @@ public class CoreTest extends BaseTestCase {
     @Test
     public void testModelDeleteTrackRecordingFailure() throws Exception {
         loadTestData(getClass().getPackage().getName(),"The Bodyguard.xml");
-        new SearchRelationPostProcessor().execute(new ProcessingStatusCallback() {
+        SearchRelationPostProcessor searchRelationPostProcessor = new SearchRelationPostProcessor();
+        searchRelationPostProcessor.init();
+        searchRelationPostProcessor.execute(new ProcessingStatusCallback() {
             public void progress(String module, String currentDescription, Long currentNo, Long totalNo) {}
             public void failed(String module, String error) {}
             public void finished(String module) {}
@@ -511,7 +519,9 @@ public class CoreTest extends BaseTestCase {
     @Test
     public void testModelDeleteTrackRecording() throws Exception {
         loadTestData(getClass().getPackage().getName(),"The Bodyguard.xml");
-        new SearchRelationPostProcessor().execute(new ProcessingStatusCallback() {
+        SearchRelationPostProcessor searchRelationPostProcessor = new SearchRelationPostProcessor();
+        searchRelationPostProcessor.init();
+        searchRelationPostProcessor.execute(new ProcessingStatusCallback() {
             public void progress(String module, String currentDescription, Long currentNo, Long totalNo) {}
             public void failed(String module, String error) {}
             public void finished(String module) {}
@@ -565,7 +575,9 @@ public class CoreTest extends BaseTestCase {
     @Test
     public void testModelDeleteRecordingWorkFailure() throws Exception {
         loadTestData(getClass().getPackage().getName(),"The Bodyguard.xml");
-        new SearchRelationPostProcessor().execute(new ProcessingStatusCallback() {
+        SearchRelationPostProcessor searchRelationPostProcessor = new SearchRelationPostProcessor();
+        searchRelationPostProcessor.init();
+        searchRelationPostProcessor.execute(new ProcessingStatusCallback() {
             public void progress(String module, String currentDescription, Long currentNo, Long totalNo) {}
             public void failed(String module, String error) {}
             public void finished(String module) {}
@@ -610,7 +622,9 @@ public class CoreTest extends BaseTestCase {
     @Test
     public void testModelDeleteRecordingWork() throws Exception {
         loadTestData(getClass().getPackage().getName(),"The Bodyguard.xml");
-        new SearchRelationPostProcessor().execute(new ProcessingStatusCallback() {
+        SearchRelationPostProcessor searchRelationPostProcessor = new SearchRelationPostProcessor();
+        searchRelationPostProcessor.init();
+        searchRelationPostProcessor.execute(new ProcessingStatusCallback() {
             public void progress(String module, String currentDescription, Long currentNo, Long totalNo) {}
             public void failed(String module, String error) {}
             public void finished(String module) {}

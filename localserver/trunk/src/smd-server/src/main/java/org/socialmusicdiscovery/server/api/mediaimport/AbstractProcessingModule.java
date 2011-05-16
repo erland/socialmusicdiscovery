@@ -27,21 +27,29 @@
 
 package org.socialmusicdiscovery.server.api.mediaimport;
 
+import com.google.inject.Inject;
 import org.socialmusicdiscovery.server.api.ConfigurationContext;
+import org.socialmusicdiscovery.server.business.logic.InjectHelper;
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameter;
 
+import javax.persistence.EntityManager;
 import java.util.Collection;
 import java.util.HashSet;
 
 public abstract class AbstractProcessingModule implements ProcessingModule {
 
     protected ConfigurationContext configuration = null;
+    private Boolean aborted;
+
+    @Inject
+    protected EntityManager entityManager;
 
     /**
      * Default implementation that does nothing, override this if tye processing module supports to be aborted
      */
     @Override
     public void abort() {
+        this.aborted = true;
     }
 
     /**
@@ -66,5 +74,18 @@ public abstract class AbstractProcessingModule implements ProcessingModule {
 
     protected ConfigurationContext getConfiguration() {
         return configuration;
+    }
+
+    protected Boolean isAborted() {
+        return this.aborted;
+    }
+
+    /**
+     * Default implementation which resets abort flag and makes sure the entity manager is ready to use
+     */
+    @Override
+    public void init() {
+        InjectHelper.injectMembers(this);
+        this.aborted = false;
     }
 }

@@ -115,7 +115,9 @@ public class BrowseFacadeTest extends BaseTestCase {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        new SearchRelationPostProcessor().execute(new ProcessingStatusCallback() {
+        SearchRelationPostProcessor searchRelationPostProcessor = new SearchRelationPostProcessor();
+        searchRelationPostProcessor.init();
+        searchRelationPostProcessor.execute(new ProcessingStatusCallback() {
             public void progress(String module, String currentDescription, Long currentNo, Long totalNo) {
             }
 

@@ -206,6 +206,7 @@ public class MediaImportManager {
             public void run() {
                 try {
                     statisticsLogger.start();
+                    mediaImporters.get(module).init();
                     mediaImporters.get(module).execute(new ProcessingStatusCallback() {
                         public void progress(String module, String currentDescription, Long currentNo, Long totalNo) {
                             long processingTime;
@@ -284,6 +285,7 @@ public class MediaImportManager {
                                         runningModules.put(postProcessor.getId(), new ProcessState(postProcessor,ProcessState.Phase.EXECUTING));
                                     }
                                     statisticsLogger.start();
+                                    postProcessor.init();
                                     postProcessor.execute(this);
                                 }
                                 failedModules.put(module, abortingModules.remove(module));
@@ -319,6 +321,7 @@ public class MediaImportManager {
                                         runningModules.put(postProcessor.getId(), new ProcessState(postProcessor,ProcessState.Phase.EXECUTING));
                                     }
                                     statisticsLogger.start();
+                                    postProcessor.init();
                                     postProcessor.execute(this);
                                 }
                                 System.out.println(module+" finished after "+((System.currentTimeMillis()-state.started)/1000)+" seconds");
