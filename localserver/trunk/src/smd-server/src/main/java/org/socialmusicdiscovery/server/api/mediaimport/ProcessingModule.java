@@ -62,4 +62,10 @@ public interface ProcessingModule {
      * Will be called initially before the plugin is started or whenever a configuration parameter is changed
      */
     void setConfiguration(ConfigurationContext configuration);
+
+    /**
+     * Will be called just before the execute module to do any initialization needed before the import module is
+     * ready for usage
+     */
+    void init();
 }

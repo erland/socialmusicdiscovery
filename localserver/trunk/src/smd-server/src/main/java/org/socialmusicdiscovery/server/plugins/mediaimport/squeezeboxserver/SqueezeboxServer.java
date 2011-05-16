@@ -39,7 +39,6 @@ import org.codehaus.jettison.json.JSONObject;
 import org.socialmusicdiscovery.server.api.mediaimport.AbstractProcessingModule;
 import org.socialmusicdiscovery.server.api.mediaimport.MediaImporter;
 import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
-import org.socialmusicdiscovery.server.business.logic.InjectHelper;
 import org.socialmusicdiscovery.server.business.model.GlobalIdentity;
 import org.socialmusicdiscovery.server.business.model.GlobalIdentityEntity;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
@@ -56,7 +55,6 @@ import org.socialmusicdiscovery.server.business.repository.classification.Classi
 import org.socialmusicdiscovery.server.business.repository.classification.ClassificationRepository;
 import org.socialmusicdiscovery.server.business.repository.core.*;
 
-import javax.persistence.EntityManager;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -95,11 +93,6 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
     private Set<String> artistMusicbrainzCache = new HashSet<String>();
     private Map<String, Collection<String>> releaseCache = new HashMap<String, Collection<String>>();
     private Set<String> releaseMusicbrainzCache = new HashSet<String>();
-
-    private boolean abort = false;
-
-    @Inject
-    private EntityManager entityManager;
 
     @Inject
     private PlayableElementRepository playableElementRepository;
@@ -142,10 +135,6 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
     @Named("squeezeboxserver.port")
     private String squeezeboxServerPort;
 
-    public SqueezeboxServer() {
-        InjectHelper.injectMembers(this);
-    }
-
     /**
      * @inherit
      */
@@ -157,7 +146,6 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
      * @inherit
      */
     public void execute(ProcessingStatusCallback progressHandler) {
-        abort = false;
         TrackListData trackList = null;
         final long CHUNK_SIZE = 20;
         final String SERVICE_URL = "http://" + squeezeboxServerHost + ":" + squeezeboxServerPort + "/jsonrpc.js";
@@ -175,7 +163,7 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
             trackList = mapper.readValue(response.getString("result"), TrackListData.class);
 
             if (trackList != null) {
-                while (trackList != null && !abort) {
+                while (trackList != null && !isAborted()) {
                     long i = 0;
                     entityManager.getTransaction().begin();
                     for (TrackData track : trackList.getTracks()) {
@@ -196,7 +184,7 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                     }
                 }
 
-                if (abort) {
+                if (isAborted()) {
                     progressHandler.aborted(getId());
                 } else {
                     progressHandler.finished(getId());
@@ -218,12 +206,6 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
         releaseMusicbrainzCache.clear();
     }
 
-    /**
-     * @inherit
-     */
-    public void abort() {
-        abort = true;
-    }
 
     /**
      * Creates a JSON object representing the JSON request needed to request tracks from the Social Music Discovery SBS plugin

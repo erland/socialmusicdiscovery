@@ -72,6 +72,7 @@ public class SqueezeboxServerTest extends BaseTestCase {
         }
         defaultValueConfigurationManager.setParametersForPath(pluginConfigurationPath, defaultConfiguration);
         squeezeboxServer.setConfiguration(new MappedConfigurationContext(pluginConfigurationPath));
+        squeezeboxServer.init();
     }
 
     @AfterTest

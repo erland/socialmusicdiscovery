@@ -42,16 +42,12 @@ import org.socialmusicdiscovery.server.business.repository.core.RecordingSession
 import org.socialmusicdiscovery.server.business.repository.core.ReleaseRepository;
 import org.socialmusicdiscovery.server.business.repository.core.TrackRepository;
 
-import javax.persistence.EntityManager;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 public class SearchRelationPostProcessor extends AbstractProcessingModule implements PostProcessor {
-    @Inject
-    private EntityManager entityManager;
-
     @Inject
     private ReleaseRepository releaseRepository;
 
@@ -67,22 +63,11 @@ public class SearchRelationPostProcessor extends AbstractProcessingModule implem
     @Inject
     private ClassificationRepository classificationRepository;
 
-    private boolean abort = false;
-
-    public SearchRelationPostProcessor() {
-        InjectHelper.injectMembers(this);
-    }
-
     public String getId() {
         return "searchrelations";
     }
 
-    public void abort() {
-        this.abort = true;
-    }
-
     public void execute(ProcessingStatusCallback progressHandler) {
-        abort = false;
         entityManager.getTransaction().begin();
         entityManager.clear();
         entityManager.createQuery("DELETE from ReleaseSearchRelationEntity").executeUpdate();
@@ -153,11 +138,11 @@ public class SearchRelationPostProcessor extends AbstractProcessingModule implem
 
             entityManager.getTransaction().commit();
             entityManager.clear();
-            if (abort) {
+            if (isAborted()) {
                 break;
             }
         }
-        if (abort) {
+        if (isAborted()) {
             progressHandler.aborted(getId());
         } else {
             progressHandler.finished(getId());
