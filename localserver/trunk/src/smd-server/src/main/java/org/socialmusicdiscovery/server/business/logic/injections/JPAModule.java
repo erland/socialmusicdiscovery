@@ -51,6 +51,8 @@ public class JPAModule extends AbstractModule {
     @Provides @Singleton
     public EntityManagerFactory provideEntityManagerFactory() {
         if(emFactory == null) {
+            // Make sure EhCache doesn't check for upgrades
+            System.setProperty("net.sf.ehcache.skipUpdateCheck","true");
             String database = System.getProperty("org.socialmusicdiscovery.server.database");
             DatabaseProvider provider;
             if(database != null) {
