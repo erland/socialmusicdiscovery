@@ -1,0 +1,164 @@
+#summary Description how to add a new import or post processing module
+
+= Creating a new import module =
+
+This is a description that tries to describe the process of adding a new import module to the system. An import module implements import of data from an external source.
+
+There are two types of import modules:
+ * Standard import modules
+ * Post processing modules that will be executed after any standard import module has finished executing.
+
+== Standard import module ==
+=== Creating importer class ===
+
+The following is a simple sample importer which we will describe a bit below, we will start with just the class definition and describe each method separately, so here is the class:
+{{{
+public class SomethingImporter extends AbstractProcessingModule 
+             implements MediaImporter {
+
+    @Inject
+    private TrackRepository trackRepository;
+
+}
+}}}
+The important things to note are:
+ * We inherit from [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/java/org/socialmusicdiscovery/server/api/mediaimport/AbstractProcessingModule.java AbstractProcessingModule] to get some basic support which usually are the same for all import modules
+ * We need to implement the [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/java/org/socialmusicdiscovery/server/api/mediaimport/MediaImporter.java MediaImporter] interface to indicate that we are an import module.
+ * The @Inject annotations on the *trackRepository* attributes will result in that it's filled with a real implementation object before the *execute* method is called. The [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/java/org/socialmusicdiscovery/server/api/mediaimport/AbstractProcessingModule.java AbstractProcessingModule] super class will make sure this happens by calling *InjectHelper.injectMembers(this)* at an appropriate time.
+
+And the implementation of the *id* method might look like this:
+{{{
+    public String getId() {
+        return "somethingimporter";
+    }
+}}}
+The important things to note are:
+ * The *getId* method should return the identity of this import module, we just return the an id similar to our class name
+
+And configuration parameters are defined in the *getDefaultConfiguration* method which might look like this:
+{{{
+    public Collection<ConfigurationParameter> getDefaultConfiguration() {
+        return Arrays.asList(
+           (ConfigurationParameter)new ConfigurationParameterEntity(
+                                        "someparameter", 
+                                        ConfigurationParameter.Type.BOOLEAN, 
+                                        "true"),
+           (ConfigurationParameter)new ConfigurationParameterEntity(
+                                        "someotherparameter", 
+                                        ConfigurationParameter.Type.INTEGER, 
+                                        "42")
+        );
+    }
+
+}}}
+The important things to note are:
+ * The *getDefaultConfiguration* method will return the configuration parameters for this import module and their corresponding default value. These parameters can be retrieved during the import process through the *getConfiguration* method, the values returned from the *getConfiguration* method will either be the default value or the changed configuration provided by the user.
+
+
+And the really interesting part is of course the *execute* method which might look like this:
+{{{
+    public void execute(ProcessingStatusCallback progressHandler) {
+        try {
+            entityManager.getTransaction().begin();
+            progressHandler.progress(
+                  getId(), 
+                  "Processing first item", 
+                  1, 
+                  2);
+
+            //TODO: Do something interesting
+
+            if(isAborted()) {
+                entityManager.getTransaction().commit();
+                progressHandler.aborted(getId());
+                return;
+            }
+
+            if(getConfiguration().getBooleanParameter("someparameter")) {
+                progressHandler.progress(
+                      getId(), 
+                      "Processing last item, alternative 1", 
+                      2, 
+                      2);
+
+                //TODO: Do something interesting for alternative 1
+            }else {
+                progressHandler.progress(
+                      getId(), 
+                      "Processing last item, alternative 2", 
+                      2, 
+                      2);
+
+                //TODO: Do something interesting for alternative 2
+            }
+            entityManager.getTransaction().commit();
+            progressHandler.finished(getId());
+        }catch (Throwable t) {
+            if(entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().setRollbackOnly();
+            }
+            progressHandler.failed(getId() t.getLocalizedMessage());
+        }
+    }
+
+}}}
+The important things to note are:
+ * The *execute* method will be called in a separate thread and should execute the logic for the complete import process.
+ * Inside the execute method it's important to:
+   * Call *entityManager.getTransaction().begin()* to initialize a new transaction
+   * Call the *progressHandler.progress* method at regular interval and inform what you are currently doing, this will be used to show the progress to the user.
+   * Call the *progressHandler.finished* method if the importer succeeeds or *progressHandler.failed* method if it fails
+        * If an error occurs, call *entityManager.getTransaction().setRollbackOnly()* to rollback any changes in the current transaction.
+   * Regulary call isAborted() to check if the import process have been aborted and in this case call *progressHandler.aborted*
+   * Call *entityManager.getTransaction().commit()* at the end to commit all changes. An import method that performs a lot of modifications should typically call *begin* and *commit()* at regular interval to avoid gigantic transactions.
+
+A typical import module will read information from an external source and use the repository classes to modify the SMD data, for example create new tracks, artists, releases and similar things.
+
+For performance reasons, it's usually a good idea to regularly make the following call sequence:
+{{{
+    entityManager.flush();
+    entityManager.clear();
+    entityManager.getTransaction().commit();
+    entityManager.getTransaction().begin();
+}}}
+This will make sure objects are regularly flushed and committed to the database, if you don't do this there is a risk the *entityManager* session gets really large and this can cause performance problems as it takes a long time to find objects in the session.
+
+=== Registering importer class ===
+A new importer class is registered by adding it to the file:
+ * [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/resources/META-INF/services/org.socialmusicdiscovery.server.api.mediaimport.MediaImporter src/main/resources/META-INF/services/org.socialmusicdiscovery.server.api.mediaimport.MediaImporter]
+
+This file will be used by the standard Java *[http://download.oracle.com/javase/6/docs/api/java/util/ServiceLoader.html ServiceLoader]* class inside [https://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/java/org/socialmusicdiscovery/server/business/logic/injections/MediaImportManagerModule.java MediaImportManagerModule] to load all registered media importers.
+
+== Creating a new post processing module ==
+
+=== Creating post processing class ===
+A post processing module is implemented exactly the same way as a standard import module, the only difference is that it needs to implement the [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/java/org/socialmusicdiscovery/server/api/mediaimport/PostProcessor.java PostProcessor] interface.
+
+So the class implementation would look something like this:
+{{{
+public class SomethingImporter extends AbstractProcessingModule 
+             implements PostProcessor {
+
+
+}
+}}}
+See above description regarding standard import modules for more details, the only thing special here is that:
+ * It implements the [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/java/org/socialmusicdiscovery/server/api/mediaimport/PostProcessor.java PostProcessor] interface to indicate that it's a post processing module and not a standard import module.
+
+=== Registering post processing class ===
+A new post processing class is registered by adding it to the file:
+ * [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/resources/META-INF/services/org.socialmusicdiscovery.server.api.mediaimport.PostProcessor src/main/resources/META-INF/services/org.socialmusicdiscovery.server.api.mediaimport.PostProcessor]
+
+
+== Usage ==
+After implementation and registration, the standard import module is ready to use through the [SoftwareSMDServerManagementAPI management API].
+
+In the above sample, this means that:
+ * We can start a new import by issuing a HTTP POST request to: 
+   * `http://localhost:9998/mediaimportmodules/somethingimporter`
+ * We can get the current status by issuing a HTTP GET request to: 
+   * `http://localhost:9998/mediaimportmodules/somethingimporter`
+ * We can abort an import by issuing a HTTP DELETE request to: 
+   * `http://localhost:9998/mediaimportmodules/somethingimporter`
+
+The post processing module will execute automatically as a second phase after the import module, there isn't any management functions available to control it as a separate operation.
