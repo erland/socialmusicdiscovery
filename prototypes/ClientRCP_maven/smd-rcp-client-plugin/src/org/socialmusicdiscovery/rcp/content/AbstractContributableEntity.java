@@ -111,10 +111,19 @@ public abstract class AbstractContributableEntity<T extends SMDIdentity>  extend
 	@Override
 	protected void postInflate() {
 		super.postInflate();
+		
+//		FIXME disable this code when "Solution 1" is implemented
 		for (Object o : contributors) {
 			ObservableContributor c = (ObservableContributor) o;
 			c.setEntity(this);
 		}
+
+//		FIXME enable this code when "Solution 1" is implemented
+//		Root<Contributor> root = getDataSource().resolveRoot(Contributor.class);
+//		Collection<ObservableContributor> allContributors = root.findAll(this);
+//		inflateAll(allContributors);
+//		contributors.addAll(allContributors);
+		
 		hookContributorListener();
 	}
 

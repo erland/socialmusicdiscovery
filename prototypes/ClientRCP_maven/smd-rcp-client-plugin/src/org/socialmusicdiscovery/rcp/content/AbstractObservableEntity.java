@@ -186,13 +186,12 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 
 	@Override
 	public boolean exists() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
 	public ImageDescriptor getImageDescriptor() {
-		// TODO Auto-generated method stub
+		// TODO implement 
 		return null;
 	}
 
