@@ -89,6 +89,15 @@ public class ObservableArtist extends AbstractObservableEntity<Artist> implement
 	}
 
 	private GenericWritableSet<ObservableContributor> resolveContributions() {
+//		FIXME enable this code when "Solution 1" is implemented
+//		Root<Contributor> root = getDataSource().resolveRoot(Contributor.class);
+//		Collection<ObservableContributor> allContributors = root.findAll(this);
+//		inflateAll(allContributors);
+//		GenericWritableSet<ObservableContributor> result = new GenericWritableSet<ObservableContributor>();
+//		result.addAll(allContributors);
+//		return result;
+
+//		FIXME disable this code when "Solution 1" is implemented
 		GenericWritableSet<ObservableContributor> result = new GenericWritableSet<ObservableContributor>();
 		Class[] contributableTypes = {
 			Release.class, 
