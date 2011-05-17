@@ -69,11 +69,18 @@ public class ObservableContributor extends AbstractObservableEntity<Contributor>
 		firePropertyChange(PROP_artist, this.artist, this.artist = artist);
 	}
 
-	@Override
+	/**
+	 * TODO remove after Contributor change
+	 * @deprecated
+	 */
 	public SMDIdentityReference getOwner() {
 		return owner;
 	}
 	
+	/**
+	 * TODO remove after Contributor change
+	 * @deprecated
+	 */
 	public void setOwner(SMDIdentityReference owner) {
 		firePropertyChange(PROP_owner, this.owner, this.owner = owner);
 	}
