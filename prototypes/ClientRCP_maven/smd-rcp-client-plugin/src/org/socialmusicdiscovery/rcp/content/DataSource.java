@@ -542,6 +542,8 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		if (roots == null) {
 			roots = Arrays.asList(
 				new Root<Artist>("Artists", ObservableArtist.class, "/artists", Artist.class, new GenericType<Set<Artist>>() {} )
+//				FIXME enable this line when "Solution 1" is implemented
+//				,new Root<Contributor>("Contributors", ObservableContributor.class, "/contributors", Contributor.class, new GenericType<Set<Contributor>>() {} )
 				,new Root<Recording>("Recordings", ObservableRecording.class, "/recordings", Recording.class, new GenericType<Set<Recording>>() {} )
 				,new Root<Release>("Releases", ObservableRelease.class, "/releases", Release.class, new GenericType<Set<Release>>() {} ) 
 				,new Root<Track>("Tracks", ObservableTrack.class, "/tracks", Track.class, new GenericType<Set<Track>>() {} )
