@@ -23,6 +23,7 @@
         <dropTable tableName="relations"/>
         <dropTable tableName="releases"/>
         <dropTable tableName="labels"/>
+        <dropTable tableName="images"/>
         <dropTable tableName="smdidentity_references"/>
         <dropTable tableName="persons_search_relations"/>
         <dropTable tableName="releases_search_relations"/>

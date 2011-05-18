@@ -19,6 +19,7 @@
         <class>org.socialmusicdiscovery.server.business.model.core.ArtistEntity</class>
         <class>org.socialmusicdiscovery.server.business.model.core.PersonEntity</class>
         <class>org.socialmusicdiscovery.server.business.model.core.PlayableElementEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.core.ImageEntity</class>
 
         <class>org.socialmusicdiscovery.server.business.model.subjective.CreditEntity</class>
         <class>org.socialmusicdiscovery.server.business.model.subjective.RelationEntity</class>
