@@ -69,6 +69,7 @@ public final class JSONProvider extends AbstractJSONProvider {
         converters.put(RecordingSession.class, RecordingSessionEntity.class);
         converters.put(Recording.class, RecordingEntity.class);
         converters.put(Work.class, WorkEntity.class);
+        converters.put(Image.class, ImageEntity.class);
         converters.put(SMDIdentityReference.class, SMDIdentityReferenceEntity.class);
         converters.put(Classification.class, ClassificationEntity.class);
         converters.put(GlobalIdentity.class, GlobalIdentityEntity.class);
