@@ -47,7 +47,9 @@ public class SearchRelationUpdaterPlugin extends AbstractPlugin {
         String forcedUpdateOfSearchRelations = System.getProperty("org.socialmusicdiscovery.server.searchrelations");
         if ((database != null && (database.endsWith("-test"))) || (forcedUpdateOfSearchRelations != null && forcedUpdateOfSearchRelations.equalsIgnoreCase("true"))) {
             System.out.println("Starting to update search relations...");
-            new SearchRelationPostProcessor().execute(new ProcessingStatusCallback() {
+            SearchRelationPostProcessor searchRelationPostProcessor = new SearchRelationPostProcessor();
+            searchRelationPostProcessor.init();
+            searchRelationPostProcessor.execute(new ProcessingStatusCallback() {
                 public void progress(String module, String currentDescription, Long currentNo, Long totalNo) {
                     System.out.println(currentNo + " of " + totalNo + ": " + currentDescription);
                 }
