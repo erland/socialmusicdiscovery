@@ -36,9 +36,11 @@ import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.MessageBodyWriter;
 import java.io.*;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -74,6 +76,34 @@ public abstract class AbstractJSONProvider implements MessageBodyReader<Object>,
 
         public Object deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
             return jsonDeserializationContext.deserialize(jsonElement, implementationClass);
+        }
+    }
+
+    /**
+     * Provides a JSON deserializer for the specified abstract implementation class
+     */
+    public static class AbstractImplementationDeserializer implements JsonDeserializer {
+        private Class implementationClass;
+        private Map<String,Class> objectTypeToClassMap;
+
+        public AbstractImplementationDeserializer(Class implementationClass, Map<String,Class> objectTypeToClassMap) {
+            this.implementationClass = implementationClass;
+            this.objectTypeToClassMap = objectTypeToClassMap;
+        }
+
+        public Object deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+            JsonElement classAttribute = jsonElement.getAsJsonObject().get("objectType");
+            if(classAttribute==null) {
+                throw new JsonParseException("Element related to abstract type "+implementationClass.getName()+" doesn't have the necessary objectType attribute");
+            }
+            Class clazz = objectTypeToClassMap.get(classAttribute.getAsString());
+            if(clazz==null) {
+                throw new JsonParseException("No class can be found for objectType="+classAttribute.getAsString());
+            }
+            if(!implementationClass.isAssignableFrom(clazz)) {
+                throw new JsonParseException(clazz.getName() + " not compatible with "+implementationClass.getName());
+            }
+            return jsonDeserializationContext.deserialize(jsonElement, clazz);
         }
     }
 
@@ -150,6 +180,10 @@ public abstract class AbstractJSONProvider implements MessageBodyReader<Object>,
      */
     protected abstract Map<Class, Class> getConversionMap();
 
+    protected Map<String, Class> getObjectTypeConversionMap() {
+        return new HashMap<String,Class>();
+    }
+
     /**
      * Google Gson GsonBuilder instance that will be used during JSON conversion
      */
@@ -173,11 +207,17 @@ public abstract class AbstractJSONProvider implements MessageBodyReader<Object>,
             if(!entry.getKey().equals(entry.getValue())) {
                 gsonBuilder.registerTypeAdapter(entry.getKey(), new ImplementationSerializer(entry.getValue()));
             }
-            gsonBuilder.registerTypeAdapter(entry.getKey(), new ImplementationCreator(entry.getValue()));
+            if(!Modifier.isAbstract(entry.getValue().getModifiers())) {
+                gsonBuilder.registerTypeAdapter(entry.getKey(), new ImplementationCreator(entry.getValue()));
+            }
             if(Collection.class.isAssignableFrom(entry.getKey())) {
                 gsonBuilder.registerTypeAdapter(entry.getKey(), new ImplementationCollectionDeserializer(entry.getValue()));
             }else {
-                gsonBuilder.registerTypeAdapter(entry.getKey(), new ImplementationDeserializer(entry.getValue()));
+                if(Modifier.isAbstract(entry.getValue().getModifiers())) {
+                    gsonBuilder.registerTypeAdapter(entry.getKey(), new AbstractImplementationDeserializer(entry.getValue(),getObjectTypeConversionMap()));
+                }else {
+                    gsonBuilder.registerTypeAdapter(entry.getKey(), new ImplementationDeserializer(entry.getValue()));
+                }
             }
         }
     }

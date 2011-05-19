@@ -41,7 +41,7 @@ import javax.persistence.*;
 public class ContributorEntity extends AbstractSMDIdentityEntity implements Contributor {
     @Expose
     @Transient
-    private SMDIdentityReference owner;
+    private SMDIdentity owner;
 
     @ManyToOne(targetEntity = ReleaseEntity.class)
     @JoinColumn(name = "release_id")
@@ -114,27 +114,18 @@ public class ContributorEntity extends AbstractSMDIdentityEntity implements Cont
         this.artist = artist;
     }
 
-    public SMDIdentityReference getOwner() {
+    public SMDIdentity getOwner() {
         return owner;
     }
 
-    public void setOwner(SMDIdentityReference owner) {
+    public void setOwner(SMDIdentity owner) {
         this.owner = owner;
     }
 
-    private void setOwner(Class<? extends SMDIdentity> clazz, String id) {
-        this.owner = new SMDIdentityReferenceEntity(id, SMDIdentityReferenceEntity.typeForClass(clazz));
-    }
-
-    private <T extends SMDIdentity> void setOwner(T owner) {
-        if(owner!=null) {
-            this.owner = new SMDIdentityReferenceEntity(owner.getId(), SMDIdentityReferenceEntity.typeForClass(owner.getClass()));
-        }else {
-            this.owner = null;
-        }
-    }
-
     public Release getRelease() {
+        if(release==null && owner instanceof Release) {
+            release = (Release) owner;
+        }
         return release;
     }
 
@@ -144,6 +135,9 @@ public class ContributorEntity extends AbstractSMDIdentityEntity implements Cont
     }
 
     public Work getWork() {
+        if(work==null && owner instanceof Work) {
+            work = (Work) owner;
+        }
         return work;
     }
 
@@ -153,6 +147,9 @@ public class ContributorEntity extends AbstractSMDIdentityEntity implements Cont
     }
 
     public Recording getRecording() {
+        if(recording==null && owner instanceof Recording) {
+            recording = (Recording) owner;
+        }
         return recording;
     }
 
@@ -162,6 +159,9 @@ public class ContributorEntity extends AbstractSMDIdentityEntity implements Cont
     }
 
     public RecordingSession getRecordingSession() {
+        if(recordingSession==null && owner instanceof RecordingSession) {
+            recordingSession = (RecordingSession) owner;
+        }
         return recordingSession;
     }
 

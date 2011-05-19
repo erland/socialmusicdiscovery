@@ -31,12 +31,16 @@ import com.google.gson.annotations.Expose;
 import com.google.inject.Inject;
 import org.socialmusicdiscovery.server.api.management.model.AbstractSMDIdentityCRUDFacade;
 import org.socialmusicdiscovery.server.business.logic.TransactionManager;
-import org.socialmusicdiscovery.server.business.model.core.ContributorEntity;
+import org.socialmusicdiscovery.server.business.model.SMDIdentityReference;
+import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
+import org.socialmusicdiscovery.server.business.model.core.*;
+import org.socialmusicdiscovery.server.business.repository.JPASMDIdentityReferenceRepository;
 import org.socialmusicdiscovery.server.business.repository.core.ContributorRepository;
 import org.socialmusicdiscovery.server.support.copy.CopyHelper;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -48,6 +52,10 @@ import java.util.Date;
 public class ContributorFacade extends AbstractSMDIdentityCRUDFacade<ContributorEntity, ContributorRepository> {
     @Inject
     private TransactionManager transactionManager;
+
+    @Inject
+    private JPASMDIdentityReferenceRepository smdIdentityReferenceRepository;
+
     /**
      * Search for contributors matching specified search criterias
      *
@@ -60,9 +68,26 @@ public class ContributorFacade extends AbstractSMDIdentityCRUDFacade<Contributor
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Collection<ContributorEntity> search(@QueryParam("release") String release, @QueryParam("work") String work, @QueryParam("recording") String recording, @QueryParam("recordingSession") String recordingSession, @QueryParam("artist") String artist) {
+    public Collection<ContributorEntity> search(@QueryParam("release") String release, @QueryParam("work") String work, @QueryParam("recording") String recording, @QueryParam("recordingSession") String recordingSession, @QueryParam("artist") String artist, @QueryParam("owner") String owner) {
         try {
             transactionManager.begin();
+            if (owner!=null) {
+                SMDIdentityReference reference = smdIdentityReferenceRepository.findById(owner);
+                if(reference==null) {
+                    return new ArrayList<ContributorEntity>();
+                }
+                if(reference.getType().equals(SMDIdentityReferenceEntity.typeForClass(ReleaseEntity.class))) {
+                    release = owner;
+                }else if(reference.getType().equals(SMDIdentityReferenceEntity.typeForClass(WorkEntity.class))) {
+                    work = owner;
+                }else if(reference.getType().equals(SMDIdentityReferenceEntity.typeForClass(RecordingEntity.class))) {
+                    recording = owner;
+                }else if(reference.getType().equals(SMDIdentityReferenceEntity.typeForClass(RecordingSessionEntity.class))) {
+                    recordingSession = owner;
+                }else {
+                    return new ArrayList<ContributorEntity>();
+                }
+            }
             if(release!=null) {
                 return new CopyHelper().detachedCopy(repository.findByReleaseWithRelations(release, Arrays.asList("reference"), null), Expose.class);
             }else if (work != null) {

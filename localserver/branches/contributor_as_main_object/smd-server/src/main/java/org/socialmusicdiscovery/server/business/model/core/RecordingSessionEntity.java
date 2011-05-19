@@ -47,7 +47,6 @@ public class RecordingSessionEntity extends AbstractSMDIdentityEntity implements
     @Expose
     private Date date;
     @OneToMany(targetEntity = ContributorEntity.class, mappedBy = "recordingSession", cascade = {CascadeType.REMOVE}, orphanRemoval = true)
-    @Expose
     private Set<Contributor> contributors = new HashSet<Contributor>();
 
     @OneToMany(targetEntity = RecordingEntity.class, orphanRemoval = true)
