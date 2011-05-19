@@ -97,7 +97,7 @@ public class ContributorFacade extends AbstractSMDIdentityCRUDFacade<Contributor
             }else if (recordingSession != null) {
                 return new CopyHelper().detachedCopy(repository.findByRecordingSessionWithRelations(recordingSession, Arrays.asList("reference"), null), Expose.class);
             }else if (artist!=null) {
-                return new CopyHelper().detachedCopy(repository.findByArtistWithRelations(release, Arrays.asList("reference"), null), Expose.class);
+                return new CopyHelper().detachedCopy(repository.findByArtistWithRelations(artist, Arrays.asList("reference"), null), Expose.class);
             } else {
                 return new CopyHelper().detachedCopy(repository.findAllWithRelations(Arrays.asList("reference"), null), Expose.class);
             }
