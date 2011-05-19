@@ -120,6 +120,15 @@ public class ContributorEntity extends AbstractSMDIdentityEntity implements Cont
 
     public void setOwner(SMDIdentity owner) {
         this.owner = owner;
+        if(owner instanceof Release) {
+            release = (Release) owner;
+        }else if(owner instanceof Work) {
+            work = (Work) owner;
+        }else if(owner instanceof Recording) {
+            recording = (Recording) owner;
+        }else if(owner instanceof RecordingSession) {
+            recordingSession = (RecordingSession) owner;
+        }
     }
 
     public Release getRelease() {
