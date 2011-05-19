@@ -34,6 +34,8 @@ import java.util.List;
 import java.util.Set;
 
 public interface Release extends SMDIdentity {
+    final static String TYPE = Release.class.getSimpleName();
+
     Date getDate();
 
     void setDate(Date date);

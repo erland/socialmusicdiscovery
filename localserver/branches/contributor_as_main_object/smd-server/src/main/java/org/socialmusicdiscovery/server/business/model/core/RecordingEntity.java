@@ -51,7 +51,6 @@ public class RecordingEntity extends AbstractSMDIdentityEntity implements Record
     @Expose
     private Recording mixOf;
     @OneToMany(targetEntity = ContributorEntity.class, mappedBy = "recording", cascade = {CascadeType.REMOVE}, orphanRemoval = true)
-    @Expose
     private Set<Contributor> contributors = new HashSet<Contributor>();
     @ManyToMany(targetEntity = WorkEntity.class, fetch = FetchType.EAGER)
     @JoinTable(name = "recording_works",

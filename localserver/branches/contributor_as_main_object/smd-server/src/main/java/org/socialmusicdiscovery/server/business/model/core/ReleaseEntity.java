@@ -62,7 +62,6 @@ public class ReleaseEntity extends AbstractSMDIdentityEntity implements Release,
     @Expose
     private Set<RecordingSession> recordingSessions = new HashSet<RecordingSession>();
     @OneToMany(targetEntity = ContributorEntity.class, mappedBy = "release", cascade = {CascadeType.REMOVE}, orphanRemoval = true)
-    @Expose
     private Set<Contributor> contributors = new HashSet<Contributor>();
 
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "id")

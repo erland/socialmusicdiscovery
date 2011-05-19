@@ -140,6 +140,7 @@ public class EditTrackWindow extends Window implements Bindable {
 
     public void open(Display display, Window owner, Track track) {
         track = Client.create(config).resource("http://" + SMDSERVER + ":" + SMDSERVERPORT + "/tracks/" + track.getId()).accept(MediaType.APPLICATION_JSON).get(Track.class);
+        track.getRecording().setContributors(new java.util.HashSet<Contributor>(Client.create(config).resource("http://" + SMDSERVER + ":" + SMDSERVERPORT + "/contributors?recording=" + track.getRecording().getId()).accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<Contributor>>() {})));
         this.track = track;
 
         searchWorksButton.getButtonPressListeners().add(new ButtonPressListener() {

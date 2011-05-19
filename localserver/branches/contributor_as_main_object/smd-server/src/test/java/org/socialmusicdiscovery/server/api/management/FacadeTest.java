@@ -37,10 +37,7 @@ import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
 import org.socialmusicdiscovery.server.business.logic.SearchRelationPostProcessor;
 import org.socialmusicdiscovery.server.business.logic.config.ConfigurationManager;
-import org.socialmusicdiscovery.server.business.model.GlobalIdentity;
-import org.socialmusicdiscovery.server.business.model.GlobalIdentityEntity;
-import org.socialmusicdiscovery.server.business.model.SMDIdentityReference;
-import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
+import org.socialmusicdiscovery.server.business.model.*;
 import org.socialmusicdiscovery.server.business.model.classification.Classification;
 import org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity;
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameter;
@@ -91,7 +88,19 @@ public class FacadeTest extends BaseTestCase {
             converters.put(Series.class, SeriesEntity.class);
             converters.put(PlayableElement.class, PlayableElementEntity.class);
             converters.put(ConfigurationParameter.class, ConfigurationParameterEntity.class);
+            converters.put(SMDIdentity.class,SMDIdentity.class);
 
+            return converters;
+        }
+
+        @Override
+        protected Map<String, Class> getObjectTypeConversionMap() {
+            Map<String, Class> converters = new HashMap<String,Class>();
+
+            converters.put(Release.TYPE, ReleaseEntity.class);
+            converters.put(Work.TYPE, WorkEntity.class);
+            converters.put(Recording.TYPE, RecordingEntity.class);
+            converters.put(RecordingSession.TYPE, RecordingSessionEntity.class);
             return converters;
         }
     }
@@ -634,62 +643,6 @@ public class FacadeTest extends BaseTestCase {
     }
 
     @Test
-    public void testReleaseContributors() throws Exception {
-        Artist myArtist = new ArtistEntity();
-        myArtist.setName("Anne-Sophie Mutter");
-        Artist a = Client.create(config).resource(HOSTURL+"/artists").type(MediaType.APPLICATION_JSON).post(Artist.class,myArtist);
-        assert a!=null;
-        assert a.getName().equals(myArtist.getName());
-        assert a.getId()!=null;
-
-        Release myRelease = new ReleaseEntity();
-        myRelease.setName("Test Release");
-        myRelease.getContributors().add(new ContributorEntity(a,Contributor.PERFORMER));
-        Release r = Client.create(config).resource(HOSTURL+"/releases").type(MediaType.APPLICATION_JSON).post(Release.class,myRelease);
-
-        assert r!=null;
-        assert r.getName().equals(myRelease.getName());
-        assert r.getId()!=null;
-        assert r.getContributors()!=null;
-        assert r.getContributors().size()==1;
-        assert r.getContributors().iterator().next().getType().equals(Contributor.PERFORMER);
-        assert r.getContributors().iterator().next().getArtist().getName().equals(myArtist.getName());
-
-        r = Client.create(config).resource(HOSTURL+"/releases/"+r.getId()).accept(MediaType.APPLICATION_JSON).get(Release.class);
-
-        assert r!=null;
-        assert r.getName().equals(myRelease.getName());
-        assert r.getId()!=null;
-        assert r.getContributors()!=null;
-        assert r.getContributors().size()==1;
-        assert r.getContributors().iterator().next().getType().equals(Contributor.PERFORMER);
-        assert r.getContributors().iterator().next().getArtist().getName().equals(myArtist.getName());
-
-        r.getContributors().clear();
-        r.getContributors().add(new ContributorEntity(myArtist,Contributor.COMPOSER));
-        r = Client.create(config).resource(HOSTURL+"/releases/"+r.getId()).type(MediaType.APPLICATION_JSON).put(Release.class, r);
-        assert r!=null;
-        assert r.getId()!=null;
-        assert r.getContributors()!=null;
-        assert r.getContributors().size()==1;
-        assert r.getContributors().iterator().next().getType().equals(Contributor.COMPOSER);
-        assert r.getContributors().iterator().next().getArtist().getName().equals(myArtist.getName());
-
-        Client.create(config).resource(HOSTURL+"/releases/"+r.getId()).accept(MediaType.APPLICATION_JSON).delete();
-        Client.create(config).resource(HOSTURL+"/artists/"+a.getId()).accept(MediaType.APPLICATION_JSON).delete();
-
-        Collection<Release> releases = Client.create(config).resource(HOSTURL+"/releases").accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<Release>>() {});
-        assert releases !=null;
-        boolean found = false;
-        for (Release release : releases) {
-            if(release.getId().equals(r.getId())) {
-                found = true;
-            }
-        }
-        assert !found;
-    }
-
-    @Test
     public void testContributorRelease() throws Exception {
         Artist myArtist = new ArtistEntity();
         myArtist.setName("Anne-Sophie Mutter");
@@ -717,7 +670,7 @@ public class FacadeTest extends BaseTestCase {
         assert r.getContributors().size()==0;
 
         ContributorEntity myContributor = new ContributorEntity(a,Contributor.PERFORMER);
-        myContributor.setOwner(SMDIdentityReferenceEntity.forEntity(r));
+        myContributor.setOwner(r);
         Contributor c = Client.create(config).resource(HOSTURL+"/contributors").type(MediaType.APPLICATION_JSON).post(Contributor.class,myContributor);
         assert c!=null;
         assert c.getId()!=null;
@@ -731,10 +684,19 @@ public class FacadeTest extends BaseTestCase {
         assert r!=null;
         assert r.getName().equals(myRelease.getName());
         assert r.getId()!=null;
-        assert r.getContributors()!=null;
-        assert r.getContributors().size()==1;
-        assert r.getContributors().iterator().next().getType().equals(Contributor.PERFORMER);
-        assert r.getContributors().iterator().next().getArtist().getName().equals(myArtist.getName());
+        assert r.getContributors()==null || r.getContributors().size() == 0;
+
+        Collection<ContributorEntity> contributors = Client.create(config).resource(HOSTURL+"/contributors?release="+r.getId()).type(MediaType.APPLICATION_JSON).get(new GenericType<Collection<ContributorEntity>>() {});
+        assert contributors.size()==1;
+        assert contributors.iterator().next().getOwner()!=null;
+        assert contributors.iterator().next().getOwner().equals(r);
+        assert contributors.iterator().next().getType().equals(Contributor.PERFORMER);
+
+        contributors = Client.create(config).resource(HOSTURL+"/contributors?owner="+r.getId()).type(MediaType.APPLICATION_JSON).get(new GenericType<Collection<ContributorEntity>>() {});
+        assert contributors.size()==1;
+        assert contributors.iterator().next().getOwner()!=null;
+        assert contributors.iterator().next().getOwner().equals(r);
+        assert contributors.iterator().next().getType().equals(Contributor.PERFORMER);
 
         c.setType(Contributor.CONDUCTOR);
         c = Client.create(config).resource(HOSTURL+"/contributors/"+c.getId()).type(MediaType.APPLICATION_JSON).put(Contributor.class,c);
@@ -743,130 +705,59 @@ public class FacadeTest extends BaseTestCase {
         assert c.getArtist()!=null;
         assert c.getArtist().equals(a);
         assert ((ContributorEntity)c).getOwner()!=null;
-        assert ((ContributorEntity)c).getOwner().getId().equals(r.getId());
+        assert ((ContributorEntity)c).getOwner().equals(r);
 
-        r = Client.create(config).resource(HOSTURL+"/releases/"+r.getId()).accept(MediaType.APPLICATION_JSON).get(Release.class);
-
-        assert r!=null;
-        assert r.getName().equals(myRelease.getName());
-        assert r.getId()!=null;
-        assert r.getContributors()!=null;
-        assert r.getContributors().size()==1;
-        assert r.getContributors().iterator().next().getType().equals(Contributor.CONDUCTOR);
-        assert r.getContributors().iterator().next().getArtist().getName().equals(myArtist.getName());
+        contributors = Client.create(config).resource(HOSTURL+"/contributors?release="+r.getId()).type(MediaType.APPLICATION_JSON).get(new GenericType<Collection<ContributorEntity>>() {});
+        assert contributors.size()==1;
+        assert contributors.iterator().next().getOwner()!=null;
+        assert contributors.iterator().next().getOwner().equals(r);
+        assert contributors.iterator().next().getType().equals(Contributor.CONDUCTOR);
 
         ContributorEntity mySecondContributor = new ContributorEntity(a,Contributor.PERFORMER);
-        mySecondContributor.setOwner(SMDIdentityReferenceEntity.forEntity(r));
+        mySecondContributor.setOwner(r);
         c = Client.create(config).resource(HOSTURL+"/contributors").type(MediaType.APPLICATION_JSON).post(Contributor.class,mySecondContributor);
         assert c!=null;
         assert c.getId()!=null;
         assert c.getArtist()!=null;
         assert c.getArtist().equals(a);
         assert ((ContributorEntity)c).getOwner()!=null;
-        assert ((ContributorEntity)c).getOwner().getId().equals(r.getId());
+        assert ((ContributorEntity)c).getOwner().equals(r);
 
-        r = Client.create(config).resource(HOSTURL+"/releases/"+r.getId()).accept(MediaType.APPLICATION_JSON).get(Release.class);
-
-        assert r!=null;
-        assert r.getName().equals(myRelease.getName());
-        assert r.getId()!=null;
-        assert r.getContributors()!=null;
-        assert r.getContributors().size()==2;
-        assert r.getContributors().contains(myContributor);
-        assert r.getContributors().contains(mySecondContributor);
+        contributors = Client.create(config).resource(HOSTURL+"/contributors?release="+r.getId()).type(MediaType.APPLICATION_JSON).get(new GenericType<Collection<ContributorEntity>>() {});
+        assert contributors.size()==2;
+        boolean firstFound = false;
+        boolean secondFound = false;
+        for (ContributorEntity contributor : contributors) {
+            assert contributor.getOwner()!=null;
+            assert contributor.getOwner().equals(r);
+            if(contributor.getType().equals(Contributor.CONDUCTOR)) {
+                firstFound = true;
+            }else if(contributor.getType().equals(Contributor.PERFORMER)) {
+                secondFound = true;
+            }
+        }
+        assert firstFound;
+        assert secondFound;
 
         Client.create(config).resource(HOSTURL+"/contributors/"+myContributor.getId()).type(MediaType.APPLICATION_JSON).delete();
 
-        r = Client.create(config).resource(HOSTURL+"/releases/"+r.getId()).accept(MediaType.APPLICATION_JSON).get(Release.class);
-
-        assert r!=null;
-        assert r.getName().equals(myRelease.getName());
-        assert r.getId()!=null;
-        assert r.getContributors()!=null;
-        assert r.getContributors().size()==1;
-        assert r.getContributors().contains(mySecondContributor);
+        contributors = Client.create(config).resource(HOSTURL+"/contributors?release="+r.getId()).type(MediaType.APPLICATION_JSON).get(new GenericType<Collection<ContributorEntity>>() {});
+        assert contributors.size()==1;
+        assert contributors.iterator().next().getOwner()!=null;
+        assert contributors.iterator().next().getOwner().equals(r);
+        assert contributors.iterator().next().getType().equals(Contributor.PERFORMER);
 
         Client.create(config).resource(HOSTURL+"/releases/"+r.getId()).accept(MediaType.APPLICATION_JSON).delete();
         Client.create(config).resource(HOSTURL+"/artists/"+a.getId()).accept(MediaType.APPLICATION_JSON).delete();
+
+        contributors = Client.create(config).resource(HOSTURL+"/contributors?release="+r.getId()).type(MediaType.APPLICATION_JSON).get(new GenericType<Collection<ContributorEntity>>() {});
+        assert contributors.size()==0;
 
         Collection<Release> releases = Client.create(config).resource(HOSTURL+"/releases").accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<Release>>() {});
         assert releases !=null;
         boolean found = false;
         for (Release release : releases) {
             if(release.getId().equals(r.getId())) {
-                found = true;
-            }
-        }
-        assert !found;
-    }
-
-    @Test
-    public void testWorkContributors() throws Exception {
-        Artist myArtist = new ArtistEntity();
-        myArtist.setName("Beethoven");
-        Artist a = Client.create(config).resource(HOSTURL+"/artists").type(MediaType.APPLICATION_JSON).post(Artist.class,myArtist);
-        assert a!=null;
-        assert a.getName().equals(myArtist.getName());
-        assert a.getId()!=null;
-
-        Artist mySecondArtist = new ArtistEntity();
-        mySecondArtist.setName("Secretary of Beethoven");
-        Artist a2 = Client.create(config).resource(HOSTURL+"/artists").type(MediaType.APPLICATION_JSON).post(Artist.class,mySecondArtist);
-        assert a2!=null;
-        assert a2.getName().equals(mySecondArtist.getName());
-        assert a2.getId()!=null;
-
-        Work myWork = new WorkEntity();
-        myWork.setName("Violin Concert");
-        myWork.getContributors().add(new ContributorEntity(a,Contributor.COMPOSER));
-        Work w = Client.create(config).resource(HOSTURL+"/works").type(MediaType.APPLICATION_JSON).post(Work.class,myWork);
-
-        assert w!=null;
-        assert w.getName().equals(myWork.getName());
-        assert w.getId()!=null;
-        assert w.getContributors()!=null;
-        assert w.getContributors().size()==1;
-        assert w.getContributors().iterator().next().getType().equals(Contributor.COMPOSER);
-        assert w.getContributors().iterator().next().getArtist().getName().equals(myArtist.getName());
-
-        w = Client.create(config).resource(HOSTURL+"/works/"+w.getId()).accept(MediaType.APPLICATION_JSON).get(Work.class);
-
-        assert w!=null;
-        assert w.getName().equals(myWork.getName());
-        assert w.getId()!=null;
-        assert w.getContributors()!=null;
-        assert w.getContributors().size()==1;
-        assert w.getContributors().iterator().next().getType().equals(Contributor.COMPOSER);
-        assert w.getContributors().iterator().next().getArtist().getName().equals(myArtist.getName());
-
-        w.getContributors().add(new ContributorEntity(a2,Contributor.COMPOSER));
-        w = Client.create(config).resource(HOSTURL+"/works/"+w.getId()).type(MediaType.APPLICATION_JSON).put(Work.class, w);
-        assert w!=null;
-        assert w.getId()!=null;
-        assert w.getContributors()!=null;
-        assert w.getContributors().size()==2;
-        boolean foundFirstArtist = false;
-        boolean foundSecondArtist = false;
-        for (Contributor contributor : w.getContributors()) {
-             assert contributor.getType().equals(Contributor.COMPOSER);
-            if(contributor.getArtist().getName().equals(myArtist.getName())) {
-                foundFirstArtist = true;
-            }else if(contributor.getArtist().getName().equals(mySecondArtist.getName())) {
-                foundSecondArtist = true;
-            }
-        }
-        assert foundFirstArtist;
-        assert foundSecondArtist;
-
-        Client.create(config).resource(HOSTURL+"/works/"+w.getId()).accept(MediaType.APPLICATION_JSON).delete();
-        Client.create(config).resource(HOSTURL+"/artists/"+a.getId()).accept(MediaType.APPLICATION_JSON).delete();
-        Client.create(config).resource(HOSTURL+"/artists/"+a2.getId()).accept(MediaType.APPLICATION_JSON).delete();
-
-        Collection<Work> works = Client.create(config).resource(HOSTURL+"/works").accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<Work>>() {});
-        assert works !=null;
-        boolean found = false;
-        for (Work work : works) {
-            if(work.getId().equals(w.getId())) {
                 found = true;
             }
         }
@@ -915,7 +806,7 @@ public class FacadeTest extends BaseTestCase {
         assert w.getContributors().size()==0;
 
         ContributorEntity myContributor = new ContributorEntity(a,Contributor.COMPOSER);
-        myContributor.setOwner(SMDIdentityReferenceEntity.forEntity(w));
+        myContributor.setOwner(w);
         Contributor c = Client.create(config).resource(HOSTURL+"/contributors").type(MediaType.APPLICATION_JSON).post(Contributor.class,myContributor);
         assert c!=null;
         assert c.getId()!=null;
@@ -929,13 +820,22 @@ public class FacadeTest extends BaseTestCase {
         assert w!=null;
         assert w.getName().equals(myWork.getName());
         assert w.getId()!=null;
-        assert w.getContributors()!=null;
-        assert w.getContributors().size()==1;
-        assert w.getContributors().iterator().next().getType().equals(Contributor.COMPOSER);
-        assert w.getContributors().iterator().next().getArtist().getName().equals(myArtist.getName());
+        assert w.getContributors()==null || w.getContributors().size()==0;
+
+        Collection<ContributorEntity> contributors = Client.create(config).resource(HOSTURL+"/contributors?work="+w.getId()).type(MediaType.APPLICATION_JSON).get(new GenericType<Collection<ContributorEntity>>() {});
+        assert contributors.size()==1;
+        assert contributors.iterator().next().getOwner()!=null;
+        assert contributors.iterator().next().getOwner().equals(w);
+        assert contributors.iterator().next().getType().equals(Contributor.COMPOSER);
+
+        contributors = Client.create(config).resource(HOSTURL+"/contributors?owner="+w.getId()).type(MediaType.APPLICATION_JSON).get(new GenericType<Collection<ContributorEntity>>() {});
+        assert contributors.size()==1;
+        assert contributors.iterator().next().getOwner()!=null;
+        assert contributors.iterator().next().getOwner().equals(w);
+        assert contributors.iterator().next().getType().equals(Contributor.COMPOSER);
 
         ContributorEntity mySecondContributor = new ContributorEntity(a2,Contributor.COMPOSER);
-        mySecondContributor.setOwner(SMDIdentityReferenceEntity.forEntity(w));
+        mySecondContributor.setOwner(w);
         c = Client.create(config).resource(HOSTURL+"/contributors").type(MediaType.APPLICATION_JSON).post(Contributor.class,mySecondContributor);
         assert c!=null;
         assert c.getId()!=null;
@@ -944,15 +844,21 @@ public class FacadeTest extends BaseTestCase {
         assert ((ContributorEntity)c).getOwner()!=null;
         assert ((ContributorEntity)c).getOwner().getId().equals(w.getId());
 
-        w = Client.create(config).resource(HOSTURL+"/works/"+w.getId()).accept(MediaType.APPLICATION_JSON).get(Work.class);
-
-        assert w!=null;
-        assert w.getName().equals(myWork.getName());
-        assert w.getId()!=null;
-        assert w.getContributors()!=null;
-        assert w.getContributors().size()==2;
-        assert w.getContributors().contains(myContributor);
-        assert w.getContributors().contains(mySecondContributor);
+        contributors = Client.create(config).resource(HOSTURL+"/contributors?work="+w.getId()).type(MediaType.APPLICATION_JSON).get(new GenericType<Collection<ContributorEntity>>() {});
+        assert contributors.size()==2;
+        boolean firstFound = false;
+        boolean secondFound = false;
+        for (ContributorEntity contributor : contributors) {
+            assert contributor.getOwner()!=null;
+            assert contributor.getOwner().equals(w);
+            if(contributor.getArtist().equals(a)) {
+                firstFound = true;
+            }else if(contributor.getArtist().equals(a2)) {
+                secondFound = true;
+            }
+        }
+        assert firstFound;
+        assert secondFound;
 
         c.setArtist(myThirdArtist);
         c = Client.create(config).resource(HOSTURL+"/contributors/"+c.getId()).type(MediaType.APPLICATION_JSON).put(Contributor.class, c);
@@ -963,114 +869,41 @@ public class FacadeTest extends BaseTestCase {
         assert ((ContributorEntity)c).getOwner()!=null;
         assert ((ContributorEntity)c).getOwner().getId().equals(w.getId());
 
-        w = Client.create(config).resource(HOSTURL+"/works/"+w.getId()).accept(MediaType.APPLICATION_JSON).get(Work.class);
-        assert w!=null;
-        assert w.getName().equals(myWork.getName());
-        assert w.getId()!=null;
-        assert w.getContributors()!=null;
-        assert w.getContributors().size()==2;
-        assert w.getContributors().contains(myContributor);
-        assert w.getContributors().contains(mySecondContributor);
-        for (Contributor contributor : w.getContributors()) {
-            assert !contributor.getArtist().equals(mySecondArtist);
+        contributors = Client.create(config).resource(HOSTURL+"/contributors?work="+w.getId()).type(MediaType.APPLICATION_JSON).get(new GenericType<Collection<ContributorEntity>>() {});
+        assert contributors.size()==2;
+        firstFound = false;
+        secondFound = false;
+        for (ContributorEntity contributor : contributors) {
+            assert contributor.getOwner()!=null;
+            assert contributor.getOwner().equals(w);
+            if(contributor.getArtist().equals(a)) {
+                firstFound = true;
+            }else if(contributor.getArtist().equals(a3)) {
+                secondFound = true;
+            }
         }
+        assert firstFound;
+        assert secondFound;
 
         Client.create(config).resource(HOSTURL+"/contributors/"+mySecondContributor.getId()).type(MediaType.APPLICATION_JSON).delete();
 
-        w = Client.create(config).resource(HOSTURL+"/works/"+w.getId()).accept(MediaType.APPLICATION_JSON).get(Work.class);
-        assert w!=null;
-        assert w.getName().equals(myWork.getName());
-        assert w.getId()!=null;
-        assert w.getContributors()!=null;
-        assert w.getContributors().size()==1;
-        assert w.getContributors().contains(myContributor);
+        contributors = Client.create(config).resource(HOSTURL+"/contributors?work="+w.getId()).type(MediaType.APPLICATION_JSON).get(new GenericType<Collection<ContributorEntity>>() {});
+        assert contributors.size()==1;
+        assert contributors.iterator().next().getArtist().equals(a);
 
         Client.create(config).resource(HOSTURL+"/works/"+w.getId()).accept(MediaType.APPLICATION_JSON).delete();
         Client.create(config).resource(HOSTURL+"/artists/"+a.getId()).accept(MediaType.APPLICATION_JSON).delete();
         Client.create(config).resource(HOSTURL+"/artists/"+a2.getId()).accept(MediaType.APPLICATION_JSON).delete();
         Client.create(config).resource(HOSTURL+"/artists/"+a3.getId()).accept(MediaType.APPLICATION_JSON).delete();
 
+        contributors = Client.create(config).resource(HOSTURL+"/contributors?work="+w.getId()).type(MediaType.APPLICATION_JSON).get(new GenericType<Collection<ContributorEntity>>() {});
+        assert contributors.size()==0;
+
         Collection<Work> works = Client.create(config).resource(HOSTURL+"/works").accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<Work>>() {});
         assert works !=null;
         boolean found = false;
         for (Work work : works) {
             if(work.getId().equals(w.getId())) {
-                found = true;
-            }
-        }
-        assert !found;
-    }
-
-    @Test
-    public void testRecordingContributors() throws Exception {
-        Artist myArtist = new ArtistEntity();
-        myArtist.setName("Some Artist");
-        Artist a = Client.create(config).resource(HOSTURL+"/artists").type(MediaType.APPLICATION_JSON).post(Artist.class,myArtist);
-        assert a!=null;
-        assert a.getName().equals(myArtist.getName());
-        assert a.getId()!=null;
-
-
-        Work myWork = new WorkEntity();
-        myWork.setName("Violin Concert");
-        Work w = Client.create(config).resource(HOSTURL+"/works").type(MediaType.APPLICATION_JSON).post(Work.class,myWork);
-
-        assert w!=null;
-        assert w.getName().equals(myWork.getName());
-        assert w.getId()!=null;
-
-        Recording myRecording = new RecordingEntity();
-        myRecording.getWorks().add(w);
-        myRecording.getContributors().add(new ContributorEntity(myArtist,Contributor.PERFORMER));
-        Recording r = Client.create(config).resource(HOSTURL+"/recordings").type(MediaType.APPLICATION_JSON).post(Recording.class,myRecording);
-
-        assert r!=null;
-        assert r.getId()!=null;
-        assert r.getWorks().iterator().next().getName().equals(myWork.getName());
-        assert r.getContributors()!=null;
-        assert r.getContributors().size()==1;
-        assert r.getContributors().iterator().next().getType().equals(Contributor.PERFORMER);
-        assert r.getContributors().iterator().next().getArtist().getName().equals(myArtist.getName());
-
-        r = Client.create(config).resource(HOSTURL+"/recordings/"+r.getId()).accept(MediaType.APPLICATION_JSON).get(Recording.class);
-
-        assert r!=null;
-        assert r.getWorks().iterator().next().getName().equals(myWork.getName());
-        assert r.getId()!=null;
-        assert r.getContributors()!=null;
-        assert r.getContributors().size()==1;
-        assert r.getContributors().iterator().next().getType().equals(Contributor.PERFORMER);
-        assert r.getContributors().iterator().next().getArtist().getName().equals(myArtist.getName());
-
-        r.getContributors().add(new ContributorEntity(a,Contributor.CONDUCTOR));
-        r = Client.create(config).resource(HOSTURL+"/recordings/"+r.getId()).type(MediaType.APPLICATION_JSON).put(Recording.class, r);
-        assert r!=null;
-        assert r.getId()!=null;
-        assert r.getWorks().iterator().next().getName().equals(myWork.getName());
-        assert r.getContributors()!=null;
-        assert r.getContributors().size()==2;
-        boolean coundPerformer = false;
-        boolean foundConductor = false;
-        for (Contributor contributor : r.getContributors()) {
-            assert contributor.getArtist().getName().equals(myArtist.getName());
-            if(contributor.getType().equals(Contributor.PERFORMER)) {
-                coundPerformer = true;
-            }else if(contributor.getType().equals(Contributor.CONDUCTOR)) {
-                foundConductor = true;
-            }
-        }
-        assert coundPerformer;
-        assert foundConductor;
-
-        Client.create(config).resource(HOSTURL+"/recordings/"+r.getId()).accept(MediaType.APPLICATION_JSON).delete();
-        Client.create(config).resource(HOSTURL+"/works/"+w.getId()).accept(MediaType.APPLICATION_JSON).delete();
-        Client.create(config).resource(HOSTURL+"/artists/"+a.getId()).accept(MediaType.APPLICATION_JSON).delete();
-
-        Collection<Recording> recordings = Client.create(config).resource(HOSTURL+"/recordings").accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<Recording>>() {});
-        assert recordings !=null;
-        boolean found = false;
-        for (Recording recording : recordings) {
-            if(recording.getId().equals(r.getId())) {
                 found = true;
             }
         }
@@ -1114,7 +947,7 @@ public class FacadeTest extends BaseTestCase {
         assert r.getContributors().size()==0;
 
         ContributorEntity myContributor = new ContributorEntity(a,Contributor.PERFORMER);
-        myContributor.setOwner(SMDIdentityReferenceEntity.forEntity(r));
+        myContributor.setOwner(r);
         Contributor c = Client.create(config).resource(HOSTURL+"/contributors").type(MediaType.APPLICATION_JSON).post(Contributor.class,myContributor);
         assert c!=null;
         assert c.getId()!=null;
@@ -1138,10 +971,19 @@ public class FacadeTest extends BaseTestCase {
         assert r!=null;
         assert r.getWorks().iterator().next().getName().equals(myWork.getName());
         assert r.getId()!=null;
-        assert r.getContributors()!=null;
-        assert r.getContributors().size()==1;
-        assert r.getContributors().contains(myContributor);
-        assert r.getContributors().iterator().next().getType().equals(Contributor.PERFORMER);
+        assert r.getContributors()==null || r.getContributors().size()==0;
+
+        Collection<ContributorEntity> contributors = Client.create(config).resource(HOSTURL+"/contributors?recording="+r.getId()).type(MediaType.APPLICATION_JSON).get(new GenericType<Collection<ContributorEntity>>() {});
+        assert contributors.size()==1;
+        assert contributors.iterator().next().getOwner()!=null;
+        assert contributors.iterator().next().getOwner().equals(r);
+        assert contributors.iterator().next().getType().equals(Contributor.PERFORMER);
+
+        contributors = Client.create(config).resource(HOSTURL+"/contributors?owner="+r.getId()).type(MediaType.APPLICATION_JSON).get(new GenericType<Collection<ContributorEntity>>() {});
+        assert contributors.size()==1;
+        assert contributors.iterator().next().getOwner()!=null;
+        assert contributors.iterator().next().getOwner().equals(r);
+        assert contributors.iterator().next().getType().equals(Contributor.PERFORMER);
 
         c.setType(Contributor.CONDUCTOR);
         c = Client.create(config).resource(HOSTURL+"/contributors/"+c.getId()).type(MediaType.APPLICATION_JSON).put(Contributor.class, c);
@@ -1153,17 +995,14 @@ public class FacadeTest extends BaseTestCase {
         assert ((ContributorEntity)c).getOwner()!=null;
         assert ((ContributorEntity)c).getOwner().getId().equals(r.getId());
 
-        r = Client.create(config).resource(HOSTURL+"/recordings/"+r.getId()).accept(MediaType.APPLICATION_JSON).get(Recording.class);
-        assert r!=null;
-        assert r.getWorks().iterator().next().getName().equals(myWork.getName());
-        assert r.getId()!=null;
-        assert r.getContributors()!=null;
-        assert r.getContributors().size()==1;
-        assert r.getContributors().contains(myContributor);
-        assert r.getContributors().iterator().next().getType().equals(Contributor.CONDUCTOR);
+        contributors = Client.create(config).resource(HOSTURL+"/contributors?recording="+r.getId()).type(MediaType.APPLICATION_JSON).get(new GenericType<Collection<ContributorEntity>>() {});
+        assert contributors.size()==1;
+        assert contributors.iterator().next().getOwner()!=null;
+        assert contributors.iterator().next().getOwner().equals(r);
+        assert contributors.iterator().next().getType().equals(Contributor.CONDUCTOR);
 
         ContributorEntity mySecondContributor = new ContributorEntity(a, Contributor.PERFORMER);
-        mySecondContributor.setOwner(SMDIdentityReferenceEntity.forEntity(r));
+        mySecondContributor.setOwner(r);
         c = Client.create(config).resource(HOSTURL+"/contributors").type(MediaType.APPLICATION_JSON).post(Contributor.class,mySecondContributor);
         assert c!=null;
         assert c.getId()!=null;
@@ -1182,113 +1021,43 @@ public class FacadeTest extends BaseTestCase {
         assert ((ContributorEntity)c).getOwner()!=null;
         assert ((ContributorEntity)c).getOwner().getId().equals(r.getId());
 
-        r = Client.create(config).resource(HOSTURL+"/recordings/"+r.getId()).accept(MediaType.APPLICATION_JSON).get(Recording.class);
-        assert r!=null;
-        assert r.getWorks().iterator().next().getName().equals(myWork.getName());
-        assert r.getId()!=null;
-        assert r.getContributors()!=null;
-        assert r.getContributors().size()==2;
-        assert r.getContributors().contains(myContributor);
-        assert r.getContributors().contains(mySecondContributor);
-        for (Contributor contributor : r.getContributors()) {
+        contributors = Client.create(config).resource(HOSTURL+"/contributors?recording="+r.getId()).type(MediaType.APPLICATION_JSON).get(new GenericType<Collection<ContributorEntity>>() {});
+        assert contributors.size()==2;
+        boolean firstFound = false;
+        boolean secondFound = false;
+        for (ContributorEntity contributor : contributors) {
+            assert contributor.getOwner()!=null;
+            assert contributor.getOwner().equals(r);
             assert contributor.getArtist().equals(a);
+            if(contributor.getType().equals(Contributor.PERFORMER)) {
+                firstFound = true;
+            }else if(contributor.getType().equals(Contributor.CONDUCTOR)) {
+                secondFound = true;
+            }
         }
+        assert firstFound;
+        assert secondFound;
 
         Client.create(config).resource(HOSTURL+"/contributors/"+mySecondContributor.getId()).type(MediaType.APPLICATION_JSON).delete();
 
-        r = Client.create(config).resource(HOSTURL+"/recordings/"+r.getId()).accept(MediaType.APPLICATION_JSON).get(Recording.class);
-        assert r!=null;
-        assert r.getWorks().iterator().next().getName().equals(myWork.getName());
-        assert r.getId()!=null;
-        assert r.getContributors()!=null;
-        assert r.getContributors().size()==1;
-        assert r.getContributors().contains(myContributor);
-        assert r.getContributors().iterator().next().getType().equals(Contributor.CONDUCTOR);
+        contributors = Client.create(config).resource(HOSTURL+"/contributors?recording="+r.getId()).type(MediaType.APPLICATION_JSON).get(new GenericType<Collection<ContributorEntity>>() {});
+        assert contributors.size()==1;
+        assert contributors.iterator().next().getOwner()!=null;
+        assert contributors.iterator().next().getOwner().equals(r);
+        assert contributors.iterator().next().getType().equals(Contributor.CONDUCTOR);
 
         Client.create(config).resource(HOSTURL+"/recordings/"+r.getId()).accept(MediaType.APPLICATION_JSON).delete();
         Client.create(config).resource(HOSTURL+"/works/"+w.getId()).accept(MediaType.APPLICATION_JSON).delete();
         Client.create(config).resource(HOSTURL+"/artists/"+a.getId()).accept(MediaType.APPLICATION_JSON).delete();
+
+        contributors = Client.create(config).resource(HOSTURL+"/contributors?recording="+r.getId()).type(MediaType.APPLICATION_JSON).get(new GenericType<Collection<ContributorEntity>>() {});
+        assert contributors.size()==0;
 
         Collection<Recording> recordings = Client.create(config).resource(HOSTURL+"/recordings").accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<Recording>>() {});
         assert recordings !=null;
         boolean found = false;
         for (Recording recording : recordings) {
             if(recording.getId().equals(r.getId())) {
-                found = true;
-            }
-        }
-        assert !found;
-    }
-
-    @Test
-    public void testRecordingSessionContributors() throws Exception {
-        Artist myArtist = new ArtistEntity();
-        myArtist.setName("Some Artist");
-        Artist a = Client.create(config).resource(HOSTURL+"/artists").type(MediaType.APPLICATION_JSON).post(Artist.class,myArtist);
-        assert a!=null;
-        assert a.getName().equals(myArtist.getName());
-        assert a.getId()!=null;
-
-
-        Work myWork = new WorkEntity();
-        myWork.setName("Violin Concert");
-        Work w = Client.create(config).resource(HOSTURL+"/works").type(MediaType.APPLICATION_JSON).post(Work.class,myWork);
-
-        assert w!=null;
-        assert w.getName().equals(myWork.getName());
-        assert w.getId()!=null;
-
-        Recording myRecording = new RecordingEntity();
-        myRecording.getWorks().add(w);
-        Recording r = Client.create(config).resource(HOSTURL+"/recordings").type(MediaType.APPLICATION_JSON).post(Recording.class,myRecording);
-        assert r!=null;
-        assert r.getWorks().iterator().next().getName().equals(myWork.getName());
-        assert r.getId()!=null;
-
-        RecordingSession myRecordingSession = new RecordingSessionEntity();
-        myRecordingSession.getRecordings().add(r);
-        myRecordingSession.getContributors().add(new ContributorEntity(myArtist,Contributor.PERFORMER));
-        RecordingSession rs = Client.create(config).resource(HOSTURL+"/recordingsessions").type(MediaType.APPLICATION_JSON).post(RecordingSession.class,myRecordingSession);
-
-        assert rs!=null;
-        assert rs.getId()!=null;
-        assert rs.getRecordings().size()==1;
-        assert rs.getRecordings().iterator().next().getWorks().iterator().next().getName().equals(myWork.getName());
-        assert rs.getContributors()!=null;
-        assert rs.getContributors().size()==1;
-        assert rs.getContributors().iterator().next().getType().equals(Contributor.PERFORMER);
-        assert rs.getContributors().iterator().next().getArtist().getName().equals(myArtist.getName());
-
-        rs = Client.create(config).resource(HOSTURL+"/recordingsessions/"+rs.getId()).accept(MediaType.APPLICATION_JSON).get(RecordingSession.class);
-
-        assert rs!=null;
-        assert rs.getRecordings().iterator().next().getWorks().iterator().next().getName().equals(myWork.getName());
-        assert rs.getId()!=null;
-        assert rs.getContributors()!=null;
-        assert rs.getContributors().size()==1;
-        assert rs.getContributors().iterator().next().getType().equals(Contributor.PERFORMER);
-        assert rs.getContributors().iterator().next().getArtist().getName().equals(myArtist.getName());
-
-        rs.getContributors().iterator().next().setType(Contributor.CONDUCTOR);
-        rs = Client.create(config).resource(HOSTURL+"/recordingsessions/"+rs.getId()).type(MediaType.APPLICATION_JSON).put(RecordingSession.class, rs);
-        assert rs!=null;
-        assert rs.getId()!=null;
-        assert rs.getRecordings().iterator().next().getWorks().iterator().next().getName().equals(myWork.getName());
-        assert rs.getContributors()!=null;
-        assert rs.getContributors().size()==1;
-        assert rs.getContributors().iterator().next().getType().equals(Contributor.CONDUCTOR);
-        assert rs.getContributors().iterator().next().getArtist().getName().equals(myArtist.getName());
-
-        Client.create(config).resource(HOSTURL+"/recordingsessions/"+rs.getId()).accept(MediaType.APPLICATION_JSON).delete();
-        Client.create(config).resource(HOSTURL+"/recordings/"+r.getId()).accept(MediaType.APPLICATION_JSON).delete();
-        Client.create(config).resource(HOSTURL+"/works/"+w.getId()).accept(MediaType.APPLICATION_JSON).delete();
-        Client.create(config).resource(HOSTURL+"/artists/"+a.getId()).accept(MediaType.APPLICATION_JSON).delete();
-
-        Collection<RecordingSession> recordingsessions = Client.create(config).resource(HOSTURL+"/recordingsessions").accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<RecordingSession>>() {});
-        assert recordingsessions !=null;
-        boolean found = false;
-        for (RecordingSession recordingSession : recordingsessions) {
-            if(recordingSession.getId().equals(rs.getId())) {
                 found = true;
             }
         }
@@ -1340,7 +1109,7 @@ public class FacadeTest extends BaseTestCase {
         assert rs.getContributors().size()==0;
 
         ContributorEntity myContributor = new ContributorEntity(a,Contributor.PERFORMER);
-        myContributor.setOwner(SMDIdentityReferenceEntity.forEntity(rs));
+        myContributor.setOwner(rs);
         Contributor c = Client.create(config).resource(HOSTURL+"/contributors").type(MediaType.APPLICATION_JSON).post(Contributor.class,myContributor);
         assert c!=null;
         assert c.getId()!=null;
@@ -1364,13 +1133,22 @@ public class FacadeTest extends BaseTestCase {
         assert rs!=null;
         assert rs.getRecordings().iterator().next().getWorks().iterator().next().getName().equals(myWork.getName());
         assert rs.getId()!=null;
-        assert rs.getContributors()!=null;
-        assert rs.getContributors().size()==1;
-        assert rs.getContributors().iterator().next().getType().equals(Contributor.PERFORMER);
-        assert rs.getContributors().iterator().next().getArtist().getName().equals(myArtist.getName());
+        assert rs.getContributors()==null || rs.getContributors().size()==0;
+
+        Collection<ContributorEntity> contributors = Client.create(config).resource(HOSTURL+"/contributors?recordingSession="+rs.getId()).type(MediaType.APPLICATION_JSON).get(new GenericType<Collection<ContributorEntity>>() {});
+        assert contributors.size()==1;
+        assert contributors.iterator().next().getOwner()!=null;
+        assert contributors.iterator().next().getOwner().equals(rs);
+        assert contributors.iterator().next().getType().equals(Contributor.PERFORMER);
+
+        contributors = Client.create(config).resource(HOSTURL+"/contributors?owner="+rs.getId()).type(MediaType.APPLICATION_JSON).get(new GenericType<Collection<ContributorEntity>>() {});
+        assert contributors.size()==1;
+        assert contributors.iterator().next().getOwner()!=null;
+        assert contributors.iterator().next().getOwner().equals(rs);
+        assert contributors.iterator().next().getType().equals(Contributor.PERFORMER);
 
         ContributorEntity mySecondContributor = new ContributorEntity(a, Contributor.COMPOSER);
-        mySecondContributor.setOwner(SMDIdentityReferenceEntity.forEntity(rs));
+        mySecondContributor.setOwner(rs);
         c = Client.create(config).resource(HOSTURL+"/contributors").type(MediaType.APPLICATION_JSON).post(Contributor.class,mySecondContributor);
         assert c!=null;
         assert c.getId()!=null;
@@ -1389,15 +1167,22 @@ public class FacadeTest extends BaseTestCase {
         assert ((ContributorEntity)c).getOwner()!=null;
         assert ((ContributorEntity)c).getOwner().getId().equals(rs.getId());
 
-        rs = Client.create(config).resource(HOSTURL+"/recordingsessions/"+rs.getId()).accept(MediaType.APPLICATION_JSON).get(RecordingSession.class);
-
-        assert rs!=null;
-        assert rs.getRecordings().iterator().next().getWorks().iterator().next().getName().equals(myWork.getName());
-        assert rs.getId()!=null;
-        assert rs.getContributors()!=null;
-        assert rs.getContributors().size()==2;
-        assert rs.getContributors().contains(myContributor);
-        assert rs.getContributors().contains(mySecondContributor);
+        contributors = Client.create(config).resource(HOSTURL+"/contributors?recordingSession="+rs.getId()).type(MediaType.APPLICATION_JSON).get(new GenericType<Collection<ContributorEntity>>() {});
+        assert contributors.size()==2;
+        boolean firstFound = false;
+        boolean secondFound = false;
+        for (ContributorEntity contributor : contributors) {
+            assert contributor.getOwner()!=null;
+            assert contributor.getOwner().equals(rs);
+            assert contributor.getArtist().equals(a);
+            if(contributor.getType().equals(Contributor.PERFORMER)) {
+                firstFound = true;
+            }else if(contributor.getType().equals(Contributor.COMPOSER)) {
+                secondFound = true;
+            }
+        }
+        assert firstFound;
+        assert secondFound;
 
         mySecondContributor.setType(Contributor.CONDUCTOR);
         c = Client.create(config).resource(HOSTURL+"/contributors/"+mySecondContributor.getId()).type(MediaType.APPLICATION_JSON).put(Contributor.class,mySecondContributor);
@@ -1418,31 +1203,38 @@ public class FacadeTest extends BaseTestCase {
         assert ((ContributorEntity)c).getOwner()!=null;
         assert ((ContributorEntity)c).getOwner().getId().equals(rs.getId());
 
-        rs = Client.create(config).resource(HOSTURL+"/recordingsessions/"+rs.getId()).accept(MediaType.APPLICATION_JSON).get(RecordingSession.class);
-
-        assert rs!=null;
-        assert rs.getRecordings().iterator().next().getWorks().iterator().next().getName().equals(myWork.getName());
-        assert rs.getId()!=null;
-        assert rs.getContributors()!=null;
-        assert rs.getContributors().size()==2;
-        assert rs.getContributors().contains(myContributor);
-        assert rs.getContributors().contains(mySecondContributor);
+        contributors = Client.create(config).resource(HOSTURL+"/contributors?recordingSession="+rs.getId()).type(MediaType.APPLICATION_JSON).get(new GenericType<Collection<ContributorEntity>>() {});
+        assert contributors.size()==2;
+        firstFound = false;
+        secondFound = false;
+        for (ContributorEntity contributor : contributors) {
+            assert contributor.getOwner()!=null;
+            assert contributor.getOwner().equals(rs);
+            assert contributor.getArtist().equals(a);
+            if(contributor.getType().equals(Contributor.PERFORMER)) {
+                firstFound = true;
+            }else if(contributor.getType().equals(Contributor.CONDUCTOR)) {
+                secondFound = true;
+            }
+        }
+        assert firstFound;
+        assert secondFound;
 
         Client.create(config).resource(HOSTURL+"/contributors/"+mySecondContributor.getId()).type(MediaType.APPLICATION_JSON).delete();
 
-        rs = Client.create(config).resource(HOSTURL+"/recordingsessions/"+rs.getId()).accept(MediaType.APPLICATION_JSON).get(RecordingSession.class);
-        assert rs!=null;
-        assert rs.getId()!=null;
-        assert rs.getRecordings().iterator().next().getWorks().iterator().next().getName().equals(myWork.getName());
-        assert rs.getContributors()!=null;
-        assert rs.getContributors().size()==1;
-        assert rs.getContributors().iterator().next().getType().equals(Contributor.PERFORMER);
-        assert rs.getContributors().iterator().next().getArtist().getName().equals(myArtist.getName());
+        contributors = Client.create(config).resource(HOSTURL+"/contributors?recordingSession="+rs.getId()).type(MediaType.APPLICATION_JSON).get(new GenericType<Collection<ContributorEntity>>() {});
+        assert contributors.size()==1;
+        assert contributors.iterator().next().getOwner()!=null;
+        assert contributors.iterator().next().getOwner().equals(rs);
+        assert contributors.iterator().next().getType().equals(Contributor.PERFORMER);
 
         Client.create(config).resource(HOSTURL+"/recordingsessions/"+rs.getId()).accept(MediaType.APPLICATION_JSON).delete();
         Client.create(config).resource(HOSTURL+"/recordings/"+r.getId()).accept(MediaType.APPLICATION_JSON).delete();
         Client.create(config).resource(HOSTURL+"/works/"+w.getId()).accept(MediaType.APPLICATION_JSON).delete();
         Client.create(config).resource(HOSTURL+"/artists/"+a.getId()).accept(MediaType.APPLICATION_JSON).delete();
+
+        contributors = Client.create(config).resource(HOSTURL+"/contributors?recordingSession="+rs.getId()).type(MediaType.APPLICATION_JSON).get(new GenericType<Collection<ContributorEntity>>() {});
+        assert contributors.size()==0;
 
         Collection<RecordingSession> recordingsessions = Client.create(config).resource(HOSTURL+"/recordingsessions").accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<RecordingSession>>() {});
         assert recordingsessions !=null;
