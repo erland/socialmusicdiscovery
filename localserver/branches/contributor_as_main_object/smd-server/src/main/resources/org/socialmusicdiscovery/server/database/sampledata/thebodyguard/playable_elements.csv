@@ -1,0 +1,9 @@
+id,track_id,smdID,format,uri,last_updated,last_updated_by
+d2db142c-07ef-46e5-99eb-e1aae5268416,40f3e03b-5012-46ce-a366-1e86cdb0acbe,134c967b7bf257fa94e7f381cd5ce5e8-0000000,mp3,spotify://track:4eHbdreAnSOrDDsFfc4Fpm,2010-10-01,testdataloader
+ec4a2786-213c-443b-a184-63e553fead14,a6571331-777e-4b9a-b686-cdae54c37d74,134c967b7bf257fa94e7f381cd5ce5e8-0000100,mp3,spotify://track:7lARcL3Gu0wKcPcQ3t9xiF,2010-10-01,testdataloader
+2438e4da-3329-4e0a-9188-7c5c32192840,0a609dbe-b0bf-4b16-b633-9dc8fb1ff94f,134c967b7bf257fa94e7f381cd5ce5e8-0000200,mp3,spotify://track:5A5Ej8R3QY9xb98dmVowmL,2010-10-01,testdataloader
+c340055f-c24d-46bf-ad8f-4140466f5ef0,27c85168-6655-483d-b007-eb6101ddb292,134c967b7bf257fa94e7f381cd5ce5e8-0000300,mp3,spotify://track:7pFzrCFu9rDXwpACjPM18q,2010-10-01,testdataloader
+6f8eca2b-2862-4966-9b5f-b19b0ed32ea8,40f3e03b-5012-46ce-a366-1e86cdb0acbe,134c967b7bf257fa94e7f381cd5ce5e8-0000000,flc,file:///music/TheBodyguard/track1.flac,2010-10-01,testdataloader
+b021b479-637e-4ae4-a5a0-84216bba77c5,a6571331-777e-4b9a-b686-cdae54c37d74,134c967b7bf257fa94e7f381cd5ce5e8-0000100,flc,file:///music/TheBodyguard/track5.flac,2010-10-01,testdataloader
+1a1adfee-0f91-4367-89a9-98c64914b857,0a609dbe-b0bf-4b16-b633-9dc8fb1ff94f,134c967b7bf257fa94e7f381cd5ce5e8-0000200,flc,file:///music/TheBodyguard/track9.flac,2010-10-01,testdataloader
+26d7be24-0223-4afa-9ca3-7e947302c8a4,27c85168-6655-483d-b007-eb6101ddb292,134c967b7bf257fa94e7f381cd5ce5e8-0000300,flc,file:///music/TheBodyguard/track13.flac,2010-10-01,testdataloader

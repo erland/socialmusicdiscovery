@@ -1,0 +1,11 @@
+id,track_id,smdID,format,uri,last_updated,last_updated_by
+6a565273-8f12-490c-b373-80f13cad3807,2f577db8-a469-4034-a8d0-f06eb68dfe49,927b1a3c1e1f78278dc1044ab0d3ce6d-00000000,flac,file:///music/TheTurnOfAFriendlyCard/track1.flac,2010-10-01,testdataloader
+fb39a4c9-8b90-4ebb-aa82-9103a11bd0f1,86c670da-7e0f-4682-be58-48bcb15d393b,927b1a3c1e1f78278dc1044ab0d3ce6d-00001000,flac,file:///music/TheTurnOfAFriendlyCard/track2.flac,2010-10-01,testdataloader
+62e3857e-ec42-40e9-8114-7533ec2efdeb,07da3017-21e4-43a4-854d-4329413a8b50,927b1a3c1e1f78278dc1044ab0d3ce6d-00002000,flac,file:///music/TheTurnOfAFriendlyCard/track3.flac,2010-10-01,testdataloader
+c4b3feb6-a68a-443f-8cd3-5125358b1a5c,374ea435-c932-4712-97ff-f30aa2e7a754,927b1a3c1e1f78278dc1044ab0d3ce6d-00003000,flac,file:///music/TheTurnOfAFriendlyCard/track4.flac,2010-10-01,testdataloader
+4dc36699-77c7-44e0-acd1-0ee0232670fb,0d563588-20f2-47e4-bb99-432c11597b93,927b1a3c1e1f78278dc1044ab0d3ce6d-00004000,flac,file:///music/TheTurnOfAFriendlyCard/track5.flac,2010-10-01,testdataloader
+fd46a352-e567-42be-8c00-ad572ca7f32f,f36a9464-884a-40bb-a951-111d7f333e51,927b1a3c1e1f78278dc1044ab0d3ce6d-00005000,flac,file:///music/TheTurnOfAFriendlyCard/track6.flac,2010-10-01,testdataloader
+bb02e7ea-205d-4b44-8269-5585fb273c83,45e2b320-8b15-448f-921a-7e8968c08fa5,927b1a3c1e1f78278dc1044ab0d3ce6d-00006000,flac,file:///music/TheTurnOfAFriendlyCard/track7.flac,2010-10-01,testdataloader
+916a5ee4-deeb-44d1-a752-fdff48a9c7d4,1f97fe7f-dfb1-4bb3-a58d-1d83520bca39,927b1a3c1e1f78278dc1044ab0d3ce6d-00007000,flac,file:///music/TheTurnOfAFriendlyCard/track8.flac,2010-10-01,testdataloader
+153bf36b-8e76-4a2d-8c3f-0d4130aa77d9,a0d97017-d9aa-42b4-b684-bab3289d6da2,927b1a3c1e1f78278dc1044ab0d3ce6d-00008000,flac,file:///music/TheTurnOfAFriendlyCard/track9.flac,2010-10-01,testdataloader
+764ee578-2696-4ae1-984c-bebc070da291,8733b80f-4e99-46cc-a938-c88fb6ef0dd2,927b1a3c1e1f78278dc1044ab0d3ce6d-00009000,flac,file:///music/TheTurnOfAFriendlyCard/track10.flac,2010-10-01,testdataloader

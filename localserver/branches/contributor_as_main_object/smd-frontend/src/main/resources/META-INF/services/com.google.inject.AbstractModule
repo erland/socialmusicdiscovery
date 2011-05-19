@@ -1,0 +1,3 @@
+org.socialmusicdiscovery.frontend.injections.PropertiesModule
+org.socialmusicdiscovery.frontend.injections.ClientConfigModule
+

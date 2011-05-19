@@ -1,0 +1,24 @@
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
+  <id>client-sources</id>
+  <formats>
+    <format>jar</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <fileSets>
+      <fileSet>
+          <outputDirectory>/</outputDirectory>
+          <directory>${project.build.sourceDirectory}</directory>
+          <includes>
+              <include>org/socialmusicdiscovery/server/support/**/*.java</include>
+              <include>org/socialmusicdiscovery/server/business/model/**/*.java</include>
+              <include>org/socialmusicdiscovery/server/api/management/mediaimport/MediaImportStatus*.java</include>
+              <include>org/socialmusicdiscovery/server/api/OperationStatus.java</include>
+          </includes>
+          <excludes>
+              <exclude>org/socialmusicdiscovery/server/business/model/search/**</exclude>
+          </excludes>
+      </fileSet>
+  </fileSets>
+</assembly>

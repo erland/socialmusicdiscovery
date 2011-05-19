@@ -1,0 +1,34 @@
+<html xmlns="http://www.w3.org/1999/xhtml"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>[% "PLUGIN_SOCIALMUSICDISCOVERY" | string %]</title><style type="text/css">
+                    * {
+                        padding: 0px;
+                        margin: 0px;
+                    }
+
+                    html, body {
+                        height: 100%;
+                        overflow: hidden;
+                    }
+                </style>
+</head><body><script type="text/javascript" src="http://java.com/js/deployJava.js"></script><script type="text/javascript">
+    var attributes = {
+        code:"org.apache.pivot.wtk.BrowserApplicationContext$HostApplet",
+        width:"100%",
+        height:"100%"
+    };
+    var libraries = [];
+    libraries.push("html/[% pluginSocialMusicDiscoverySmdFrontendJar %]");
+
+    attributes.archive = libraries.join(",");
+
+    var parameters = {
+        codebase_lookup:false,
+        startup_properties:"smd-server.host=[% host.match('([^:]*)').0 %]",
+        application_class_name:'org.socialmusicdiscovery.frontend.SMDApplication'
+    };
+    var javaArguments = ["-Dsun.awt.noerasebackground=true",
+        "-Dsun.awt.erasebackgroundonresize=true" ];
+
+    parameters.java_arguments = javaArguments.join(" ");
+
+    deployJava.runApplet(attributes, parameters, "1.6");
+</script></body></html>

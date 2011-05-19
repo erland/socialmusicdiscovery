@@ -1,0 +1,6 @@
+{
+    windowTitle: "Social Music Discovery",
+    crudSearchButton: "Manage Library",
+    listViewButton: "Browse Library (list view)",
+    preferencesButton: "Change configuration"
+}

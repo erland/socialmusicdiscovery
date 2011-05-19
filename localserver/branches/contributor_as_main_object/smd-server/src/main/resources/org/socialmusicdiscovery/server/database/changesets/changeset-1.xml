@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    <changeSet author="erland" id="1">
+
+        <createTable tableName="artists">
+            <column defaultValue="" name="id" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column defaultValue="" name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="person_id" type="VARCHAR(36)"/>
+            <column name="alias_artist_id" type="VARCHAR(36)"/>
+        </createTable>
+
+        <createTable tableName="classification_references">
+            <column defaultValue="" name="classification_id" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="reference_id" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="classifications">
+            <column defaultValue="" name="id" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column defaultValue="" name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="parent_id" type="VARCHAR(36)"/>
+        </createTable>
+
+        <createTable tableName="contributors">
+            <column defaultValue="" name="id" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column defaultValue="" name="type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="artist_id" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="work_id" type="VARCHAR(36)"/>
+            <column name="session_id" type="VARCHAR(36)"/>
+            <column name="recording_id" type="VARCHAR(36)"/>
+            <column name="release_id" type="VARCHAR(36)"/>
+        </createTable>
+
+        <createTable tableName="credits">
+            <column defaultValue="" name="artist_person_id" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="release_recording_work_id" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="global_identities">
+            <column defaultValue="" name="id" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column defaultValue="" name="entityid" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="source" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="uri" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="labels">
+            <column defaultValue="" name="id" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column defaultValue="" name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="mediums">
+            <column defaultValue="" name="id" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="number" type="INT"/>
+            <column defaultValue="" name="release_id" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="persons">
+            <column defaultValue="" name="id" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column defaultValue="" name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="playable_elements">
+            <column defaultValue="" name="id" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="bitrate" type="INT"/>
+            <column defaultValue="" name="format" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="smdID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="uri" type="VARCHAR(1024)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="track_id" type="VARCHAR(36)"/>
+        </createTable>
+
+        <createTable tableName="recording_sessions">
+            <column defaultValue="" name="id" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="date" type="DATETIME"/>
+        </createTable>
+
+        <createTable tableName="recordings">
+            <column defaultValue="" name="id" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="date" type="DATETIME"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="mixof_id" type="VARCHAR(36)"/>
+            <column defaultValue="" name="work_id" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="session_id" type="VARCHAR(36)"/>
+        </createTable>
+
+        <createTable tableName="relations">
+            <column defaultValue="" name="from_id" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="to_id" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="release_recording_sessions">
+            <column defaultValue="" name="release_id" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="session_id" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="release_series">
+            <column defaultValue="" name="serie_id" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="release_id" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="releases">
+            <column defaultValue="" name="id" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="date" type="DATETIME"/>
+            <column defaultValue="" name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="label_id" type="VARCHAR(36)"/>
+        </createTable>
+
+        <createTable tableName="series">
+            <column defaultValue="" name="id" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column defaultValue="" name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="smdentity_references">
+            <column defaultValue="" name="id" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column defaultValue="" name="type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="tracks">
+            <column defaultValue="" name="id" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="number" type="INT"/>
+            <column name="recording_id" type="VARCHAR(36)"/>
+            <column name="medium_id" type="VARCHAR(36)"/>
+            <column name="release_id" type="VARCHAR(36)"/>
+        </createTable>
+
+        <createTable tableName="works">
+            <column defaultValue="" name="id" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="date" type="DATETIME"/>
+            <column defaultValue="" name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="parent_id" type="VARCHAR(36)"/>
+        </createTable>
+        <modifySql dbms="mysql">
+            <append value=" engine innodb"/>
+        </modifySql>
+    </changeSet>
+</databaseChangeLog>

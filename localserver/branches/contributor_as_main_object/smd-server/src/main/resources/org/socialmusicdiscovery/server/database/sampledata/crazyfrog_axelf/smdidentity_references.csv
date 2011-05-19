@@ -1,0 +1,7 @@
+id,type
+af1d3ce5-c955-40ac-8cd1-15c481a5c07e,org.socialmusicdiscovery.server.business.model.core.Artist
+3727b987-a33e-4f2f-ac8c-1ad1d6a998b9,org.socialmusicdiscovery.server.business.model.core.Contributor
+558591a2-28c9-47fe-a3f3-98e9510bc477,org.socialmusicdiscovery.server.business.model.core.Recording
+171b848e-d72f-4880-ba71-74e9b5191b81,org.socialmusicdiscovery.server.business.model.core.Track
+4e1dc04f-ed7f-4848-aedd-b1be6284b025,org.socialmusicdiscovery.server.business.model.core.Work
+40866ca1-0ef5-4a90-ab75-75d9c8f123f9,org.socialmusicdiscovery.server.business.model.core.PlayableElement

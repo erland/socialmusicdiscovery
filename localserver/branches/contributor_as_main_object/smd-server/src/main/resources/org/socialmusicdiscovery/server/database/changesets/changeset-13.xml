@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    <changeSet author="erland" id="13-create">
+        <createTable tableName="recording_works">
+            <column name="recording_id" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="work_id" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
+
+        <modifySql dbms="mysql">
+            <append value=" engine innodb"/>
+        </modifySql>
+    </changeSet>
+    <changeSet author="erland" id="13-constraints">
+        <addForeignKeyConstraint baseColumnNames="work_id" baseTableName="recording_works"
+                                 constraintName="FK_RECORDING_WORKS_WORK" deferrable="false" initiallyDeferred="false"
+                                 referencedColumnNames="id" referencedTableName="works"/>
+        <addForeignKeyConstraint baseColumnNames="recording_id" baseTableName="recording_works"
+                                 constraintName="FK_RECORDING_WORKS_RECORDING" deferrable="false" initiallyDeferred="false"
+                                 referencedColumnNames="id" referencedTableName="recordings"/>
+    </changeSet>
+    <changeSet author="erland" id="13-fill">
+        <sql>insert into recording_works (recording_id, work_id) select id,work_id from recordings</sql>
+    </changeSet>
+    <changeSet author="erland" id="13-drop">
+        <dropForeignKeyConstraint baseTableName="recordings" constraintName="FK_RECORDINGS_WORK"/>
+        <dropColumn tableName="recordings" columnName="work_id"/>
+    </changeSet>
+</databaseChangeLog>
