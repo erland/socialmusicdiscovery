@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    <include file="thebodyguard/thebodyguard.xml" relativeToChangelogFile="true"/>
+    <include file="beethoven_bernstein/beethoven_bernstein.xml" relativeToChangelogFile="true"/>
+    <include file="zappa_garageact/zappa_garageact.xml" relativeToChangelogFile="true"/>
+    <include file="crazyfrog_axelf/crazyfrog_axelf.xml" relativeToChangelogFile="true"/>
+    <include file="alanparson_theturnofafriendlycard/alanparson_theturnofafriendlycard.xml"
+             relativeToChangelogFile="true"/>
+</databaseChangeLog>

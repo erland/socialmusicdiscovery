@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    <changeSet author="erland" id="14-change-primary-keys">
+        <dropTable tableName="classification_references"/>
+        <createTable tableName="classification_references">
+            <column defaultValue="" name="id" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column defaultValue="" name="classification_id" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="reference_to_id" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <dropTable tableName="credits"/>
+        <createTable tableName="credits">
+            <column defaultValue="" name="id" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column defaultValue="" name="artist_person_id" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="release_recording_work_id" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <dropTable tableName="relations"/>
+        <createTable tableName="relations">
+            <column defaultValue="" name="id" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column defaultValue="" name="from_id" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="to_id" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="classification_references"
+                                 constraintName="FK_CLASSIFICATION_REFERENCES_ID" deferrable="false" initiallyDeferred="false"
+                                 referencedColumnNames="id" referencedTableName="smdidentity_references"/>
+        <addForeignKeyConstraint baseColumnNames="classification_id" baseTableName="classification_references"
+                                 constraintName="FK_CLASSIFICATION_REFERENCES_CLASSIFICATION" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="classifications"/>
+        <addForeignKeyConstraint baseColumnNames="reference_to_id" baseTableName="classification_references"
+                                 constraintName="FK_CLASSIFICATION_REFERENCES_REFERENCE" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="smdidentity_references"/>
+
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="credits"
+                                 constraintName="FK_CREDITS_ID" deferrable="false" initiallyDeferred="false"
+                                 referencedColumnNames="id" referencedTableName="smdidentity_references"/>
+        <addForeignKeyConstraint baseColumnNames="artist_person_id" baseTableName="credits"
+                                 constraintName="FK_CREDITS_ARTIST_PERSON_REFERENCE" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="smdidentity_references"/>
+        <addForeignKeyConstraint baseColumnNames="release_recording_work_id" baseTableName="credits"
+                                 constraintName="FK_CREDITS_RELEASE_RECORDING_WORK_REFERENCE" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="smdidentity_references"/>
+
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="relations"
+                                 constraintName="FK_RELATIONS_ID" deferrable="false" initiallyDeferred="false"
+                                 referencedColumnNames="id" referencedTableName="smdidentity_references"/>
+        <addForeignKeyConstraint baseColumnNames="from_id" baseTableName="relations"
+                                 constraintName="FK_RELATIONS_FROM_REFERENCE" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="smdidentity_references"/>
+        <addForeignKeyConstraint baseColumnNames="to_id" baseTableName="relations"
+                                 constraintName="FK_RELATIONS_TO_REFERENCE" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="smdidentity_references"/>
+    </changeSet>
+    <changeSet author="erland" id="14-addcolumns">
+        <addColumn tableName="releases">
+            <column name="last_updated" type="DATETIME"/>
+            <column name="last_updated_by" type="varchar(40)"/>
+        </addColumn>
+        <addColumn tableName="labels">
+            <column name="last_updated" type="DATETIME"/>
+            <column name="last_updated_by" type="varchar(40)"/>
+        </addColumn>
+        <addColumn tableName="recordings">
+            <column name="last_updated" type="DATETIME"/>
+            <column name="last_updated_by" type="varchar(40)"/>
+        </addColumn>
+        <addColumn tableName="mediums">
+            <column name="last_updated" type="DATETIME"/>
+            <column name="last_updated_by" type="varchar(40)"/>
+        </addColumn>
+        <addColumn tableName="tracks">
+            <column name="last_updated" type="DATETIME"/>
+            <column name="last_updated_by" type="varchar(40)"/>
+        </addColumn>
+        <addColumn tableName="playable_elements">
+            <column name="last_updated" type="DATETIME"/>
+            <column name="last_updated_by" type="varchar(40)"/>
+        </addColumn>
+        <addColumn tableName="recording_sessions">
+            <column name="last_updated" type="DATETIME"/>
+            <column name="last_updated_by" type="varchar(40)"/>
+        </addColumn>
+        <addColumn tableName="works">
+            <column name="last_updated" type="DATETIME"/>
+            <column name="last_updated_by" type="varchar(40)"/>
+        </addColumn>
+        <addColumn tableName="contributors">
+            <column name="last_updated" type="DATETIME"/>
+            <column name="last_updated_by" type="varchar(40)"/>
+        </addColumn>
+        <addColumn tableName="artists">
+            <column name="last_updated" type="DATETIME"/>
+            <column name="last_updated_by" type="varchar(40)"/>
+        </addColumn>
+        <addColumn tableName="persons">
+            <column name="last_updated" type="DATETIME"/>
+            <column name="last_updated_by" type="varchar(40)"/>
+        </addColumn>
+        <addColumn tableName="classifications">
+            <column name="last_updated" type="DATETIME"/>
+            <column name="last_updated_by" type="varchar(40)"/>
+        </addColumn>
+        <addColumn tableName="series">
+            <column name="last_updated" type="DATETIME"/>
+            <column name="last_updated_by" type="varchar(40)"/>
+        </addColumn>
+        <addColumn tableName="relations">
+            <column name="last_updated" type="DATETIME"/>
+            <column name="last_updated_by" type="varchar(40)"/>
+        </addColumn>
+        <addColumn tableName="credits">
+            <column name="last_updated" type="DATETIME"/>
+            <column name="last_updated_by" type="varchar(40)"/>
+        </addColumn>
+        <addColumn tableName="global_identities">
+            <column name="last_updated" type="DATETIME"/>
+            <column name="last_updated_by" type="varchar(40)"/>
+        </addColumn>
+        <addColumn tableName="classification_references">
+            <column name="last_updated" type="DATETIME"/>
+            <column name="last_updated_by" type="varchar(40)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="14-data" author="erland">
+        <update tableName="labels">
+            <column name="last_updated" valueDate="2010-01-01T00:00:00"/>
+            <column name="last_updated_by" value="squeezeboxserver"/>
+        </update>
+        <update tableName="releases">
+            <column name="last_updated" valueDate="2010-01-01T00:00:00"/>
+            <column name="last_updated_by" value="squeezeboxserver"/>
+        </update>
+        <update tableName="tracks">
+            <column name="last_updated" valueDate="2010-01-01T00:00:00"/>
+            <column name="last_updated_by" value="squeezeboxserver"/>
+        </update>
+        <update tableName="mediums">
+            <column name="last_updated" valueDate="2010-01-01T00:00:00"/>
+            <column name="last_updated_by" value="squeezeboxserver"/>
+        </update>
+        <update tableName="playable_elements">
+            <column name="last_updated" valueDate="2010-01-01T00:00:00"/>
+            <column name="last_updated_by" value="squeezeboxserver"/>
+        </update>
+        <update tableName="recordings">
+            <column name="last_updated" valueDate="2010-01-01T00:00:00"/>
+            <column name="last_updated_by" value="squeezeboxserver"/>
+        </update>
+        <update tableName="recording_sessions">
+            <column name="last_updated" valueDate="2010-01-01T00:00:00"/>
+            <column name="last_updated_by" value="squeezeboxserver"/>
+        </update>
+        <update tableName="works">
+            <column name="last_updated" valueDate="2010-01-01T00:00:00"/>
+            <column name="last_updated_by" value="squeezeboxserver"/>
+        </update>
+        <update tableName="contributors">
+            <column name="last_updated" valueDate="2010-01-01T00:00:00"/>
+            <column name="last_updated_by" value="squeezeboxserver"/>
+        </update>
+        <update tableName="artists">
+            <column name="last_updated" valueDate="2010-01-01T00:00:00"/>
+            <column name="last_updated_by" value="squeezeboxserver"/>
+        </update>
+        <update tableName="persons">
+            <column name="last_updated" valueDate="2010-01-01T00:00:00"/>
+            <column name="last_updated_by" value="squeezeboxserver"/>
+        </update>
+        <update tableName="classifications">
+            <column name="last_updated" valueDate="2010-01-01T00:00:00"/>
+            <column name="last_updated_by" value="squeezeboxserver"/>
+        </update>
+        <update tableName="credits">
+            <column name="last_updated" valueDate="2010-01-01T00:00:00"/>
+            <column name="last_updated_by" value="squeezeboxserver"/>
+        </update>
+        <update tableName="relations">
+            <column name="last_updated" valueDate="2010-01-01T00:00:00"/>
+            <column name="last_updated_by" value="squeezeboxserver"/>
+        </update>
+        <update tableName="global_identities">
+            <column name="last_updated" valueDate="2010-01-01T00:00:00"/>
+            <column name="last_updated_by" value="squeezeboxserver"/>
+        </update>
+        <update tableName="classification_references">
+            <column name="last_updated" valueDate="2010-01-01T00:00:00"/>
+            <column name="last_updated_by" value="squeezeboxserver"/>
+        </update>
+    </changeSet>
+    <changeSet id="14-constraints" author="erland">
+        <addNotNullConstraint
+                tableName="labels"
+                columnName="last_updated_by"
+                columnDataType="varchar(40)"/>
+        <addNotNullConstraint
+                tableName="releases"
+                columnName="last_updated_by"
+                columnDataType="varchar(40)"/>
+        <addNotNullConstraint
+                tableName="recordings"
+                columnName="last_updated_by"
+                columnDataType="varchar(40)"/>
+        <addNotNullConstraint
+                tableName="recording_sessions"
+                columnName="last_updated_by"
+                columnDataType="varchar(40)"/>
+        <addNotNullConstraint
+                tableName="playable_elements"
+                columnName="last_updated_by"
+                columnDataType="varchar(40)"/>
+        <addNotNullConstraint
+                tableName="tracks"
+                columnName="last_updated_by"
+                columnDataType="varchar(40)"/>
+        <addNotNullConstraint
+                tableName="mediums"
+                columnName="last_updated_by"
+                columnDataType="varchar(40)"/>
+        <addNotNullConstraint
+                tableName="recordings"
+                columnName="last_updated_by"
+                columnDataType="varchar(40)"/>
+        <addNotNullConstraint
+                tableName="works"
+                columnName="last_updated_by"
+                columnDataType="varchar(40)"/>
+        <addNotNullConstraint
+                tableName="contributors"
+                columnName="last_updated_by"
+                columnDataType="varchar(40)"/>
+        <addNotNullConstraint
+                tableName="artists"
+                columnName="last_updated_by"
+                columnDataType="varchar(40)"/>
+        <addNotNullConstraint
+                tableName="persons"
+                columnName="last_updated_by"
+                columnDataType="varchar(40)"/>
+        <addNotNullConstraint
+                tableName="classifications"
+                columnName="last_updated_by"
+                columnDataType="varchar(40)"/>
+        <addNotNullConstraint
+                tableName="credits"
+                columnName="last_updated_by"
+                columnDataType="varchar(40)"/>
+        <addNotNullConstraint
+                tableName="relations"
+                columnName="last_updated_by"
+                columnDataType="varchar(40)"/>
+        <addNotNullConstraint
+                tableName="global_identities"
+                columnName="last_updated_by"
+                columnDataType="varchar(40)"/>
+        <addNotNullConstraint
+                tableName="classification_references"
+                columnName="last_updated_by"
+                columnDataType="varchar(40)"/>
+
+        <addNotNullConstraint
+                tableName="labels"
+                columnName="last_updated"
+                columnDataType="DATETIME"/>
+        <addNotNullConstraint
+                tableName="releases"
+                columnName="last_updated"
+                columnDataType="DATETIME"/>
+        <addNotNullConstraint
+                tableName="recordings"
+                columnName="last_updated"
+                columnDataType="DATETIME"/>
+        <addNotNullConstraint
+                tableName="recording_sessions"
+                columnName="last_updated"
+                columnDataType="DATETIME"/>
+        <addNotNullConstraint
+                tableName="playable_elements"
+                columnName="last_updated"
+                columnDataType="DATETIME"/>
+        <addNotNullConstraint
+                tableName="tracks"
+                columnName="last_updated"
+                columnDataType="DATETIME"/>
+        <addNotNullConstraint
+                tableName="mediums"
+                columnName="last_updated"
+                columnDataType="DATETIME"/>
+        <addNotNullConstraint
+                tableName="recordings"
+                columnName="last_updated"
+                columnDataType="DATETIME"/>
+        <addNotNullConstraint
+                tableName="works"
+                columnName="last_updated"
+                columnDataType="DATETIME"/>
+        <addNotNullConstraint
+                tableName="contributors"
+                columnName="last_updated"
+                columnDataType="DATETIME"/>
+        <addNotNullConstraint
+                tableName="artists"
+                columnName="last_updated"
+                columnDataType="DATETIME"/>
+        <addNotNullConstraint
+                tableName="persons"
+                columnName="last_updated"
+                columnDataType="DATETIME"/>
+        <addNotNullConstraint
+                tableName="classifications"
+                columnName="last_updated"
+                columnDataType="DATETIME"/>
+        <addNotNullConstraint
+                tableName="credits"
+                columnName="last_updated"
+                columnDataType="DATETIME"/>
+        <addNotNullConstraint
+                tableName="relations"
+                columnName="last_updated"
+                columnDataType="DATETIME"/>
+        <addNotNullConstraint
+                tableName="global_identities"
+                columnName="last_updated"
+                columnDataType="DATETIME"/>
+        <addNotNullConstraint
+                tableName="classification_references"
+                columnName="last_updated"
+                columnDataType="DATETIME"/>
+    </changeSet>
+
+
+</databaseChangeLog>

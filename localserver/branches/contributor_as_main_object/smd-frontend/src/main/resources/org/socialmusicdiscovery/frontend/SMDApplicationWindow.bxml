@@ -1,0 +1,21 @@
+<smdfrontend:SMDApplicationWindow title="%windowTitle" maximized="true"
+                                 xmlns:bxml="http://pivot.apache.org/wtkx"
+                                 xmlns:content="org.apache.pivot.wtk.content"
+                                 xmlns:smdfrontend="org.socialmusicdiscovery.frontend"
+                                 xmlns="org.apache.pivot.wtk">
+
+    <content>
+        <Border styles="{color:10}">
+            <content>
+                <BoxPane styles="{verticalAlignment:'center', horizontalAlignment:'center'}" orientation="vertical">
+                    <PushButton bxml:id="crudSearchButton" enabled="true" styles="{padding:4}" buttonData="%crudSearchButton">
+                    </PushButton>
+                    <PushButton bxml:id="listViewButton" enabled="true" styles="{padding:4}" buttonData="%listViewButton">
+                    </PushButton>
+                    <PushButton bxml:id="preferencesButton" enabled="true" styles="{padding:4}" buttonData="%preferencesButton">
+                    </PushButton>
+                </BoxPane>
+            </content>
+        </Border>
+    </content>
+</smdfrontend:SMDApplicationWindow>

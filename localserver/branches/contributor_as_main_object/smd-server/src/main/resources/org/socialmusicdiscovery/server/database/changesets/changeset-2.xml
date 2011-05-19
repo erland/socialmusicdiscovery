@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    <changeSet author="erland" id="2">
+        <addPrimaryKey columnNames="classification_id, reference_id" tableName="classification_references"/>
+        <addPrimaryKey columnNames="artist_person_id, release_recording_work_id, type" tableName="credits"/>
+        <addPrimaryKey columnNames="release_id, session_id" tableName="release_recording_sessions"/>
+        <addPrimaryKey columnNames="from_id, to_id, type" tableName="relations"/>
+    </changeSet>
+</databaseChangeLog>

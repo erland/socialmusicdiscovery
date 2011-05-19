@@ -1,0 +1,9 @@
+id,track_id,smdID,format,uri,last_updated,last_updated_by
+40ff6a6e-2466-4c72-abb9-31cf4f8d4612,e29a2351-df3c-4769-ad10-9558f00c236b,79c54991f424774f18400ebe11077779-00000000,flac,file:///music/BeethovenViolinConcerto/track1.flac,2010-10-01,testdataloader
+6af0acd3-e21d-4b20-9e5d-70595cc74567,da67764b-37f4-43da-bdbd-cc64fc2559b0,79c54991f424774f18400ebe11077779-00010000,flac,file:///music/BeethovenViolinConcerto/track2.flac,2010-10-01,testdataloader
+920836bd-d62b-4123-ae9c-ab65a4a0fc52,8e5725f9-5c5d-47fe-ac00-eb7e94e7253c,79c54991f424774f18400ebe11077779-00020000,flac,file:///music/BeethovenViolinConcerto/track3.flac,2010-10-01,testdataloader
+2a2ce6fe-8054-4eea-bbb4-339d259fc5e3,95c1f024-6ee5-4a2a-93fc-b1b9ecc8646e,79c54991f424774f18400ebe11077779-00030000,flac,file:///music/BeethovenViolinConcerto/track4.flac,2010-10-01,testdataloader
+03828a44-6dae-49ac-90f6-f4a977ae1bf9,eb455002-8443-4c7c-8b06-543761ea23e8,79c54991f424774f18400ebe11077779-00040000,flac,file:///music/BeethovenViolinConcerto/track5.flac,2010-10-01,testdataloader
+894a2a83-dac1-4164-bfa8-e4efd50e06d3,0f194fd6-7714-4eed-9a09-bcb607ac505f,79c54991f424774f18400ebe11077779-00050000,flac,file:///music/BeethovenViolinConcerto/track6.flac,2010-10-01,testdataloader
+696fc82f-8413-407f-bcf6-9215d6b5f23c,9bee4d74-df59-4840-a344-14ed4be3c21f,79c54991f424774f18400ebe11077779-00060000,flac,file:///music/BeethovenViolinConcerto/track7.flac,2010-10-01,testdataloader
+0a373310-b84d-4e90-8521-6197f601efe4,c181cf3a-3c75-4941-92a6-256ba9616be3,79c54991f424774f18400ebe11077779-00070000,flac,file:///music/BeethovenViolinConcerto/track8.flac,2010-10-01,testdataloader

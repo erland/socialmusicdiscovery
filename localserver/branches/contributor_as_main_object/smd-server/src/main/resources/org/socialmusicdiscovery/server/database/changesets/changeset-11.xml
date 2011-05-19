@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    <changeSet author="erland" id="11-drop">
+        <dropTable tableName="recordings_search_relations"/>
+    </changeSet>
+    <changeSet author="erland" id="11-create">
+        <createTable tableName="recording_labels_search_relations">
+            <column name="id" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="referenceType" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="type" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="reference" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="recording_releases_search_relations">
+            <column name="id" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="referenceType" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="type" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="reference" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="recording_tracks_search_relations">
+            <column name="id" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="referenceType" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="type" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="reference" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="recording_works_search_relations">
+            <column name="id" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="referenceType" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="type" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="reference" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="recording_artists_search_relations">
+            <column name="id" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="referenceType" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="type" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="reference" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="recording_classifications_search_relations">
+            <column name="id" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="referenceType" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="type" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="reference" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
+
+        <modifySql dbms="mysql">
+            <append value=" engine innodb"/>
+        </modifySql>
+    </changeSet>
+</databaseChangeLog>

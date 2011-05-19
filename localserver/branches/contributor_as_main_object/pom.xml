@@ -1,0 +1,20 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.socialmusicdiscovery</groupId>
+    <artifactId>smd-localserver</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <scm>
+        <connection>scm:svn:http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src</connection>
+        <developerConnection>scm:svn:https://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src</developerConnection>
+    </scm>
+
+    <modules>
+        <module>smd-server</module>
+        <module>smd-frontend</module>
+	<module>smd-plugin</module>
+	<module>bundles</module>
+    </modules>
+</project>

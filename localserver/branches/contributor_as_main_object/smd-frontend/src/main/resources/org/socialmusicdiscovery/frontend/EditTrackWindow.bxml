@@ -1,0 +1,68 @@
+<smdfrontend:EditTrackWindow title="%windowTitle" maximized="true"
+    xmlns:bxml="http://pivot.apache.org/wtkx"
+    xmlns:content="org.apache.pivot.wtk.content"
+    xmlns:smdfrontend="org.socialmusicdiscovery.frontend"
+    xmlns="org.apache.pivot.wtk">
+
+    <content>
+        <Border styles="{color:10}">
+            <content>
+                <TablePane styles="{padding:6, verticalSpacing:6}">
+                    <columns>
+                        <TablePane.Column width="1*"/>
+                    </columns>
+
+                    <rows>
+                        <TablePane.Row height="-1">
+                            <BoxPane orientation="horizontal">
+                                <Label text="%trackNumber"/>
+                                <TextInput bxml:id="trackNumberTextInput"/>
+                            </BoxPane>
+                        </TablePane.Row>
+                        <TablePane.Row height="-1">
+                            <BoxPane orientation="horizontal">
+                                <Label text="%recordingName"/>
+                                <TextInput bxml:id="recordingNameTextInput"/>
+                            </BoxPane>
+                        </TablePane.Row>
+                        <TablePane.Row height="-1">
+                            <BoxPane orientation="horizontal">
+                                <Label text="%workName"/>
+                                <TextInput bxml:id="workNameTextInput"/>
+                                <PushButton bxml:id="searchWorksButton" enabled="true" styles="{padding:4}">
+                                    <buttonData>
+                                        <content:ButtonData icon="@magnifier.png"/>
+                                    </buttonData>
+                                </PushButton>
+                            </BoxPane>
+                        </TablePane.Row>
+                        <TablePane.Row height="-1">
+                            <BoxPane orientation="horizontal">
+                                <Label text="%recordingYear"/>
+                                <TextInput bxml:id="recordingYearTextInput"/>
+                            </BoxPane>
+                        </TablePane.Row>
+                        <TablePane.Row height="1*">
+                            <ScrollPane horizontalScrollBarPolicy="fill" verticalScrollBarPolicy="fill_to_capacity">
+                                <view>
+                                    <TableView bxml:id="contributorsTableView">
+                                        <columns>
+                                            <TableView.Column name="type" width="1*" headerData="%contributorType"/>
+                                            <TableView.Column name="name" width="3*" headerData="%contributorName"/>
+                                        </columns>
+                                    </TableView>
+                                </view>
+                                <columnHeader>
+                                    <TableViewHeader tableView="$contributorsTableView" sortMode="single_column"/>
+                                </columnHeader>
+                            </ScrollPane>
+                        </TablePane.Row>
+                        <TablePane.Row height="-1">
+                            <PushButton bxml:id="cancelButton" enabled="true" styles="{padding:4}" buttonData="%cancelButton"/>
+                        </TablePane.Row>
+                    </rows>
+                </TablePane>
+            </content>
+        </Border>
+    </content>
+</smdfrontend:EditTrackWindow>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    <changeSet author="erland" id="dropdatabase" runAlways="true">
+        <dropTable tableName="global_identities"/>
+        <dropTable tableName="release_series"/>
+        <dropTable tableName="series"/>
+        <dropTable tableName="release_recording_sessions"/>
+        <dropTable tableName="playable_elements"/>
+        <dropTable tableName="classification_references"/>
+        <dropTable tableName="classifications"/>
+        <dropTable tableName="contributors"/>
+        <dropTable tableName="artists"/>
+        <dropTable tableName="credits"/>
+        <dropTable tableName="tracks"/>
+        <dropTable tableName="mediums"/>
+        <dropTable tableName="persons"/>
+        <dropTable tableName="recording_works"/>
+        <dropTable tableName="recordings"/>
+        <dropTable tableName="recording_sessions"/>
+        <dropTable tableName="works"/>
+        <dropTable tableName="relations"/>
+        <dropTable tableName="releases"/>
+        <dropTable tableName="labels"/>
+        <dropTable tableName="images"/>
+        <dropTable tableName="smdidentity_references"/>
+        <dropTable tableName="persons_search_relations"/>
+        <dropTable tableName="releases_search_relations"/>
+        <dropTable tableName="recording_labels_search_relations"/>
+        <dropTable tableName="recording_releases_search_relations"/>
+        <dropTable tableName="recording_tracks_search_relations"/>
+        <dropTable tableName="recording_works_search_relations"/>
+        <dropTable tableName="recording_artists_search_relations"/>
+        <dropTable tableName="recording_classifications_search_relations"/>
+        <delete tableName="DATABASECHANGELOG"/>
+    </changeSet>
+</databaseChangeLog>

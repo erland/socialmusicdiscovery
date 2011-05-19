@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    <changeSet author="erland" id="5">
+        <createIndex indexName="INDEX_ARTISTS_NAME" tableName="artists" unique="false">
+            <column name="name"/>
+        </createIndex>
+        <createIndex indexName="INDEX_CLASSIFICATIONS_NAME" tableName="classifications" unique="false">
+            <column name="name"/>
+        </createIndex>
+        <createIndex indexName="INDEX_CLASSIFICATIONS_NAME_AND_TYPE" tableName="classifications" unique="false">
+            <column name="name"/>
+            <column name="type"/>
+        </createIndex>
+        <createIndex indexName="INDEX_CLASSIFICATIONS_TYPE" tableName="classifications" unique="false">
+            <column name="type"/>
+        </createIndex>
+        <createIndex indexName="INDEX_GLOBAL_IDENTITIES_SOURCE_AND_ENTITYID" tableName="global_identities"
+                     unique="false">
+            <column name="source"/>
+            <column name="entityid"/>
+        </createIndex>
+        <createIndex indexName="INDEX_LABELS_NAME" tableName="labels" unique="false">
+            <column name="name"/>
+        </createIndex>
+        <createIndex indexName="INDEX_PERSONS_NAME" tableName="persons" unique="false">
+            <column name="name"/>
+        </createIndex>
+        <createIndex indexName="INDEX_PLAYABLE_ELEMENTS_SMDID" tableName="playable_elements" unique="false">
+            <column name="smdID"/>
+        </createIndex>
+        <createIndex indexName="INDEX_RELEASES_NAME" tableName="releases" unique="false">
+            <column name="name"/>
+        </createIndex>
+        <createIndex indexName="INDEX_TRACKS_NUMBER" tableName="tracks" unique="false">
+            <column name="number"/>
+        </createIndex>
+        <createIndex indexName="INDEX_WORKS_NAME" tableName="works" unique="false">
+            <column name="name"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,7 @@
+{
+    windowTitle: "Social Music Discovery - Manage",
+    importButton: "Execute",
+    abortButton: "Abort",
+    abortingButton: "Aborting...",
+    closeButton: "Close"
+}

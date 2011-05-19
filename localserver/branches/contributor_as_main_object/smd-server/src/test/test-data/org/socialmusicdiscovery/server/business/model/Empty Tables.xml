@@ -1,0 +1,35 @@
+<dataset>
+    <configurations/>
+    <contributors/>
+    <playable_elements/>
+    <tracks/>
+    <mediums/>
+    <release_recording_sessions/>
+    <recording_sessions/>
+    <recordings/>
+    <recording_works/>
+    <works/>
+    <artists/>
+    <persons/>
+    <releases/>
+    <labels/>
+    <credits/>
+    <series/>
+    <release_series/>
+    <relations/>
+    <credits/>
+    <classifications/>
+    <classification_references/>
+    <smdidentity_references/>
+    <global_identities/>
+    <releases_search_relations/>
+    <recording_labels_search_relations/>
+    <recording_releases_search_relations/>
+    <recording_tracks_search_relations/>
+    <recording_works_search_relations/>
+    <recording_artists_search_relations/>
+    <recording_persons_search_relations/>
+    <recording_classifications_search_relations/>
+    <persons_search_relations/>
+    <playable_elements/>
+</dataset>

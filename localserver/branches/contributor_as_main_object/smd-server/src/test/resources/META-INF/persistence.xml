@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+             version="2.0">
+    <persistence-unit name="smd" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+
+        <class>org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity</class>
+
+        <class>org.socialmusicdiscovery.server.business.model.core.LabelEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.core.ReleaseEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.core.MediumEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.core.TrackEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.core.RecordingEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.core.RecordingSessionEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.core.WorkEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.core.ContributorEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.core.ArtistEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.core.PersonEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.core.PlayableElementEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.core.ImageEntity</class>
+
+        <class>org.socialmusicdiscovery.server.business.model.subjective.CreditEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.subjective.RelationEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.subjective.SeriesEntity</class>
+
+        <class>org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.classification.ClassificationReferenceEntity</class>
+
+        <class>org.socialmusicdiscovery.server.business.model.GlobalIdentityEntity</class>
+
+        <class>org.socialmusicdiscovery.server.business.model.search.ReleaseSearchRelationEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.search.RecordingLabelSearchRelationEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.search.RecordingReleaseSearchRelationEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.search.RecordingTrackSearchRelationEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.search.RecordingWorkSearchRelationEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.search.RecordingArtistSearchRelationEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.search.RecordingClassificationSearchRelationEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.search.PersonSearchRelationEntity</class>
+
+        <class>org.socialmusicdiscovery.server.business.model.config.ConfigurationParameterEntity</class>
+
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+            <!-- Database provider properties are configured in the code -->
+
+            <property name="hibernate.hbm2ddl.auto" value="create"/>
+            <property name="hibernate.connection.username" value=""/>
+            <property name="hibernate.connection.password" value=""/>
+            <!-- <property name="hibernate.show_sql" value="true"/> -->
+            <property name="hibernate.cache.region.factory_class" value="net.sf.ehcache.hibernate.SingletonEhCacheRegionFactory"/>
+            <property name="hibernate.cache.use_query_cache" value="true"/>
+            <property name="hibernate.cache.use_second_level_cache" value="true"/>
+        </properties>
+    </persistence-unit>
+</persistence>

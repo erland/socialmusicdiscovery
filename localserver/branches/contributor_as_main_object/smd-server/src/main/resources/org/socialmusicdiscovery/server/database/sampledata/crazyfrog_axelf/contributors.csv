@@ -1,0 +1,2 @@
+id,artist_id,recording_id,work_id,release_id,type,last_updated,last_updated_by
+3727b987-a33e-4f2f-ac8c-1ad1d6a998b9,af1d3ce5-c955-40ac-8cd1-15c481a5c07e,558591a2-28c9-47fe-a3f3-98e9510bc477,NULL,NULL,performer,2010-10-01,testdataloader

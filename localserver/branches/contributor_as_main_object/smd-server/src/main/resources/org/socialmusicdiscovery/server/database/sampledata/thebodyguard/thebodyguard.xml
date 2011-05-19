@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    <changeSet id="sample_thebodyguard" author="erland">
+        <loadData tableName="smdidentity_references"
+                  file="org/socialmusicdiscovery/server/database/sampledata/thebodyguard/smdidentity_references.csv">
+            <column header="id" type="STRING"/>
+            <column header="type" type="STRING"/>
+        </loadData>
+        <loadData tableName="labels" file="org/socialmusicdiscovery/server/database/sampledata/thebodyguard/labels.csv">
+            <column header="id" type="STRING"/>
+            <column header="name" type="STRING"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
+        </loadData>
+        <loadData tableName="releases"
+                  file="org/socialmusicdiscovery/server/database/sampledata/thebodyguard/releases.csv">
+            <column header="id" type="STRING"/>
+            <column header="name" type="STRING"/>
+            <column header="label_id" type="STRING"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
+        </loadData>
+        <loadData tableName="persons"
+                  file="org/socialmusicdiscovery/server/database/sampledata/thebodyguard/persons.csv">
+            <column header="id" type="STRING"/>
+            <column header="name" type="STRING"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
+        </loadData>
+        <loadData tableName="artists"
+                  file="org/socialmusicdiscovery/server/database/sampledata/thebodyguard/artists.csv">
+            <column header="id" type="STRING"/>
+            <column header="name" type="STRING"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
+        </loadData>
+        <loadData tableName="works" file="org/socialmusicdiscovery/server/database/sampledata/thebodyguard/works.csv">
+            <column header="id" type="STRING"/>
+            <column header="name" type="STRING"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
+        </loadData>
+        <loadData tableName="recordings"
+                  file="org/socialmusicdiscovery/server/database/sampledata/thebodyguard/recordings.csv">
+            <column header="id" type="STRING"/>
+            <column header="name" type="STRING"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
+        </loadData>
+        <loadData tableName="recording_works"
+                  file="org/socialmusicdiscovery/server/database/sampledata/thebodyguard/recording_works.csv">
+            <column header="recording_id" type="STRING"/>
+            <column header="work_id" type="STRING"/>
+        </loadData>
+        <loadData tableName="tracks" file="org/socialmusicdiscovery/server/database/sampledata/thebodyguard/tracks.csv">
+            <column header="id" type="STRING"/>
+            <column header="release_id" type="STRING"/>
+            <column header="recording_id" type="STRING"/>
+            <column header="number" type="NUMERIC"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
+        </loadData>
+        <loadData tableName="contributors"
+                  file="org/socialmusicdiscovery/server/database/sampledata/thebodyguard/contributors.csv">
+            <column header="id" type="STRING"/>
+            <column header="artist_id" type="STRING"/>
+            <column header="recording_id" type="STRING"/>
+            <column header="work_id" type="STRING"/>
+            <column header="release_id" type="STRING"/>
+            <column header="type" type="STRING"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
+        </loadData>
+        <loadData tableName="playable_elements" file="org/socialmusicdiscovery/server/database/sampledata/thebodyguard/playable_elements.csv">
+            <column header="id" type="STRING"/>
+            <column header="track_id" type="STRING"/>
+            <column header="smdID" type="STRING"/>
+            <column header="format" type="STRING"/>
+            <column header="uri" type="STRING"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
+        </loadData>
+        <loadData tableName="classifications" file="org/socialmusicdiscovery/server/database/sampledata/thebodyguard/classifications.csv">
+            <column header="id" type="STRING"/>
+            <column header="type" type="STRING"/>
+            <column header="name" type="STRING"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
+        </loadData>
+        <loadData tableName="classification_references" file="org/socialmusicdiscovery/server/database/sampledata/thebodyguard/classification_references.csv">
+            <column header="id" type="STRING"/>
+            <column header="classification_id" type="STRING"/>
+            <column header="reference_to_id" type="STRING"/>
+            <column header="last_updated" type="DATE"/>
+            <column header="last_updated_by" type="STRING"/>
+        </loadData>
+    </changeSet>
+</databaseChangeLog>
