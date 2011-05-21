@@ -170,6 +170,7 @@ public class EditReleaseWindow extends Window implements Bindable {
     public void open(Display display, Window owner, Release release) {
         release = Client.create(config).resource("http://" + SMDSERVER + ":" + SMDSERVERPORT + "/releases/" + release.getId()).accept(MediaType.APPLICATION_JSON).get(Release.class);
         release.setTracks(new java.util.ArrayList<Track>(Client.create(config).resource("http://" + SMDSERVER + ":" + SMDSERVERPORT + "/tracks?release=" + release.getId()).accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<Track>>() {})));
+        release.setContributors(new java.util.HashSet<Contributor>(Client.create(config).resource("http://" + SMDSERVER + ":" + SMDSERVERPORT + "/contributors?release=" + release.getId()).accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<Contributor>>() {})));
         this.release = release;
 
         cancelButton.getButtonPressListeners().add(new ButtonPressListener() {

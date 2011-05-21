@@ -151,6 +151,15 @@ public class JPAContributorRepository extends AbstractJPASMDIdentityRepository<C
             entity.setArtist(artistRepository.findById(entity.getArtist().getId()));
         }
         initializeOwner(entity);
+        if (entity.getRelease() != null && !entityManager.contains(entity.getRelease())) {
+            entity.setRelease(releaseRepository.findById(entity.getRelease().getId()));
+        }else if (entity.getWork() != null && !entityManager.contains(entity.getWork())) {
+            entity.setWork(workRepository.findById(entity.getWork().getId()));
+        }else if (entity.getRecording() != null && !entityManager.contains(entity.getRecording())) {
+            entity.setRecording(recordingRepository.findById(entity.getRecording().getId()));
+        }else if (entity.getRecordingSession() != null && !entityManager.contains(entity.getRecordingSession())) {
+            entity.setRecordingSession(recordingSessionRepository.findById(entity.getRecordingSession().getId()));
+        }
         super.create(entity);
     }
 
@@ -160,6 +169,15 @@ public class JPAContributorRepository extends AbstractJPASMDIdentityRepository<C
             entity.setArtist(artistRepository.findById(entity.getArtist().getId()));
         }
         initializeOwner(entity);
+        if (entity.getRelease() != null && !entityManager.contains(entity.getRelease())) {
+            entity.setRelease(releaseRepository.findById(entity.getRelease().getId()));
+        }else if (entity.getWork() != null && !entityManager.contains(entity.getWork())) {
+            entity.setWork(workRepository.findById(entity.getWork().getId()));
+        }else if (entity.getRecording() != null && !entityManager.contains(entity.getRecording())) {
+            entity.setRecording(recordingRepository.findById(entity.getRecording().getId()));
+        }else if (entity.getRecordingSession() != null && !entityManager.contains(entity.getRecordingSession())) {
+            entity.setRecordingSession(recordingSessionRepository.findById(entity.getRecordingSession().getId()));
+        }
         ContributorEntity contributor = super.merge(entity);
         return contributor;
     }
@@ -180,13 +198,13 @@ public class JPAContributorRepository extends AbstractJPASMDIdentityRepository<C
 
     private void initializeOwner(ContributorEntity entity) {
         if (entity.getOwner()!=null) {
-            if(entity.getOwner().getType().equals(SMDIdentityReferenceEntity.typeForClass(ReleaseEntity.class)) && entity.getRelease()==null) {
+            if(SMDIdentityReferenceEntity.typeForClass(entity.getOwner().getClass()).equals(SMDIdentityReferenceEntity.typeForClass(ReleaseEntity.class)) && entity.getRelease()==null) {
                 entity.setRelease(releaseRepository.findById(entity.getOwner().getId()));
-            }else if(entity.getOwner().getType().equals(SMDIdentityReferenceEntity.typeForClass(WorkEntity.class)) && entity.getWork()==null) {
+            }else if(SMDIdentityReferenceEntity.typeForClass(entity.getOwner().getClass()).equals(SMDIdentityReferenceEntity.typeForClass(WorkEntity.class)) && entity.getWork()==null) {
                 entity.setWork(workRepository.findById(entity.getOwner().getId()));
-            }else if(entity.getOwner().getType().equals(SMDIdentityReferenceEntity.typeForClass(RecordingEntity.class)) && entity.getRecording()==null) {
+            }else if(SMDIdentityReferenceEntity.typeForClass(entity.getOwner().getClass()).equals(SMDIdentityReferenceEntity.typeForClass(RecordingEntity.class)) && entity.getRecording()==null) {
                 entity.setRecording(recordingRepository.findById(entity.getOwner().getId()));
-            }else if(entity.getOwner().getType().equals(SMDIdentityReferenceEntity.typeForClass(RecordingSessionEntity.class)) && entity.getRecordingSession()==null) {
+            }else if(SMDIdentityReferenceEntity.typeForClass(entity.getOwner().getClass()).equals(SMDIdentityReferenceEntity.typeForClass(RecordingSessionEntity.class)) && entity.getRecordingSession()==null) {
                 entity.setRecordingSession(recordingSessionRepository.findById(entity.getOwner().getId()));
             }
         }

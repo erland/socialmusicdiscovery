@@ -40,6 +40,10 @@ public abstract class AbstractSMDIdentityEntity implements SMDIdentity {
     @Expose
     private String id;
 
+    @Transient
+    @Expose
+    private String objectType = SMDIdentityReferenceEntity.typeForClass(getClass());
+
     @OneToOne(targetEntity = SMDIdentityReferenceEntity.class, optional = false, cascade = {CascadeType.ALL})
     @JoinColumn(name = "id")
     private SMDIdentityReference reference;

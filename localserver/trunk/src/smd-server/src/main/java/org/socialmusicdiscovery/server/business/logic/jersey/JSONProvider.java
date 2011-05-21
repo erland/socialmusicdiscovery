@@ -28,10 +28,7 @@
 package org.socialmusicdiscovery.server.business.logic.jersey;
 
 import com.sun.jersey.spi.resource.Singleton;
-import org.socialmusicdiscovery.server.business.model.GlobalIdentity;
-import org.socialmusicdiscovery.server.business.model.GlobalIdentityEntity;
-import org.socialmusicdiscovery.server.business.model.SMDIdentityReference;
-import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
+import org.socialmusicdiscovery.server.business.model.*;
 import org.socialmusicdiscovery.server.business.model.classification.Classification;
 import org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity;
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameter;
@@ -78,7 +75,19 @@ public final class JSONProvider extends AbstractJSONProvider {
         converters.put(Series.class, SeriesEntity.class);
         converters.put(PlayableElement.class, PlayableElementEntity.class);
         converters.put(ConfigurationParameter.class, ConfigurationParameterEntity.class);
+        converters.put(SMDIdentity.class,SMDIdentity.class);
 
+        return converters;
+    }
+
+    @Override
+    protected Map<String, Class> getObjectTypeConversionMap() {
+        Map<String, Class> converters = new HashMap<String,Class>();
+
+        converters.put(Release.TYPE, ReleaseEntity.class);
+        converters.put(Work.TYPE, WorkEntity.class);
+        converters.put(Recording.TYPE, RecordingEntity.class);
+        converters.put(RecordingSession.TYPE, RecordingSessionEntity.class);
         return converters;
     }
 }
