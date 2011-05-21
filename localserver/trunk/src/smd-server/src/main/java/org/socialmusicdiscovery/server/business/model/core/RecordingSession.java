@@ -33,6 +33,8 @@ import java.util.Date;
 import java.util.Set;
 
 public interface RecordingSession extends SMDIdentity {
+    final static String TYPE = RecordingSession.class.getSimpleName();
+
     Date getDate();
 
     void setDate(Date date);

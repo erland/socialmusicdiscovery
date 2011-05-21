@@ -42,4 +42,8 @@ public interface Contributor extends SMDIdentity {
     Artist getArtist();
 
     void setArtist(Artist artist);
+
+    SMDIdentity getOwner();
+
+    void setOwner(SMDIdentity owner);
 }

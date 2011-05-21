@@ -55,7 +55,6 @@ public class WorkEntity extends AbstractSMDIdentityEntity implements Work, Contr
     private Work parent;
 
     @OneToMany(targetEntity = ContributorEntity.class, mappedBy = "work", cascade = {CascadeType.REMOVE}, orphanRemoval = true)
-    @Expose
     private Set<Contributor> contributors = new HashSet<Contributor>();
 
     public String getName() {

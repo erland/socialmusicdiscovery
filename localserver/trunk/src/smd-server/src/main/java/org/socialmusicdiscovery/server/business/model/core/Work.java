@@ -33,6 +33,8 @@ import java.util.Date;
 import java.util.Set;
 
 public interface Work extends SMDIdentity {
+    final static String TYPE = Work.class.getSimpleName();
+
     String getName();
 
     void setName(String name);

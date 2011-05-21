@@ -33,6 +33,8 @@ import java.util.Date;
 import java.util.Set;
 
 public interface Recording extends SMDIdentity {
+    final static String TYPE = Recording.class.getSimpleName();
+
     String getName();
 
     void setName(String name);
