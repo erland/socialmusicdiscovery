@@ -38,6 +38,7 @@ import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.databinding.observable.list.WritableList;
 import org.eclipse.core.databinding.observable.set.IObservableSet;
 import org.eclipse.core.databinding.observable.set.WritableSet;
+import org.socialmusicdiscovery.rcp.content.AbstractContributableEntity;
 import org.socialmusicdiscovery.rcp.content.DataSource;
 import org.socialmusicdiscovery.rcp.content.ObservableArtist;
 import org.socialmusicdiscovery.rcp.content.ObservableContributor;
@@ -115,9 +116,6 @@ public class ClientConfigModule extends AbstractModule {
 		protected Map<Class, Class> getConversionMap() {
 			Map<Class, Class> converters = new HashMap<Class, Class>();
 
-			// converters.put(GlobalIdentity.class, Observable???.class);
-			// converters.put(SMDIdentityReference.class, Observable???.class);
-			
 			converters.put(Artist.class, ObservableArtist.class);
 			// converters.put(Classification.class, ObservableClassification.class);
 			converters.put(Contributor.class, ObservableContributor.class);
@@ -135,6 +133,8 @@ public class ClientConfigModule extends AbstractModule {
 			converters.put(Work.class, ObservableWork.class);
 			converters.put(SMDIdentityReference.class, ObservableSMDIdentityReference.class);
 			
+			// handle type conversion of abstract classes
+			converters.put(AbstractContributableEntity.class, AbstractContributableEntity.class);
 			
 			// handle type conversion of collection attributes
 			converters.put(IObservableList.class, WritableList.class);
@@ -144,9 +144,19 @@ public class ClientConfigModule extends AbstractModule {
 
 			return converters;
 		}
-	}
 
-	@Override
+		protected Map<String, Class> getObjectTypeConversionMap() {
+		    Map<String, Class> converters = new HashMap<String,Class>();
+		
+		    converters.put(Release.class.getSimpleName(), ObservableRelease.class);
+		    converters.put(Work.class.getSimpleName(), ObservableWork.class);
+		    converters.put(Recording.class.getSimpleName(), ObservableRecording.class);
+		    converters.put(RecordingSession.class.getSimpleName(), ObservableRecordingSession.class);
+		    return converters;
+		}
+	}
+	
+    @Override
 	protected void configure() {
 	}
 

@@ -28,6 +28,7 @@
 package org.socialmusicdiscovery.rcp.content;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.socialmusicdiscovery.server.business.model.core.Recording;
@@ -41,7 +42,7 @@ public class ObservableRecordingSession extends AbstractContributableEntity<Reco
 	public static final String PROP_recordings = "recordings";
 	
 	@Expose private Date date;
-	@Expose private Set<Recording> recordings;
+	@Expose private Set<Recording> recordings = new HashSet<Recording>();
 
 	@Override
 	public Date getDate() {

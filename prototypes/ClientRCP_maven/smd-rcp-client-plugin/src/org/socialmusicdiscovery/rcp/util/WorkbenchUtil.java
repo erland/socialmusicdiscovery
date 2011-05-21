@@ -181,7 +181,7 @@ public final class WorkbenchUtil {
 			ObservableContributor c = (ObservableContributor) selectedElement;
 			// what to open next depends on where we're currently editing the contribution
 			// Artist => Entity, anything else => Artist
-			Object target = currentEditorInput instanceof Artist ? c.getEntity() : c.getArtist();
+			Object target = currentEditorInput instanceof Artist ? c.getOwner() : c.getArtist();
 			return resolveEditableElement(currentEditorInput, target);
 		}
 		if (selectedElement instanceof Contributor) {

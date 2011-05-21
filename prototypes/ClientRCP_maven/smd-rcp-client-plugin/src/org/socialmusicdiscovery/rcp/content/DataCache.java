@@ -220,11 +220,10 @@ import com.google.gson.annotations.Expose;
 
 	@SuppressWarnings("unchecked")
 	private <T extends SMDIdentity> void copyCollectionValue(Field f, T fromInstance, ObservableEntity<T> toInstance) throws IllegalAccessException {
-		// init
-		// use new list instance to allow copy from/to the same instance and thus resolve/replace cached elements 
+		assert f.get(fromInstance)!=null : "Source collection is null. Field: " +f; 
+		assert f.get(toInstance)!=null : "Target collection is null. Field: " +f+ " (cannot (yet) handle null target collections. Client must initialize with an empty collection of appropriate type)";
 		Collection fromCollection = new ArrayList((Collection) f.get(fromInstance));  
 		Collection toCollection = (Collection) f.get(toInstance);
-		assert toCollection!=null : "Cannot (yet) handle null target collections. Client must initialize with an empty collection of approproate type.";
 
 		// run
 		toCollection.clear();

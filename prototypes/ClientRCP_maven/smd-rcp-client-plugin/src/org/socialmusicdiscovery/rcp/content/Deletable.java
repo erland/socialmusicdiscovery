@@ -57,5 +57,5 @@ public interface Deletable {
 	 * 
 	 * @return Collection
 	 */
-	<T extends Deletable> Collection<T> getDependentsToDelete();	
+	<T extends Deletable> Collection<T> getDeletableDependents();	
 }

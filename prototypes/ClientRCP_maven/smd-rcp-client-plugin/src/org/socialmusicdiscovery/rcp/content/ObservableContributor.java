@@ -30,7 +30,9 @@ package org.socialmusicdiscovery.rcp.content;
 import java.util.Arrays;
 
 import org.eclipse.core.databinding.observable.set.IObservableSet;
+import org.socialmusicdiscovery.rcp.error.NotYetImplementedException;
 import org.socialmusicdiscovery.rcp.util.NotYetImplemented;
+import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
 
@@ -41,11 +43,10 @@ public class ObservableContributor extends AbstractObservableEntity<Contributor>
 	public static final String PROP_owner = "owner";
 	public static final String PROP_artist = "artist";
 	public static final String PROP_type = "type";
-	public static final String PROP_entity = "entity";
 	
 	@Expose private Artist artist;
 	@Expose private String type;
-	protected AbstractContributableEntity entity;
+	@Expose private AbstractContributableEntity owner;
 
 	/**
 	 * Default constructor.
@@ -74,15 +75,22 @@ public class ObservableContributor extends AbstractObservableEntity<Contributor>
 	@Override
 	public String toString() {
 		String artistName = getArtist()==null ? "?" : getArtist().getName();
-		String entityName = getEntity()==null ? "?" : getEntity().getName();
+		String entityName = getOwner()==null ? "?" : getOwner().getName();
 		return getClass().getSimpleName()+"@"+hashCode()+"/"+entityName+"-"+getType()+":"+artistName + " ("+getName()+")";
 	}
 
 	@Override
 	public void delete() {
-		IObservableSet contributors = getEntity().getContributors();
-		boolean removed = contributors.remove(this);
-		assert removed : "Contributor not removed from entity: "+this+": "+Arrays.asList(contributors);
+		AbstractContributableEntity owner = getOwner();
+		if (owner.isInflated()) {
+			IObservableSet contributors = owner.getContributors();
+			boolean removed = contributors.remove(this);
+			assert removed : "Contributor not removed from entity: "+this+": "+Arrays.asList(contributors);
+		} else {
+			// FIXME there is no way to save a modified owner that is not open in an editor
+			throw new NotYetImplementedException("Can not (yet) delete contributors from other than the owner's editor. This operation should be disabled in this context.");
+//			getDataSource().delete(this);
+		}
 	}
 
 	@Override
@@ -91,12 +99,14 @@ public class ObservableContributor extends AbstractObservableEntity<Contributor>
 		return null;
 	}
 	
-	public AbstractContributableEntity getEntity() {
-		return entity;
+	@Override
+	public AbstractContributableEntity getOwner() {
+		return owner;
 	}
 
-	public void setEntity(AbstractContributableEntity entity) {
-		firePropertyChange(PROP_entity, this.entity, this.entity = entity);
+	@Override
+	public void setOwner(SMDIdentity owner) {
+		firePropertyChange(PROP_owner, this.owner, this.owner = (AbstractContributableEntity) owner);
 	}
 
 }

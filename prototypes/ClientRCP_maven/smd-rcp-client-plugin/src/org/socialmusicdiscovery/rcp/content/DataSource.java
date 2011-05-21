@@ -55,6 +55,7 @@ import org.socialmusicdiscovery.server.api.OperationStatus;
 import org.socialmusicdiscovery.server.api.management.mediaimport.MediaImportStatus;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
+import org.socialmusicdiscovery.server.business.model.core.Contributor;
 import org.socialmusicdiscovery.server.business.model.core.PlayableElement;
 import org.socialmusicdiscovery.server.business.model.core.Recording;
 import org.socialmusicdiscovery.server.business.model.core.Release;
@@ -170,40 +171,78 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		 * @param entity
 		 */
 		private boolean persistOnProperThread(final ObservableEntity entity) {
-			// create a runnable to do the actual job
-			Runnable runnable = new Runnable() {
-				@Override
-				public void run() {
-					Root root = resolveRoot(entity);
-					try {
-						root.persist(entity);
-					} catch (Exception e) {
-						ExtendedErrorDialog dialog = createErrorDialog(root, entity, e); 
-						switch (dialog.open()) {
-						case ExtendedErrorDialog.RETRY_BUTTON:
-							run(); 
-							break;
-							
-						case ExtendedErrorDialog.IGNORE_BUTTON:
-							break;
-
-						case ExtendedErrorDialog.CANCEL_BUTTON:
-							throw new RuntimeException(e);  // CAUGHT BELOW
-
-						default:
-							throw new IllegalStateException(e);
-						}
-					}
-				}
-
-			};
-			
 			// kludge: run and catch our own exception to return a result
 			try {
+				Runnable runnable = new MyInnerPersistor(shell, entity);
 				shell.getDisplay().syncExec(runnable);
 				return true;
-			} catch (RuntimeException e) { // THROWN ABOVE
+			} catch (RuntimeException e) { // THROWN BY RUNNABLE
 				return false;
+			}
+		}
+
+	}
+
+	private final class MyInnerPersistor implements Runnable {
+		private final ObservableEntity entity;
+		private final Shell shell;
+		private final Set<ObservableEntity> toDelete;
+		private final Set<ObservableEntity> toSave;
+		
+		@SuppressWarnings("unchecked")
+		private MyInnerPersistor(Shell shell, ObservableEntity entity) {
+			this.shell = shell;
+			this.entity = entity;
+			this.toDelete = entity.getRemovedDependents();
+			this.toSave = entity.getSaveableDependents();
+		}
+	
+		@Override
+		public void run() {
+			for (ObservableEntity e : toSave) {
+				if (e.isDirty()) {
+					doSave(e);
+				}
+			}
+			for (ObservableEntity e : toDelete) {
+				doDelete(e);
+			}
+			doSave(entity);
+		}
+
+		private void doDelete(ObservableEntity victim) {
+			Root root = resolveRoot(victim);
+			try {
+				root.delete(victim);
+			} catch (Exception e) {
+				handleError(victim, root, e);
+			}
+		}
+
+		private void doSave(ObservableEntity toSave) {
+			Root root = resolveRoot(toSave);
+			try {
+				root.persist(toSave);
+			} catch (Exception e) {
+				handleError(toSave, root, e);
+			}
+		}
+
+		private void handleError(ObservableEntity toSave, Root root, Exception e) {
+			ExtendedErrorDialog dialog = createErrorDialog(root, toSave, e);
+			switch (dialog.open()) {
+			case ExtendedErrorDialog.RETRY_BUTTON:
+				run();
+				break;
+
+			case ExtendedErrorDialog.IGNORE_BUTTON:
+				break;
+
+			case ExtendedErrorDialog.CANCEL_BUTTON:
+				throw new RuntimeException(e); // CAUGHT BY OUTER PERISTOR
+
+			default:
+				throw new IllegalStateException(e);
 			}
 		}
 
@@ -216,7 +255,6 @@ public class DataSource extends AbstractObservable implements ModelObject {
 			ExtendedErrorDialog dialog = new ExtendedErrorDialog(shell, task, problem, reason, e);
 			return dialog;
 		}
-
 	}
 
 	public static final String PROP_IS_CONNECTED = "isConnected"; //$NON-NLS-1$
@@ -331,7 +369,7 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		 * Rationale: the returned set is used as observable input in a viewer.
 		 * When the input is assigned, the first thing the viewer does is to
 		 * dispose all elements/nodes of the current input, which effectively is
-		 * out set. The next time we access it we get an error (
+		 * our set. The next time we access it we get an error (
 		 * <code>org.eclipse.core.runtime.AssertionFailedException: assertion failed: Getter called on disposed observable</code>
 		 * ). Hence we need to replace the old set with a brand new one when we
 		 * reassign the input.
@@ -482,7 +520,9 @@ public class DataSource extends AbstractObservable implements ModelObject {
 				resource(entityPath).type(MediaType.APPLICATION_JSON).delete();
 				cache.delete(entity);
 			}
-			children.remove(entity);
+			if (children!=null) {
+				children.remove(entity);
+			}
 			
 			assert !cache.contains(entity) : "cache not updated - entity still present: "+entity;
 		}
@@ -491,6 +531,13 @@ public class DataSource extends AbstractObservable implements ModelObject {
 			return entity.getId()==null;
 		}
 		
+		/**
+		 * Stub, primarily to keep label providers happy. Answer false for the time being.
+		 * @return <code>false</code>
+		 */
+		public boolean isDirty() {
+			return false;
+		}
 		/**
 		 * Do <b>NOT</b> maintain the same set of children across sessions; set
 		 * must be replaced when Root is reloaded. See comments on
@@ -542,8 +589,7 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		if (roots == null) {
 			roots = Arrays.asList(
 				new Root<Artist>("Artists", ObservableArtist.class, "/artists", Artist.class, new GenericType<Set<Artist>>() {} )
-//				FIXME enable this line when "Solution 1" is implemented
-//				,new Root<Contributor>("Contributors", ObservableContributor.class, "/contributors", Contributor.class, new GenericType<Set<Contributor>>() {} )
+				,new Root<Contributor>("Contributors", ObservableContributor.class, "/contributors", Contributor.class, new GenericType<Set<Contributor>>() {} )
 				,new Root<Recording>("Recordings", ObservableRecording.class, "/recordings", Recording.class, new GenericType<Set<Recording>>() {} )
 				,new Root<Release>("Releases", ObservableRelease.class, "/releases", Release.class, new GenericType<Set<Release>>() {} ) 
 				,new Root<Track>("Tracks", ObservableTrack.class, "/tracks", Track.class, new GenericType<Set<Track>>() {} )
@@ -596,7 +642,7 @@ public class DataSource extends AbstractObservable implements ModelObject {
 	 * Find the {@link Root} for the supplied entity type. Fail if no matching
 	 * root is found.
 	 * 
-	 * @param entity
+	 * @param owner
 	 * @return Root
 	 */
 	@SuppressWarnings("unchecked")

@@ -27,16 +27,17 @@
 
 package org.socialmusicdiscovery.rcp.content;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
 import org.eclipse.core.databinding.observable.set.IObservableSet;
+import org.socialmusicdiscovery.rcp.content.DataSource.Root;
 import org.socialmusicdiscovery.rcp.util.GenericWritableSet;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
+import org.socialmusicdiscovery.server.business.model.core.Contributor;
 import org.socialmusicdiscovery.server.business.model.core.Person;
-import org.socialmusicdiscovery.server.business.model.core.Recording;
-import org.socialmusicdiscovery.server.business.model.core.Release;
 
 import com.google.gson.annotations.Expose;
 
@@ -89,45 +90,13 @@ public class ObservableArtist extends AbstractObservableEntity<Artist> implement
 	}
 
 	private GenericWritableSet<ObservableContributor> resolveContributions() {
-//		FIXME enable this code when "Solution 1" is implemented
-//		Root<Contributor> root = getDataSource().resolveRoot(Contributor.class);
-//		Collection<ObservableContributor> allContributors = root.findAll(this);
-//		inflateAll(allContributors);
-//		GenericWritableSet<ObservableContributor> result = new GenericWritableSet<ObservableContributor>();
-//		result.addAll(allContributors);
-//		return result;
-
-//		FIXME disable this code when "Solution 1" is implemented
+		Root<Contributor> root = getDataSource().resolveRoot(Contributor.class);
+		Collection<ObservableContributor> allContributors = root.findAll(this);
+		inflateAll(allContributors);
 		GenericWritableSet<ObservableContributor> result = new GenericWritableSet<ObservableContributor>();
-		Class[] contributableTypes = {
-			Release.class, 
-			Recording.class, 
-//			Work.class, // FIXME enable when we have a Root
-//			RecordingSession.class // FIXME enable when we have a Root
-			};
-		for (Class type : contributableTypes) {
-			result.addAll(getContributions(type));
-		}
+		result.addAll(allContributors);
 		return result;
-	}
 
-	@SuppressWarnings("unchecked")
-	private Set<ObservableContributor> getContributions(Class type) {
-		Set<ObservableContributor> result = new HashSet<ObservableContributor>();
-		Set<AbstractContributableEntity> contributedEntities = getDataSource().resolveRoot(type).findAll(this);
-		
-		for (AbstractContributableEntity contributedEntity : contributedEntities) {
-			contributedEntity.inflate();
-			for (Object o : contributedEntity.getContributors()) {
-				ObservableContributor contributor = (ObservableContributor) o;
-				Artist contributingArtist = contributor.getArtist();
-				if (contributingArtist.equals(this)) {
-                    result.add(contributor);
-				}
-			}
-		}
-		
-		return result;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -137,7 +106,7 @@ public class ObservableArtist extends AbstractObservableEntity<Artist> implement
 			Set<ObservableContributor> tmp = new HashSet<ObservableContributor>(contributions);
 			for (Iterator<ObservableContributor> iterator = tmp.iterator(); iterator.hasNext();) {
 				ObservableContributor c = iterator.next();
-				AbstractContributableEntity entity = c.getEntity();
+				AbstractContributableEntity entity = c.getOwner();
 				IObservableSet contributors = entity.getContributors();
 				boolean removed = contributors.remove(c);
 				assert removed : "Contribution not removed from entity contributors: " + c; 

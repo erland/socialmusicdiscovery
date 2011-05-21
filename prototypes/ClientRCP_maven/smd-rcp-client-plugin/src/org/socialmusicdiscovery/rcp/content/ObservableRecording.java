@@ -87,10 +87,16 @@ public class ObservableRecording extends AbstractContributableEntity<Recording> 
 	@Override
 	protected void postInflate() {
 		super.postInflate();
-		hookListeners();
+		hookNameListeners();
 	}
 
-	private void hookListeners() {
+	@Override
+	protected void postCreate() {
+		super.postCreate();
+		hookNameListeners();
+	}
+
+	private void hookNameListeners() {
 		hookIsDerivedNameUsed();
 		hookDerivedName();
 	}
@@ -218,7 +224,7 @@ public class ObservableRecording extends AbstractContributableEntity<Recording> 
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Collection<ObservableTrack> getDependentsToDelete() {
+	public Collection<ObservableTrack> getDeletableDependents() {
 		return getTracks();
 	}
 
