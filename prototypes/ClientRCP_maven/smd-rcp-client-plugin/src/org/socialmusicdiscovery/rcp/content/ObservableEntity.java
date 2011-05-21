@@ -28,6 +28,7 @@
 package org.socialmusicdiscovery.rcp.content;
 
 import java.beans.PropertyChangeEvent;
+import java.util.Set;
 
 import org.eclipse.ui.IEditorInput;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
@@ -59,4 +60,16 @@ public interface ObservableEntity<T extends SMDIdentity> extends IEditorInput, M
 	 * @param isDirty
 	 */
 	void setDirty(boolean isDirty);
+
+	/**
+	 * Get entities that should be deleted when this instance is saved.
+	 * @return {@link Set} (possibly empty)
+	 */
+	Set<? extends ObservableEntity> getRemovedDependents();
+
+	/**
+	 * Get entities that should be saved when this instance is saved.
+	 * @return {@link Set} (possibly empty)
+	 */
+	Set<? extends ObservableEntity> getSaveableDependents();
 }

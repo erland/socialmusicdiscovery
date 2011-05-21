@@ -64,12 +64,11 @@ public class Delete extends AbstractHandler implements IHandler {
 		}
 		return Boolean.valueOf(isConfirmed);
 	}
-
 	
 	private <T extends Deletable> List<T> resolveDependents(Collection<T> primaryVictims) {
 		List<T> result = new ArrayList<T>();
 		for (Deletable deletable : primaryVictims) {
-			Collection<T> dependentsToDelete = deletable.getDependentsToDelete();
+			Collection<T> dependentsToDelete = deletable.getDeletableDependents();
 			result.addAll(dependentsToDelete);
 		}
 		result.addAll(primaryVictims);

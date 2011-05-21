@@ -107,6 +107,9 @@ public class ObservableContributorTest extends AbstractTestCase {
 		assertFalse(artistListener.isChanged());
 		assertFalse(releaseListener.isChanged());
 	}
+
+	
+	
 	
 	@Test
 	public void testDelete() throws Exception {
@@ -140,4 +143,28 @@ public class ObservableContributorTest extends AbstractTestCase {
 		assertTrue(releaseListener.isChanged());
 	}
 	
+	@Test
+	public void testPersistencyFeatures() throws Exception {
+		assertFalse(release.isDirty());
+		assertFalse(release.getRemovedDependents().contains(contributor));
+		assertFalse(release.getSaveableDependents().contains(contributor));
+		assertFalse(release.getDeletableDependents().contains(contributor));
+		
+		release.getContributors().add(contributor);
+
+		assertTrue(release.isDirty());
+		assertFalse(release.getRemovedDependents().contains(contributor));
+		assertTrue(release.getSaveableDependents().contains(contributor));
+		assertTrue(release.getDeletableDependents().contains(contributor));
+		assertEquals(1, release.getDeletableDependents().size());
+		assertEquals(1, release.getSaveableDependents().size());
+			
+		release.getContributors().clear();
+
+		assertTrue(release.isDirty());
+		assertFalse(release.getRemovedDependents().contains(contributor));
+		assertFalse(release.getSaveableDependents().contains(contributor));
+		assertFalse(release.getDeletableDependents().contains(contributor));
+	
+	}
 }

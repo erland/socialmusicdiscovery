@@ -49,7 +49,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.socialmusicdiscovery.rcp.content.ObservableArtist;
-import org.socialmusicdiscovery.rcp.content.ObservableContributor;
 import org.socialmusicdiscovery.rcp.grid.GridTableColumnLayout;
 import org.socialmusicdiscovery.rcp.util.Debug;
 import org.socialmusicdiscovery.rcp.util.ViewerUtil;
@@ -151,9 +150,9 @@ import org.socialmusicdiscovery.rcp.views.util.OpenListener;
 
 	@Override
 	protected void afterSetModel(ObservableArtist model) {
-		IBeanValueProperty roleProperty = BeanProperties.value(ObservableContributor.class, "type");
-		IBeanValueProperty classProperty = BeanProperties.value(ObservableContributor.class, "entity.typeName");
-		IBeanValueProperty entityProperty = BeanProperties.value(ObservableContributor.class, "entity.name");
+		IBeanValueProperty roleProperty = BeanProperties.value("type");
+		IBeanValueProperty classProperty = BeanProperties.value("owner.typeName");
+		IBeanValueProperty entityProperty = BeanProperties.value("owner.name");
 		IObservableSet set = getModel().getContributions();
 		ViewerUtil.bind(gridTableViewer, set, roleProperty, classProperty, entityProperty);
 	}

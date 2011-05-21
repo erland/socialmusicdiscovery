@@ -97,7 +97,7 @@ public class TrackContributorPanel extends AbstractComposite<ObservableTrack> {
 
 		private boolean accept(ObservableContributor c) {
 			for (Entry<Class, Boolean> entry: settings.entrySet()) {
-				if (entry.getKey().isInstance(c.getEntity())) {
+				if (entry.getKey().isInstance(c.getOwner())) {
 					return entry.getValue().booleanValue();
 				}
 			}

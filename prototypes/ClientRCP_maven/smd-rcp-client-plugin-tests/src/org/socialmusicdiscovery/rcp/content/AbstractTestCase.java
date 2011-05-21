@@ -100,7 +100,7 @@ public abstract class AbstractTestCase extends TestCase {
 		t.setNumber(Integer.valueOf(trackNumber));
 		t.setRelease(release);
 		t.setRecording(recording);
-		t.postInflate(); // hook listeners
+		t.postCreate();
 		t.setDirty(false);
 		
 		release.setTracks(Arrays.asList((Track)t));
@@ -114,6 +114,7 @@ public abstract class AbstractTestCase extends TestCase {
 		r.setId(nextId());
 		r.setTestDataSource(dataSource);
 		r.postCreate();
+		r.setDirty(false);
 		return r;
 	}
 
@@ -127,7 +128,6 @@ public abstract class AbstractTestCase extends TestCase {
 		a.setId(String.valueOf(id));
 		a.setName(name);
 		a.postCreate();
-		a.postInflate();
 		a.setContributions(Collections.<ObservableContributor>emptySet());
 		return a;
 	}
@@ -138,7 +138,6 @@ public abstract class AbstractTestCase extends TestCase {
 		r.setId(String.valueOf(id));
 		r.setName(name);
 		r.postCreate();
-		r.postInflate();
 		return r;
 	}
 
@@ -156,7 +155,7 @@ public abstract class AbstractTestCase extends TestCase {
 		c.setId(nextId());
 		c.setArtist(a);
 		c.setType(role);
-		c.setEntity(e);
+		c.setOwner(e);
 		return c;
 	}
 

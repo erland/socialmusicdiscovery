@@ -33,6 +33,7 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.observable.Observables;
@@ -149,7 +150,7 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 	 * Returns an empty list. Subclasses should override as necessary.
 	 * @return {@link List}, empty 
 	 */
-	public <D extends Deletable> Collection<D> getDependentsToDelete() {
+	public <D extends Deletable> Collection<D> getDeletableDependents() {
 		return Collections.emptyList();
 	}
 	
@@ -179,11 +180,33 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 	 * {@link #inflate()}, if the instance was inflated. Default method does
 	 * nothing, subclasses should override as necessary, typically to load any
 	 * properties not loaded by the default inflation.
+	 * @see #postCreate()
 	 */
 	protected void postInflate() {
 		// no-op
 	}
 
+	/**
+	 * <p>
+	 * Do any processing necessary after creating a new instance. Since we need
+	 * to run parameter-free constructors, we may not be able to do all we want
+	 * in the constructor. After running this method, the instance is ready for
+	 * use.
+	 * </p>
+	 * 
+	 * <p>
+	 * Note: this method should <b>only</b> be called by {@link Root},
+	 * subclasses or test classes after creating a new instance. It is not
+	 * intended to be from the constructor, but after creating a new instance in
+	 * that needs to be hooked up with listeners etc the same way an existing
+	 * instance is hooked up after being inflated.
+	 * </p>
+	 * @see #postInflate()
+	 */
+	protected void postCreate() {
+		isInflated = true;
+	}
+	
 	@Override
 	public boolean exists() {
 		return true;
@@ -283,6 +306,7 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 
 	/**
 	 * Create a backup of the entity. Backup only holds the persistent data.
+	 * FIXME does not handle dependent entities! See {@link AbstractContributableEntity#getContributors()}
 	 * @return {@link AbstractObservableEntity}
 	 * @see #restore(AbstractObservableEntity)
 	 */
@@ -294,6 +318,7 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 
 	/**
 	 * Restore state from a backup of this entity. Backup only holds the persistent data.
+	 * FIXME does not handle dependent entities! See {@link AbstractContributableEntity#getContributors()}
 	 * @see #backup()
 	 */
 	public void restore(AbstractObservableEntity backup) {
@@ -355,23 +380,6 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 	 */
 	protected void setDirtyEnabled(boolean isDirtyEnabled) {
 		this.isDirtyEnabled = isDirtyEnabled;
-	}
-	
-	/**
-	 * <p>
-	 * Do any processing necessary after creating a new instance. Since we need
-	 * to run parameter-free constructors, we may not be able to do all we want
-	 * in the constructor. After running this method, the instance is ready for
-	 * use.
-	 * </p>
-	 * 
-	 * <p>
-	 * Note: this method should <b>only</b> be called by {@link Root},
-	 * subclasses or test classes after creating a new instance!
-	 * </p>
-	 */
-	protected void postCreate() {
-		isInflated = true;
 	}
 	
 	/**
@@ -438,5 +446,19 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 			entity.inflate();
 		}
 	}
+	
+	/**
+	 * Default implementation returns an empty set. Subclasses should override as necessary.
+	 */
+	public Set<? extends ObservableEntity> getRemovedDependents() {
+		return Collections.emptySet();
+	}
 
+	/**
+	 * Default implementation returns an empty set. Subclasses should override as necessary.
+	 * Returned set may include new, modified and unmodified entities.
+	 */
+	public Set<? extends ObservableEntity> getSaveableDependents() {
+		return Collections.emptySet();
+	}
 }

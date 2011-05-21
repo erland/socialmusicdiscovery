@@ -42,14 +42,14 @@ public class ArtistEditor extends AbstractEditorPart<ObservableArtist, ArtistUI>
 	@Override
 	public void createPartControl(Composite parent) {
 		super.createPartControl(parent, new ArtistUI(parent, SWT.NONE));
-		hookContextMenus();
+//		hookContextMenus();
 	}
 
-	private void hookContextMenus() {
-		hookContextMenus(
-			getUI().getArtistContributionsPanel().getGridViewer()
+//	private void hookContextMenus() {
+//		hookContextMenus(
+//			getUI().getArtistContributionsPanel().getGridViewer() // Cannot affect "other" editor
 //			getUI().getAliasArea().getGridViewer(),
 //			getUI().getMemberArea().getGridViewer(),
-		);
-	}
+//		);
+//	}
 }

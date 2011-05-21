@@ -27,16 +27,17 @@
 
 package org.socialmusicdiscovery.rcp.content;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.core.databinding.observable.set.IObservableSet;
 import org.eclipse.core.databinding.observable.set.ISetChangeListener;
 import org.eclipse.core.databinding.observable.set.SetChangeEvent;
+import org.socialmusicdiscovery.rcp.content.DataSource.Root;
 import org.socialmusicdiscovery.rcp.util.GenericWritableSet;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
-
-import com.google.gson.annotations.Expose;
 
 /**
  * A common abstraction for all entities that can have contributors. Use to
@@ -67,6 +68,11 @@ public abstract class AbstractContributableEntity<T extends SMDIdentity>  extend
 				if (a.isContributionsLoaded()) {
 					a.getContributions().remove(c);
 				}
+				if (addedContributors.contains(c)) {
+					addedContributors.remove(c); // if removed before saving
+				} else {
+					removedContributors.add(c);
+				}
 			}
 		}
 
@@ -76,6 +82,8 @@ public abstract class AbstractContributableEntity<T extends SMDIdentity>  extend
 				ObservableArtist a = (ObservableArtist) c.getArtist();
 				// do NOT check resolution state - we must resolve set before adding to ensure consistency   
 				a.getContributions().add(c);
+				addedContributors.add(c);
+				assert !removedContributors.contains(c); // should not happen, additions shoudl be new instances 
 			}
 		}
 
@@ -83,7 +91,9 @@ public abstract class AbstractContributableEntity<T extends SMDIdentity>  extend
 
 	public static final String PROP_contributors = "contributors";
 
-	@Expose private GenericWritableSet<Contributor> contributors = new GenericWritableSet<Contributor>();
+	private GenericWritableSet<Contributor> contributors = new GenericWritableSet<Contributor>();
+	private Set<ObservableContributor> removedContributors = new HashSet<ObservableContributor>();
+	private Set<ObservableContributor> addedContributors  = new HashSet<ObservableContributor>();
 
 	public AbstractContributableEntity() {
 		super();
@@ -106,51 +116,60 @@ public abstract class AbstractContributableEntity<T extends SMDIdentity>  extend
 	}
 
 	/**
-	 * Override to hook listener after inflating an existing instance.
+	 * Override to inflate all contributors and listen for changes.     
 	 */
 	@Override
 	protected void postInflate() {
 		super.postInflate();
-		
-//		FIXME disable this code when "Solution 1" is implemented
-		for (Object o : contributors) {
-			ObservableContributor c = (ObservableContributor) o;
-			c.setEntity(this);
-		}
-
-//		FIXME enable this code when "Solution 1" is implemented
-//		Root<Contributor> root = getDataSource().resolveRoot(Contributor.class);
-//		Collection<ObservableContributor> allContributors = root.findAll(this);
-//		inflateAll(allContributors);
-//		contributors.addAll(allContributors);
-		
-		hookContributorListener();
+		Root<Contributor> root = getDataSource().resolveRoot(Contributor.class);
+		Collection<ObservableContributor> allContributors = root.findAll(this);
+		inflateAll(allContributors);
+		contributors.addAll(allContributors);
+		hookContributorsListener();
 	}
 
 	/**
-	 * Override to hook listener after creating a new instance.
+	 * Override to listen for contributors.     
 	 */
 	@Override
 	protected void postCreate() {
 		super.postCreate();
-		hookContributorListener();
+		hookContributorsListener();
 	}
 	
 	/**
-	 * Hook listener <b>after</b> inflating, or we will end up in an infinite
+	 * Hook listener <b>after</b> inflating contributors, or we will end up in an infinite
 	 * loop.
 	 */
-	private void hookContributorListener() {
+	protected void hookContributorsListener() {
 		contributors.addSetChangeListener(new MyContributorListener());
 	}
 
 	/**
-	 * Default implementation removes contributors and contributions (thru the attached listener). 
+	 * Default implementation also removes contributors (thru the attached listener). 
 	 */
 	public void delete() {
-		contributors.clear();
+		delete(addedContributors, removedContributors, contributors);
 		super.delete();
 	}
 
-	
+	private void delete(Set... sets) {
+		for (Set<Contributor> set : sets) {
+			for (Contributor o: set) {
+				ObservableContributor c = (ObservableContributor) o;
+				getDataSource().delete(c);
+			}
+			set.clear();
+		}
+	}
+
+	public Set<? extends ObservableEntity> getRemovedDependents() {
+		return removedContributors;
+	}
+
+	@SuppressWarnings("unchecked")
+	public Set<? extends ObservableEntity> getSaveableDependents() {
+		return contributors;
+	}
+
 }

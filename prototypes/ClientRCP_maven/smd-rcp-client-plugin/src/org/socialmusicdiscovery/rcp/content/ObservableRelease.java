@@ -88,10 +88,12 @@ public class ObservableRelease extends AbstractContributableEntity<Release> impl
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <D extends Deletable> Collection<D> getDependentsToDelete() {
+	public <D extends Deletable> Collection<D> getDeletableDependents() {
 		List result = new ArrayList();
 		result.addAll(getTracks());
 		result.addAll(getContributors());
+//		result.addAll(getMediums());
+//		result.add(getLabel());
 		return result;
 	}
 

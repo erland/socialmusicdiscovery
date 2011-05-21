@@ -89,8 +89,6 @@ public class ObservableRecordingTest extends AbstractTestCase {
 	}
 
 	public void testName() throws Exception {
-		assertTrue(contains("work1"));
-		assertTrue(contains("work2"));
 		assertFalse(recording.isDirty());
 		
 		recording.setName("Pelle");
@@ -134,7 +132,7 @@ public class ObservableRecordingTest extends AbstractTestCase {
 	protected boolean contains(String probe) {
 		String name = recording.getName();
 //		System.out.println(name);
-		return name.indexOf(probe)>=0;
+		return name!=null && name.indexOf(probe)>=0;
 	}
 	
 }

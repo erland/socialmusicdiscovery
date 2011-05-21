@@ -252,9 +252,26 @@ public class ObservableTrack extends AbstractContributableEntity<Track> implemen
 		if (r!=null) {
 			r.inflate();
 		}
+		hookTitleManager();
+	}
 
-		// hook listeners for derived properties
+	@Override
+	protected void postCreate() {
+		super.postCreate();
+		hookTitleManager();
+	}
+
+	/**
+	 * Override to redirect contributor handling to {@link MyContributorFacade}m 
+	 * and to add listeners for derive name. This method is called by superclass 
+	 * in both {@link #postInflate()} and {@link #postCreate()}.
+	 */
+	@Override
+	protected void hookContributorsListener() {
 		contributorFacade = new MyContributorFacade();
+	}
+
+	private void hookTitleManager() {
 		titleManager.run();
 		ChangeMonitor.observe(titleManager, this, PROP_recording, PROP_name);
 	}
