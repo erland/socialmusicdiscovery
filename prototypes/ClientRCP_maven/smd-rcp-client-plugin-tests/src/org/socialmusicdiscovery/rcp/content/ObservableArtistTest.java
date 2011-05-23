@@ -33,7 +33,6 @@ import org.socialmusicdiscovery.rcp.test.MultiPurposeListener;
 /**
  * @author Peer Törngren
  */
-@SuppressWarnings("unchecked")
 public class ObservableArtistTest extends AbstractTestCase {
 
 
@@ -46,7 +45,7 @@ public class ObservableArtistTest extends AbstractTestCase {
 		contributor = contributor(release, artist, COMPOSER);
 		
 //		artist.setContributions(asSet(contribution));
-		release.setContributors(asSet(contributor));
+//		release.setContributors(asSet(contributor));
 		assert artist.getContributions().contains(contributor);
 		assert artist.getContributions().size()==release.getContributors().size();
 	}

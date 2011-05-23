@@ -156,6 +156,7 @@ public abstract class AbstractTestCase extends TestCase {
 		c.setArtist(a);
 		c.setType(role);
 		c.setOwner(e);
+		c.postCreate();
 		return c;
 	}
 

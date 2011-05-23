@@ -27,6 +27,7 @@
 
 package org.socialmusicdiscovery.rcp.event;
 
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
@@ -60,5 +61,16 @@ public interface Observable {
 
 	/** @see PropertyChangeSupport#removePropertyChangeListener(String, PropertyChangeListener) */
 	void removePropertyChangeListener(String propertyName, PropertyChangeListener listener);
+
+
+	/**
+	 * Fire a {@link PropertyChangeEvent} for supplied property name. No old or
+	 * new value is sent. This is useful for sending "refresh events" to notify
+	 * listeners that they need to update although the property has not
+	 * necessarily changed.
+	 * 
+	 * @param propertyName
+	 */
+	void firePropertyChange(String propertyName);
 
 }
