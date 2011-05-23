@@ -27,7 +27,6 @@
 
 package org.socialmusicdiscovery.rcp.content;
 
-import java.util.Collections;
 import java.util.Set;
 
 import org.junit.Test;
@@ -50,50 +49,7 @@ public class ObservableContributorTest extends AbstractTestCase {
 	}
 	
 	@Test
-	public void testAdd() throws Exception {
-		assertFalse(release.getContributors().contains(contributor));
-		assertFalse(artist.getContributions().contains(contributor));
-		
-		MultiPurposeListener releaseListener = listener(release.getContributors());
-		MultiPurposeListener artistListener = listener(release.getContributors());
-		
-		release.getContributors().add(contributor);
-
-		assertTrue(release.getContributors().contains(contributor));
-		assertTrue(artist.getContributions().contains(contributor));
-		assertTrue(artistListener.isChanged());
-		assertTrue(releaseListener.isChanged());
-	}
-	
-	@Test
-	public void testSet() throws Exception {
-		assertFalse(release.getContributors().contains(contributor));
-		assertFalse(artist.getContributions().contains(contributor));
-		
-		MultiPurposeListener releaseListener = listener(release.getContributors());
-		MultiPurposeListener artistListener = listener(release.getContributors());
-		
-		release.setContributors(asSet(contributor));
-
-		assertTrue(release.getContributors().contains(contributor));
-		assertTrue(artist.getContributions().contains(contributor));
-		assertTrue(artistListener.isChanged());
-		assertTrue(releaseListener.isChanged());
-		
-		release.setContributors(Collections.EMPTY_SET);
-
-		assertFalse(release.getContributors().contains(contributor));
-		assertFalse(artist.getContributions().contains(contributor));
-		assertTrue(artistListener.isChanged());
-		assertTrue(releaseListener.isChanged());
-	}
-	
-	@Test
 	public void testAddDuplicate() throws Exception {
-		assertFalse(release.getContributors().contains(contributor));
-		assertFalse(artist.getContributions().contains(contributor));
-		release.setContributors(asSet(contributor));
-
 		MultiPurposeListener releaseListener = listener(release.getContributors());
 		MultiPurposeListener artistListener = listener(artist.getContributions());
 
@@ -101,6 +57,7 @@ public class ObservableContributorTest extends AbstractTestCase {
 		assertEquals(1, artist.getContributions().size());
 		
 		release.getContributors().add(contributor);
+		artist.getContributions().add(contributor);
 
 		assertEquals(1, release.getContributors().size());
 		assertEquals(1, artist.getContributions().size());
@@ -128,18 +85,13 @@ public class ObservableContributorTest extends AbstractTestCase {
 	
 	@Test
 	public void testRemoveFromContributable() throws Exception {
-		release.setContributors(asSet(contributor));
 		assertTrue(release.getContributors().contains(contributor));
-		assertTrue(artist.getContributions().contains(contributor));
 		
 		MultiPurposeListener releaseListener = listener(release.getContributors());
-		MultiPurposeListener artistListener = listener(artist.getContributions());
 
 		release.getContributors().remove(contributor);
 		
 		assertFalse(release.getContributors().contains(contributor));
-		assertFalse(artist.getContributions().contains(contributor)); 
-		assertTrue(artistListener.isChanged());
 		assertTrue(releaseListener.isChanged());
 	}
 	
@@ -148,20 +100,20 @@ public class ObservableContributorTest extends AbstractTestCase {
 		assertFalse(release.isDirty());
 		assertFalse(release.getRemovedDependents().contains(contributor));
 		assertFalse(release.getSaveableDependents().contains(contributor));
-		assertFalse(release.getDeletableDependents().contains(contributor));
-		
-		release.getContributors().add(contributor);
-
-		assertTrue(release.isDirty());
-		assertFalse(release.getRemovedDependents().contains(contributor));
-		assertTrue(release.getSaveableDependents().contains(contributor));
 		assertTrue(release.getDeletableDependents().contains(contributor));
-		assertEquals(1, release.getDeletableDependents().size());
-		assertEquals(1, release.getSaveableDependents().size());
+		
+		contributor.delete();
+
+		assertFalse(release.isDirty());
+		assertFalse(release.getRemovedDependents().contains(contributor));
+		assertFalse(release.getSaveableDependents().contains(contributor));
+		assertFalse(release.getDeletableDependents().contains(contributor));
+		assertEquals(0, release.getDeletableDependents().size());
+		assertEquals(0, release.getSaveableDependents().size());
 			
 		release.getContributors().clear();
 
-		assertTrue(release.isDirty());
+		assertFalse(release.isDirty());
 		assertFalse(release.getRemovedDependents().contains(contributor));
 		assertFalse(release.getSaveableDependents().contains(contributor));
 		assertFalse(release.getDeletableDependents().contains(contributor));

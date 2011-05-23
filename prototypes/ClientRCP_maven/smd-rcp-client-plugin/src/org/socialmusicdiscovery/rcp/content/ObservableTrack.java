@@ -33,6 +33,7 @@ import static org.socialmusicdiscovery.rcp.content.ObservableRecording.PROP_work
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -253,21 +254,17 @@ public class ObservableTrack extends AbstractContributableEntity<Track> implemen
 			r.inflate();
 		}
 		hookTitleManager();
+		hookContributorsListener();
 	}
 
 	@Override
 	protected void postCreate() {
 		super.postCreate();
 		hookTitleManager();
+		hookContributorsListener();
 	}
 
-	/**
-	 * Override to redirect contributor handling to {@link MyContributorFacade}m 
-	 * and to add listeners for derive name. This method is called by superclass 
-	 * in both {@link #postInflate()} and {@link #postCreate()}.
-	 */
-	@Override
-	protected void hookContributorsListener() {
+	private void hookContributorsListener() {
 		contributorFacade = new MyContributorFacade();
 	}
 
@@ -294,6 +291,7 @@ public class ObservableTrack extends AbstractContributableEntity<Track> implemen
 
 	@Override
 	public void delete() {
+		inflate();
 		ObservableRecording recording = (ObservableRecording) getRecording();
 		if (recording.isInflated()) {
 			recording.getTracks().remove(this);  
@@ -311,6 +309,14 @@ public class ObservableTrack extends AbstractContributableEntity<Track> implemen
 	public Track newInstance() {
 		NotYetImplemented.openDialog("Cannot yet create "+getClass().getSimpleName());
 		return null;
+	}
+
+	/**
+	 * In contrast to superclass, I don't own my contributors (they are derived). 
+	 */
+	@Override
+	public <D extends Deletable> Collection<D> getDeletableDependents() {
+		return Collections.emptySet();
 	}
 
 }

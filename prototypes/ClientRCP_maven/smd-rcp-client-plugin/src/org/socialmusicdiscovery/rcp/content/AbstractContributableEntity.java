@@ -28,13 +28,11 @@
 package org.socialmusicdiscovery.rcp.content;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.core.databinding.observable.set.IObservableSet;
-import org.eclipse.core.databinding.observable.set.ISetChangeListener;
-import org.eclipse.core.databinding.observable.set.SetChangeEvent;
 import org.socialmusicdiscovery.rcp.content.DataSource.Root;
+import org.socialmusicdiscovery.rcp.util.ChangeReplicator;
 import org.socialmusicdiscovery.rcp.util.GenericWritableSet;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
@@ -50,50 +48,9 @@ import org.socialmusicdiscovery.server.business.model.core.Contributor;
  */
 public abstract class AbstractContributableEntity<T extends SMDIdentity>  extends AbstractObservableEntity<T> {
 
-	private class MyContributorListener implements ISetChangeListener {
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public void handleSetChange(SetChangeEvent event) {
-			handleAdditions(event.diff.getAdditions());
-			handleRemovals(event.diff.getRemovals());
-			if (!event.diff.isEmpty()) {
-				setDirty(true);
-			}
-		}
-
-		private void handleRemovals(Set<ObservableContributor> removals) {
-			for (ObservableContributor c : removals) {
-				ObservableArtist a = (ObservableArtist) c.getArtist();
-				if (a.isContributionsLoaded()) {
-					a.getContributions().remove(c);
-				}
-				if (addedContributors.contains(c)) {
-					addedContributors.remove(c); // if removed before saving
-				} else {
-					removedContributors.add(c);
-				}
-			}
-		}
-
-		private void handleAdditions(Set<ObservableContributor> additions) {
-			for (ObservableContributor c : additions) {
-//				assert c.getEntity() == AbstractContributableEntity.this : "Wrong entity, expected: "+AbstractContributableEntity.this+", found: "+c.getEntity();
-				ObservableArtist a = (ObservableArtist) c.getArtist();
-				// do NOT check resolution state - we must resolve set before adding to ensure consistency   
-				a.getContributions().add(c);
-				addedContributors.add(c);
-				assert !removedContributors.contains(c); // should not happen, additions shoudl be new instances 
-			}
-		}
-
-	}
-
 	public static final String PROP_contributors = "contributors";
 
 	private GenericWritableSet<Contributor> contributors = new GenericWritableSet<Contributor>();
-	private Set<ObservableContributor> removedContributors = new HashSet<ObservableContributor>();
-	private Set<ObservableContributor> addedContributors  = new HashSet<ObservableContributor>();
 
 	public AbstractContributableEntity() {
 		super();
@@ -137,39 +94,17 @@ public abstract class AbstractContributableEntity<T extends SMDIdentity>  extend
 		hookContributorsListener();
 	}
 	
-	/**
-	 * Hook listener <b>after</b> inflating contributors, or we will end up in an infinite
-	 * loop.
-	 */
-	protected void hookContributorsListener() {
-		contributors.addSetChangeListener(new MyContributorListener());
-	}
-
-	/**
-	 * Default implementation also removes contributors (thru the attached listener). 
-	 */
-	public void delete() {
-		delete(addedContributors, removedContributors, contributors);
-		super.delete();
-	}
-
-	private void delete(Set... sets) {
-		for (Set<Contributor> set : sets) {
-			for (Contributor o: set) {
-				ObservableContributor c = (ObservableContributor) o;
-				getDataSource().delete(c);
-			}
-			set.clear();
-		}
-	}
-
-	public Set<? extends ObservableEntity> getRemovedDependents() {
-		return removedContributors;
+	private void hookContributorsListener() {
+		ChangeReplicator.replicate(contributors, this, PROP_contributors);
 	}
 
 	@SuppressWarnings("unchecked")
-	public Set<? extends ObservableEntity> getSaveableDependents() {
-		return contributors;
+	@Override
+	public <D extends Deletable> Collection<D> getDeletableDependents() {
+		inflate();
+		Collection<D> deletableDependents = super.getDeletableDependents();
+		deletableDependents.addAll(getContributors());
+		return deletableDependents;
 	}
 
 }

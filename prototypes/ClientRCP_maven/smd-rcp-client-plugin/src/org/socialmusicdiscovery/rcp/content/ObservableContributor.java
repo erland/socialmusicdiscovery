@@ -27,10 +27,6 @@
 
 package org.socialmusicdiscovery.rcp.content;
 
-import java.util.Arrays;
-
-import org.eclipse.core.databinding.observable.set.IObservableSet;
-import org.socialmusicdiscovery.rcp.error.NotYetImplementedException;
 import org.socialmusicdiscovery.rcp.util.NotYetImplemented;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
@@ -60,11 +56,12 @@ public class ObservableContributor extends AbstractObservableEntity<Contributor>
 	}
 
 	@Override
-	public Artist getArtist() {
-		return artist;
+	public ObservableArtist getArtist() {
+		return (ObservableArtist) artist;
 	}
 
 	public void setArtist(Artist artist) {
+		assert artist instanceof ObservableArtist : "Not an "+ObservableArtist.class+": "+artist;
 		firePropertyChange(PROP_artist, this.artist, this.artist = artist);
 	}
 
@@ -83,14 +80,12 @@ public class ObservableContributor extends AbstractObservableEntity<Contributor>
 	public void delete() {
 		AbstractContributableEntity owner = getOwner();
 		if (owner.isInflated()) {
-			IObservableSet contributors = owner.getContributors();
-			boolean removed = contributors.remove(this);
-			assert removed : "Contributor not removed from entity: "+this+": "+Arrays.asList(contributors);
-		} else {
-			// FIXME there is no way to save a modified owner that is not open in an editor
-			throw new NotYetImplementedException("Can not (yet) delete contributors from other than the owner's editor. This operation should be disabled in this context.");
-//			getDataSource().delete(this);
+			owner.getContributors().remove(this);
 		}
+		if (getArtist().isContributionsLoaded()) {
+			getArtist().getContributions().remove(this);
+		}
+		super.delete();
 	}
 
 	@Override
@@ -107,6 +102,17 @@ public class ObservableContributor extends AbstractObservableEntity<Contributor>
 	@Override
 	public void setOwner(SMDIdentity owner) {
 		firePropertyChange(PROP_owner, this.owner, this.owner = (AbstractContributableEntity) owner);
+	}
+
+	@Override
+	protected void postCreate() {
+		super.postCreate();
+		if (getOwner().isInflated()) {
+			getOwner().getContributors().add(this);
+		}
+		if (getArtist().isContributionsLoaded()) {
+			getArtist().getContributions().add(this);
+		}
 	}
 
 }

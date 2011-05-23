@@ -126,7 +126,7 @@ public class ObservableTrackTest extends AbstractTestCase {
 		}
 		
 		Contributor releaseConductor = add(release, releaseArtist, CONDUCTOR);
-		assertEquals("Bad size after add", expectedSize+1, track.getContributors().size());
+		assertEquals("Bad size after add: "+expected, expectedSize+1, track.getContributors().size());
 		assertTrue("Not effective contributor: "+releaseConductor, track.isEffectiveContributor(releaseConductor));
 		
 		assertTrue("Not effective contributor: "+releasePerformer, track.isEffectiveContributor(releasePerformer));
@@ -247,9 +247,7 @@ public class ObservableTrackTest extends AbstractTestCase {
 	}
 	
 	private ObservableContributor add(AbstractContributableEntity e, ObservableArtist a, String role) {
-		ObservableContributor contributor = contributor(e, a, role);
-		add(e, contributor);
-		return contributor;
+		return contributor(e, a, role);
 	}
 
 	private void add(AbstractContributableEntity e, ObservableContributor c) {

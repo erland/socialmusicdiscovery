@@ -30,6 +30,7 @@ package org.socialmusicdiscovery.rcp.content;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -148,18 +149,25 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 
 	/**
 	 * Returns an empty list. Subclasses should override as necessary.
+	 * Subclasses can add to the returned list.
 	 * @return {@link List}, empty 
 	 */
 	public <D extends Deletable> Collection<D> getDeletableDependents() {
-		return Collections.emptyList();
+		return new ArrayList<D>();
 	}
 	
 	/**
-	 * Default implementation calls {@link DataSource#delete(ObservableEntity)}.
+	 * Default implementation calls {@link DataSource#delete(ObservableEntity)} after 
+	 * deleting all {@link #getDeletableDependents()} (if any).
 	 * Subclasses should override and add behavior as necessary, e.g. to remove or notify
 	 * dependents as appropriate. 
 	 */
 	public void delete() {
+		List<Deletable> set = new ArrayList<Deletable>(getDeletableDependents());
+		for (Deletable c: set) {
+			c.delete();
+		}
+		assert getDeletableDependents().isEmpty() : this+" - all dependedents were not removed: "+getDeletableDependents();
 		getDataSource().delete(this);
 	}
 

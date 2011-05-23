@@ -133,7 +133,7 @@ public class ObservableComposite extends Composite implements Observable {
 	 * 
 	 * @param propertyName
 	 */
-	protected void firePropertyChange(String propertyName) {
+	public void firePropertyChange(String propertyName) {
 		PropertyChangeEvent e = new PropertyChangeEvent(this, propertyName, null, null);
 		pcs.firePropertyChange(e);
 	}

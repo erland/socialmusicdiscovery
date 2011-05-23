@@ -211,14 +211,12 @@ public class ObservableRecording extends AbstractContributableEntity<Recording> 
 	@SuppressWarnings("unchecked")
 	@Override
 	public void delete() {
-		if (tracks!=null) {
-			Collection<ObservableTrack> tmpTracks = getTracks();
-			for (ObservableTrack track : tmpTracks) {
-				track.delete();
-			}
-			assert getTracks().isEmpty() : "All tracks should have been removed when deleted: "+getTracks();
+		inflate();
+		Collection<ObservableTrack> tmpTracks = getTracks();
+		for (ObservableTrack track : tmpTracks) {
+			track.delete();
 		}
-
+		assert getTracks().isEmpty() : "All tracks should have been removed when deleted: "+getTracks();
 		super.delete();
 	}
 

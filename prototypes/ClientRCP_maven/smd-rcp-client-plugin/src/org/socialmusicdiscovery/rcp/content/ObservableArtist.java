@@ -29,10 +29,8 @@ package org.socialmusicdiscovery.rcp.content;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
-import org.eclipse.core.databinding.observable.set.IObservableSet;
 import org.socialmusicdiscovery.rcp.content.DataSource.Root;
 import org.socialmusicdiscovery.rcp.util.GenericWritableSet;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
@@ -99,21 +97,18 @@ public class ObservableArtist extends AbstractObservableEntity<Artist> implement
 
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void delete() {
-		if (contributions!=null) {
-			Set<ObservableContributor> tmp = new HashSet<ObservableContributor>(contributions);
-			for (Iterator<ObservableContributor> iterator = tmp.iterator(); iterator.hasNext();) {
-				ObservableContributor c = iterator.next();
-				AbstractContributableEntity entity = c.getOwner();
-				IObservableSet contributors = entity.getContributors();
-				boolean removed = contributors.remove(c);
-				assert removed : "Contribution not removed from entity contributors: " + c; 
-			}
-			assert contributions.isEmpty() : "Collection should have been cleared when all contributions are removed: "+contributions;
-		}
+		inflate();
 		super.delete();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <D extends Deletable> Collection<D> getDeletableDependents() {
+		Collection<D> deletableDependents = super.getDeletableDependents();
+		deletableDependents.addAll(getContributions());
+		return deletableDependents;
 	}
 
 }

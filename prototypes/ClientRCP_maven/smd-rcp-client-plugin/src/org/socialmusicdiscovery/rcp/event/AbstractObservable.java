@@ -123,16 +123,8 @@ public abstract class AbstractObservable implements Observable {
 			firePropertyChange(propertyName);
 		}
 	}
-
-	/**
-	 * Fire {@link PropertyChangeEvent} for supplied property name. No old or
-	 * new value is sent. This is useful for sending "refresh events" to notify
-	 * listeners that they need to update although the property has not
-	 * necessarily changed.
-	 * 
-	 * @param propertyName
-	 */
-	protected void firePropertyChange(String propertyName) {
+	
+	public void firePropertyChange(String propertyName) {
 		PropertyChangeEvent e = new PropertyChangeEvent(this, propertyName, null, null);
 		pcs.firePropertyChange(e);
 	}
