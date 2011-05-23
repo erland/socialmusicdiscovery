@@ -2,8 +2,7 @@ package org.socialmusicdiscovery.server.plugins.mediaimport.dropdatabase;
 
 import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
 import org.socialmusicdiscovery.test.BaseTestCase;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import javax.persistence.EntityManager;
@@ -13,15 +12,9 @@ public class DropDatabaseTest extends BaseTestCase {
     DropDatabase dropDatabase;
     boolean finished;
 
-    @BeforeTest
-    public void setUp() {
-        super.setUp();
+    @BeforeClass
+    public void setUpClass() {
         dropDatabase = new DropDatabase();
-    }
-
-    @AfterTest
-    public void tearDown() {
-        super.tearDown();
     }
 
     @Test

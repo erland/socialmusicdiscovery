@@ -39,7 +39,6 @@ import org.socialmusicdiscovery.server.business.model.core.Release;
 import org.socialmusicdiscovery.server.business.model.core.ReleaseEntity;
 import org.socialmusicdiscovery.server.business.model.core.Track;
 import org.socialmusicdiscovery.test.BaseTestCase;
-import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -57,7 +56,6 @@ public class SqueezeboxServerTest extends BaseTestCase {
 
     @BeforeClass
     public void setUp() {
-        super.setUp();
         squeezeboxServer = new SqueezeboxServer();
         String pluginConfigurationPath = "org.socialmusicdiscovery.server.plugins.mediaimport."+squeezeboxServer.getId()+".";
 
@@ -73,11 +71,6 @@ public class SqueezeboxServerTest extends BaseTestCase {
         defaultValueConfigurationManager.setParametersForPath(pluginConfigurationPath, defaultConfiguration);
         squeezeboxServer.setConfiguration(new MappedConfigurationContext(pluginConfigurationPath));
         squeezeboxServer.init();
-    }
-
-    @AfterTest
-    public void tearDown() {
-        super.tearDown();
     }
 
     @Test

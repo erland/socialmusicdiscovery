@@ -31,30 +31,11 @@ import org.socialmusicdiscovery.server.business.model.core.Artist;
 import org.socialmusicdiscovery.server.business.model.core.Release;
 import org.socialmusicdiscovery.server.business.model.core.Track;
 import org.socialmusicdiscovery.test.BaseTestCase;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-import java.lang.reflect.Method;
 import java.util.Date;
 
 public class GlobalIdentityTest extends BaseTestCase {
-    @BeforeTest
-    public void setUp() {
-        super.setUp();
-    }
-
-    @AfterTest
-    public void tearDown() {
-        super.tearDown();
-    }
-
-    @BeforeMethod
-    public void setUpMethod(Method m) {
-        System.out.println("Executing "+getClass().getSimpleName()+"."+m.getName()+"...");
-        em.clear();
-    }
 
     @Test
     public void testModelGlobalIdentity() throws Exception {

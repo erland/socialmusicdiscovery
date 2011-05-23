@@ -27,62 +27,21 @@
 
 package org.socialmusicdiscovery.server.business.model;
 
-import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
-import org.socialmusicdiscovery.server.business.logic.SearchRelationPostProcessor;
 import org.socialmusicdiscovery.server.business.model.core.*;
 import org.socialmusicdiscovery.test.BaseTestCase;
-import org.testng.annotations.*;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
 
 public class ContributorFindTest extends BaseTestCase {
-    @BeforeTest
-    public void setUp()  {
-        super.setUp();
-    }
-
-    @AfterTest
-    public void tearDown() {
-        super.tearDown();
-    }
-
     @BeforeClass
     public void setUpClass() {
-        try {
-            loadTestData(getClass().getPackage().getName(),"The Bodyguard.xml");
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        SearchRelationPostProcessor searchRelationPostProcessor = new SearchRelationPostProcessor();
-        searchRelationPostProcessor.init();
-        searchRelationPostProcessor.execute(new ProcessingStatusCallback() {
-            public void progress(String module, String currentDescription, Long currentNo, Long totalNo) {
-            }
-
-            public void failed(String module, String error) {
-            }
-
-            public void finished(String module) {
-            }
-
-            public void aborted(String module) {
-            }
-        });
+        loadTestData(getClass().getPackage().getName(),"The Bodyguard.xml");
+        updateSearchRelations();
     }
 
-    @BeforeMethod
-    public void setUpMethod(Method m) {
-        System.out.println("Executing "+getClass().getSimpleName()+"."+m.getName()+"...");
-        em.clear();
-    }
-    @AfterMethod
-    public void tearDownMethod(Method m) {
-        if(em.getTransaction().isActive()) {
-            em.getTransaction().rollback();
-        }
-    }
     @Test
     public void testFind() {
         Collection<ReleaseEntity> releases = releaseRepository.findByName("The Bodyguard (Original Soundtrack Album)");

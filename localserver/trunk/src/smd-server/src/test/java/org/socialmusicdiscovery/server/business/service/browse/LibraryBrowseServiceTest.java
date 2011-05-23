@@ -27,10 +27,10 @@
 
 package org.socialmusicdiscovery.server.business.service.browse;
 
-import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
-import org.socialmusicdiscovery.server.business.logic.SearchRelationPostProcessor;
 import org.socialmusicdiscovery.test.BaseTestCase;
-import org.testng.annotations.*;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -39,51 +39,14 @@ import java.util.Map;
 public class LibraryBrowseServiceTest extends BaseTestCase {
     boolean logging = false;
 
-    @BeforeTest
-    public void setUp() {
-        super.setUp();
-    }
-
-    @AfterTest
-    public void tearDown() {
-        super.tearDown();
-    }
-
-    @BeforeMethod
-    public void setUpMethod(Method m) {
-        System.out.println("Executing " + getClass().getSimpleName() + "." + m.getName() + "...");
-        em.clear();
-    }
-
     @BeforeClass
     public void setUpClass() {
-        try {
-            loadTestData("org.socialmusicdiscovery.server.business.model", "Arista RCA Releases.xml");
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        SearchRelationPostProcessor searchRelationPostProcessor = new SearchRelationPostProcessor();
-        searchRelationPostProcessor.init();
-        searchRelationPostProcessor.execute(new ProcessingStatusCallback() {
-            public void progress(String module, String currentDescription, Long currentNo, Long totalNo) {
-            }
-
-            public void failed(String module, String error) {
-            }
-
-            public void finished(String module) {
-            }
-
-            public void aborted(String module) {
-            }
-        });
+        loadTestData("org.socialmusicdiscovery.server.business.model", "Arista RCA Releases.xml");
+        updateSearchRelations();
     }
 
     @AfterMethod
     public void tearDownMethod(Method m) {
-        if (em.getTransaction().isActive()) {
-            em.getTransaction().rollback();
-        }
         try {
             // Stupid delay to make IntelliJ IDEA flush System.out to the console
             if(logging) Thread.sleep(1000);
