@@ -93,6 +93,8 @@ public abstract class BaseTestCase {
     @Inject
     protected WorkRepository workRepository;
     @Inject
+    protected ImageRepository imageRepository;
+    @Inject
     protected GlobalIdentityRepository globalIdentityRepository;
     @Inject
     protected ClassificationRepository classificationRepository;

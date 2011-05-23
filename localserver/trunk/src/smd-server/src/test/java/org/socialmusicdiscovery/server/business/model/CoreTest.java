@@ -105,7 +105,13 @@ public class CoreTest extends BaseTestCase {
             release.setDate(DATE_FORMAT.parse("1992"));
             setLastChanged(release);
             releaseRepository.create(release);
-
+            
+            ImageEntity image = new ImageEntity();
+            image.setUri("foo://nowhere.to/image");
+            setLastChanged(image);
+            image.setRelatedTo(release.getReference());
+            imageRepository.create(image);
+            
             WorkEntity work = new WorkEntity();
             work.setName("I Will Always Love You");
             setLastChanged(work);
