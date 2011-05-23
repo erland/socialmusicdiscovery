@@ -27,6 +27,9 @@
 
 package org.socialmusicdiscovery.server.business.model.config;
 
+/**
+ * Represents a specific configuration parameter together with the currently configured value
+ */
 public interface ConfigurationParameter {
     public enum Type {
         STRING,

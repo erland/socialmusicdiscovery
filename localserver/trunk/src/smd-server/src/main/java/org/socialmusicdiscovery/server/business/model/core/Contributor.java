@@ -28,8 +28,17 @@
 package org.socialmusicdiscovery.server.business.model.core;
 
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
-import org.socialmusicdiscovery.server.business.model.SMDIdentityReference;
 
+/**
+ * Represents the relation between an {@link Artist} and a {@link ContributorOwner}. A {@link ContributorOwner} is
+ * typically either a {@link Release}, {@link Recording}, {@link Work} or {@link RecordingSession}.
+ * Some examples of contributors are:
+ * <ul>
+ * <li>A composer who has composed the music on a {@link Work}
+ * <li>A conductor who leads an orchestra using visible gestures when doing a {@link Recording}
+ * <li>A person or band that in some way contributes to a {@link Work} or {@link Recording}. This could be a composer, conductor, artist, band, musician, orchestra, ensemble or some other kind of performer.
+ * </ul>
+ */
 public interface Contributor extends SMDIdentity {
     final static String PERFORMER = "performer";
     final static String COMPOSER = "composer";

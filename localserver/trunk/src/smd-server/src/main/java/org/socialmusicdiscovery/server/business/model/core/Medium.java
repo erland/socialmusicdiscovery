@@ -29,6 +29,10 @@ package org.socialmusicdiscovery.server.business.model.core;
 
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 
+/**
+ * Represents a specific disc in a {@link Release} which consists of two or more discs, could in special cases
+ * also represent a disc a disc in a single disc release
+ */
 public interface Medium extends SMDIdentity {
     Integer getNumber();
 

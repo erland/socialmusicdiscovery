@@ -29,6 +29,10 @@ package org.socialmusicdiscovery.server.business.model.core;
 
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 
+/**
+ * Represents a link to a physical file or online stream that represent a specific {@link Recording} which
+ * could be played
+ */
 public interface PlayableElement extends SMDIdentity {
     String getSmdID();
 

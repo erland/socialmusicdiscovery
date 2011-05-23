@@ -36,6 +36,9 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * See {@link Medium}
+ */
 @javax.persistence.Entity
 @Table(name = "mediums")
 @SMDIdentityReferenceEntity.ReferenceType(type = Medium.class)

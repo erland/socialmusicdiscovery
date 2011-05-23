@@ -34,6 +34,9 @@ import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity
 import javax.persistence.Column;
 import javax.persistence.Table;
 
+/**
+ * See {@link PlayableElement}
+ */
 @javax.persistence.Entity
 @Table(name = "playable_elements")
 @SMDIdentityReferenceEntity.ReferenceType(type = PlayableElement.class)

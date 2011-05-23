@@ -1,20 +1,16 @@
 package org.socialmusicdiscovery.server.business.model.core;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
-
+import com.google.gson.annotations.Expose;
 import org.socialmusicdiscovery.server.business.model.AbstractSMDIdentityEntity;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReference;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
 
+import javax.persistence.*;
 
-import com.google.gson.annotations.Expose;
-
+/**
+ * See {@link Image}
+ */
 @javax.persistence.Entity
 @Table(name = "images")
 @SMDIdentityReferenceEntity.ReferenceType(type = Image.class)

@@ -30,11 +30,13 @@ package org.socialmusicdiscovery.server.business.model.core;
 import com.google.gson.annotations.Expose;
 import org.socialmusicdiscovery.server.business.model.AbstractSMDIdentityEntity;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
-import org.socialmusicdiscovery.server.business.model.SMDIdentityReference;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
 
 import javax.persistence.*;
 
+/**
+ * See {@link Contributor}
+ */
 @javax.persistence.Entity
 @Table(name = "contributors")
 @SMDIdentityReferenceEntity.ReferenceType(type = Contributor.class)

@@ -32,6 +32,12 @@ import org.socialmusicdiscovery.server.business.model.core.Release;
 
 import java.util.Collection;
 
+/**
+ * Represents a collection of related albums in succession. Their relationship is not fixed, but generally share a
+ * common concept or theme, most often by the same {@link org.socialmusicdiscovery.server.business.model.core.Contributor}.
+ * The perception of a series is somewhat subjective, sometimes the work is conceived as a multiple-album work
+ * (contrast: Box or multi-disc Album). Examples: Karl Jenkins "Adiemus", House of Blues "Essential Blues".
+ */
 public interface Series extends SMDIdentity {
     String getName();
 

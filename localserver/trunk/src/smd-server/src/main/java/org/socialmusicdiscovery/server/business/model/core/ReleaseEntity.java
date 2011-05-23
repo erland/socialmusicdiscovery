@@ -36,6 +36,9 @@ import org.socialmusicdiscovery.server.business.model.search.ReleaseSearchRelati
 import javax.persistence.*;
 import java.util.*;
 
+/**
+ * See {@link Release}
+ */
 @javax.persistence.Entity
 @Table(name = "releases")
 @SMDIdentityReferenceEntity.ReferenceType(type = Release.class)

@@ -31,6 +31,15 @@ import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 
 import java.util.Set;
 
+/**
+ * Represents a single person or a group of people that performs on one or several {@link Recording} or
+ * {@link Work}. An {@link Artist} can be a group of people that is known under a group name that contributes
+ * together as a group on one or several {@link Recording}. A group may consists of both singers and other kind of
+ * musicians and is commonly known as band or orchestra. An {@link Artist} can also be a person that significantly
+ * contributes to one or several {@link Recording} or {@link Work}, typically as a composer, singer or one of the lead
+ * musicians. The difference between an {@link Artist} and a {@link Person} is that a person might have multiple
+ * careers where he/she is known under different aliases.
+ */
 public interface Artist extends SMDIdentity {
     String getName();
 

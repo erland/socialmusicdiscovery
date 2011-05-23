@@ -32,6 +32,11 @@ import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import java.util.Date;
 import java.util.Set;
 
+/**
+ * Represents a collection of one or several {@link Recording} which was recorded at the same time and place.
+ * A {@link RecordingSession} it typically used to put information which are the same for all related recordings in
+ * one place, this can typically be the conductor or performer which participate on all the recordings.
+ */
 public interface RecordingSession extends SMDIdentity {
     final static String TYPE = RecordingSession.class.getSimpleName();
 

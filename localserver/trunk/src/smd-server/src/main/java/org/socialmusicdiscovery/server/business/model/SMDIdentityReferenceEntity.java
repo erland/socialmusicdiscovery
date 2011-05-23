@@ -34,6 +34,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.lang.annotation.*;
 
+/**
+ * See {@link SMDIdentityReference}
+ */
 @javax.persistence.Entity
 @org.hibernate.annotations.Cache(usage = org.hibernate.annotations.CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Table(name = "smdidentity_references")

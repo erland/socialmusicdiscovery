@@ -32,6 +32,9 @@ import com.google.gson.annotations.Expose;
 import javax.persistence.*;
 import java.io.Serializable;
 
+/**
+ * See {@link ConfigurationParameter}
+ */
 @javax.persistence.Entity
 @org.hibernate.annotations.Cache(usage = org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "configurations")

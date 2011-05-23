@@ -27,7 +27,20 @@
 
 package org.socialmusicdiscovery.server.business.model.core;
 
+/**
+ * Interface which should be implemented by all entities which can be directly related to one or more {@link Contributor}
+ * entities
+ */
 public interface ContributorOwner {
+    /**
+     * Add a relation to a new contributor
+     * @param contributor The contributor to add a relation to
+     */
     void addContributor(ContributorEntity contributor);
+
+    /**
+     * Remove a relation to an existing contributor
+     * @param contributor The contributor to remove relation to
+     */
     void removeContributor(ContributorEntity contributor);
 }

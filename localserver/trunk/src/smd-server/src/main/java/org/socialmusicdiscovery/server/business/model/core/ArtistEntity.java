@@ -34,6 +34,9 @@ import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity
 import javax.persistence.*;
 import java.util.Set;
 
+/**
+ * See {@link Artist}
+ */
 @javax.persistence.Entity
 @Table(name = "artists")
 @SMDIdentityReferenceEntity.ReferenceType(type = Artist.class)

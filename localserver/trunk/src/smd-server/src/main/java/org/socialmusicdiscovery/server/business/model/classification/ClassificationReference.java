@@ -29,6 +29,10 @@ package org.socialmusicdiscovery.server.business.model.classification;
 
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReference;
 
+/**
+ * Represents a relation between a {@link Classification} and a {@link SMDIdentityReference}, this is used to
+ * assign a classification to a music artifact, artist or person.
+ */
 public interface ClassificationReference {
     SMDIdentityReference getReferenceTo();
 

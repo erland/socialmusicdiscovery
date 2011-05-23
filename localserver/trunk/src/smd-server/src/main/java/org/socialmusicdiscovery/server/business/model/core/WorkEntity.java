@@ -37,6 +37,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * See {@link Work}
+ */
 @javax.persistence.Entity
 @Table(name = "works")
 @SMDIdentityReferenceEntity.ReferenceType(type = Work.class)

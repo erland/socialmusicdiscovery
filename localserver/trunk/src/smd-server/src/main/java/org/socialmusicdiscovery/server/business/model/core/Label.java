@@ -29,6 +29,10 @@ package org.socialmusicdiscovery.server.business.model.core;
 
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 
+/**
+ * Represents a company that is responsible for the production and/or distribution of a {@link Release} or
+ * {@link Track}
+ **/
 public interface Label extends SMDIdentity {
     String getName();
 
