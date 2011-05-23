@@ -28,35 +28,17 @@
 package org.socialmusicdiscovery.server.support.format;
 
 import org.socialmusicdiscovery.server.business.model.core.*;
-import org.socialmusicdiscovery.test.BaseTestCase;
-import org.testng.annotations.*;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TitleFormatTest extends BaseTestCase {
-    @BeforeTest
-    public void setUp() {
-        super.setUp();
-    }
-
-    @AfterTest
-    public void tearDown() {
-        super.tearDown();
-    }
-
+public class TitleFormatTest {
     @BeforeMethod
     public void setUpMethod(Method m) {
         System.out.println("Executing " + getClass().getSimpleName() + "." + m.getName() + "...");
-        em.clear();
-    }
-
-    @AfterMethod
-    public void tearDownMethod(Method m) {
-        if (em.getTransaction().isActive()) {
-            em.getTransaction().rollback();
-        }
     }
 
     @Test
