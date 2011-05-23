@@ -27,6 +27,9 @@
 
 package org.socialmusicdiscovery.server.business.model;
 
+/**
+ * Represents a reference to an entity
+ */
 public interface SMDIdentityReference extends SMDIdentity {
     String getType();
 

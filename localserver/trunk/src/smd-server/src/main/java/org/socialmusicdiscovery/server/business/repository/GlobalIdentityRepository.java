@@ -33,5 +33,11 @@ import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 
 @ImplementedBy(JPAGlobalIdentityRepository.class)
 public interface GlobalIdentityRepository extends EntityRepository<GlobalIdentityEntity, GlobalIdentityEntity> {
+    /**
+     * Find the global identity for the specified entity managed by the specified source
+     * @param source The source which manage the global identity, for example {@link org.socialmusicdiscovery.server.business.model.GlobalIdentity#SOURCE_MUSICBRAINZ}
+     * @param entity The local entity instance which the global identity is related to
+     * @return The global identity or null if it doesn't exist
+     */
     GlobalIdentityEntity findBySourceAndEntity(String source, SMDIdentity entity);
 }

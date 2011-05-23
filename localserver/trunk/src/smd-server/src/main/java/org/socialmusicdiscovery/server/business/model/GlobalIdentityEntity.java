@@ -36,30 +36,57 @@ import javax.persistence.UniqueConstraint;
 import java.util.Date;
 import java.util.UUID;
 
+/**
+ * Represents a relation to a globally unique identity, this is typically a relation to a unique identity in an online source
+ */
 @javax.persistence.Entity
 @Table(name = "global_identities", uniqueConstraints = @UniqueConstraint(columnNames = {"source", "entityid"}))
 public class GlobalIdentityEntity implements GlobalIdentity {
+    /**
+     * Unique identity of this entity instance
+     */
     @Id
     @Column(length = 36)
     @Expose
     private String id;
 
+    /**
+     * The source that manage the globally unique identity, for example {@link GlobalIdentity#SOURCE_MUSICBRAINZ}
+     */
     @Column(name = "source", nullable = false)
     @Expose
     private String source;
+
+    /**
+     * The uri that represents the globally unique identity
+     */
     @Column(nullable = false)
     @Expose
     private String uri;
+
+    /**
+     * The identity of the local entity instance which this global identity represent
+     * TODO: Shouldn't this be a relation to {@link SMDIdentityReferenceEntity} instead of a String ?
+     */
     @Column(name = "entityid", nullable = false)
     @Expose
     private String entityId;
 
+    /**
+     * The time when this entity instance either was created or last updated
+     */
     @Column(name = "last_updated", nullable = false)
     private Date lastUpdated;
 
+    /**
+     * The module which was the one that last updated this entity instance
+     */
     @Column(name = "last_updated_by", nullable = false)
     private String lastUpdatedBy;
 
+    /**
+     * Constructs a new instance and assigns it a unique identity in the {@link #id} field
+     */
     public GlobalIdentityEntity() {
         id = UUID.randomUUID().toString();
     }
@@ -112,16 +139,27 @@ public class GlobalIdentityEntity implements GlobalIdentity {
         this.lastUpdatedBy = lastUpdatedBy;
     }
 
+    /**
+     * Equal implementation which is based on the value of the {@link #getId()} method, it will not do a full comparison the object are considered
+     * to be equal if they have the same identities
+     * @param o The object to compare to
+     * @return true if objects are equal
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof GlobalIdentityEntity)) return false;
 
-        return id.equals(((GlobalIdentityEntity) o).id);
+        return getId().equals(((GlobalIdentityEntity) o).getId());
     }
 
+    /**
+     * Hash code implementation which is based on the value of the {@link #getId()} method, it will not include the full object in the hash code,
+     * only the identity
+     * @return The hash code representing this instance
+     */
     @Override
     public int hashCode() {
-        return id.hashCode();
+        return getId().hashCode();
     }
 }

@@ -32,11 +32,20 @@ import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity
 
 import javax.persistence.EntityManager;
 
+/**
+ * Abstract repository class for all entity repository classes which inherits from {@link AbstractSMDIdentityEntity}
+ * @param <E> The type of the entity which this repositories manages
+ */
 public abstract class AbstractJPASMDIdentityRepository<E extends AbstractSMDIdentityEntity> extends AbstractJPAEntityRepository<String, E> implements SMDIdentityRepository<E> {
     public AbstractJPASMDIdentityRepository(EntityManager em) {
         super(em);
     }
 
+    /**
+     * Persists the specified entity and automatically call {@link AbstractSMDIdentityEntity#setReference(org.socialmusicdiscovery.server.business.model.SMDIdentityReference)}
+     * to set its reference unless it already have been set.
+     * @param entity The entity to persist
+     */
 	public void create(E entity) {
         if(entity.getReference()==null || entity.getReference().getId() == null) {
             entity.setReference(SMDIdentityReferenceEntity.forEntity(entity));
@@ -44,6 +53,13 @@ public abstract class AbstractJPASMDIdentityRepository<E extends AbstractSMDIden
         super.create(entity);
     }
 
+    /**
+     * Merge the specified entity with a previously persisted instance and automatically call
+     * {@link AbstractSMDIdentityEntity#setReference(org.socialmusicdiscovery.server.business.model.SMDIdentityReference)}
+     * to set its reference unless it already have been set.
+     * @param entity The entity to persist
+     * @return The merged instance which are persisted
+     */
     public E merge(E entity) {
         if(entity.getReference()==null || entity.getReference().getId() == null) {
             entity.setReference(SMDIdentityReferenceEntity.forEntity(entity));

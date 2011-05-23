@@ -33,27 +33,50 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.UUID;
 
+/**
+ * Abstract class that represents all main entities
+ */
 @MappedSuperclass
 public abstract class AbstractSMDIdentityEntity implements SMDIdentity {
+    /**
+     * Unique identity of this entity instance
+     */
     @Id
     @Column(length = 36)
     @Expose
     private String id;
 
+    /**
+     * Type of this entity instance, this attribute is a transient attribute not stored, it's only needed to make it possible to serialize the object type
+     * to JSON
+     */
     @Transient
     @Expose
     private String objectType = SMDIdentityReferenceEntity.typeForClass(getClass());
 
+    /**
+     * The entity reference which is representing this entity instance, this isn't persisted as a separate column in the database instead it will
+     * use the {@link #id} attribute to represent this relation.
+     */
     @OneToOne(targetEntity = SMDIdentityReferenceEntity.class, optional = false, cascade = {CascadeType.ALL})
     @JoinColumn(name = "id")
     private SMDIdentityReference reference;
 
+    /**
+     * The time when this entity instance either was created or last updated
+     */
     @Column(name = "last_updated", nullable = false)
     private Date lastUpdated;
 
+    /**
+     * The module which was the one that last updated this entity instance
+     */
     @Column(name = "last_updated_by", nullable = false)
     private String lastUpdatedBy;
 
+    /**
+     * Constructs a new instance and assigns it a unique identity in the {@link #id} field
+     */
     public AbstractSMDIdentityEntity() {
         id = UUID.randomUUID().toString();
     }
@@ -70,6 +93,11 @@ public abstract class AbstractSMDIdentityEntity implements SMDIdentity {
         return reference;
     }
 
+    /**
+     * Set the entity reference, this normally never has to be set manually, it should be handled automatically through the logic in
+     * {@link org.socialmusicdiscovery.server.business.repository.AbstractJPASMDIdentityRepository}
+     * @param reference The reference which should represent this entity instance
+     */
     public void setReference(SMDIdentityReference reference) {
         this.reference = reference;
     }
@@ -90,16 +118,27 @@ public abstract class AbstractSMDIdentityEntity implements SMDIdentity {
         this.lastUpdatedBy = lastUpdatedBy;
     }
 
+    /**
+     * Equal implementation which is based on the value of the {@link #getId()} method, it will not do a full comparison the object are considered
+     * to be equal if they have the same identities
+     * @param o The object to compare to
+     * @return true if objects are equal
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof AbstractSMDIdentityEntity)) return false;
 
-        return id.equals(((AbstractSMDIdentityEntity) o).id);
+        return getId().equals(((AbstractSMDIdentityEntity) o).getId());
     }
 
+    /**
+     * Hash code implementation which is based on the value of the {@link #getId()} method, it will not include the full object in the hash code,
+     * only the identity
+     * @return The hash code representing this instance
+     */
     @Override
     public int hashCode() {
-        return id.hashCode();
+        return getId().hashCode();
     }
 }
