@@ -38,17 +38,27 @@ import java.lang.annotation.*;
 @org.hibernate.annotations.Cache(usage = org.hibernate.annotations.CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Table(name = "smdidentity_references")
 public class SMDIdentityReferenceEntity implements SMDIdentityReference {
+    /**
+     * Annotation which should be applied to entity classes to specify the interface class which should be used when setting the value in the
+     * {@link #type} attribute
+     */
     @Target(ElementType.TYPE)
     @Retention(RetentionPolicy.RUNTIME)
     public static @interface ReferenceType {
         public Class type();
-    };
+    }
 
+    /**
+     * Unique identity of the referenced entity
+     */
     @Id
     @Expose
     @Column(length = 36)
     private String id;
 
+    /**
+     * Type of the referenced identity, see also {@link ReferenceType}
+     */
     @Expose
     @Column(nullable = false)
     private String type;
@@ -61,9 +71,21 @@ public class SMDIdentityReferenceEntity implements SMDIdentityReference {
         this.type = type;
     }
 
+    /**
+     * Returns a reference to the specified entity.
+     * @param entity The entity to return a reference to
+     * @return A reference to the specified entity
+     */
     public static SMDIdentityReference forEntity(SMDIdentity entity) {
         return new SMDIdentityReferenceEntity(entity.getId(), typeForClass(entity.getClass()));
     }
+
+    /**
+     * Returns the type value the specified entity class uses in the {@link #type} attribute. The {@link ReferenceType} annotation on the entity
+     * class will be used to get the type
+     * @param cls The entity class to get type for
+     * @return The type value
+     */
     public static String typeForClass(Class cls) {
         Annotation annotation = cls.getAnnotation(ReferenceType.class);
         if(annotation instanceof ReferenceType) {
@@ -88,16 +110,27 @@ public class SMDIdentityReferenceEntity implements SMDIdentityReference {
         this.type = type;
     }
 
+    /**
+     * Equal implementation which is based on the value of the {@link #getId()} method, it will not do a full comparison the object are considered
+     * to be equal if they have the same identities
+     * @param o The object to compare to
+     * @return true if objects are equal
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof SMDIdentityReferenceEntity)) return false;
 
-        return id.equals(((SMDIdentityReferenceEntity) o).id);
+        return getId().equals(((SMDIdentityReferenceEntity) o).getId());
     }
 
+    /**
+     * Hash code implementation which is based on the value of the {@link #getId()} method, it will not include the full object in the hash code,
+     * only the identity
+     * @return The hash code representing this instance
+     */
     @Override
     public int hashCode() {
-        return id.hashCode();
+        return getId().hashCode();
     }
 }

@@ -27,12 +27,11 @@
 
 package org.socialmusicdiscovery.server.business.model;
 
-public interface GlobalIdentity {
+/**
+ * Represents a relation to a globally unique identity, this is typically a relation to a unique identity in an online source
+ */
+public interface GlobalIdentity extends SMDIdentity {
     final static String SOURCE_MUSICBRAINZ = "musicbrainz";
-
-    String getId();
-
-    void setId(String id);
 
     String getSource();
 

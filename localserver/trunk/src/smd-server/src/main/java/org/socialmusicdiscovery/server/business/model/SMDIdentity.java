@@ -27,6 +27,9 @@
 
 package org.socialmusicdiscovery.server.business.model;
 
+/**
+ * Represents an entity with a locally unique identity
+ */
 public interface SMDIdentity {
     String getId();
 

@@ -29,11 +29,49 @@ package org.socialmusicdiscovery.server.business.repository;
 
 import java.util.Collection;
 
+/**
+ * Repository that manage the specified type of entity
+ * @param <K> The type of the primary key of the entity it manages
+ * @param <E> The entity class of the entity it manages
+ */
 public interface EntityRepository<K, E> {
+    /**
+     * Persist entity which hasn't been previously persisted
+     * @param entity The entity to persist
+     */
     void create(E entity);
+
+    /**
+     * Remove entity which have been previously persisted
+     * @param entity The entity to remove
+     */
     void remove(E entity);
+
+    /**
+     * Merge entity with a previously persisted version
+     * @param entity The entity to merge with the persistent version
+     * @return The merged entity which is persisted
+     */
     E merge(E entity);
+
+    /**
+     * Find the entity instance with the specified primary key
+     * @param id The primary key of the entity instance
+     * @return The entity instance with the specified identity
+     */
     E findById(K id);
+
+    /**
+     * Find all entities managed by this repository
+     * @return All entity instances managed by this repository
+     */
     Collection<E> findAll();
+
+    /**
+     * Find all entities managed with this repository which have the specified mandatory relations.
+     * @param mandatoryRelations Mandatory relations which the entity needs to have. If this isn't specified, the returned list will be the same as the {@link #findAll()} method
+     * @param optionalRelations Optional relations which should be retrieved in the same call
+     * @return All matching entity instances
+     */
     Collection<E> findAllWithRelations(Collection<String> mandatoryRelations, Collection<String> optionalRelations);
 }

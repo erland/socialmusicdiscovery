@@ -33,22 +33,26 @@ import javax.persistence.Query;
 import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
 
+/**
+ * Abstract repository class for all entity repository classes
+ * @param <K> The type of the primary key of the entity this repository manages
+ * @param <E> The type of the entity which this repositories manages
+ */
 public abstract class AbstractJPAEntityRepository<K, E> implements EntityRepository<K, E> {
+    /** The entity class which this repository manages */
 	protected Class<E> entityClass;
 
+    /** The entity manager which is used by this repository */
 	@PersistenceContext
 	protected EntityManager entityManager;
 
-	public AbstractJPAEntityRepository() {
-		ParameterizedType genericSuperclass = (ParameterizedType) getClass().getGenericSuperclass();
+    public AbstractJPAEntityRepository(EntityManager em) {
+        ParameterizedType genericSuperclass = (ParameterizedType) getClass().getGenericSuperclass();
         if(genericSuperclass.getActualTypeArguments().length>1) {
-		    this.entityClass = (Class<E>) genericSuperclass.getActualTypeArguments()[1];
+            this.entityClass = (Class<E>) genericSuperclass.getActualTypeArguments()[1];
         }else {
             this.entityClass = (Class<E>) genericSuperclass.getActualTypeArguments()[0];
         }
-	}
-    public AbstractJPAEntityRepository(EntityManager em) {
-        this();
         entityManager = em;
     }
 

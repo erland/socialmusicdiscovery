@@ -27,5 +27,9 @@
 
 package org.socialmusicdiscovery.server.business.repository;
 
+/**
+ * Repository that manage an entity that implements the {@link org.socialmusicdiscovery.server.business.model.SMDIdentity} interface
+ * @param <E> The type of the entity class which this repository manages
+ */
 public interface SMDIdentityRepository<E> extends EntityRepository<String,E> {
 }
