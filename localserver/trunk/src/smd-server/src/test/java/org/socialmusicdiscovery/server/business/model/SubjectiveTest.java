@@ -31,32 +31,12 @@ import org.socialmusicdiscovery.server.business.model.core.*;
 import org.socialmusicdiscovery.server.business.model.subjective.CreditEntity;
 import org.socialmusicdiscovery.server.business.model.subjective.RelationEntity;
 import org.socialmusicdiscovery.test.BaseTestCase;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Date;
 
 public class SubjectiveTest extends BaseTestCase {
-    @BeforeTest
-    public void setUp()  {
-        super.setUp();
-    }
-
-    @AfterTest
-    public void tearDown() {
-        super.tearDown();
-    }
-
-    @BeforeMethod
-    public void setUpMethod(Method m) {
-        System.out.println("Executing "+getClass().getSimpleName()+"."+m.getName()+"...");
-        em.clear();
-    }
-
     @Test
     public void testModelCredit() throws Exception {
         loadTestData(getClass().getPackage().getName(),"The Bodyguard.xml");

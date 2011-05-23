@@ -27,40 +27,16 @@
 
 package org.socialmusicdiscovery.server.business.model;
 
-import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
-import org.socialmusicdiscovery.server.business.logic.SearchRelationPostProcessor;
 import org.socialmusicdiscovery.server.business.model.core.*;
 import org.socialmusicdiscovery.test.BaseTestCase;
-import org.testng.annotations.*;
+import org.testng.annotations.Test;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
-import java.lang.reflect.Method;
 import java.util.*;
 
 
 public class CoreTest extends BaseTestCase {
-    @BeforeTest
-    public void setUp()  {
-        super.setUp();
-    }
-
-    @AfterTest
-    public void tearDown() {
-        super.tearDown();
-    }
-
-    @BeforeMethod
-    public void setUpMethod(Method m) {
-        System.out.println("Executing "+getClass().getSimpleName()+"."+m.getName()+"...");
-        em.clear();
-    }
-    @AfterMethod
-    public void tearDownMethod(Method m) {
-        if(em.getTransaction().isActive()) {
-            em.getTransaction().rollback();
-        }
-    }
 
     public void printRelease(Release release) {
         if (release != null) {
@@ -352,15 +328,8 @@ public class CoreTest extends BaseTestCase {
 
     @Test
     public void testModelDeleteRelease() throws Exception {
-        loadTestData(getClass().getPackage().getName(),"The Bodyguard.xml");
-        SearchRelationPostProcessor searchRelationPostProcessor = new SearchRelationPostProcessor();
-        searchRelationPostProcessor.init();
-        searchRelationPostProcessor.execute(new ProcessingStatusCallback() {
-            public void progress(String module, String currentDescription, Long currentNo, Long totalNo) {}
-            public void failed(String module, String error) {}
-            public void finished(String module) {}
-            public void aborted(String module) {}
-        });
+        loadTestData(getClass().getPackage().getName(), "The Bodyguard.xml");
+        updateSearchRelations();
 
         em.getTransaction().begin();
         Query query = em.createQuery("from ReleaseEntity where name=:name");
@@ -397,15 +366,8 @@ public class CoreTest extends BaseTestCase {
 
     @Test
     public void testModelDeletePerson() throws Exception {
-        loadTestData(getClass().getPackage().getName(),"The Bodyguard.xml");
-        SearchRelationPostProcessor searchRelationPostProcessor = new SearchRelationPostProcessor();
-        searchRelationPostProcessor.init();
-        searchRelationPostProcessor.execute(new ProcessingStatusCallback() {
-            public void progress(String module, String currentDescription, Long currentNo, Long totalNo) {}
-            public void failed(String module, String error) {}
-            public void finished(String module) {}
-            public void aborted(String module) {}
-        });
+        loadTestData(getClass().getPackage().getName(), "The Bodyguard.xml");
+        updateSearchRelations();
 
         em.getTransaction().begin();
         Query query = em.createQuery("from PersonEntity where name=:name");
@@ -437,14 +399,7 @@ public class CoreTest extends BaseTestCase {
     @Test
     public void testModelDeleteArtist() throws Exception {
         loadTestData(getClass().getPackage().getName(),"The Bodyguard.xml");
-        SearchRelationPostProcessor searchRelationPostProcessor = new SearchRelationPostProcessor();
-        searchRelationPostProcessor.init();
-        searchRelationPostProcessor.execute(new ProcessingStatusCallback() {
-            public void progress(String module, String currentDescription, Long currentNo, Long totalNo) {}
-            public void failed(String module, String error) {}
-            public void finished(String module) {}
-            public void aborted(String module) {}
-        });
+        updateSearchRelations();
 
         em.getTransaction().begin();
         Query query = em.createQuery("from ArtistEntity where name=:name");
@@ -474,14 +429,7 @@ public class CoreTest extends BaseTestCase {
     @Test
     public void testModelDeleteTrackRecordingFailure() throws Exception {
         loadTestData(getClass().getPackage().getName(),"The Bodyguard.xml");
-        SearchRelationPostProcessor searchRelationPostProcessor = new SearchRelationPostProcessor();
-        searchRelationPostProcessor.init();
-        searchRelationPostProcessor.execute(new ProcessingStatusCallback() {
-            public void progress(String module, String currentDescription, Long currentNo, Long totalNo) {}
-            public void failed(String module, String error) {}
-            public void finished(String module) {}
-            public void aborted(String module) {}
-        });
+        updateSearchRelations();
 
         em.getTransaction().begin();
         Query query = em.createQuery("from ReleaseEntity where name=:name");
@@ -519,14 +467,7 @@ public class CoreTest extends BaseTestCase {
     @Test
     public void testModelDeleteTrackRecording() throws Exception {
         loadTestData(getClass().getPackage().getName(),"The Bodyguard.xml");
-        SearchRelationPostProcessor searchRelationPostProcessor = new SearchRelationPostProcessor();
-        searchRelationPostProcessor.init();
-        searchRelationPostProcessor.execute(new ProcessingStatusCallback() {
-            public void progress(String module, String currentDescription, Long currentNo, Long totalNo) {}
-            public void failed(String module, String error) {}
-            public void finished(String module) {}
-            public void aborted(String module) {}
-        });
+        updateSearchRelations();
 
         em.getTransaction().begin();
         Query query = em.createQuery("from ReleaseEntity where name=:name");
@@ -575,14 +516,7 @@ public class CoreTest extends BaseTestCase {
     @Test
     public void testModelDeleteRecordingWorkFailure() throws Exception {
         loadTestData(getClass().getPackage().getName(),"The Bodyguard.xml");
-        SearchRelationPostProcessor searchRelationPostProcessor = new SearchRelationPostProcessor();
-        searchRelationPostProcessor.init();
-        searchRelationPostProcessor.execute(new ProcessingStatusCallback() {
-            public void progress(String module, String currentDescription, Long currentNo, Long totalNo) {}
-            public void failed(String module, String error) {}
-            public void finished(String module) {}
-            public void aborted(String module) {}
-        });
+        updateSearchRelations();
 
         em.getTransaction().begin();
         Query query = em.createQuery("from ReleaseEntity where name=:name");
@@ -621,15 +555,8 @@ public class CoreTest extends BaseTestCase {
 
     @Test
     public void testModelDeleteRecordingWork() throws Exception {
-        loadTestData(getClass().getPackage().getName(),"The Bodyguard.xml");
-        SearchRelationPostProcessor searchRelationPostProcessor = new SearchRelationPostProcessor();
-        searchRelationPostProcessor.init();
-        searchRelationPostProcessor.execute(new ProcessingStatusCallback() {
-            public void progress(String module, String currentDescription, Long currentNo, Long totalNo) {}
-            public void failed(String module, String error) {}
-            public void finished(String module) {}
-            public void aborted(String module) {}
-        });
+        loadTestData(getClass().getPackage().getName(), "The Bodyguard.xml");
+        updateSearchRelations();
 
         em.getTransaction().begin();
         Query query = em.createQuery("from ReleaseEntity where name=:name");

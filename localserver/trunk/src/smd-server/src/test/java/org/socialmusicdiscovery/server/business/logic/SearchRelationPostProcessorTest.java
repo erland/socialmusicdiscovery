@@ -35,37 +35,13 @@ import org.socialmusicdiscovery.server.business.model.search.PersonSearchRelatio
 import org.socialmusicdiscovery.server.business.model.search.ReleaseSearchRelationEntity;
 import org.socialmusicdiscovery.server.business.model.search.SearchRelationEntity;
 import org.socialmusicdiscovery.test.BaseTestCase;
-import org.testng.annotations.*;
+import org.testng.annotations.Test;
 
 import javax.persistence.Query;
-import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashSet;
 
 public class SearchRelationPostProcessorTest extends BaseTestCase {
-    @BeforeTest
-    public void setUp() {
-        super.setUp();
-    }
-
-    @AfterTest
-    public void tearDown() {
-        super.tearDown();
-    }
-
-    @BeforeMethod
-    public void setUpMethod(Method m) {
-        System.out.println("Executing " + getClass().getSimpleName() + "." + m.getName() + "...");
-        em.clear();
-    }
-
-    @AfterMethod
-    public void tearDownMethod(Method m) {
-        if (em.getTransaction().isActive()) {
-            em.getTransaction().rollback();
-        }
-    }
-
     @Test
     public void testSearchRelations() throws Exception {
         loadTestData("org.socialmusicdiscovery.server.business.model", "The Bodyguard.xml");

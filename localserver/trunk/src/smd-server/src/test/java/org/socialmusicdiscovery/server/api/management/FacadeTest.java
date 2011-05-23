@@ -33,9 +33,7 @@ import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.container.grizzly.GrizzlyWebContainerFactory;
-import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
-import org.socialmusicdiscovery.server.business.logic.SearchRelationPostProcessor;
 import org.socialmusicdiscovery.server.business.logic.config.ConfigurationManager;
 import org.socialmusicdiscovery.server.business.model.*;
 import org.socialmusicdiscovery.server.business.model.classification.Classification;
@@ -46,11 +44,12 @@ import org.socialmusicdiscovery.server.business.model.core.*;
 import org.socialmusicdiscovery.server.business.model.subjective.*;
 import org.socialmusicdiscovery.server.support.json.AbstractJSONProvider;
 import org.socialmusicdiscovery.test.BaseTestCase;
-import org.testng.annotations.*;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
-import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.*;
 
@@ -105,39 +104,11 @@ public class FacadeTest extends BaseTestCase {
         }
     }
 
-    @BeforeTest
-    public void setUp()  {
-        super.setUp();
-    }
-
-    @AfterTest
-    public void tearDown() {
-        super.tearDown();
-    }
-
-    @BeforeMethod
-    public void setUpMethod(Method m) {
-        System.out.println("Executing "+getClass().getSimpleName()+"."+m.getName()+"...");
-    }
-
     @BeforeClass
     public void init() throws Exception {
-        loadTestData("org.socialmusicdiscovery.server.business.model","The Bodyguard.xml");
-        SearchRelationPostProcessor searchRelationPostProcessor = new SearchRelationPostProcessor();
-        searchRelationPostProcessor.init();
-        searchRelationPostProcessor.execute(new ProcessingStatusCallback() {
-            public void progress(String module, String currentDescription, Long currentNo, Long totalNo) {
-            }
+        loadTestData("org.socialmusicdiscovery.server.business.model", "The Bodyguard.xml");
+        updateSearchRelations();
 
-            public void failed(String module, String error) {
-            }
-
-            public void finished(String module) {
-            }
-
-            public void aborted(String module) {
-            }
-        });
         Map<String, String> initParams = new HashMap<String, String>();
         initParams.put("com.sun.jersey.config.property.packages", "org.socialmusicdiscovery.server.api;org.socialmusicdiscovery.server.business.logic.jersey");
 

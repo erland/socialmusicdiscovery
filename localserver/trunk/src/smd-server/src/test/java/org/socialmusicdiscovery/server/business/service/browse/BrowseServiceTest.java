@@ -27,68 +27,25 @@
 
 package org.socialmusicdiscovery.server.business.service.browse;
 
-import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
-import org.socialmusicdiscovery.server.business.logic.SearchRelationPostProcessor;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
 import org.socialmusicdiscovery.server.business.model.classification.Classification;
 import org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity;
 import org.socialmusicdiscovery.server.business.model.core.*;
 import org.socialmusicdiscovery.test.BaseTestCase;
-import org.testng.annotations.*;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 public class BrowseServiceTest extends BaseTestCase {
-    @BeforeTest
-    public void setUp() {
-        super.setUp();
-    }
-
-    @AfterTest
-    public void tearDown() {
-        super.tearDown();
-    }
-
-    @BeforeMethod
-    public void setUpMethod(Method m) {
-        System.out.println("Executing " + getClass().getSimpleName() + "." + m.getName() + "...");
-        em.clear();
-    }
-
     @BeforeClass
     public void setUpClass() {
-        try {
-            loadTestData("org.socialmusicdiscovery.server.business.model", "Arista RCA Releases.xml");
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        SearchRelationPostProcessor searchRelationPostProcessor = new SearchRelationPostProcessor();
-        searchRelationPostProcessor.init();
-        searchRelationPostProcessor.execute(new ProcessingStatusCallback() {
-            public void progress(String module, String currentDescription, Long currentNo, Long totalNo) {
-            }
-
-            public void failed(String module, String error) {
-            }
-
-            public void finished(String module) {
-            }
-
-            public void aborted(String module) {
-            }
-        });
-    }
-
-    @AfterMethod
-    public void tearDownMethod(Method m) {
-        if (em.getTransaction().isActive()) {
-            em.getTransaction().rollback();
-        }
+        loadTestData("org.socialmusicdiscovery.server.business.model", "Arista RCA Releases.xml");
+        updateSearchRelations();
     }
 
     @Test

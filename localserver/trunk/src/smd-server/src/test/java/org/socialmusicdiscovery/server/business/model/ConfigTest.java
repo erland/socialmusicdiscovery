@@ -30,34 +30,12 @@ package org.socialmusicdiscovery.server.business.model;
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameter;
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameterEntity;
 import org.socialmusicdiscovery.test.BaseTestCase;
-import org.testng.annotations.*;
+import org.testng.annotations.Test;
 
 import javax.persistence.Query;
-import java.lang.reflect.Method;
 
 
 public class ConfigTest extends BaseTestCase {
-    @BeforeTest
-    public void setUp()  {
-        super.setUp();
-    }
-
-    @AfterTest
-    public void tearDown() {
-        super.tearDown();
-    }
-
-    @BeforeMethod
-    public void setUpMethod(Method m) {
-        System.out.println("Executing "+getClass().getSimpleName()+"."+m.getName()+"...");
-        em.clear();
-    }
-    @AfterMethod
-    public void tearDownMethod(Method m) {
-        if(em.getTransaction().isActive()) {
-            em.getTransaction().rollback();
-        }
-    }
 
     @Test
     public void testConfigCreation() throws Exception {
