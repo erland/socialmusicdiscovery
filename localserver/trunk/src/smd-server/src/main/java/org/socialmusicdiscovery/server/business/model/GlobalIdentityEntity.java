@@ -37,7 +37,7 @@ import java.util.Date;
 import java.util.UUID;
 
 /**
- * Represents a relation to a globally unique identity, this is typically a relation to a unique identity in an online source
+ * See {@link GlobalIdentity}
  */
 @javax.persistence.Entity
 @Table(name = "global_identities", uniqueConstraints = @UniqueConstraint(columnNames = {"source", "entityid"}))

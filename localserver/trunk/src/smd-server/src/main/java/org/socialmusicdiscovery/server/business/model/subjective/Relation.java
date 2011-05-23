@@ -29,6 +29,11 @@ package org.socialmusicdiscovery.server.business.model.subjective;
 
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 
+/**
+ * Represents a relation between two entities, this can more or less represent anything but the typical usage
+ * is to represent a relation between two {@link org.socialmusicdiscovery.server.business.model.core.Artist} entities.
+ * For example to indicate that one artist is similar to another artist.
+ */
 public interface Relation extends SMDIdentity {
     String getType();
 

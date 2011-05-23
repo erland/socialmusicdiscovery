@@ -33,6 +33,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Represents a release of a specific box,album, aingle or {@link Recording}. The UK and US releases of a specific
+ * album is represented as two individual {@link Release} objects where a relation to the release that represents
+ * the master Release. They might for example have different album covers and/or content
+ * (eg. different track order, bonus tracks etc).
+ */
 public interface Release extends SMDIdentity {
     final static String TYPE = Release.class.getSimpleName();
 

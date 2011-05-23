@@ -39,6 +39,9 @@ import javax.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * See {@link Person}
+ */
 @javax.persistence.Entity
 @Table(name = "persons")
 @SMDIdentityReferenceEntity.ReferenceType(type = Person.class)

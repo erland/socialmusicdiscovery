@@ -35,6 +35,9 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * See {@link Track}
+ */
 @javax.persistence.Entity
 @Table(name = "tracks")
 @SMDIdentityReferenceEntity.ReferenceType(type = Track.class)

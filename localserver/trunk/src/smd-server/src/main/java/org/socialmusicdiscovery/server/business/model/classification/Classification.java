@@ -31,6 +31,10 @@ import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 
 import java.util.Set;
 
+/**
+ * Represents a classification of a musical artifact or person/artist.
+ * One commonly used classification types is a genre, others more unusual are style and mood.
+ */
 public interface Classification extends SMDIdentity {
     final static String GENRE = "genre";
     final static String MOOD = "mood";

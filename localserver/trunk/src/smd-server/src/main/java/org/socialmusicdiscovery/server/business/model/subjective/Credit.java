@@ -29,6 +29,16 @@ package org.socialmusicdiscovery.server.business.model.subjective;
 
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 
+/**
+ * Represents a relation between a {@link org.socialmusicdiscovery.server.business.model.core.Person} or
+ * {@link org.socialmusicdiscovery.server.business.model.core.Artist} which were credited on a
+ * {@link org.socialmusicdiscovery.server.business.model.core.Work},
+ * {@link org.socialmusicdiscovery.server.business.model.core.Release},
+ * {@link org.socialmusicdiscovery.server.business.model.core.Recording} or
+ * {@link org.socialmusicdiscovery.server.business.model.core.RecordingSession}.
+ * A {@link Credit} is a bit similar to to a {@link org.socialmusicdiscovery.server.business.model.core.Contributor} but
+ * the difference is that a credit is more subjective while a contributor is a fact.
+ */
 public interface Credit extends SMDIdentity {
     String getType();
 

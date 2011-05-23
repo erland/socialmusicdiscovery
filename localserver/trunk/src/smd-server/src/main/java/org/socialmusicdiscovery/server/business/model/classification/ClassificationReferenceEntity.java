@@ -37,6 +37,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+/**
+ * See {@link ClassificationReference}
+ */
 @javax.persistence.Entity
 @Table(name = "classification_references")
 @SMDIdentityReferenceEntity.ReferenceType(type = ClassificationReference.class)

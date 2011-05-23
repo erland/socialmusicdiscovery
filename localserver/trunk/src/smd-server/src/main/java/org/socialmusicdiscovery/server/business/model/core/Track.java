@@ -31,6 +31,11 @@ import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 
 import java.util.Set;
 
+/**
+ * Represent a {@link Recording} which is part of one specific {@link Release}
+ * The same {@link Recording} may appear in several {@link Release} objects but a {@link Track} is only part of one
+ * specific {@link Release}.
+ */
 public interface Track extends SMDIdentity {
     Integer getNumber();
 

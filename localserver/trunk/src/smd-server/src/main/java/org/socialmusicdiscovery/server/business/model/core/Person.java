@@ -29,6 +29,12 @@ package org.socialmusicdiscovery.server.business.model.core;
 
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 
+/**
+ * Represents a physical person that contributes to one or more musical artifacts as an {@link Artist}.
+ * A {@link Person} is only represented once and is represented under it's real name. Many persons are known under
+ * an alias/artist name when they are performing on a {@link Recording}, the alias/artist name is handled as an
+ * {@link Artist}.
+ */
 public interface Person extends SMDIdentity {
     String getName();
 

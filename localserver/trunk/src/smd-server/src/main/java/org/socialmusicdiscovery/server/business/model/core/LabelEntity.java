@@ -34,6 +34,9 @@ import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity
 import javax.persistence.Column;
 import javax.persistence.Table;
 
+/**
+ * See {@link Label}
+ */
 @javax.persistence.Entity
 @Table(name = "labels")
 @SMDIdentityReferenceEntity.ReferenceType(type = Label.class)

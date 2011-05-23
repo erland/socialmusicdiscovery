@@ -36,6 +36,9 @@ import org.socialmusicdiscovery.server.business.model.core.ReleaseEntity;
 import javax.persistence.*;
 import java.util.Collection;
 
+/**
+ * See {@link Series}
+ */
 @javax.persistence.Entity
 @Table(name = "series")
 @SMDIdentityReferenceEntity.ReferenceType(type = Series.class)

@@ -32,6 +32,14 @@ import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import java.util.Date;
 import java.util.Set;
 
+/**
+ * Represents a specific recording of a {@link Work}, could be either a studio recording or a live concert recording.
+ * If the {@link Work} is a symphony by Beethoven the {@link Recording} would be a recorded performance of that symphony
+ * with a specific conductor. A Remix of a recording, for example "radio edit" or "clean version", is a separate recording.
+ * The recording can always be represented as a single music files, if multiple recordings are required to represent
+ * a complete {@link Work}, it's recommended to use a {@link RecordingSession} to represent the {@link Work} and a
+ * {@link Recording} for each part of the work.
+ */
 public interface Recording extends SMDIdentity {
     final static String TYPE = Recording.class.getSimpleName();
 

@@ -40,6 +40,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * See {@link RecordingSession}
+ */
 @javax.persistence.Entity
 @Table(name = "recording_sessions")
 @SMDIdentityReferenceEntity.ReferenceType(type = RecordingSession.class)

@@ -32,6 +32,10 @@ import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import java.util.Date;
 import java.util.Set;
 
+/**
+ * Represents a piece of music that may have been recorded several times in different ways by several
+ * artists or conductors, often called song for pop/rock music.
+ */
 public interface Work extends SMDIdentity {
     final static String TYPE = Work.class.getSimpleName();
 

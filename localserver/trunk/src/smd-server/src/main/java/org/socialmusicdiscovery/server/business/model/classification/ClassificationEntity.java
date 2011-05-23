@@ -39,6 +39,9 @@ import javax.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * See {@link Classification}
+ */
 @javax.persistence.Entity
 @Table(name = "classifications")
 @SMDIdentityReferenceEntity.ReferenceType(type = Classification.class)
@@ -94,6 +97,13 @@ public class ClassificationEntity extends AbstractSMDIdentityEntity implements C
             this.references.add(reference);
         }
         reference.setClassification(this);
+    }
+
+    public void removeReference(ClassificationReferenceEntity reference) {
+        if(Hibernate.isInitialized(reference)) {
+            this.references.remove(reference);
+        }
+        reference.setReference(null);
     }
 
 }
