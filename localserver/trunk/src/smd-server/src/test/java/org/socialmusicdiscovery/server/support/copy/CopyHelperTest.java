@@ -30,35 +30,18 @@ package org.socialmusicdiscovery.server.support.copy;
 import com.google.gson.annotations.Expose;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.socialmusicdiscovery.test.BaseTestCase;
-import org.testng.annotations.*;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import java.lang.reflect.Method;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class CopyHelperTest extends BaseTestCase {
-    @BeforeTest
-    public void setUp() {
-        super.setUp();
-    }
-
-    @AfterTest
-    public void tearDown() {
-        super.tearDown();
-    }
-
+public class CopyHelperTest {
     @BeforeMethod
     public void setUpMethod(Method m) {
         System.out.println("Executing " + getClass().getSimpleName() + "." + m.getName() + "...");
-        em.clear();
-    }
-
-    @AfterMethod
-    public void tearDownMethod(Method m) {
-        if (em.getTransaction().isActive()) {
-            em.getTransaction().rollback();
-        }
     }
 
     public static class CopyHelperCache implements CopyHelper.Cache {
@@ -108,7 +91,7 @@ public class CopyHelperTest extends BaseTestCase {
             small = 10;
             large = 20L;
             try {
-                date = DATE_FORMAT.parse("2011-01-01");
+                date = new SimpleDateFormat("yyyy-MM-DD").parse("2011-01-01");
             } catch (ParseException e) {
                 throw new RuntimeException(e);
             }
