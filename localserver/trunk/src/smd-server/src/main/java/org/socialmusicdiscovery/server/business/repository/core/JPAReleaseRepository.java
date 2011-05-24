@@ -41,14 +41,17 @@ public class JPAReleaseRepository extends AbstractJPASMDIdentityRepository<Relea
     private TrackRepository trackRepository;
     private MediumRepository mediumRepository;
     private LabelRepository labelRepository;
+    private ImageRepository imageRepository;
 
     @Inject
-    public JPAReleaseRepository(EntityManager em, ContributorRepository contributorRepository, TrackRepository trackRepository, MediumRepository mediumRepository, LabelRepository labelRepository) {
+    public JPAReleaseRepository(EntityManager em, ContributorRepository contributorRepository, TrackRepository trackRepository, 
+    		MediumRepository mediumRepository, LabelRepository labelRepository, ImageRepository imageRepository ) {
         super(em);
         this.contributorRepository = contributorRepository;
         this.trackRepository = trackRepository;
         this.mediumRepository = mediumRepository;
         this.labelRepository = labelRepository;
+        this.imageRepository = imageRepository;
     }
 
     public Collection<ReleaseEntity> findByName(String name) {
@@ -156,6 +159,12 @@ public class JPAReleaseRepository extends AbstractJPASMDIdentityRepository<Relea
         entityManager.createQuery("DELETE from RecordingReleaseSearchRelationEntity where reference=:id").setParameter("id",entity.getId()).executeUpdate();
 
         entityManager.createNativeQuery("DELETE from classification_references where reference_to_id=:id").setParameter("id",entity.getId()).executeUpdate();
+
+        for(Image image: imageRepository.findByRelease(entity) ) {
+        	imageRepository.remove((ImageEntity)image);
+        }
+
+        
         super.remove(entity);
     }
 
