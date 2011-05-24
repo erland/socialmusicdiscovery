@@ -21,7 +21,8 @@ public class ImageEntity extends AbstractSMDIdentityEntity implements Image {
     private String uri;
 
     @Expose
-    @ManyToOne(cascade=CascadeType.ALL)
+    //@ManyToOne(cascade=CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "related_to_id", nullable = false)
     private SMDIdentityReferenceEntity relatedTo;
  

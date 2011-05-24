@@ -28,13 +28,20 @@
 package org.socialmusicdiscovery.server.business.repository.core;
 
 import com.google.inject.ImplementedBy;
+
+import org.socialmusicdiscovery.server.business.model.AbstractSMDIdentityEntity;
+import org.socialmusicdiscovery.server.business.model.core.Image;
 import org.socialmusicdiscovery.server.business.model.core.ImageEntity;
+import org.socialmusicdiscovery.server.business.model.core.Release;
 import org.socialmusicdiscovery.server.business.repository.SMDIdentityRepository;
 
 import java.util.Collection;
 
 @ImplementedBy(JPAImageRepository.class)
 public interface ImageRepository extends SMDIdentityRepository<ImageEntity> {
-    Collection<ImageEntity> findByArtistWithRelations(String artistId, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
-    Collection<ImageEntity> findByReleaseWithRelations(String releaseId, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
+    Collection<ImageEntity> findByRelease(Release release);
+    Collection<ImageEntity> findByReleaseId(String releaseId);
+    Collection<ImageEntity> findBySmdId(String smdId);
+    Collection<ImageEntity> findBySmdEntity(AbstractSMDIdentityEntity smdEntity);
+    void remove(ImageEntity entity);
 }

@@ -333,6 +333,42 @@ public class CoreTest extends BaseTestCase {
     }
 
     @Test
+    public void testImageRead() throws Exception {
+        loadTestData(getClass().getPackage().getName(),"The Bodyguard.xml");
+        em.getTransaction().begin();
+
+        Query query = em.createQuery("from ReleaseEntity where name=:name");
+        query.setParameter("name","The Bodyguard (Original Soundtrack Album)");
+        Release release = (Release) query.getSingleResult();
+        assert(release != null);
+        
+        // look directly for bodyguard release identity reference
+		query = em.createQuery("from SMDIdentityReferenceEntity where id=:refId");
+		query.setParameter("refId","20000");
+		SMDIdentityReference reference = (SMDIdentityReference) query.getSingleResult();
+		assert(reference != null);
+
+        // Find by direct query to relatedTo "reference" object
+        query = em.createQuery("from ImageEntity where relatedTo=:relatedTo");
+        query.setParameter("relatedTo",reference);
+        Image image = (Image) query.getSingleResult();
+        assert(image != null);
+		assert("http://s.dsimg.com/image/R-1794218-1260432856.jpeg".equals(image.getUri()));
+
+		// Find by Release
+		image = (Image) imageRepository.findByRelease(release).iterator().next();        
+		assert(image != null);
+		assert("http://s.dsimg.com/image/R-1794218-1260432856.jpeg".equals(image.getUri()));
+
+		// Find by ReleaseId
+		image = (Image) imageRepository.findByReleaseId(release.getId()).iterator().next();
+		assert(image != null);
+		assert("http://s.dsimg.com/image/R-1794218-1260432856.jpeg".equals(image.getUri()));
+        
+        em.getTransaction().commit();
+    }
+ 
+    @Test
     public void testModelDeleteRelease() throws Exception {
         loadTestData(getClass().getPackage().getName(), "The Bodyguard.xml");
         updateSearchRelations();
@@ -348,6 +384,10 @@ public class CoreTest extends BaseTestCase {
         assert 0 < em.createQuery("from TrackEntity as t JOIN t.playableElements where t.release=:release").setParameter("release",release).getResultList().size();
         assert 0 < em.createQuery("from PlayableElementEntity").getResultList().size();
         assert 0 < em.createQuery("from ReleaseSearchRelationEntity where id=:release").setParameter("release",releaseId).getResultList().size();
+
+        // release must be related to at least one image
+        assert 0 < imageRepository.findByReleaseId(releaseId).size();
+        
         int recordings = em.createQuery("from RecordingEntity").getResultList().size();
 
         releaseRepository.remove(release);
@@ -367,6 +407,9 @@ public class CoreTest extends BaseTestCase {
         assert 0 == em.createQuery("from ReleaseSearchRelationEntity where id=:release").setParameter("release",releaseId).getResultList().size();
         assert recordings == em.createQuery("from RecordingEntity").getResultList().size();
 
+        // all images related to that release should have disappeared
+        assert 0 == imageRepository.findByReleaseId(releaseId).size();
+        
         em.getTransaction().commit();
     }
 
