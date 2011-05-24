@@ -28,8 +28,6 @@
 package org.socialmusicdiscovery.server.business.model.subjective;
 
 import com.google.gson.annotations.Expose;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.socialmusicdiscovery.server.business.model.AbstractSMDIdentityEntity;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
 
@@ -76,18 +74,5 @@ public class CreditEntity extends AbstractSMDIdentityEntity implements Credit {
 
     public void setReleaseRecordingWorkId(String releaseRecordingWorkId) {
         this.releaseRecordingWorkId = releaseRecordingWorkId;
-    }
-
-    @Override
-    public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if(o instanceof CreditEntity) {
-            return EqualsBuilder.reflectionEquals(this,o);
-        }
-        return false;
     }
 }
