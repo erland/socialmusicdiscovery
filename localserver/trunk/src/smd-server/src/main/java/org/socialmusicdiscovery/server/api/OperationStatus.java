@@ -29,6 +29,9 @@ package org.socialmusicdiscovery.server.api;
 
 import com.google.gson.annotations.Expose;
 
+/**
+ * Represents a status of an operation, basically indicates if the operations were successful or not
+ */
 public class OperationStatus {
     @Expose
     private Boolean success;

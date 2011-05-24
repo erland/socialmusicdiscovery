@@ -36,6 +36,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+/**
+ * Represents a search relation between a {@link Recording} and a {@link Track}, see {@link SearchRelationEntity} for more information
+ */
 @Entity
 @Table(name = "recording_tracks_search_relations")
 public class RecordingTrackSearchRelationEntity extends RecordingSearchRelationEntity {
@@ -46,7 +49,12 @@ public class RecordingTrackSearchRelationEntity extends RecordingSearchRelationE
     public RecordingTrackSearchRelationEntity() {
     }
 
-    public RecordingTrackSearchRelationEntity(Recording identity, Track track) {
-        super(identity, track);
+    /**
+     * Constructs a search relation related to a {@link Track}
+     * @param recording The owner
+     * @param track The track
+     */
+    public RecordingTrackSearchRelationEntity(Recording recording, Track track) {
+        super(recording, track);
     }
 }

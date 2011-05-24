@@ -40,6 +40,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+/**
+ * Provide persistent related objects, such as implementations of {@link EntityManagerFactory}, {@link EntityManager} and
+ * {@link TransactionManager}
+ */
 public class JPAModule extends AbstractModule {
     private static final ThreadLocal<EntityManager> ENTITY_MANAGER_CACHE = new ThreadLocal<EntityManager>();
     private static EntityManagerFactory emFactory;
@@ -94,6 +98,9 @@ public class JPAModule extends AbstractModule {
                 if(entityManager==null) {
                     entityManager = entityManagerFactory.createEntityManager();
                 }
+                // Let's clear the entity manager session to ensure we don't have any data left from previous transaction used by this thread
+                // Any caching of data should be handled through the second level cache and not by caching it between two transaction in the
+                // entity manager.
                 entityManager.clear();
                 entityManager.getTransaction().begin();
                 ENTITY_MANAGER_CACHE.set(entityManager);

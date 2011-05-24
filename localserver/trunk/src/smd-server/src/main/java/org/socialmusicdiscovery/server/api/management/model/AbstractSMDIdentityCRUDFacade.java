@@ -31,9 +31,21 @@ import org.socialmusicdiscovery.server.api.management.AbstractCRUDFacade;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.repository.EntityRepository;
 
+/**
+ * Abstract base class to provided basic functionality for all entities that want to provide a create, read, update, delete interface and implements
+ * the SMDIdentity interface
+ * @param <E> The class of the entity which this facade manages
+ * @param <R> The interface class of the repository which manage the entity this facade provides an interface for
+ */
 public abstract class AbstractSMDIdentityCRUDFacade<E extends SMDIdentity, R extends EntityRepository<String, E>>  extends AbstractCRUDFacade<String,E,R> {
     protected final String CHANGED_BY = "smd";
 
+    /**
+     * Updates the specified entity instance
+     * @param id The identity of the instance to update
+     * @param entity The data for the instance which should be updated
+     * @return The persistent updated instance
+     */
     protected E updateEntity(String id, E entity) {
         if (id != null && !entity.getId().equals(id)) {
             entity.setId(id);

@@ -100,6 +100,10 @@ public class H2ProviderModule extends AbstractModule {
     protected void configure() {
     }
 
+    /**
+     * Instance persisted to disk
+     * @return DatabaseProvider instance
+     */
     @Provides
     @Named("h2")
     public DatabaseProvider getDiskProvider() {
@@ -109,6 +113,14 @@ public class H2ProviderModule extends AbstractModule {
         return h2Disk;
     }
 
+    /**
+     * Instance persisted to disk with trace logging enabled, this is useful to use during performance measurement. A sql file with a statistics
+     * section can be generated based on the generated trace.db file by running:<br/>
+     * java -cp h2*.jar org.h2.tools.ConvertTraceFile -traceFile smd-database.trace.db -script smd-database.sql<br/>
+     * The h2 jar file can be found in maven repository, for example in:<br/>
+     * $HOME/.m2/repository/com/h2database/h2/1.2.144/h2-1.2.144.jar
+     * @return DatabaseProvider instance
+     */
     @Provides
     @Named("h2-trace")
     public DatabaseProvider getTraceProvider() {
@@ -118,18 +130,30 @@ public class H2ProviderModule extends AbstractModule {
         return h2Trace;
     }
 
+    /**
+     * Instance only stored in memory, not persisted to disk
+     * @return DatabaseProvider instance
+     */
     @Provides
     @Named("h2-memory")
     public DatabaseProvider getMemoryProvider() {
         return h2Memory;
     }
 
+    /**
+     * Instance only stored in memory, not persisted to disk, but preloaded with sample test data
+     * @return DatabaseProvider instance
+     */
     @Provides
     @Named("h2-memory-test")
     public DatabaseProvider getMemoryTestProvider() {
         return h2Memory;
     }
 
+    /**
+     * Instance persisted to disk and preloaded with sample test data
+     * @return DatabaseProvider instance
+     */
     @Provides
     @Named("h2-test")
     public DatabaseProvider getDiskTestProvider() {

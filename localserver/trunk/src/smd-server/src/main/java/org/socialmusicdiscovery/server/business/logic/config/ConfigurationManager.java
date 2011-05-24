@@ -32,6 +32,9 @@ import org.socialmusicdiscovery.server.business.model.config.ConfigurationParame
 
 import java.util.*;
 
+/**
+ * Configuration manager
+ */
 public class ConfigurationManager {
     private Map<String,ConfigurationParameterEntity> parameters = new HashMap<String,ConfigurationParameterEntity>();
 

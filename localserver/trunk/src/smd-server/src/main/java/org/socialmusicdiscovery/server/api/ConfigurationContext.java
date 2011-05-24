@@ -27,6 +27,9 @@
 
 package org.socialmusicdiscovery.server.api;
 
+/**
+ * Configuration context interface which provides access to configuration parameters
+ */
 public interface ConfigurationContext {
     /**
      * Get the string configuration parameter with specified identity

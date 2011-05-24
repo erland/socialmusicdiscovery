@@ -47,6 +47,10 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * This is a post processor action which runs after each {@link org.socialmusicdiscovery.server.api.mediaimport.MediaImporter} and goes
+ * through all changes and creates, updates or removes the {@link SearchRelationEntity} entities affected
+ */
 public class SearchRelationPostProcessor extends AbstractProcessingModule implements PostProcessor {
     @Inject
     private ReleaseRepository releaseRepository;
@@ -68,6 +72,7 @@ public class SearchRelationPostProcessor extends AbstractProcessingModule implem
     }
 
     public void execute(ProcessingStatusCallback progressHandler) {
+        // Start by dropping all existing search relations
         entityManager.getTransaction().begin();
         entityManager.clear();
         entityManager.createQuery("DELETE from ReleaseSearchRelationEntity").executeUpdate();
@@ -80,12 +85,14 @@ public class SearchRelationPostProcessor extends AbstractProcessingModule implem
         entityManager.createQuery("DELETE from PersonSearchRelationEntity").executeUpdate();
         entityManager.getTransaction().commit();
 
+        // Get all available releases
         entityManager.clear();
         entityManager.getTransaction().begin();
         Collection<ReleaseEntity> releases = releaseRepository.findAllWithRelations(null, Arrays.asList("label"));
         entityManager.getTransaction().commit();
         entityManager.clear();
 
+        // Iterate through each release
         long i = 0;
         for (Release release : releases) {
             entityManager.getTransaction().begin();
@@ -99,11 +106,10 @@ public class SearchRelationPostProcessor extends AbstractProcessingModule implem
             Set<Classification> aggregatedClassifications = new HashSet<Classification>(releaseClassifications);
             Set<Recording> aggregatedRecordings = new HashSet<Recording>();
             Set<Work> aggregatedWorks = new HashSet<Work>();
-            Set<Recording> handledRecordings = new HashSet<Recording>();
             for (Track track : tracks) {
                 Recording recording = track.getRecording();
-                handledRecordings.add(recording);
-                addRecording(aggregatedContributors, aggregatedRecordings, aggregatedWorks, aggregatedClassifications, releaseContributors, releaseClassifications, release, recording, track);
+                aggregatedRecordings.add(recording);
+                addRecording(aggregatedContributors, aggregatedWorks, aggregatedClassifications, releaseContributors, releaseClassifications, release, recording, track);
                 releaseSearchRelations.add(new ReleaseSearchRelationEntity(release, track));
             }
 
@@ -111,8 +117,8 @@ public class SearchRelationPostProcessor extends AbstractProcessingModule implem
             for (RecordingSession session : recordingSessions) {
                 for (Recording recording : session.getRecordings()) {
                     // We only need to handle this if we haven't already taken care of this recording
-                    if (!handledRecordings.contains(recording)) {
-                        addRecording(aggregatedContributors, aggregatedRecordings, aggregatedWorks, aggregatedClassifications, releaseContributors, releaseClassifications, release, recording, null);
+                    if (aggregatedRecordings.add(recording)) {
+                        addRecording(aggregatedContributors, aggregatedWorks, aggregatedClassifications, releaseContributors, releaseClassifications, release, recording, null);
                     }
                 }
             }
@@ -149,7 +155,19 @@ public class SearchRelationPostProcessor extends AbstractProcessingModule implem
         }
     }
 
-    private void addRecording(Set<Contributor> aggregatedContributors, Set<Recording> aggregatedRecordings, Set<Work> aggregatedWorks, Set<Classification> aggregatedClassifications, Collection<ContributorEntity> releaseContributors, Collection<ClassificationEntity> releaseClassifications, Release release, Recording recording, Track track) {
+    /**
+     * Add search relations for the specified recording, note that this method can be called multiple times for the same recording if the recording
+     * is part of multiple releases or tracks
+     * @param aggregatedContributors Aggregated list of contributors, any {@link Contributor} directly or indirectly related to this recording will be appended to this list
+     * @param aggregatedWorks Aggregated list of works, any {@link Work} related to this recording will be appended to this list
+     * @param aggregatedClassifications Aggregated list of classifications, any {@link Classification} directly or indirectly related to this recording will be appended to this list
+     * @param releaseContributors Aggregated list of contributors directly tied to a {@link Release} related to the recording
+     * @param releaseClassifications Aggregated list of classifications directly ties to a {@link Release} related to the recording
+     * @param release The release which triggered this recording to be added
+     * @param recording The recording to process
+     * @param track The track which triggered this recording to be added
+     */
+    private void addRecording(Set<Contributor> aggregatedContributors, Set<Work> aggregatedWorks, Set<Classification> aggregatedClassifications, Collection<ContributorEntity> releaseContributors, Collection<ClassificationEntity> releaseClassifications, Release release, Recording recording, Track track) {
         // Get all contributors for a recording session which this recording is part of
         Set<Contributor> sessionContributors = new HashSet<Contributor>();
         Set<RecordingSession> recordingSessions = new HashSet<RecordingSession>();
@@ -172,7 +190,6 @@ public class SearchRelationPostProcessor extends AbstractProcessingModule implem
         Set<Contributor> recordingContributors = recording.getContributors();
         aggregatedContributors.addAll(recordingContributors);
         aggregatedContributors.addAll(sessionContributors);
-        aggregatedRecordings.add(recording);
         Set<Contributor> aggregatedWorkContributors = new HashSet<Contributor>();
         Set<ClassificationEntity> aggregatedWorkClassifications = new HashSet<ClassificationEntity>();
         Set<Work> works = new HashSet<Work>();
@@ -312,6 +329,16 @@ public class SearchRelationPostProcessor extends AbstractProcessingModule implem
         }
     }
 
+    /**
+     * Creates a search relation for the owner related to the specified contributor and if the artist tied to the contributor have a relation to a
+     * {@link Person} this method will also create a search relation to the contributor from the person entity.
+     * @param relations The list of search relations which the new relation should be added to
+     * @param contributor The contributor which the search relation should be related to
+     * @param owner The owner of the search relation
+     * @param relationClass The search relation class which should be used when creating the search relation
+     * @param <T> The search relation class which extends from {@link SearchRelationEntity}
+     * TODO: Feels like this is called in too many places with relations==null, maybe we can improve performance by creating person relations at the end of each release ?
+     */
     private <T extends SearchRelationEntity> void addContributor(Set<SearchRelationEntity> relations, Contributor contributor, SMDIdentity owner, Class<T> relationClass) {
         try {
             if(relations!=null) {

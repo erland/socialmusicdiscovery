@@ -27,8 +27,24 @@
 
 package org.socialmusicdiscovery.server.business.logic;
 
+/**
+ * Interface that represents a transaction manager which manage the transaction but also makes sure
+ * the {@link javax.persistence.EntityManager} instance for the current context is in the appropriate state
+ */
 public interface TransactionManager {
+    /**
+     * Begin a new transaction and makes sure the {@link javax.persistence.EntityManager} instance is in the appropriate state to start
+     * query or update persistent entities
+     */
     void begin();
+
+    /**
+     * Mark the currently active transaction for rollback, the actual rollback will not happen until {@link #end} is called
+     */
     void setRollbackOnly();
+
+    /**
+     * Commit or rollback the currently active transaction depending on if {@link #setRollbackOnly()} has been called or not
+     */
     void end();
 }

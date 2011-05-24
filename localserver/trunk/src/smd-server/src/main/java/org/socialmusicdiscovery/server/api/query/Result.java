@@ -34,7 +34,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Represents a browsing result
+ */
 public class Result {
+    /**
+     * Represents a counter for a specific type of objects which exists beneath an item in the browse result
+     */
     public static class Child {
         @Expose
         private String id;
@@ -43,8 +49,6 @@ public class Result {
 
         public Child() {
         }
-
-        ;
 
         public Child(String id, Long count) {
             this.id = id;
@@ -68,6 +72,9 @@ public class Result {
         }
     }
 
+    /**
+     * Represents a single item in the browsing result
+     */
     public static class ResultItem {
         @Expose
         private Collection<Child> childItems;

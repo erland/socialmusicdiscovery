@@ -43,6 +43,10 @@ import org.socialmusicdiscovery.server.business.model.config.ConfigurationParame
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 
+/**
+ * The media import manager is a singleton that manage all media import and post processing modules, keeps their current state and offers
+ * function to launch a specific importer.
+ */
 public class MediaImportManager {
     @Inject
     @Named("mediaimport")
@@ -116,6 +120,12 @@ public class MediaImportManager {
         }
     }
 
+    /**
+     * Constructs a new media import manager, this constructor should never be called directly instead you should create a member variable with
+     * an {@link @Inject} annotation which will give you the one and only singleton instance
+     * @param mediaImporters The list of media importers which should be managed
+     * @param postProcessors The list of post processing modules which should be managed
+     */
     public MediaImportManager(Map<String,MediaImporter> mediaImporters, Map<String,PostProcessor> postProcessors) {
         this.mediaImporters = mediaImporters;
         this.postProcessors = postProcessors;

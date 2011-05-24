@@ -39,6 +39,10 @@ import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Properties;
 
+/**
+ * Provides named {@link String} and {@link Properties} objects which contains the default configuration or custom configuration loaded from
+ * property files and/or VM parameters.
+ */
 public class PropertiesModule extends AbstractModule {
     Properties properties = new Properties();
 

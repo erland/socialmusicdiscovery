@@ -32,18 +32,39 @@ import org.socialmusicdiscovery.server.business.model.classification.Classificat
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
 import org.socialmusicdiscovery.server.business.model.core.Recording;
 
+/**
+ * Abstract class which represents a search relation between a {@link Recording} and some other entity, see {@link SearchRelationEntity} for more information
+ */
 public abstract class RecordingSearchRelationEntity extends SearchRelationEntity {
     public RecordingSearchRelationEntity() {
     }
 
+    /**
+     * Constructs a search relation related to the specific {@link SMDIdentity}, this will leave the {@link #type} field empty
+     * @param recording The owner
+     * @param reference The entity which the search relation should be related to
+     */
     public RecordingSearchRelationEntity(Recording recording, SMDIdentity reference) {
         super(recording, reference);
     }
 
+    /**
+     * Constructs a search relation related to a {@link Contributor}, this will fill the {@link #type} field with the
+     * value from {@link org.socialmusicdiscovery.server.business.model.core.Contributor#getType()}.
+     * The {@link org.socialmusicdiscovery.server.business.model.core.Contributor#getArtist()} will be used to fill the {@link #reference} field.
+     * @param recording The owner
+     * @param contributor The contributor
+     */
     public RecordingSearchRelationEntity(Recording recording, Contributor contributor) {
         super(recording, contributor);
     }
 
+    /**
+     * Constructs a search relation related to a {@link Classification}, this will fill the {@link #type} field with the
+     * value from {@link org.socialmusicdiscovery.server.business.model.classification.Classification#getType()}.
+     * @param recording The owner
+     * @param classification The classification
+     */
     public RecordingSearchRelationEntity(Recording recording, Classification classification) {
         super(recording, classification);
     }

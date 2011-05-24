@@ -40,6 +40,9 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Database provider for Apache Derby database
+ */
 public class DerbyProviderModule extends AbstractModule {
     class DerbyProvider implements DatabaseProvider {
         HashMap<String, String> properties = null;
@@ -112,6 +115,10 @@ public class DerbyProviderModule extends AbstractModule {
     protected void configure() {
     }
 
+    /**
+     * Instance persisted to disk
+     * @return DatabaseProvider instance
+     */
     @Provides
     @Named("derby")
     public DatabaseProvider getDiskProvider() {
@@ -128,18 +135,30 @@ public class DerbyProviderModule extends AbstractModule {
         return derbyDisk;
     }
 
+    /**
+     * Instance only stored in memory, not persisted to disk
+     * @return DatabaseProvider instance
+     */
     @Provides
     @Named("derby-memory")
     public DatabaseProvider getMemoryProvider() {
         return derbyMemory;
     }
 
+    /**
+     * Instance only stored in memory, not persisted to disk, but preloaded with sample test data
+     * @return DatabaseProvider instance
+     */
     @Provides
     @Named("derby-memory-test")
     public DatabaseProvider getMemoryTestProvider() {
         return derbyMemory;
     }
 
+    /**
+     * Instance persisted to disk and preloaded with sample test data
+     * @return DatabaseProvider instance
+     */
     @Provides
     @Named("derby-test")
     public DatabaseProvider getDiskTestProvider() {

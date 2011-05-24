@@ -40,6 +40,10 @@ import org.socialmusicdiscovery.server.business.model.config.ConfigurationParame
 
 import java.util.*;
 
+/**
+ * The plugin manager is a singleton object which manage all currently running plugins and provides functions to start/stop all enabled plugins
+ * or an individual specific plugin
+ */
 public class PluginManager {
     @Inject
     @Named("default-value")
@@ -60,6 +64,11 @@ public class PluginManager {
      */
     Map<String, Plugin> runningPlugins = new HashMap<String, Plugin>();
 
+    /**
+     * Constructs a new plugin manager instance, this constructor should never be called directly instead you should create a member variable with
+     * an {@link @Inject} annotation which will give you the one and only singleton instance
+     * @param plugins The list of plugins which should be managed by this plugin manager instance
+     */
     public PluginManager(Map<String, Plugin> plugins) {
         this.plugins = plugins;
         InjectHelper.injectMembers(this);
@@ -86,6 +95,10 @@ public class PluginManager {
         }
     }
 
+    /**
+     * Start all enabled plugins, the start order will be according to the {@link org.socialmusicdiscovery.server.api.plugin.Plugin#getStartPriority()}
+     * value provided by each plugin. If a plugin is dependent on another plugin the other plugin will be started first.
+     */
     public void startAll() {
         List<String> pluginIdentities = new ArrayList<String>(plugins.keySet());
         Collections.sort(pluginIdentities, new Comparator<String>() {
@@ -110,6 +123,9 @@ public class PluginManager {
         }
     }
 
+    /**
+     * Stop all currently running plugins
+     */
     public void stopAll() {
         for (String pluginId : plugins.keySet()) {
             if (runningPlugins.containsKey(pluginId)) {
@@ -122,6 +138,13 @@ public class PluginManager {
         }
     }
 
+    /**
+     * Start the plugin with the specific identity, if the plugin depends on other plugins through the
+     * return value from {@link org.socialmusicdiscovery.server.api.plugin.Plugin#getDependencies()}, the dependencies will automatically be
+     * started first.
+     * @param pluginId The plugin identity, this is the value from {@link org.socialmusicdiscovery.server.api.plugin.Plugin#getId()}
+     * @throws PluginException If the plugin or one of its dependent plugins fails to start
+     */
     public void startPlugin(String pluginId) throws PluginException {
         if (!runningPlugins.containsKey(pluginId)) {
             Plugin plugin = plugins.get(pluginId);
@@ -142,6 +165,11 @@ public class PluginManager {
         }
     }
 
+    /**
+     * Stop the plugin with the specified identity
+     * @param pluginId The plugin identity, this is the value from {@link org.socialmusicdiscovery.server.api.plugin.Plugin#getId()}
+     * @throws PluginException If the plugin fails to be stopped
+     */
     public void stopPlugin(String pluginId) throws PluginException {
         Plugin plugin = runningPlugins.get(pluginId);
         if (plugin != null) {

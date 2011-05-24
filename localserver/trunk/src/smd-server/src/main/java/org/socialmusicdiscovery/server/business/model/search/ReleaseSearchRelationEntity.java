@@ -33,16 +33,30 @@ import org.socialmusicdiscovery.server.business.model.core.Release;
 
 import javax.persistence.Table;
 
+/**
+ * Represents a search relation between a {@link Release} and some other entity, see {@link SearchRelationEntity} for more information
+ */
 @javax.persistence.Entity
 @Table(name = "releases_search_relations")
 public class ReleaseSearchRelationEntity extends SearchRelationEntity {
     public ReleaseSearchRelationEntity() {
     }
 
+    /**
+     * Constructs a search relation related to the specific {@link SMDIdentity}, this will leave the {@link #type} field empty
+     * @param release The owner
+     * @param reference The entity which the search relation should be related to
+     */
     public ReleaseSearchRelationEntity(Release release, SMDIdentity reference) {
         super(release, reference);
     }
 
+    /**
+     * Constructs a search relation related to a {@link Classification}, this will fill the {@link #type} field with the
+     * value from {@link org.socialmusicdiscovery.server.business.model.classification.Classification#getType()}.
+     * @param release The owner
+     * @param classification The classification
+     */
     public ReleaseSearchRelationEntity(Release release, Classification classification) {
         super(release, classification);
     }

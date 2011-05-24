@@ -33,6 +33,9 @@ import org.socialmusicdiscovery.server.business.model.config.ConfigurationParame
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * Represents the interface which have to be implemented by all plugins
+ */
 public interface Plugin {
     /**
      * Should return a unique identity for this plugin

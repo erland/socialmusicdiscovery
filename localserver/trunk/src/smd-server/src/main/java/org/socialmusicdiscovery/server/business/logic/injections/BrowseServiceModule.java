@@ -34,6 +34,9 @@ import com.google.inject.name.Named;
 import org.socialmusicdiscovery.server.business.service.browse.*;
 
 
+/**
+ * Provides {@link BrowseService} implementations based on a name
+ */
 public class BrowseServiceModule extends AbstractModule {
     @Override
     protected void configure() {
