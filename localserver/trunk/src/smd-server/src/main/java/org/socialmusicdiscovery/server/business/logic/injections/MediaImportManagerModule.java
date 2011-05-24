@@ -39,6 +39,11 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.ServiceLoader;
 
+/**
+ * Provides the singleton instance of the {@link MediaImportManager} which manage all media importer and post processing modules
+ * in the application. The media importers and post processing modules are found using {@link ServiceLoader} which looks up all registered
+ * implementations of the {@link MediaImporter} and {@link PostProcessor} }interfaces.
+ */
 public class MediaImportManagerModule extends AbstractModule {
     private static MediaImportManager mediaImportManager;
 
@@ -50,6 +55,9 @@ public class MediaImportManagerModule extends AbstractModule {
     @Singleton
     public MediaImportManager provideMediaImportManager() {
         if(mediaImportManager== null) {
+
+            // Load all registered media importers registered in:
+            // /META-INF/services/org.socialmusicdiscovery.server.api.mediaimport.MediaImporter
             Map<String, MediaImporter> mediaImporters = new HashMap<String,MediaImporter>();
             ServiceLoader<MediaImporter> mediaImporterLoader = ServiceLoader.load(MediaImporter.class);
             Iterator<MediaImporter> mediaImporterIterator = mediaImporterLoader.iterator();
@@ -58,6 +66,8 @@ public class MediaImportManagerModule extends AbstractModule {
                 mediaImporters.put(importer.getId(),importer);
             }
 
+            // Load all registered post processor modules registered in:
+            // /META-INF/services/org.socialmusicdiscovery.server.api.mediaimport.PostProcessor
             Map<String, PostProcessor> postProcessors = new HashMap<String,PostProcessor>();
             ServiceLoader<PostProcessor> postProcessorLoader = ServiceLoader.load(PostProcessor.class);
             Iterator<PostProcessor> postProcessorIterator = postProcessorLoader.iterator();

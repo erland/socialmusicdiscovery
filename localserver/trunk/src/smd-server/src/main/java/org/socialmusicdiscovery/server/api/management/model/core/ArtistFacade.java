@@ -28,9 +28,7 @@
 package org.socialmusicdiscovery.server.api.management.model.core;
 
 import com.google.gson.annotations.Expose;
-import com.google.inject.Inject;
 import org.socialmusicdiscovery.server.api.management.model.AbstractSMDIdentityCRUDFacade;
-import org.socialmusicdiscovery.server.business.logic.TransactionManager;
 import org.socialmusicdiscovery.server.business.model.core.ArtistEntity;
 import org.socialmusicdiscovery.server.business.repository.core.ArtistRepository;
 import org.socialmusicdiscovery.server.support.copy.CopyHelper;
@@ -46,8 +44,6 @@ import java.util.Date;
  */
 @Path("/artists")
 public class ArtistFacade extends AbstractSMDIdentityCRUDFacade<ArtistEntity, ArtistRepository> {
-    @Inject
-    private TransactionManager transactionManager;
     /**
      * Search for artists matching the specified search criterias
      *

@@ -114,6 +114,10 @@ public class MySQLProviderModule extends AbstractModule {
         }
     }
 
+    /**
+     * Instance in SBS bundled MySQL instance using non standard 9092 port
+     * @return DatabaseProvider instance
+     */
     @Provides
     @Named("mysql-sbs")
     public DatabaseProvider getSBSProvider() {
@@ -123,12 +127,20 @@ public class MySQLProviderModule extends AbstractModule {
         return mysqlSBS;
     }
 
+    /**
+     * Instance in SBS bundled MySQL instance using non standard 9092 port and preloaded with sample test data
+     * @return DatabaseProvider instance
+     */
     @Provides
     @Named("mysql-sbs-test")
     public DatabaseProvider getSBSTestProvider() {
         return getSBSProvider();
     }
 
+    /**
+     * Instance in standalone MySQL instance using standard 3306 port
+     * @return DatabaseProvider instance
+     */
     @Provides
     @Named("mysql-standalone")
     public DatabaseProvider getStandaloneProvider() {
@@ -138,6 +150,10 @@ public class MySQLProviderModule extends AbstractModule {
         return mysqlStandalone;
     }
 
+    /**
+     * Instance in standalone MySQL instance using standard 3306 port and preloaded with sample test data
+     * @return DatabaseProvider instance
+     */
     @Provides
     @Named("mysql-standalone-test")
     public DatabaseProvider getStandaloneTestProvider() {

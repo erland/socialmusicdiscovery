@@ -34,42 +34,77 @@ import org.socialmusicdiscovery.server.business.repository.EntityRepository;
 
 import javax.persistence.EntityManager;
 
+/**
+ * Abstract base class to provided basic functionality for all entities that want to provide a create, read, update, delete interface
+ * @param <K> The primary key class used by the entity
+ * @param <E> The class of the entity which this facade manages
+ * @param <R> The interface class of the repository which manage the entity this facade provides an interface for
+ */
 public abstract class AbstractCRUDFacade<K, E, R extends EntityRepository<K, E>> {
+    /** The repository used by this facade */
     @Inject
     protected R repository;
 
+    /** The entity manager instance used by this facade */
     @Inject
     private EntityManager em;
 
+    /** The transaction manager used by this facade */
     @Inject
-    private TransactionManager transactionManager;
+    protected TransactionManager transactionManager;
 
     protected EntityManager getEntityManager() {
         return em;
     }
 
+    /**
+     * Get the repository instance
+     * @return The repository instance
+     */
     protected R getRepository() {
         return repository;
     }
 
+    /**
+     * Create a new instance and inject all member variables annotated with a {@link @Inject} annotation
+     */
     public AbstractCRUDFacade() {
         InjectHelper.injectMembers(this);
     }
 
+    /**
+     * Get the entity with the specified identity
+     * @param id The identity of the entity
+     * @return The found instance or null if it doesn't exist
+     */
     protected E getEntity(K id) {
         return repository.findById(id);
     }
 
+    /**
+     * Creates a new entity instance
+     * @param entity The data for the instance which should be created
+     * @return The persistent newly created instance
+     */
     protected E createEntity(E entity) {
         repository.create(entity);
         return entity;
     }
 
+    /**
+     * Updates the specified entity instance
+     * @param entity The data for the instance which should be updated
+     * @return The persistent updated instance
+     */
     protected E updateEntity(E entity) {
         entity = repository.merge(entity);
         return entity;
     }
 
+    /**
+     * Deletes the entity instance with the specified identity
+     * @param id The primary key of the entity instance to delete
+     */
     protected void deleteEntity(K id) {
         if (id != null) {
             E entity = repository.findById(id);

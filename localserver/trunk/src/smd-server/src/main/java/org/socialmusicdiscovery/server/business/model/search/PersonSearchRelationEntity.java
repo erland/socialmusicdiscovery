@@ -32,12 +32,22 @@ import org.socialmusicdiscovery.server.business.model.core.Person;
 
 import javax.persistence.Table;
 
+/**
+ * Represents a search relation between a {@link Person} and some other entity, see {@link SearchRelationEntity} for more information
+ */
 @javax.persistence.Entity
 @Table(name = "persons_search_relations")
 public class PersonSearchRelationEntity extends SearchRelationEntity {
     public PersonSearchRelationEntity() {
     }
 
+    /**
+     * Constructs a search relation related to a {@link Contributor}, this will fill the {@link #type} field with the
+     * value from {@link org.socialmusicdiscovery.server.business.model.core.Contributor#getType()}.
+     * The {@link org.socialmusicdiscovery.server.business.model.core.Contributor#getArtist()} will be used to fill the {@link #reference} field.
+     * @param person The owner
+     * @param contributor The contributor
+     */
     public PersonSearchRelationEntity(Person person, Contributor contributor) {
         super(person, contributor);
     }

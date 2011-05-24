@@ -35,6 +35,10 @@ import com.google.inject.name.Named;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * Provides the various {@link ExecutorService} instances which are used to manage background operations in a controlled fashion to ensure the
+ * application isn't overloaded by creating too many background threads
+ */
 public class ExecutorServiceModule extends AbstractModule {
     private static ExecutorService mediaImportExecutorService;
 

@@ -30,7 +30,6 @@ package org.socialmusicdiscovery.server.api.management.model.core;
 import com.google.gson.annotations.Expose;
 import com.google.inject.Inject;
 import org.socialmusicdiscovery.server.api.management.model.AbstractSMDIdentityCRUDFacade;
-import org.socialmusicdiscovery.server.business.logic.TransactionManager;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReference;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
 import org.socialmusicdiscovery.server.business.model.core.*;
@@ -50,8 +49,6 @@ import java.util.Date;
  */
 @Path("/contributors")
 public class ContributorFacade extends AbstractSMDIdentityCRUDFacade<ContributorEntity, ContributorRepository> {
-    @Inject
-    private TransactionManager transactionManager;
 
     @Inject
     private JPASMDIdentityReferenceRepository smdIdentityReferenceRepository;

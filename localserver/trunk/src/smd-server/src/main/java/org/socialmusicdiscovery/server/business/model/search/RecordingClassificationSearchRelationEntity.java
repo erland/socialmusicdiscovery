@@ -36,6 +36,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+/**
+ * Represents a search relation between a {@link Recording} and a {@link Classification}, see {@link SearchRelationEntity} for more information.
+ * This entity contains the aggregated list of all
+ * {@link Classification} instances directly or indirectly tied to the {@link Recording}
+ */
 @Entity
 @Table(name = "recording_classifications_search_relations")
 public class RecordingClassificationSearchRelationEntity extends RecordingSearchRelationEntity {
@@ -46,6 +51,12 @@ public class RecordingClassificationSearchRelationEntity extends RecordingSearch
     public RecordingClassificationSearchRelationEntity() {
     }
 
+    /**
+     * Constructs a search relation related to a {@link Classification}, this will fill the {@link #type} field with the
+     * value from {@link org.socialmusicdiscovery.server.business.model.classification.Classification#getType()}.
+     * @param recording The owner
+     * @param classification The classification
+     */
     public RecordingClassificationSearchRelationEntity(Recording recording, Classification classification) {
         super(recording, classification);
     }

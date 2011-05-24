@@ -100,6 +100,10 @@ public class HSQLProviderModule extends AbstractModule {
     protected void configure() {
     }
 
+    /**
+     * Instance persisted to disk
+     * @return DatabaseProvider instance
+     */
     @Provides
     @Named("hsql")
     public DatabaseProvider getDiskProvider() {
@@ -116,18 +120,30 @@ public class HSQLProviderModule extends AbstractModule {
         return hsqlDisk;
     }
 
+    /**
+     * Instance only stored in memory, not persisted to disk
+     * @return DatabaseProvider instance
+     */
     @Provides
     @Named("hsql-memory")
     public DatabaseProvider getMemoryProvider() {
         return hsqlMemory;
     }
 
+    /**
+     * Instance persisted to disk and preloaded with sample test data
+     * @return DatabaseProvider instance
+     */
     @Provides
     @Named("hsql-test")
     public DatabaseProvider getDiskTestProvider() {
         return getDiskProvider();
     }
 
+    /**
+     * Instance only stored in memory, not persisted to disk, but preloaded with sample test data
+     * @return DatabaseProvider instance
+     */
     @Provides
     @Named("hsql-memory-test")
     public DatabaseProvider getMemoryTestProvider() {

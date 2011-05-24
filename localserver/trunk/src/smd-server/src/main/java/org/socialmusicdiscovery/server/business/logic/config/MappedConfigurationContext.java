@@ -32,41 +32,88 @@ import org.socialmusicdiscovery.server.business.model.config.ConfigurationParame
 
 import java.util.Set;
 
+/**
+ * Mapped configuration context which provides simplified access by automatically adding a
+ * prefix to all configuration parameters requested
+ */
 public class MappedConfigurationContext implements ConfigurationContext {
-    String pluginConfigurationPath;
+    String configurationPrefix;
 
-    public MappedConfigurationContext(String pluginConfigurationPath) {
-        this.pluginConfigurationPath = pluginConfigurationPath;
+    /**
+     * Creates a new instance with the specified configuration prefix, the prefix will always be used
+     * when requesting configuration parameters through this context object
+     * @param configurationPrefix
+     */
+    public MappedConfigurationContext(String configurationPrefix) {
+        this.configurationPrefix = configurationPrefix;
     }
 
+    /**
+     * Get the string configuration parameter with specified identity
+     * @param id The identity of the configuration parameter, the actual parameter requested will be configurationPrefix+id
+     * @return The value of the configuration parameter
+     */
     @Override
     public String getStringParameter(String id) {
-        return new MergedConfigurationContext().getStringParameter(pluginConfigurationPath+id);
+        return new MergedConfigurationContext().getStringParameter(configurationPrefix +id);
     }
 
+    /**
+     * Get the boolean configuration parameter with specified identity
+     * @param id The identity of the configuration parameter, the actual parameter requested will be configurationPrefix+id
+     * @return The value of the configuration parameter
+     */
     @Override
     public Boolean getBooleanParameter(String id) {
-        return new MergedConfigurationContext().getBooleanParameter(pluginConfigurationPath + id);
+        return new MergedConfigurationContext().getBooleanParameter(configurationPrefix + id);
     }
 
+    /**
+     * Get the integer configuration parameter with specified identity
+     * @param id The identity of the configuration parameter, the actual parameter requested will be configurationPrefix+id
+     * @return The value of the configuration parameter
+     */
     @Override
     public Integer getIntegerParameter(String id) {
-        return new MergedConfigurationContext().getIntegerParameter(pluginConfigurationPath + id);
+        return new MergedConfigurationContext().getIntegerParameter(configurationPrefix + id);
     }
 
+    /**
+     * Get the double configuration parameter with specified identity
+     * @param id The identity of the configuration parameter, the actual parameter requested will be configurationPrefix+id
+     * @return The value of the configuration parameter
+     */
     @Override
     public Double getDoubleParameter(String id) {
-        return new MergedConfigurationContext().getDoubleParameter(pluginConfigurationPath + id);
+        return new MergedConfigurationContext().getDoubleParameter(configurationPrefix + id);
     }
 
+    /**
+     * Get the {@link ConfigurationParameterEntity} for the specified identity, this can either be a persistent entity or a in-memory
+     * representation of the default configuration
+     * @param id The identity of the configuration parameter, the actual parameter requested will be configurationPrefix+id
+     * @return A {@link ConfigurationParameterEntity} instance or null if it doesn't exist
+     */
     public ConfigurationParameterEntity getParameter(String id) {
         return new MergedConfigurationContext().getParameter(id);
     }
+
+    /**
+     * Get all the {@link ConfigurationParameterEntity} instances managed by this configuration context, this can either be a persistent entities or
+     * a in-memory representation of the default configuration. Only the parameters which id starts with the configurationPrefix will be returned
+     * @return A list of matching {@link ConfigurationParameterEntity} instances
+     */
     public Set<ConfigurationParameterEntity> getParameters() {
         return new MergedConfigurationContext().getParameters();
     }
 
+    /**
+     * Get all the {@link ConfigurationParameterEntity} instances starting with the specified path which is managed by this configuration context,
+     * this can either be a persistent entities or a in-memory representation of the default configuration. Only the parameters which id starts with
+     * the configurationPrefix+path will be returned
+     * @return A list of matching {@link ConfigurationParameterEntity} instances
+     */
     public Set<ConfigurationParameterEntity> getParametersByPath(String path) {
-        return new MergedConfigurationContext().getParametersByPath(pluginConfigurationPath + path);
+        return new MergedConfigurationContext().getParametersByPath(configurationPrefix + path);
     }
 }

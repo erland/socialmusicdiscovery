@@ -35,6 +35,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+/**
+ * Represents a search relation between a {@link Recording} and a {@link org.socialmusicdiscovery.server.business.model.core.Artist},
+ * see {@link SearchRelationEntity} for more information. This entity contains the aggregated list of all
+ * {@link org.socialmusicdiscovery.server.business.model.core.Artist} instances directly or indirectly tied to the {@link Recording}
+ */
 @javax.persistence.Entity
 @Table(name = "recording_artists_search_relations")
 public class RecordingArtistSearchRelationEntity extends RecordingSearchRelationEntity {
@@ -45,6 +50,13 @@ public class RecordingArtistSearchRelationEntity extends RecordingSearchRelation
     public RecordingArtistSearchRelationEntity() {
     }
 
+    /**
+     * Constructs a search relation related to a {@link Contributor}, this will fill the {@link #type} field with the
+     * value from {@link org.socialmusicdiscovery.server.business.model.core.Contributor#getType()}.
+     * The {@link org.socialmusicdiscovery.server.business.model.core.Contributor#getArtist()} will be used to fill the {@link #reference} field.
+     * @param recording The owner
+     * @param contributor The contributor
+     */
     public RecordingArtistSearchRelationEntity(Recording recording, Contributor contributor) {
         super(recording, contributor);
     }

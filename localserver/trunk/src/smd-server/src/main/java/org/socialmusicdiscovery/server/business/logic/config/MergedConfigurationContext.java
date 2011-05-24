@@ -39,6 +39,11 @@ import java.util.Comparator;
 import java.util.Set;
 import java.util.TreeSet;
 
+/**
+ * Merged configuration context which takes its configuration primarily from the {@link ConfigurationParameterRepository} but
+ * fallback on using the default value {@link ConfigurationManager} if a configuration parameter can't be found in the
+ * {@link ConfigurationParameterRepository}
+ */
 public class MergedConfigurationContext implements ConfigurationContext {
     @Inject
     @Named("default-value")
@@ -51,6 +56,13 @@ public class MergedConfigurationContext implements ConfigurationContext {
         InjectHelper.injectMembers(this);
     }
 
+    /**
+     * Get the string configuration parameter with specified identity, primarily the parameter value will be taken from
+     * {@link ConfigurationParameterRepository} but it will fallback on using the default value handled by {@link ConfigurationManager} of no
+     * specific configuration exist
+     * @param id The identity of the configuration parameter
+     * @return The value of the configuration parameter
+     */
     @Override
     public String getStringParameter(String id) {
         ConfigurationParameter parameter = configurationParameterRepository.findById(id);
@@ -60,24 +72,53 @@ public class MergedConfigurationContext implements ConfigurationContext {
         return parameter!=null && parameter.getValue()!=null?parameter.getValue():null;
     }
 
+    /**
+     * Get the boolean configuration parameter with specified identity, primarily the parameter value will be taken from
+     * {@link ConfigurationParameterRepository} but it will fallback on using the default value handled by {@link ConfigurationManager} of no
+     * specific configuration exist
+     * @param id The identity of the configuration parameter
+     * @return The value of the configuration parameter
+     */
     @Override
     public Boolean getBooleanParameter(String id) {
         String value = getStringParameter(id);
         return value!=null?Boolean.valueOf(value):null;
     }
 
+    /**
+     * Get the integer configuration parameter with specified identity, primarily the parameter value will be taken from
+     * {@link ConfigurationParameterRepository} but it will fallback on using the default value handled by {@link ConfigurationManager} of no
+     * specific configuration exist
+     * @param id The identity of the configuration parameter
+     * @return The value of the configuration parameter
+     */
     @Override
     public Integer getIntegerParameter(String id) {
         String value = getStringParameter(id);
         return value!=null?Integer.valueOf(value):null;
     }
 
+    /**
+     * Get the double configuration parameter with specified identity, primarily the parameter value will be taken from
+     * {@link ConfigurationParameterRepository} but it will fallback on using the default value handled by {@link ConfigurationManager} of no
+     * specific configuration exist
+     * @param id The identity of the configuration parameter
+     * @return The value of the configuration parameter
+     */
     @Override
     public Double getDoubleParameter(String id) {
         String value = getStringParameter(id);
         return value!=null?Double.valueOf(value):null;
     }
 
+    /**
+     * Get the {@link ConfigurationParameterEntity} for the specified identity, this can either be a persistent entity or a in-memory
+     * representation of the default configuration. Primarily the parameter will be taken from
+     * {@link ConfigurationParameterRepository} but it will fallback on using the in-memory instance handled by {@link ConfigurationManager} of no
+     * specific configuration exist
+     * @param id The identity of the configuration parameter
+     * @return A {@link ConfigurationParameterEntity} instance or null if it doesn't exist
+     */
     public ConfigurationParameterEntity getParameter(String id) {
         ConfigurationParameterEntity result = configurationParameterRepository.findById(id);
         if(result == null) {
@@ -86,6 +127,13 @@ public class MergedConfigurationContext implements ConfigurationContext {
         return result;
     }
 
+    /**
+     * Get all the {@link ConfigurationParameterEntity} instances managed by this configuration context, this can either be a persistent entities or
+     * a in-memory representation of the default configuration. Primarily the parameters will be taken from
+     * {@link ConfigurationParameterRepository} but for any parameter which doesn't have a specific configuration it will fallback on using the
+     * in-memory instance handled by {@link ConfigurationManager}
+     * @return A list of matching {@link ConfigurationParameterEntity} instances
+     */
     public Set<ConfigurationParameterEntity> getParameters() {
         Set<ConfigurationParameterEntity> resultParameters = new TreeSet<ConfigurationParameterEntity>(new Comparator<ConfigurationParameterEntity>() {
             @Override
@@ -98,6 +146,13 @@ public class MergedConfigurationContext implements ConfigurationContext {
         return resultParameters;
     }
 
+    /**
+     * Get all the {@link ConfigurationParameterEntity} instances starting with the specified path which is managed by this configuration context,
+     * this can either be a persistent entities or a in-memory representation of the default configuration. Primarily the parameters will be taken from
+     * {@link ConfigurationParameterRepository} but for any parameter which doesn't have a specific configuration it will fallback on using the
+     * in-memory instance handled by {@link ConfigurationManager}. Only the parameters which id starts with the specified path will be returned
+     * @return A list of matching {@link ConfigurationParameterEntity} instances
+     */
     public Set<ConfigurationParameterEntity> getParametersByPath(String path) {
         Set<ConfigurationParameterEntity> resultParameters = new TreeSet<ConfigurationParameterEntity>(new Comparator<ConfigurationParameterEntity>() {
             @Override

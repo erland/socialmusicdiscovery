@@ -28,11 +28,9 @@
 package org.socialmusicdiscovery.server.api.management.config;
 
 import com.google.gson.annotations.Expose;
-import com.google.inject.Inject;
 import org.codehaus.jettison.json.JSONException;
 import org.socialmusicdiscovery.server.api.management.AbstractCRUDFacade;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
-import org.socialmusicdiscovery.server.business.logic.TransactionManager;
 import org.socialmusicdiscovery.server.business.logic.config.MergedConfigurationContext;
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameter;
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameterEntity;
@@ -48,8 +46,6 @@ import java.util.Collection;
  */
 @Path("/configurations")
 public class ConfigurationFacade extends AbstractCRUDFacade<String, ConfigurationParameterEntity, ConfigurationParameterRepository> {
-    @Inject
-    private TransactionManager transactionManager;
 
     public ConfigurationFacade() {
         InjectHelper.injectMembers(this);

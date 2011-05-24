@@ -43,6 +43,9 @@ import javax.ws.rs.ext.Provider;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * JSON provider that handles the JSON to/from Java conversion in the provided JSON interface
+ */
 @Singleton
 @Provider
 @Produces(MediaType.APPLICATION_JSON)
@@ -51,6 +54,9 @@ public final class JSONProvider extends AbstractJSONProvider {
         super(true);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected Map<Class, Class> getConversionMap() {
         Map<Class, Class> converters = new HashMap<Class,Class>();
@@ -80,6 +86,9 @@ public final class JSONProvider extends AbstractJSONProvider {
         return converters;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected Map<String, Class> getObjectTypeConversionMap() {
         Map<String, Class> converters = new HashMap<String,Class>();

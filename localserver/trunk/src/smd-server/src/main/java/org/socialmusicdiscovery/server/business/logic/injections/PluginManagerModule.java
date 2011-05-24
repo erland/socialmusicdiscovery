@@ -38,6 +38,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.ServiceLoader;
 
+/**
+ * Provides the singleton instance of the {@link PluginManager} which manage all plugins in the application.
+ * The plugins are found using {@link ServiceLoader} which looks up all registered implementations of the {@link Plugin} interface.
+ */
 public class PluginManagerModule extends AbstractModule {
     private static PluginManager pluginManager;
 
@@ -49,6 +53,9 @@ public class PluginManagerModule extends AbstractModule {
     @Singleton
     public PluginManager providePluginManager() {
         if (pluginManager == null) {
+
+            // Load all plugins registered in:
+            // /META-INF/services/org.socialmusicdiscovery.server.api.plugin.Plugin
             Map<String, Plugin> plugins = new HashMap<String, Plugin>();
             ServiceLoader<Plugin> pluginLoader = ServiceLoader.load(Plugin.class);
             Iterator<Plugin> pluginIterator = pluginLoader.iterator();

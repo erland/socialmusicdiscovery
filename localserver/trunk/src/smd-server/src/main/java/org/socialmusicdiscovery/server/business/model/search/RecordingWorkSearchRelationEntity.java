@@ -36,6 +36,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+/**
+ * Represents a search relation between a {@link Recording} and a {@link Work}, see {@link SearchRelationEntity} for more information
+ */
 @Entity
 @Table(name = "recording_works_search_relations")
 public class RecordingWorkSearchRelationEntity extends RecordingSearchRelationEntity {
@@ -46,7 +49,12 @@ public class RecordingWorkSearchRelationEntity extends RecordingSearchRelationEn
     public RecordingWorkSearchRelationEntity() {
     }
 
-    public RecordingWorkSearchRelationEntity(Recording identity, Work work) {
-        super(identity, work);
+    /**
+     * Constructs a search relation related to a {@link Work}
+     * @param recording The owner
+     * @param work The work
+     */
+    public RecordingWorkSearchRelationEntity(Recording recording, Work work) {
+        super(recording, work);
     }
 }

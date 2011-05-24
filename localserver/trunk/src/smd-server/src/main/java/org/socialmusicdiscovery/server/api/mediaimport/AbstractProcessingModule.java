@@ -36,11 +36,24 @@ import javax.persistence.EntityManager;
 import java.util.Collection;
 import java.util.HashSet;
 
+/**
+ * Abstract helper class which all media importer or post processor modules should inherit from to simplify the implementation to avoid the need
+ * to implement methods for which they are satisfied with the default behavior.
+ */
 public abstract class AbstractProcessingModule implements ProcessingModule {
-
+    /**
+     * Configuration context used by this media importer or post processing module
+     */
     protected ConfigurationContext configuration = null;
+
+    /**
+     * Indication if the current execution has been requested to be aborted
+     */
     private Boolean aborted;
 
+    /**
+     * Entity manager to use for this execution
+     */
     @Inject
     protected EntityManager entityManager;
 
@@ -76,6 +89,11 @@ public abstract class AbstractProcessingModule implements ProcessingModule {
         return configuration;
     }
 
+    /**
+     * Indicates if the current execution has been requested to be aborted, modules performing long operations should call this method at regular
+     * intervals to check if they should be aborted or safely can continue to do their work a while longer
+     * @return true if the current execution should be aborted
+     */
     protected Boolean isAborted() {
         return this.aborted;
     }

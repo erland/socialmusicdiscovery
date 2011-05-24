@@ -32,6 +32,9 @@ import org.socialmusicdiscovery.server.business.model.config.ConfigurationParame
 
 import java.util.Collection;
 
+/**
+ * Interface that all processing modules have to implement
+ */
 public interface ProcessingModule {
     /**
      * Returns the unique identity of the processing module, this is used when you want to issue a command to the processing module

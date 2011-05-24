@@ -43,6 +43,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+/**
+ * Provides the singleton {@link ConfigurationManager} module that represents the default configuration provided with the application. Note that
+ * this singleton instance should be used together with {@link org.socialmusicdiscovery.server.business.logic.config.MergedConfigurationContext}
+ * to be able to override the default configuration.
+ *
+ * The default configuration will be taken from the {@link Properties} object named "smd-default-configuration" which is handled by the
+ * {@link PropertiesModule}
+ */
 public class ConfigurationManagerModule extends AbstractModule {
     ConfigurationManager configurationManager;
 

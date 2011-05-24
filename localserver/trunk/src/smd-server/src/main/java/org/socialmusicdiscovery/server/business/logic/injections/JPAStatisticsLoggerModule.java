@@ -34,6 +34,9 @@ import org.hibernate.SessionFactory;
 import org.hibernate.stat.*;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
 
+/**
+ * Provides a {@link StatisticsLogger} instance that logs statistics provided by Hibernate
+ */
 public class JPAStatisticsLoggerModule extends AbstractModule {
     private static class HibernateStatisticsLogger implements StatisticsLogger {
         @Inject

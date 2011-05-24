@@ -35,9 +35,16 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
+/**
+ * Abstract plugin helper class which all plugins should inherit from to simplify implementation and avoid the need to implement the plugin
+ * methods for which the plugin is satisfied with the default behavior
+ */
 public abstract class AbstractPlugin implements Plugin {
-
+    /**
+     * Configuration context used by the plugin
+     */
     protected ConfigurationContext configuration = null;
+
     /**
      * Default implementation that returns {@link Class#getSimpleName()}}
      * Override this if you want to use another identity for your plugin.
@@ -101,6 +108,10 @@ public abstract class AbstractPlugin implements Plugin {
         this.configuration = configuration;
     }
 
+    /**
+     * Get configuration context for the plugin, this should be used when reading plugin specific configuration parameters
+     * @return The {@link ConfigurationContext} for this plugin
+     */
     protected ConfigurationContext getConfiguration() {
         return configuration;
     }
