@@ -27,6 +27,7 @@
 
 package org.socialmusicdiscovery.server.api.management;
 
+import com.google.inject.Inject;
 import com.sun.grizzly.http.SelectorThread;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.GenericType;
@@ -42,6 +43,7 @@ import org.socialmusicdiscovery.server.business.model.config.ConfigurationParame
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameterEntity;
 import org.socialmusicdiscovery.server.business.model.core.*;
 import org.socialmusicdiscovery.server.business.model.subjective.*;
+import org.socialmusicdiscovery.server.business.repository.SMDIdentityReferenceRepository;
 import org.socialmusicdiscovery.server.support.json.AbstractJSONProvider;
 import org.socialmusicdiscovery.test.BaseTestCase;
 import org.testng.annotations.AfterClass;
@@ -54,6 +56,9 @@ import java.net.URI;
 import java.util.*;
 
 public class FacadeTest extends BaseTestCase {
+    @Inject
+    SMDIdentityReferenceRepository smdIdentityReferenceRepository;
+
     private static final String HOST = "http://localhost";
     private static final int PORT = 9997;
     private static final String HOSTURL = HOST+":"+PORT;

@@ -27,15 +27,25 @@
 
 package org.socialmusicdiscovery.server.business.model;
 
+import com.google.inject.Inject;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
 import org.socialmusicdiscovery.server.business.model.core.Release;
 import org.socialmusicdiscovery.server.business.model.core.Track;
+import org.socialmusicdiscovery.server.business.repository.GlobalIdentityRepository;
+import org.socialmusicdiscovery.server.business.repository.core.ArtistRepository;
+import org.socialmusicdiscovery.server.business.repository.core.ReleaseRepository;
 import org.socialmusicdiscovery.test.BaseTestCase;
 import org.testng.annotations.Test;
 
 import java.util.Date;
 
 public class GlobalIdentityTest extends BaseTestCase {
+    @Inject
+    ReleaseRepository releaseRepository;
+    @Inject
+    ArtistRepository artistRepository;
+    @Inject
+    GlobalIdentityRepository globalIdentityRepository;
 
     @Test
     public void testModelGlobalIdentity() throws Exception {

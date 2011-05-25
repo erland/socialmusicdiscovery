@@ -27,7 +27,9 @@
 
 package org.socialmusicdiscovery.server.business.model;
 
+import com.google.inject.Inject;
 import org.socialmusicdiscovery.server.business.model.core.*;
+import org.socialmusicdiscovery.server.business.repository.core.*;
 import org.socialmusicdiscovery.test.BaseTestCase;
 import org.testng.annotations.Test;
 
@@ -37,6 +39,24 @@ import java.util.*;
 
 
 public class CoreTest extends BaseTestCase {
+    @Inject
+    ReleaseRepository releaseRepository;
+    @Inject
+    ArtistRepository artistRepository;
+    @Inject
+    ContributorRepository contributorRepository;
+    @Inject
+    PersonRepository personRepository;
+    @Inject
+    RecordingRepository recordingRepository;
+    @Inject
+    TrackRepository trackRepository;
+    @Inject
+    PlayableElementRepository playableElementRepository;
+    @Inject
+    WorkRepository workRepository;
+    @Inject
+    ImageRepository imageRepository;
 
     public void printRelease(Release release) {
         if (release != null) {

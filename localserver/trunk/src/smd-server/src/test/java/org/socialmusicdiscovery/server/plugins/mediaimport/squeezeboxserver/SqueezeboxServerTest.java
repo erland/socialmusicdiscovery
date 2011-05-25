@@ -38,6 +38,8 @@ import org.socialmusicdiscovery.server.business.model.core.Contributor;
 import org.socialmusicdiscovery.server.business.model.core.Release;
 import org.socialmusicdiscovery.server.business.model.core.ReleaseEntity;
 import org.socialmusicdiscovery.server.business.model.core.Track;
+import org.socialmusicdiscovery.server.business.repository.GlobalIdentityRepository;
+import org.socialmusicdiscovery.server.business.repository.core.ReleaseRepository;
 import org.socialmusicdiscovery.test.BaseTestCase;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -48,6 +50,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class SqueezeboxServerTest extends BaseTestCase {
+    @Inject
+    ReleaseRepository releaseRepository;
+    @Inject
+    GlobalIdentityRepository globalIdentityRepository;
+
     SqueezeboxServer squeezeboxServer;
 
     @Inject

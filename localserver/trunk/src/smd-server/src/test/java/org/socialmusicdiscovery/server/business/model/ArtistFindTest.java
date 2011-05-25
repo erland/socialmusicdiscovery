@@ -27,7 +27,10 @@
 
 package org.socialmusicdiscovery.server.business.model;
 
+import com.google.inject.Inject;
 import org.socialmusicdiscovery.server.business.model.core.*;
+import org.socialmusicdiscovery.server.business.repository.core.ArtistRepository;
+import org.socialmusicdiscovery.server.business.repository.core.ReleaseRepository;
 import org.socialmusicdiscovery.test.BaseTestCase;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -36,6 +39,11 @@ import java.util.Arrays;
 import java.util.Collection;
 
 public class ArtistFindTest extends BaseTestCase {
+    @Inject
+    ReleaseRepository releaseRepository;
+    @Inject
+    ArtistRepository artistRepository;
+
     @BeforeClass
     public void setUpClass() {
         loadTestData(getClass().getPackage().getName(),"The Bodyguard.xml");

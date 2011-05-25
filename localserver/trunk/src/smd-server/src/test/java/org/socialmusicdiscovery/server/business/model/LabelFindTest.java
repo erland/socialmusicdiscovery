@@ -27,8 +27,10 @@
 
 package org.socialmusicdiscovery.server.business.model;
 
+import com.google.inject.Inject;
 import org.socialmusicdiscovery.server.business.model.core.Label;
 import org.socialmusicdiscovery.server.business.model.core.LabelEntity;
+import org.socialmusicdiscovery.server.business.repository.core.LabelRepository;
 import org.socialmusicdiscovery.test.BaseTestCase;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -36,6 +38,9 @@ import org.testng.annotations.Test;
 import java.util.Collection;
 
 public class LabelFindTest extends BaseTestCase {
+    @Inject
+    LabelRepository labelRepository;
+
     @BeforeClass
     public void setUpClass() {
         loadTestData(getClass().getPackage().getName(),"The Bodyguard.xml");

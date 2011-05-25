@@ -27,8 +27,12 @@
 
 package org.socialmusicdiscovery.server.business.model;
 
+import com.google.inject.Inject;
 import org.hibernate.collection.PersistentCollection;
 import org.socialmusicdiscovery.server.business.model.core.*;
+import org.socialmusicdiscovery.server.business.repository.core.ArtistRepository;
+import org.socialmusicdiscovery.server.business.repository.core.ReleaseRepository;
+import org.socialmusicdiscovery.server.business.repository.core.WorkRepository;
 import org.socialmusicdiscovery.test.BaseTestCase;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -37,6 +41,13 @@ import java.util.Arrays;
 import java.util.Collection;
 
 public class WorkFindTest extends BaseTestCase {
+    @Inject
+    ReleaseRepository releaseRepository;
+    @Inject
+    ArtistRepository artistRepository;
+    @Inject
+    WorkRepository workRepository;
+
     @BeforeClass
     public void setUpClass() {
         loadTestData(getClass().getPackage().getName(),"The Bodyguard.xml");
