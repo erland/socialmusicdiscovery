@@ -1,0 +1,65 @@
+#summary Coding style which should be used in all Java code
+
+= General guidelines =
+
+== Copyright ==
+All project files should contain the following copyright notice in the header of the file:
+{{{
+/*
+ *  Copyright 2010-2011, Social Music Discovery project
+ *  All rights reserved.
+ *
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
+ *      * Redistributions of source code must retain the above copyright
+ *        notice, this list of conditions and the following disclaimer.
+ *      * Redistributions in binary form must reproduce the above copyright
+ *        notice, this list of conditions and the following disclaimer in the
+ *        documentation and/or other materials provided with the distribution.
+ *      * Neither the name of Social Music Discovery project nor the
+ *        names of its contributors may be used to endorse or promote products
+ *        derived from this software without specific prior written permission.
+ *
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  DISCLAIMED. IN NO EVENT SHALL SOCIAL MUSIC DISCOVERY PROJECT BE LIABLE FOR ANY
+ *  DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ *  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+}}}
+
+== Class/Interface naming ==
+ * Abstract classes should contain the word "Abstract" in their name
+ * When there is an interface and class combination, the interface name should describe the object and the class should describe the specific implementation and when relevant leave room for more than one implementation. For example:
+   * Interface: Release
+     * Corresponding classes: 
+       * ReleaseEntity
+       * WritableRelease
+   * Interface: ReleaseRepository
+     * Corresponding classes:
+       * JPAReleaseRepository
+ * Camel case naming syntax should be used, for example RecordingSession and not Recording_session
+   * The exception is that acronyms should use captial letters, for example SMDIdentity and not SmdIdentity
+
+== Method naming ==
+ * Find methods should be named *findAll* or *findByXXX* where XXX is a description of the criteria possible to specify.
+ * If it's obvious what all find methods returns, it's not necessary to include the return object in the method name, for example, it's enough to just have *findAll* and we don't have to name it *findAllReleases*.
+ * Camel case naming with an initial lower case letter should be used, for example *findByRelease*
+   * The exception is that acronyms should use capital letter if they are in the middle of the method name, for example *findBySMDId* and not *findBySmdId*
+
+= SMD Server specific guidelines =
+
+ * 
+
+= RCP Client specific guidelines =
+
+ * 
+
+= Perl plugin guidelines =
+
+ *
