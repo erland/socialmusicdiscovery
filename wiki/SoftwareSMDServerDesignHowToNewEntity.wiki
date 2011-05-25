@@ -253,3 +253,158 @@ In our case, it's enough to add the following row to the *getConversionMap* func
 }}}
 
 The client have a corresponding mapping where it can map the *Something* interface to its implementation class. Each client will typically have its own interface but have the option to reuse the interface class provided from the server.
+
+== Unit testing ==
+
+=== Unit testing repository/entity ===
+The unit testing of the repository/entity classes should focus on verifying that the entity is persistent correctly and that the find methods in the repository class works correctly.
+
+The general principle for the unit test classes are:
+ * We use [http://testng.org TestNG] since it offers a bit more control than standard [www.junit.org JUnit], this means that you need to have a [http://testng.org TestNG] plugin installed in your development environment to be able to launch a test case from the development environment. Nothing extra is needed to launch them from maven.
+ * Inherit from [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/test/java/org/socialmusicdiscovery/test/BaseTestCase.java BaseTestCase] which will give you some basic functionality so you can focus on the actual test case.
+ * Start each test case by loading testdata using [http://www.dbunit.org/ DbUnit], in most test cases this means calling:
+{{{
+loadTestData(getClass().getPackage().getName(), "The Bodyguard.xml");
+}}}
+ If you like to load test data from the [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/test/test-data/org/socialmusicdiscovery/server/business/model/The%20Bodyguard.xml The Bodyguard.xml] [http://www.dbunit.org/ DbUnit] test data file.
+ Or by calling:
+{{{
+loadTestData(getClass().getPackage().getName(), "Empty Tables.xml");
+}}}
+ If you like to start with an empty database where the tables listed in the [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/test/test-data/org/socialmusicdiscovery/server/business/model/Empty%20Tables.xml Empty Tables.xml] [http://www.dbunit.org/ DbUnit] test data file will be cleared.
+ * Start a transaction in the beginning of a test method and commit it at the end by having calls to:
+{{{
+em.getTransaction().begin();
+//TODO: Write test method code
+em.getTransaction().end();
+}}}
+
+So, as an example, a test method that verifies a create could look like this:
+{{{
+@Inject
+SomethingRepository somethingRepository;
+
+@Test
+public void testModelCreation() throws Exception {
+    loadTestData(getClass().getPackage().getName(),"Empty Tables.xml");
+
+    Something something = null;
+    // Start by creating instance
+    em.getTransaction().begin();
+    try {
+        something = new SomethingEntity();
+        something.setName("Something");
+        somethingRepository.create(release);
+    }finally {
+        em.getTransaction().commit();
+    }
+
+    // Then in a separate transaction try reading it
+    em.getTransaction().begin();
+    Something something = somethingRepository.findById(something.getId());
+    assert something != null;
+    assert something.getName().equals("Something");
+    em.getTransaction().commit();
+}
+}}}
+We use separate transactions for the creation and the verification, this is to ensure that the data is really persisted and not just stored in memory inside entity manager.
+
+To get better performance of test cases, it can often be a good idea to separate find test cases in separate classes from create, update, delete test cases. The reason is that for a find test class, you can then have a [http://testng.org/doc/documentation-main.html#annotations @BeforeClass] annotated method that loads data and let the test methods focus on just calling the repository with various parameters, for example:
+{{{
+public class SomethingFindTest extends BaseTestCase {
+    @Inject
+    SomethingRepository somethingRepository;
+
+    @BeforeClass
+    public void setUpClass() {
+        loadTestData(getClass().getPackage().getName(),"The Bodyguard.xml");
+        updateSearchRelations();
+    }
+
+    @BeforeMethod
+    public void clearSession(Method m) {
+        em.getTransaction().begin();
+        em.clear();
+    }
+
+    @AfterMethod
+    public void commit(Method m) {
+        if(em.getTransaction().isActive()) {
+            em.getTransaction().end();
+        }
+    }
+
+    @Test
+    public void testFindAll() {
+        Collection<SomethingEntity> somethings = somethingRepository.findAll();
+        assert somethings.size()==1;
+    }
+
+    @Test
+    public void testFindByName() {
+        Collection<SomethingEntity> somethings = somethingRepository.findByName("Test");
+        assert somethings.size()==0;
+
+        somethings = somethingRepository.findByName("Something");
+        assert somethings.size()==1;
+    }
+}
+}}}
+As you can note, in this test case we also use:
+ * A [http://testng.org/doc/documentation-main.html#annotations @BeforeMethod] annotated method for stuff that needs to be executed before each test method
+ * A [http://testng.org/doc/documentation-main.html#annotations @AfterMethod] annotated method for stuff that for should be executed after each test method
+ * In the @BeforeMethod method we also clear the session to make sure no data is remembered from the previous test method.
+
+=== Unit testing JSON facade ===
+The testing of the JSON facade requires some additional step since the test case have to make sure to:
+ * Start the Grizzly web server before the test starts
+ * Stop the Grizzly web server after the test has finished
+ * Setup a JSON conversion provider by providing a class that implements [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/main/java/org/socialmusicdiscovery/server/support/json/AbstractJSONProvider.java AbstractJSONProvider] and register it with a [http://jersey.java.net/nonav/apidocs/latest/jersey/com/sun/jersey/api/client/config/ClientConfig.html ClientConfig] implementation which is used when making the JSON calls from the test case.
+
+Currently all this i done in the [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/test/java/org/socialmusicdiscovery/server/api/management/FacadeTest.java FacadeTest] class which also contains a test method for each entity supported in a JSON interface.
+
+A simple test method might look like this:
+{{{
+    @Test
+    public void testSomething() throws Exception {
+        Something mySomething = new SomethingEntity();
+        mySomething.setName("Something");
+        Something s = Client.create(config).resource(HOSTURL+"/somethings").
+                           type(MediaType.APPLICATION_JSON).
+                           post(Something.class,mySomething);
+
+        assert s!=null;
+        assert s.getName().equals(mySomething.getName());
+        assert s.getId()!=null;
+
+        s = Client.create(config).resource(HOSTURL+"/somethings/"+s.getId()).
+                           accept(MediaType.APPLICATION_JSON).
+                           get(Something.class);
+
+        assert s!=null;
+        assert s.getName().equals(mySomething.getName());
+        assert s.getId()!=null;
+
+        Collection<Something> somethings = Client.create(config).resource(HOSTURL+"/somethings").
+                          accept(MediaType.APPLICATION_JSON).
+                          get(new GenericType<Collection<Something>>() {});
+        assert somethings !=null;
+        assert somethings.size()>0;
+
+        int previousItems = somethings.size();
+
+        Client.create(config).resource(HOSTURL+"/somethings/"+s.getId()).accept(MediaType.APPLICATION_JSON).delete();
+
+        somethings = Client.create(config).resource(HOSTURL+"/somethings").
+                          accept(MediaType.APPLICATION_JSON).
+                          get(new GenericType<Collection<Something>>() {});
+        assert somethings !=null;
+        assert somethings.size()==previousItems-1;
+
+    }
+}}}
+Some important things to note:
+ * You need to decide if each test method should clean up after it or if you like to do that through [http://www.dbunit.org/ DbUnit]. In the [http://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/src/test/java/org/socialmusicdiscovery/server/api/management/FacadeTest.java FacadeTest] class we currently let each method be responsible for the clean up.
+ * We don't have to care about transactions as this will be handled completely by the facade we are testing
+ * It's important to call *Client.create(config)* and not just *Client.create()* because the *config* object is what's handling our JSON conversion, without that we will get a lot of deserialization/serialization errors.
+ * Calls that post data, such as the create call, need to use *type(MediaType.APPLICATION_JSON)* while posts that only retrieves that should use *accept(MediaType.APPLICATION_JSON)*
