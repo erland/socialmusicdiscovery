@@ -27,9 +27,16 @@
 
 package org.socialmusicdiscovery.server.business.model;
 
+import com.google.inject.Inject;
 import org.socialmusicdiscovery.server.business.model.core.*;
 import org.socialmusicdiscovery.server.business.model.subjective.CreditEntity;
 import org.socialmusicdiscovery.server.business.model.subjective.RelationEntity;
+import org.socialmusicdiscovery.server.business.repository.SMDIdentityReferenceRepository;
+import org.socialmusicdiscovery.server.business.repository.core.ArtistRepository;
+import org.socialmusicdiscovery.server.business.repository.core.PersonRepository;
+import org.socialmusicdiscovery.server.business.repository.core.ReleaseRepository;
+import org.socialmusicdiscovery.server.business.repository.subjective.CreditRepository;
+import org.socialmusicdiscovery.server.business.repository.subjective.RelationRepository;
 import org.socialmusicdiscovery.test.BaseTestCase;
 import org.testng.annotations.Test;
 
@@ -37,6 +44,19 @@ import java.util.Collection;
 import java.util.Date;
 
 public class SubjectiveTest extends BaseTestCase {
+    @Inject
+    ReleaseRepository releaseRepository;
+    @Inject
+    ArtistRepository artistRepository;
+    @Inject
+    PersonRepository personRepository;
+    @Inject
+    CreditRepository creditRepository;
+    @Inject
+    RelationRepository relationRepository;
+    @Inject
+    SMDIdentityReferenceRepository smdIdentityReferenceRepository;
+
     @Test
     public void testModelCredit() throws Exception {
         loadTestData(getClass().getPackage().getName(),"The Bodyguard.xml");

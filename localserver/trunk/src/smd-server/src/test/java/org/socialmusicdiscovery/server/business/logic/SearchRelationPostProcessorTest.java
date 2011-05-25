@@ -27,6 +27,7 @@
 
 package org.socialmusicdiscovery.server.business.logic;
 
+import com.google.inject.Inject;
 import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
 import org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity;
@@ -34,6 +35,7 @@ import org.socialmusicdiscovery.server.business.model.core.*;
 import org.socialmusicdiscovery.server.business.model.search.PersonSearchRelationEntity;
 import org.socialmusicdiscovery.server.business.model.search.ReleaseSearchRelationEntity;
 import org.socialmusicdiscovery.server.business.model.search.SearchRelationEntity;
+import org.socialmusicdiscovery.server.business.repository.classification.ClassificationRepository;
 import org.socialmusicdiscovery.test.BaseTestCase;
 import org.testng.annotations.Test;
 
@@ -42,6 +44,9 @@ import java.util.Collection;
 import java.util.HashSet;
 
 public class SearchRelationPostProcessorTest extends BaseTestCase {
+    @Inject
+    ClassificationRepository classificationRepository;
+
     @Test
     public void testSearchRelations() throws Exception {
         loadTestData("org.socialmusicdiscovery.server.business.model", "The Bodyguard.xml");

@@ -27,12 +27,15 @@
 
 package org.socialmusicdiscovery.server.business.model;
 
+import com.google.inject.Inject;
 import org.socialmusicdiscovery.server.business.model.classification.Classification;
 import org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity;
 import org.socialmusicdiscovery.server.business.model.classification.ClassificationReference;
 import org.socialmusicdiscovery.server.business.model.classification.ClassificationReferenceEntity;
 import org.socialmusicdiscovery.server.business.model.core.Release;
 import org.socialmusicdiscovery.server.business.model.core.Track;
+import org.socialmusicdiscovery.server.business.repository.classification.ClassificationRepository;
+import org.socialmusicdiscovery.server.business.repository.core.ReleaseRepository;
 import org.socialmusicdiscovery.test.BaseTestCase;
 import org.testng.annotations.Test;
 
@@ -40,6 +43,10 @@ import java.util.Collection;
 import java.util.Date;
 
 public class ClassificationTest extends BaseTestCase {
+    @Inject
+    ReleaseRepository releaseRepository;
+    @Inject
+    ClassificationRepository classificationRepository;
 
     @Test
     public void testModelClassification() throws Exception {

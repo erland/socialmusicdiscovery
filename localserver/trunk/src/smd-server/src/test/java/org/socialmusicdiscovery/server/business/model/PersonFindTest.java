@@ -27,8 +27,10 @@
 
 package org.socialmusicdiscovery.server.business.model;
 
+import com.google.inject.Inject;
 import org.socialmusicdiscovery.server.business.model.core.Person;
 import org.socialmusicdiscovery.server.business.model.core.PersonEntity;
+import org.socialmusicdiscovery.server.business.repository.core.PersonRepository;
 import org.socialmusicdiscovery.test.BaseTestCase;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -36,6 +38,9 @@ import org.testng.annotations.Test;
 import java.util.Collection;
 
 public class PersonFindTest extends BaseTestCase {
+    @Inject
+    PersonRepository personRepository;
+
     @BeforeClass
     public void setUpClass() {
         loadTestData(getClass().getPackage().getName(),"The Bodyguard.xml");

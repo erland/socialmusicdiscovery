@@ -27,8 +27,10 @@
 
 package org.socialmusicdiscovery.server.business.model;
 
+import com.google.inject.Inject;
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameter;
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameterEntity;
+import org.socialmusicdiscovery.server.business.repository.config.ConfigurationParameterRepository;
 import org.socialmusicdiscovery.test.BaseTestCase;
 import org.testng.annotations.Test;
 
@@ -36,6 +38,8 @@ import javax.persistence.Query;
 
 
 public class ConfigTest extends BaseTestCase {
+    @Inject
+    ConfigurationParameterRepository configurationParameterRepository;
 
     @Test
     public void testConfigCreation() throws Exception {

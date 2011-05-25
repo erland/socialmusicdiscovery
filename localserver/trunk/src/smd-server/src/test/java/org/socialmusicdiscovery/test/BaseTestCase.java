@@ -45,14 +45,6 @@ import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
 import org.socialmusicdiscovery.server.business.logic.SearchRelationPostProcessor;
 import org.socialmusicdiscovery.server.business.logic.injections.database.DatabaseProvider;
-import org.socialmusicdiscovery.server.business.repository.GlobalIdentityRepository;
-import org.socialmusicdiscovery.server.business.repository.SMDIdentityReferenceRepository;
-import org.socialmusicdiscovery.server.business.repository.classification.ClassificationReferenceRepository;
-import org.socialmusicdiscovery.server.business.repository.classification.ClassificationRepository;
-import org.socialmusicdiscovery.server.business.repository.config.ConfigurationParameterRepository;
-import org.socialmusicdiscovery.server.business.repository.core.*;
-import org.socialmusicdiscovery.server.business.repository.subjective.CreditRepository;
-import org.socialmusicdiscovery.server.business.repository.subjective.RelationRepository;
 import org.testng.annotations.*;
 
 import javax.persistence.EntityManager;
@@ -74,40 +66,6 @@ public abstract class BaseTestCase {
     private EntityManagerFactory emFactory;
     @Inject
     protected EntityManager em;
-    @Inject
-    protected ReleaseRepository releaseRepository;
-    @Inject
-    protected ArtistRepository artistRepository;
-    @Inject
-    protected ContributorRepository contributorRepository;
-    @Inject
-    protected LabelRepository labelRepository;
-    @Inject
-    protected PersonRepository personRepository;
-    @Inject
-    protected RecordingRepository recordingRepository;
-    @Inject
-    protected TrackRepository trackRepository;
-    @Inject
-    protected PlayableElementRepository playableElementRepository;
-    @Inject
-    protected WorkRepository workRepository;
-    @Inject
-    protected ImageRepository imageRepository;
-    @Inject
-    protected GlobalIdentityRepository globalIdentityRepository;
-    @Inject
-    protected ClassificationRepository classificationRepository;
-    @Inject
-    protected ClassificationReferenceRepository classificationReferenceRepository;
-    @Inject
-    protected CreditRepository creditRepository;
-    @Inject
-    protected RelationRepository relationRepository;
-    @Inject
-    protected SMDIdentityReferenceRepository smdIdentityReferenceRepository;
-    @Inject
-    protected ConfigurationParameterRepository configurationParameterRepository;
 
     protected static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy");
 
