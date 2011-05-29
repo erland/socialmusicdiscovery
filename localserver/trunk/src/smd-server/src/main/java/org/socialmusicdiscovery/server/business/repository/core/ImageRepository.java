@@ -41,7 +41,10 @@ import java.util.Collection;
 public interface ImageRepository extends SMDIdentityRepository<ImageEntity> {
     Collection<ImageEntity> findByRelease(Release release);
     Collection<ImageEntity> findByReleaseId(String releaseId);
-    Collection<ImageEntity> findBySmdId(String smdId);
-    Collection<ImageEntity> findBySmdEntity(AbstractSMDIdentityEntity smdEntity);
+    Collection<ImageEntity> findBySMDId(String smdId);
+    Collection<ImageEntity> findByRelatedToSMDEntity(AbstractSMDIdentityEntity relatedSMDEntity);
+    Collection<ImageEntity> findByRelatedToSMDId(String relatedToSMDId);
+    Collection<ImageEntity> findByRelatedToSMDIdAndType(String relatedToSMDId, String type);
+    Collection<ImageEntity> findAll();
     void remove(ImageEntity entity);
 }

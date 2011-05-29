@@ -361,22 +361,16 @@ public class CoreTest extends BaseTestCase {
         query.setParameter("name","The Bodyguard (Original Soundtrack Album)");
         Release release = (Release) query.getSingleResult();
         assert(release != null);
-        
-        // look directly for bodyguard release identity reference
-		query = em.createQuery("from SMDIdentityReferenceEntity where id=:refId");
-		query.setParameter("refId","20000");
-		SMDIdentityReference reference = (SMDIdentityReference) query.getSingleResult();
-		assert(reference != null);
 
         // Find by direct query to relatedTo "reference" object
         query = em.createQuery("from ImageEntity where relatedTo=:relatedTo");
-        query.setParameter("relatedTo",reference);
+        query.setParameter("relatedTo",((ReleaseEntity)release).getReference());
         Image image = (Image) query.getSingleResult();
         assert(image != null);
 		assert("http://s.dsimg.com/image/R-1794218-1260432856.jpeg".equals(image.getUri()));
 
 		// Find by Release
-		image = (Image) imageRepository.findByRelease(release).iterator().next();        
+		image = (Image) imageRepository.findByRelease(release).iterator().next();
 		assert(image != null);
 		assert("http://s.dsimg.com/image/R-1794218-1260432856.jpeg".equals(image.getUri()));
 
@@ -384,6 +378,17 @@ public class CoreTest extends BaseTestCase {
 		image = (Image) imageRepository.findByReleaseId(release.getId()).iterator().next();
 		assert(image != null);
 		assert("http://s.dsimg.com/image/R-1794218-1260432856.jpeg".equals(image.getUri()));
+		
+		// Find by relatedTo SMDId
+		image = (Image) imageRepository.findByRelatedToSMDId(release.getId()).iterator().next();
+		assert(image != null);
+		assert("http://s.dsimg.com/image/R-1794218-1260432856.jpeg".equals(image.getUri()));
+
+		// Find by image SMDId
+		image = (Image) imageRepository.findBySMDId("bf87a7ad-88fa-4ec4-8da0-dfec05d7cf5e").iterator().next();
+		assert(image != null);
+		assert("http://s.dsimg.com/image/R-1794218-1260432856.jpeg".equals(image.getUri()));
+
         
         em.getTransaction().commit();
     }
