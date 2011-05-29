@@ -27,25 +27,46 @@ public class JPAImageRepository extends AbstractJPASMDIdentityRepository<ImageEn
 
 	@Override
 	public Collection<ImageEntity> findByRelease(Release release) {
-		return(this.findBySmdEntity((AbstractSMDIdentityEntity) release));
+		return(this.findByRelatedToSMDEntity((AbstractSMDIdentityEntity) release));
 	}
 	
 	@Override
 	public Collection<ImageEntity> findByReleaseId(String releaseId) {
-		return(this.findBySmdId(releaseId));
+		return(this.findByRelatedToSMDId(releaseId));
 	}
 
 	@Override
-	public Collection<ImageEntity> findBySmdId(String smdId) {
-        Query query = entityManager.createQuery("from ImageEntity where related_to_id=:smdId");
+	public Collection<ImageEntity> findBySMDId(String smdId) {
+        Query query = entityManager.createQuery("from ImageEntity where id=:smdId");
         query.setParameter("smdId",smdId);
         return query.getResultList();
 	}
 	
 	@Override
-	public Collection<ImageEntity> findBySmdEntity(AbstractSMDIdentityEntity smdEntity) {
+	public Collection<ImageEntity> findByRelatedToSMDId(String relatedToSMDId) {
+        Query query = entityManager.createQuery("from ImageEntity where related_to_id=:relatedToSMDId");
+        query.setParameter("relatedToSMDId",relatedToSMDId);
+        return query.getResultList();
+	}
+
+	@Override
+	public Collection<ImageEntity> findByRelatedToSMDIdAndType(String relatedToSMDId, String type) {
+        Query query = entityManager.createQuery("from ImageEntity where related_to_id=:relatedToSMDId and type=:type");
+        query.setParameter("relatedToSMDId",relatedToSMDId);
+        query.setParameter("type",type);
+        return query.getResultList();
+	}
+
+	@Override
+	public Collection<ImageEntity> findAll() {
+        Query query = entityManager.createQuery("from ImageEntity");
+        return query.getResultList();
+	}
+
+	@Override
+	public Collection<ImageEntity> findByRelatedToSMDEntity(AbstractSMDIdentityEntity relatedSMDEntity) {
         Query query = entityManager.createQuery("from ImageEntity where relatedTo=:smdEntity");
-        query.setParameter("smdEntity", smdEntity.getReference() );
+        query.setParameter("smdEntity", relatedSMDEntity.getReference() );
         return query.getResultList();
 	}
 	
