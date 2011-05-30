@@ -93,6 +93,7 @@ public class FacadeTest extends BaseTestCase {
             converters.put(PlayableElement.class, PlayableElementEntity.class);
             converters.put(ConfigurationParameter.class, ConfigurationParameterEntity.class);
             converters.put(SMDIdentity.class,SMDIdentity.class);
+            converters.put(Image.class, ImageEntity.class);
 
             return converters;
         }
@@ -1221,6 +1222,78 @@ public class FacadeTest extends BaseTestCase {
             }
         }
         assert !found;
+    }
+    
+    @Test
+    public void testImage() throws Exception {
+        Image myImage = new ImageEntity();
+        
+        // create first image 
+        myImage.setRelatedTo(new SMDIdentityReferenceEntity("1", "Artist"));
+        myImage.setUri("some://random/uri");
+        myImage.setType("default");
+        
+        // and add it to database through json
+        Image img = Client.create(config).resource(HOSTURL+"/images").type(MediaType.APPLICATION_JSON).post(Image.class,myImage);
+
+        // returned image must exists and have the same uri but with an id
+        assert img!=null;
+        assert img.getUri().equals(myImage.getUri());
+        assert img.getType().equals(myImage.getType());
+        assert img.getId()!=null;
+
+         // retrieve newly created image
+        img = Client.create(config).resource(HOSTURL+"/images/"+img.getId()).accept(MediaType.APPLICATION_JSON).get(Image.class);
+
+        // retrieved image must exists and have the same uri but with an id
+        assert img!=null;
+        assert img.getUri().equals(myImage.getUri());
+        assert img.getType().equals(myImage.getType());
+        assert img.getId()!=null;
+
+        // change uri to create another image
+        img.setUri("other://randomized/address");
+        Image img2 = Client.create(config).resource(HOSTURL+"/images/"+img.getId()).type(MediaType.APPLICATION_JSON).put(Image.class, img);
+        
+        // basic test on second inserted image
+        assert img2!=null;
+        assert img2.getUri().equals("other://randomized/address");
+        assert img2.getType().equals("default");
+        assert img2.getRelatedTo().getType().equals("org.socialmusicdiscovery.server.business.model.core.ArtistEntity");
+        assert img2.getRelatedTo().getId().equals("1");
+        assert img2.getId()!=null;
+
+        Collection<Image> images = Client.create(config).resource(HOSTURL+"/images").accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<Image>>() {});
+
+        assert images!=null;
+        assert 2 == images.size();
+
+        boolean found = false;
+        for (Image image : images) {
+
+            if(image.getId().equals(img.getId())) {
+                found = true;
+            }
+        }
+        assert found;
+
+        Client.create(config).resource(HOSTURL+"/images/"+img.getId()).accept(MediaType.APPLICATION_JSON).delete();
+
+        images = Client.create(config).resource(HOSTURL+"/images").accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<Image>>() {});
+        assert images!=null;
+        found = false;
+        for (Image image : images) {
+            if(image.getId().equals(img.getId())) {
+            	// delete found image for las test on deletion
+            	Client.create(config).resource(HOSTURL+"/images/"+image.getId()).accept(MediaType.APPLICATION_JSON).delete();
+                found = true;
+            }
+        }
+        assert !found;
+        
+        // there should be no more image available
+        images = Client.create(config).resource(HOSTURL+"/images").accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<Image>>() {});
+        assert images!=null;
     }
 
     @Test
