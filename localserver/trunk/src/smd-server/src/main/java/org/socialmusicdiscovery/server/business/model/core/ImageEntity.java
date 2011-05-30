@@ -30,6 +30,14 @@ public class ImageEntity extends AbstractSMDIdentityEntity implements Image {
     @Column(nullable = true, length = 36)
     private String type;
 
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
 	public String getUri() {
     	return uri.toString();
     }
