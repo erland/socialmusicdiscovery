@@ -25,42 +25,35 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.rcp.commands;
+package org.socialmusicdiscovery.rcp.views.util;
 
-import org.eclipse.core.commands.AbstractHandler;
-import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.commands.IHandler;
-import org.eclipse.swt.widgets.Shell;
-import org.socialmusicdiscovery.rcp.Activator;
-import org.socialmusicdiscovery.rcp.content.AbstractContributableEntity;
-import org.socialmusicdiscovery.rcp.content.ObservableContributor;
-import org.socialmusicdiscovery.rcp.dialogs.ContributorFactoryDialog;
-import org.socialmusicdiscovery.rcp.util.CommandUtil;
-import org.socialmusicdiscovery.rcp.util.NotYetImplemented;
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.swt.graphics.Image;
+import org.socialmusicdiscovery.rcp.content.ModelObject;
 
 /**
- * Creates a new instance that is persisted immediately.
+ * Simple, static label provider.
  * 
  * @author Peer Törngren
  *
  */
-public class CreateContributor extends AbstractHandler implements IHandler {
+public class DefaultLabelProvider extends LabelProvider implements ILabelProvider {
 
 	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		AbstractContributableEntity r = (AbstractContributableEntity) CommandUtil.resolveEditorInput(event); 
-		return newInstance(r);
+	public Image getImage(Object element) {
+		// TODO Auto-generated method stub		
+		return super.getImage(element);
 	}
 
-	private ObservableContributor newInstance(AbstractContributableEntity r) {
-		if (NotYetImplemented.confirm("Create new Contributor")) {
-			ObservableContributor c = ContributorFactoryDialog.open(r);
-			if (c!=null) {
-				Activator.getDefault().getDataSource().persist(new Shell(), c);
-			}
-			return c;
-		}
-		return null;
+	@Override
+	public String getText(Object element) {
+		return element instanceof ModelObject ? getName((ModelObject)element) : super.getText(element);
 	}
+
+	private String getName(ModelObject mo) {
+		return mo.getName();
+	}
+	
+
 }

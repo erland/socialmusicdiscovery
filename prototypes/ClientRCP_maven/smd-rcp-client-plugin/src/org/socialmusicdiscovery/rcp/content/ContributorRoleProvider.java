@@ -30,6 +30,8 @@ package org.socialmusicdiscovery.rcp.content;
 import java.util.Arrays;
 import java.util.List;
 
+import org.socialmusicdiscovery.server.business.model.core.Contributor;
+
 
 /**
  * Provides a sorted list of available contributor roles.
@@ -42,6 +44,6 @@ public class ContributorRoleProvider implements ElementProvider<String> {
 	
 	@Override
 	public List<String> getElements() {
-		return Arrays.asList("composer", "conductor", "performer");  
+		return Arrays.asList(Contributor.COMPOSER, Contributor.CONDUCTOR, Contributor.PERFORMER);  
 	}
 }

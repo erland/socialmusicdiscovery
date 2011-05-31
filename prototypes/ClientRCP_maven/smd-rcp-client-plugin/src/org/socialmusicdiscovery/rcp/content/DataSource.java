@@ -135,9 +135,10 @@ public class DataSource extends AbstractObservable implements ModelObject {
 	private class MyPersistor implements IRunnableWithProgress {
 
 		private final ObservableEntity[] entities;
-		private Shell shell;
+		private final Shell shell;
 
 		public MyPersistor(Shell shell, ObservableEntity[] entities) {
+			assert shell!=null : "Must have shell!";
 			this.entities = entities;
 			this.shell = shell;
 		}
@@ -757,6 +758,7 @@ public class DataSource extends AbstractObservable implements ModelObject {
 	 * @return <code>true</code> if saved OK, <code>false</code> if not
 	 */
 	public boolean persist(Shell shell, ObservableEntity... entities) {
+		assert shell!=null : "Must have shell!";
 		assert entities.length>0 : "Must have at least one entity";
 		if (entities.length==1) {
 			return new MyPersistor(shell, entities).persistOnProperThread(entities[0]);

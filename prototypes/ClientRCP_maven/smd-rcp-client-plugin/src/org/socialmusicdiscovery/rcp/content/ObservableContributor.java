@@ -49,6 +49,16 @@ public class ObservableContributor extends AbstractDependentEntity<Contributor> 
 	public ObservableContributor() {
 	}
 	
+	/**
+	 * Constructor for new instances created by client.
+	 */
+	public ObservableContributor(AbstractContributableEntity owner, String type, Artist artist) {
+		this.owner = owner;
+		this.type = type;
+		this.artist = artist;
+		postCreate();
+	}
+
 	@Override
 	public String getType() {
 		return type;
@@ -60,7 +70,7 @@ public class ObservableContributor extends AbstractDependentEntity<Contributor> 
 	}
 
 	public void setArtist(Artist artist) {
-		assert artist instanceof ObservableArtist : "Not an "+ObservableArtist.class+": "+artist;
+		assert artist==null || artist instanceof ObservableArtist : "Not an "+ObservableArtist.class+": "+artist;
 		firePropertyChange(PROP_artist, this.artist, this.artist = artist);
 	}
 
