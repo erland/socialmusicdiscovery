@@ -30,6 +30,9 @@ There are a number of fundamental principles which makes SMD different than anyt
   * *Integration local and online music* 
   Another important aspect is that when you discover music it's rarely important where the music file is stored. It should be possible to seamless browse through your library even if parts is offered by an online streaming service and other parts are stored on a local hard drive. Think about it as if you are discovering music instead of just discovering the local hard drive. As long as the best quality version is played when you hit play it doesn't matter if it's provided by a streaming service or from the music file on your local hard drive.
 
+== Target users ==
+SMD is focused at satisfying users that like to explore and discovery music. For some samples how SMD would be used by different users, take a look at the following page:
+  * [Personas Description of sample usage for different user categories]
 
 = Common questions =
 == Why not make a central database common to all users ? ==
