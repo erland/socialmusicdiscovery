@@ -46,7 +46,7 @@ import org.socialmusicdiscovery.server.business.model.core.Contributor;
  * @author Peer Törngren
  * 
  */
-public abstract class AbstractContributableEntity<T extends SMDIdentity>  extends AbstractObservableEntity<T> {
+public abstract class AbstractContributableEntity<T extends SMDIdentity>  extends AbstractEditableEntity<T> {
 
 	public static final String PROP_contributors = "contributors";
 
@@ -100,7 +100,7 @@ public abstract class AbstractContributableEntity<T extends SMDIdentity>  extend
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <D extends Deletable> Collection<D> getDeletableDependents() {
+	public <D extends AbstractDependentEntity> Collection<D> getDeletableDependents() {
 		inflate();
 		Collection<D> deletableDependents = super.getDeletableDependents();
 		deletableDependents.addAll(getContributors());

@@ -68,6 +68,7 @@ import org.socialmusicdiscovery.server.business.model.core.Contributor;
 public class ContributorPanel extends AbstractComposite<AbstractContributableEntity> {
 
 	private static final String PROP_filters = "filters";
+	public static final String MENU_ID = ContributorPanel.class.getName();
 	private final FormToolkit toolkit = new FormToolkit(Display.getCurrent());
 	private GridTableViewer gridTableViewer;
 	private GridColumn roleColumn;

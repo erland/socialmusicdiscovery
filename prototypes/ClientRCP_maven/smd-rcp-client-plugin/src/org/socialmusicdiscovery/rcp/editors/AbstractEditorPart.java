@@ -47,6 +47,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.services.IEvaluationService;
 import org.socialmusicdiscovery.rcp.Activator;
+import org.socialmusicdiscovery.rcp.content.AbstractEditableEntity;
 import org.socialmusicdiscovery.rcp.content.AbstractObservableEntity;
 import org.socialmusicdiscovery.rcp.content.DataSource;
 import org.socialmusicdiscovery.rcp.content.ObservableEntity;
@@ -76,7 +77,7 @@ import org.socialmusicdiscovery.rcp.views.util.AbstractComposite;
  * @param <U>
  *            the main UI we launch in the editor
  */
-public abstract class AbstractEditorPart<T extends AbstractObservableEntity, U extends AbstractComposite<T>> extends EditorPart  {
+public abstract class AbstractEditorPart<T extends AbstractEditableEntity, U extends AbstractComposite<T>> extends EditorPart  {
 
 	private class MyModelListener implements PropertyChangeListener {
 		private final T observed;
@@ -114,7 +115,7 @@ public abstract class AbstractEditorPart<T extends AbstractObservableEntity, U e
 
 	private U ui;
 	private MyModelListener modelListener;
-	private AbstractObservableEntity original;
+	private AbstractEditableEntity original;
 
 	public AbstractEditorPart() {
 	}
@@ -226,7 +227,7 @@ public abstract class AbstractEditorPart<T extends AbstractObservableEntity, U e
 
 	@SuppressWarnings("unchecked")
 	protected T getEntity() {
-		T entity = (T) getEditorInput().getAdapter(AbstractObservableEntity.class);
+		T entity = (T) getEditorInput().getAdapter(AbstractEditableEntity.class);
 		assert getEditorInput()==null || entity!=null : "Input is not an "+AbstractObservableEntity.class+": "+getEditorInput();
 		return entity;
 	}

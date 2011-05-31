@@ -30,7 +30,6 @@ package org.socialmusicdiscovery.rcp.content;
 import java.beans.PropertyChangeEvent;
 import java.util.Set;
 
-import org.eclipse.ui.IEditorInput;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 
 /**
@@ -39,7 +38,7 @@ import org.socialmusicdiscovery.server.business.model.SMDIdentity;
  * @author Peer Törngren
  *
  */
-public interface ObservableEntity<T extends SMDIdentity> extends IEditorInput, ModelObject, Deletable, ItemFactory<T>, SMDIdentity {
+public interface ObservableEntity<T extends SMDIdentity> extends ModelObject, SMDIdentity {
 	
 	String PROP_dirty = "dirty"; //$NON-NLS-1$
 	
