@@ -1,0 +1,84 @@
+= About SMD =
+== General concepts ==
+The purpose of the Social Music Discovery (SMD) application is to make easy, simple and interesting to discovery music. This might be music you own but it might also be music provided through one of the online streaming services supported. 
+
+It's all about discovery and finding specific music you are searching for or finding interesting music based on similarity or other common characteristics. To make this possible it's important to be able to integrate information from various sources, some people like to keep the tags in the music files very detailed while other prefer to use onlie sources like Musicbrainz, Discogs and LastFM. Either way to take this to the next level it's important to be able to combine all this information and use it to discover music.
+
+To make all this enjoyable for everyone, it's also important to not be tied to a specific user interface, operating system or hardware device. Some people will like to discover music while sitting behind a computer while other prefers to sit in the listening room with a touch screen device or even a IR remote. To handle this SMD offers open third party integration interfaces which can be used to build your own custom user interface or integrate your own player hardware.
+
+== Short and long term goals ==
+The initial focus will be to:
+  * Support Squeezebox hardware players
+  * Have a data management interface usable on all major operating systems
+  * Have browsing/discovery support through existing Android and iOS apps already available
+
+On longer terms, the vision is also to be able to support things like:
+  * Other UPnP based hardware players
+  * Native Android, iOS and Windows user interfaces
+  * Third party UPnP clients
+  * Smart playlists and advanced mixing
+  * User friendly playlist management
+
+== Important principles ==
+There are a number of fundamental principles which makes SMD different than anything else currently out there:
+  * *Extensible information model*
+  The information model in SMD is based on one strict part which contains data considered as facts, this is typically the information included when you buy a CD, but it also contains a less strict part where it's possible to store subjective relations and characteristics, such as an indication that one artist is similar to another artist.
+  * *Integration with multiple information sources*
+  It has been design with the mindset that information will come from many different sources, there is no single master source. 
+  * *Secure the information* 
+  It has also been designed with the mindset that the locally managed data is critical. It would be a catastrophe if you woke up one morning and all the tags in your music files were gone, for similar reasons it would be even worse if the locally stored SMD database suddenly wasn't available. To handle this the SMD application will offer backup/restore operations to a textual format, besides making it possible to do backup of the data this will also make it possible to get access to the data if the SMD project for some reason wouldn't be maintained sometime in the future.
+  * *Integration local and online music* 
+  Another important aspect is that when you discover music it's rarely important where the music file is stored. It should be possible to seamless browse through your library even if parts is offered by an online streaming service and other parts are stored on a local hard drive. Think about it as if you are discovering music instead of just discovering the local hard drive. As long as the best quality version is played when you hit play it doesn't matter if it's provided by a streaming service or from the music file on your local hard drive.
+
+
+= Common questions =
+== Why not make a central database common to all users ? ==
+
+The answer to this question is that even if it's possible for multiple users to agree on facts related to music it's very hard for all users to agree on subjective characteristics such as a relation if one artist is similar to another artist or the rating of a specific track. The central information about facts is also already available in sources like Musicbrainz or Discogs so there is no reason to implement another central source. Finally it's important to realize that central sources such as Musicbrainz spends a lot of effort to make users even agree on the parts that are facts. So even though a central database initially might feel like a good idea it's important to realize that SMD is about discovery and not about manually registering and maintaining facts which are already available somewhere else.
+
+
+== Is it or will it replace Squeezebox Server ? ==
+
+The answer to this question is that it's going to replace the parts that are "broken", mainly browse menus, but it will continue to use the existing excellent streaming and player control functionality by integrating with Squeezebox Server. Initially it will be installed in parallel with the existing Squeezebox Server browsing methods so you can continue to use the standard browsing for your everyday usage and only use the SMD browse menus when you are doing more advanced music discovery. When you are satisfied with the SMD browse menus, it's also possible to completely replace the standard browse menus in Squeezebox Server with the browse menus provided by SMD.
+
+It's impossible to know how the future will look like but at the moment it's not a goal to replace the streaming and player control functionality of Squeezebox Server. 
+
+
+== Can I access SMD using my current remote ? ==
+
+The goal is that music discovery related functionality should already from the beginning be possible to access using all major remotes available for Squeezebox today. This includes, Squeezebox Controller, Squeezebox IR-remote and all existing major iPhone/iPad/Android apps.
+
+On longer terms the SMD application will offer third party interfaces based on JSON and/or UPnP making it possible for third party developer to integrate their favorite remote or application.
+
+
+== Is there some way I can help to speed up the development ? ==
+
+Yes, currently we need more developers, primarily with Java skills but people with perl experience from previous Squeezebox development is also of great interest. Most of SMD is currently developed in Java using modern technology and design patterns, for example things like
+  * JPA 2.0 (provided through Hibernate)
+  * JSON
+  * Eclipse RCP
+  * JAX-RS (provided by Jersey)
+  * UPnP
+  * TestNG/DbUnit/Jenkins (used for unit testing and continous integration). 
+
+As databases we currently have support for 
+  * H2
+  * Apache Derby
+  * HyperSQL
+  * MySQL 
+We will be happy to support other databases as long as they are supported by Hibernate. Since we have a tight integration with Squeezebox Server, the SMD application also includes some perl parts. If you think you could contribute in this are, let us know.
+
+Besides core developers we also need people with user interface design and graphical skills, so if you are interested and have experience in this area, let us know. You don't have to be a developer, it's enough if you are able to draw graphics or provide ideas/feedback regarding user interface design.
+
+We also need people who is interested in helping with testing, but it's important to realize that the project is in a very early stage at the moment, so be prepared for some struggling if you want to help in this area.
+
+Since a key aspect of SMD is integration with existing online services, we are also very interested in involving people with knowledge or interest in this area.
+
+If you are interested, contact any of the current project members or the project owner.
+
+
+== What's the current state, is there a release plan ? ==
+
+At the moment the project is in a very early stage, some simple browsing functionality is working and offers more than the standard Squeezebox Server browse menus, but we are continuously working on adding more features. 
+
+Since all project members involved are working on the project during their spare time, we currently don't have a release plan with exact dates, but to give some kind of indication it's not going to be ready for an official release within the next couple of months, it will hopefully have a lot more functionality 6 months in the future and if everything works as plan it's going to be continuously enhanced during many years.
