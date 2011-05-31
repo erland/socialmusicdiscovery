@@ -34,6 +34,7 @@ import org.eclipse.core.databinding.property.Properties;
 import org.eclipse.core.databinding.property.value.IValueProperty;
 import org.eclipse.jface.databinding.viewers.ObservableMapLabelProvider;
 import org.eclipse.jface.databinding.viewers.ObservableSetTreeContentProvider;
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.socialmusicdiscovery.rcp.content.ObservableEntity;
@@ -49,6 +50,11 @@ public final class LabelProviderFactory  {
 	private LabelProviderFactory() {}
 
 	
+	/**
+	 * Use in dynamic viewers where properties may change as a result of other activity.   
+	 * @param contentProvider
+	 * @return {@link ObservableMapLabelProvider}
+	 */
 	public static ObservableMapLabelProvider defaultObservable(ObservableSetTreeContentProvider contentProvider) {
 		return new DefaultObservableMapLabelProvider(createObservableAttributes(contentProvider, ObservableEntity.PROP_name, ObservableEntity.PROP_dirty));
 	}
@@ -57,6 +63,15 @@ public final class LabelProviderFactory  {
 		IObservableSet listToObserve = contentProvider.getKnownElements();
 		IValueProperty[] propertiesToObserve = BeanProperties.values(propertyNames);
 		return Properties.observeEach(listToObserve, propertiesToObserve);
+	}
+
+
+	/**
+	 * Use in static viewers and/or modal dialogs where properties are stable while viewer is visible.   
+	 * @return {@link ILabelProvider}
+	 */
+	public static ILabelProvider defaultStatic() {
+		return new DefaultLabelProvider();
 	}
 
 
