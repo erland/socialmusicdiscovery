@@ -559,7 +559,9 @@ public class DataSource extends AbstractObservable implements ModelObject {
 			newInstance.setDirty(true);
 			newInstance.postCreate();
 			newInstance.setName("<new>");
-			children.add(newInstance);
+			if (children!=null) {
+				children.add(newInstance);
+			}
 			return (T) newInstance;
 		}
 

@@ -29,12 +29,23 @@ package org.socialmusicdiscovery.rcp.editors.release;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IWorkbenchPartSite;
 import org.socialmusicdiscovery.rcp.content.ObservableRelease;
 import org.socialmusicdiscovery.rcp.editors.AbstractEditorPart;
+import org.socialmusicdiscovery.rcp.editors.widgets.ContributorPanel;
+import org.socialmusicdiscovery.rcp.util.ViewerUtil;
 
+/**
+ * <p>Menu IDs (suffix to the part name) are defined as constants, as recommended by {@link IWorkbenchPartSite#registerContextMenu(org.eclipse.jface.action.MenuManager, org.eclipse.jface.viewers.ISelectionProvider)}: 
+ * <ul><li>c
+ * @author Peer Törngren
+ *
+ */
 public class ReleaseEditor extends AbstractEditorPart<ObservableRelease, ReleaseUI> {
 
 	public static final String ID = ReleaseEditor.class.getName();
+	private static final String MENU_ID_CONTRIBUTORS = ContributorPanel.MENU_ID;
+	private static final String MENU_ID_TRACKS = ID+".tracks";
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -44,9 +55,14 @@ public class ReleaseEditor extends AbstractEditorPart<ObservableRelease, Release
 
 	private void hookContextMenus() {
 		hookContextMenus(
-			getUI().getGridViewerTracks(),
-			getUI().getArtistPanel().getGridViewer(),
-			getUI().getPlayableElementsPanel().getGridTableViewer()
+			getUI().getPlayableElementsPanel().getGridTableViewer(),
+			getUI().getTrackContributorPanel().getContributorPanel().getGridViewer() 
+		);
+		ViewerUtil.hookContextMenu(this, MENU_ID_CONTRIBUTORS, 
+				getUI().getArtistPanel().getGridViewer()
+		);
+		ViewerUtil.hookContextMenu(this, MENU_ID_TRACKS, 
+				getUI().getGridViewerTracks()
 		);
 	}
 

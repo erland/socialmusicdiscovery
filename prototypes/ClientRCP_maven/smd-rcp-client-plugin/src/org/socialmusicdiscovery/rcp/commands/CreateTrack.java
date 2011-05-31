@@ -25,37 +25,31 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.rcp.content;
+package org.socialmusicdiscovery.rcp.commands;
 
-import java.util.Collection;
-
-import org.socialmusicdiscovery.server.business.model.core.Contributor;
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.IHandler;
+import org.socialmusicdiscovery.rcp.content.ObservableRelease;
+import org.socialmusicdiscovery.rcp.content.ObservableTrack;
+import org.socialmusicdiscovery.rcp.util.CommandUtil;
+import org.socialmusicdiscovery.rcp.util.NotYetImplemented;
 
 /**
- * An instance that can delete itself and all affected (dependent) instances,
- * probably by notifying dependent elements and delegating the actual suicide to
- * the {@link DataSource}.
- * 
+ * Creates a new instance.
  * @author Peer Törngren
  */
-public interface Deletable {
+public class CreateTrack extends AbstractHandler implements IHandler {
 
-	/**
-	 * Delete this instance. Fire events and take necessary actions to ensure
-	 * that the model stays consistent and all listeners are notified. The
-	 * recommended approach is that "core" entities delete themselves and all
-	 * dependents by calling {@link DataSource#delete(ObservableEntity)}, and
-	 * that dependent instances (like a {@link Contributor}) asks its owner to
-	 * be removed from the concerned property (typically a collection of some
-	 * sort).
-	 */
-	void delete();
+	@Override
+	public Object execute(ExecutionEvent event) throws ExecutionException {
+		ObservableRelease r = (ObservableRelease) CommandUtil.resolveEditorInput(event); 
+		return newInstance(r);
+	}
 
-	/**
-	 * Get other {@link Deletable} elements that must be deleted with this
-	 * instance, in deletion order (if it matters).
-	 * 
-	 * @return Collection
-	 */
-	<T extends AbstractDependentEntity> Collection<T> getDeletableDependents();	
+	private ObservableTrack newInstance(ObservableRelease r) {
+		NotYetImplemented.openDialog("Cannot create track for " + r);
+		return null;
+	}
 }

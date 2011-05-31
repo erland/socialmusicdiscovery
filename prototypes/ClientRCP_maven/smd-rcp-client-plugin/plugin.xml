@@ -257,9 +257,9 @@
             allPopups="true"
             locationURI="popup:org.eclipse.ui.popup.any">
          <command
-               commandId="org.socialmusicdiscovery.rcp.commands.OpenEntityEditor"
-               label="%popup.command.edit.label"
-               mnemonic="%popup.command.edit.mnemonic"
+               commandId="org.socialmusicdiscovery.rcp.commands.Create"
+               label="%popup.command.create.label"
+               mnemonic="%popup.command.create.mnemonic"
                style="push">
             <visibleWhen
                   checkEnabled="true">
@@ -275,18 +275,27 @@
             </visibleWhen>
          </command>
          <command
-               commandId="org.socialmusicdiscovery.rcp.commands.Create"
-               label="%popup.command.create.label"
-               mnemonic="%popup.command.create.mnemonic"
+               commandId="org.socialmusicdiscovery.rcp.commands.OpenEntityEditor"
+               label="%popup.command.edit.label"
+               mnemonic="%popup.command.edit.mnemonic"
                style="push">
             <visibleWhen
                   checkEnabled="true">
             </visibleWhen>
          </command>
       </menuContribution>
+      <command
+            commandId="org.socialmusicdiscovery.rcp.commands.Create"
+            label="%popup.command.create.label"
+            mnemonic="%popup.command.create.mnemonic"
+            style="push">
+         <visibleWhen
+               checkEnabled="true">
+         </visibleWhen>
+      </command>
       <menuContribution
             allPopups="true"
-            locationURI="popup:org.eclipse.ui.popup.any">
+            locationURI="org.socialmusicdiscovery.rcp.editors.artist.ArtistEditor">
          <command
                commandId="org.socialmusicdiscovery.rcp.commands.PlayElement"
                label="%popup.command.play.label"
@@ -300,6 +309,38 @@
             </visibleWhen>
          </command>
       </menuContribution>
+      <menuContribution
+            allPopups="true"
+            locationURI="popup:org.socialmusicdiscovery.rcp.editors.widgets.ContributorPanel">
+         <command
+               commandId="org.socialmusicdiscovery.rcp.commands.CreateContributor"
+               label="%popup.command.createDependent.label"
+               mnemonic="%popup.command.createDependent.mnemonic"
+               style="push">
+         </command>
+         <command
+               commandId="org.socialmusicdiscovery.rcp.commands.DeleteDependent"
+               label="%popup.command.delete.label"
+               mnemonic="%popup.command.delete.mnemonic"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="true"
+            locationURI="popup:org.socialmusicdiscovery.rcp.editors.release.ReleaseEditor.tracks">
+         <command
+               commandId="org.socialmusicdiscovery.rcp.commands.CreateTrack"
+               label="%popup.command.createDependent.label"
+               mnemonic="%popup.command.createDependent.mnemonic"
+               style="push">
+         </command>
+         <command
+               commandId="org.socialmusicdiscovery.rcp.commands.DeleteDependent"
+               label="%popup.command.delete.label"
+               mnemonic="%popup.command.delete.mnemonic"
+               style="push">
+         </command>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -308,28 +349,42 @@
             name="Connect Data Source">
       </command>
       <command
-            id="org.socialmusicdiscovery.rcp.commands.DisconnectDataSource"
-            name="Disconnect Data Source">
+            id="org.socialmusicdiscovery.rcp.commands.Create"
+            name="Create">
       </command>
       <command
-            id="org.socialmusicdiscovery.rcp.commands.PlayElement"
-            name="Play">
+            defaultHandler="org.socialmusicdiscovery.rcp.commands.CreateContributor"
+            id="org.socialmusicdiscovery.rcp.commands.CreateContributor"
+            name="Create Contributor">
       </command>
       <command
-            id="org.socialmusicdiscovery.rcp.commands.OpenEntityEditor"
-            name="Edit">
+            defaultHandler="org.socialmusicdiscovery.rcp.commands.CreateTrack"
+            id="org.socialmusicdiscovery.rcp.commands.CreateTrack"
+            name="Create Track">
       </command>
       <command
             id="org.socialmusicdiscovery.rcp.commands.Delete"
             name="Delete">
       </command>
       <command
-            id="org.socialmusicdiscovery.rcp.commands.Create"
-            name="Create">
+            id="org.socialmusicdiscovery.rcp.commands.DeleteDependent"
+            name="Delete Dependent">
+      </command>
+      <command
+            id="org.socialmusicdiscovery.rcp.commands.DisconnectDataSource"
+            name="Disconnect Data Source">
+      </command>
+      <command
+            id="org.socialmusicdiscovery.rcp.commands.OpenEntityEditor"
+            name="Edit">
       </command>
       <command
             id="org.socialmusicdiscovery.rcp.commands.ImportFromSBS"
             name="Import SBS">
+      </command>
+      <command
+            id="org.socialmusicdiscovery.rcp.commands.PlayElement"
+            name="Play">
       </command>
    </extension>
    <extension
@@ -338,7 +393,8 @@
             class="org.socialmusicdiscovery.rcp.commands.OpenEntityEditor"
             commandId="org.socialmusicdiscovery.rcp.commands.OpenEntityEditor">
           <enabledWhen>
-                <iterate>
+                <iterate
+                      ifEmpty="false">
                   <instanceof
                         value="org.socialmusicdiscovery.rcp.content.ObservableEntity">
                   </instanceof>
@@ -349,9 +405,22 @@
             class="org.socialmusicdiscovery.rcp.commands.Delete"
             commandId="org.socialmusicdiscovery.rcp.commands.Delete">
          <enabledWhen>
-            <iterate>
+            <iterate
+                  ifEmpty="false">
                <instanceof
                      value="org.socialmusicdiscovery.rcp.content.Deletable">
+               </instanceof>
+            </iterate>
+         </enabledWhen>
+      </handler>
+      <handler
+            class="org.socialmusicdiscovery.rcp.commands.DeleteDependent"
+            commandId="org.socialmusicdiscovery.rcp.commands.DeleteDependent">
+         <enabledWhen>
+            <iterate
+                  ifEmpty="false">
+               <instanceof
+                     value="org.socialmusicdiscovery.rcp.content.AbstractDependentEntity">
                </instanceof>
             </iterate>
          </enabledWhen>
@@ -360,7 +429,8 @@
             class="org.socialmusicdiscovery.rcp.commands.Create"
             commandId="org.socialmusicdiscovery.rcp.commands.Create">
          <enabledWhen>
-            <iterate>
+            <iterate
+                  ifEmpty="false">
                <instanceof
                      value="org.socialmusicdiscovery.rcp.content.ItemFactory">
                </instanceof>
@@ -371,7 +441,8 @@
             class="org.socialmusicdiscovery.rcp.commands.PlayElement"
             commandId="org.socialmusicdiscovery.rcp.commands.PlayElement">
           <enabledWhen>
-                <iterate>
+                <iterate
+                      ifEmpty="false">
                   <instanceof
                         value="org.socialmusicdiscovery.server.business.model.core.PlayableElement">
                   </instanceof>

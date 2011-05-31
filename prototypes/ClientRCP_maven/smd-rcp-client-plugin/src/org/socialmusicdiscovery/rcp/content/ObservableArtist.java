@@ -39,7 +39,7 @@ import org.socialmusicdiscovery.server.business.model.core.Person;
 
 import com.google.gson.annotations.Expose;
 
-public class ObservableArtist extends AbstractObservableEntity<Artist> implements Artist {
+public class ObservableArtist extends AbstractEditableEntity<Artist> implements Artist {
 	public static final String PROP_person = "person";
 	public static final String PROP_aliases = "aliases";
 	public static final String PROP_contributions = "contributions";
@@ -105,7 +105,7 @@ public class ObservableArtist extends AbstractObservableEntity<Artist> implement
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <D extends Deletable> Collection<D> getDeletableDependents() {
+	public <D extends AbstractDependentEntity> Collection<D> getDeletableDependents() {
 		Collection<D> deletableDependents = super.getDeletableDependents();
 		deletableDependents.addAll(getContributions());
 		return deletableDependents;

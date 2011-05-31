@@ -27,14 +27,13 @@
 
 package org.socialmusicdiscovery.rcp.content;
 
-import org.socialmusicdiscovery.rcp.util.NotYetImplemented;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
 
 import com.google.gson.annotations.Expose;
 
-public class ObservableContributor extends AbstractObservableEntity<Contributor> implements Contributor {
+public class ObservableContributor extends AbstractDependentEntity<Contributor> implements Contributor {
 
 	public static final String PROP_owner = "owner";
 	public static final String PROP_artist = "artist";
@@ -89,12 +88,6 @@ public class ObservableContributor extends AbstractObservableEntity<Contributor>
 	}
 
 	@Override
-	public Contributor newInstance() {
-		NotYetImplemented.openDialog("Cannot yet create "+getClass().getSimpleName());
-		return null;
-	}
-	
-	@Override
 	public AbstractContributableEntity getOwner() {
 		return owner;
 	}
@@ -107,10 +100,10 @@ public class ObservableContributor extends AbstractObservableEntity<Contributor>
 	@Override
 	protected void postCreate() {
 		super.postCreate();
-		if (getOwner().isInflated()) {
+		if (getOwner()!=null && getOwner().isInflated()) {
 			getOwner().getContributors().add(this);
 		}
-		if (getArtist().isContributionsLoaded()) {
+		if (getArtist()!=null &&  getArtist().isContributionsLoaded()) {
 			getArtist().getContributions().add(this);
 		}
 	}

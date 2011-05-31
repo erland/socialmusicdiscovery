@@ -29,6 +29,8 @@ package org.socialmusicdiscovery.rcp.util;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.expressions.EvaluationContext;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.ISources;
 
 /**
  * Some helpers for evaluating context and running commands.
@@ -38,13 +40,56 @@ import org.eclipse.core.expressions.EvaluationContext;
  */
 public final class CommandUtil {
 
+	private static final String[] EVALUATION_CONTEXT_KEYS = {
+		ISources.ACTIVE_ACTION_SETS_NAME,
+		ISources.ACTIVE_CONTEXT_NAME,
+		ISources.ACTIVE_CURRENT_SELECTION_NAME,
+		ISources.ACTIVE_EDITOR_ID_NAME,
+		ISources.ACTIVE_EDITOR_INPUT_NAME,
+		ISources.ACTIVE_EDITOR_NAME,
+		ISources.ACTIVE_FOCUS_CONTROL_ID_NAME,
+		ISources.ACTIVE_FOCUS_CONTROL_NAME,
+		ISources.ACTIVE_MENU_EDITOR_INPUT_NAME,
+		ISources.ACTIVE_MENU_NAME,
+		ISources.ACTIVE_MENU_SELECTION_NAME,
+		ISources.ACTIVE_PART_ID_NAME,
+		ISources.ACTIVE_PART_NAME,
+		ISources.ACTIVE_SHELL_NAME,
+		ISources.ACTIVE_SITE_NAME,
+		ISources.ACTIVE_WORKBENCH_WINDOW_ACTIVE_PERSPECTIVE_NAME,
+		ISources.ACTIVE_WORKBENCH_WINDOW_IS_COOLBAR_VISIBLE_NAME,
+		ISources.ACTIVE_WORKBENCH_WINDOW_IS_PERSPECTIVEBAR_VISIBLE_NAME,
+		ISources.ACTIVE_WORKBENCH_WINDOW_NAME,
+		ISources.ACTIVE_WORKBENCH_WINDOW_SHELL_NAME,
+		ISources.SHOW_IN_INPUT,
+		ISources.SHOW_IN_SELECTION,
+	};
+
 	private CommandUtil() {}
 
 	@SuppressWarnings("unchecked")
 	public static <T> T getDefaultVariable(ExecutionEvent event) {
 		EvaluationContext ctx = (EvaluationContext) event.getApplicationContext();
-		T victim = (T) ctx.getDefaultVariable();
-		return victim;
+		T result = (T) ctx.getDefaultVariable();
+		return result;
+	}
+
+	public static IEditorInput resolveEditorInput(ExecutionEvent event) {
+		EvaluationContext ctx = (EvaluationContext) event.getApplicationContext();
+//		String s = dump(ctx);
+		return (IEditorInput) ctx.getVariable(ISources.ACTIVE_EDITOR_INPUT_NAME);
+	}
+
+	public static String dump(EvaluationContext ctx) {
+		StringBuilder sb = new StringBuilder();
+		for (String s : EVALUATION_CONTEXT_KEYS) {
+			sb.append(s);
+			sb.append('=');
+			sb.append(ctx.getVariable(s));
+			sb.append('\n');
+		}
+		String all = sb.toString();
+		return all;
 	}
 
 }

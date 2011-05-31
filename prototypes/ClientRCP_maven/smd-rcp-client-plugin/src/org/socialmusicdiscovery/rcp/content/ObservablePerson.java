@@ -29,6 +29,6 @@ package org.socialmusicdiscovery.rcp.content;
 
 import org.socialmusicdiscovery.server.business.model.core.Person;
 
-public class ObservablePerson extends AbstractObservableEntity<Person> implements Person {
+public class ObservablePerson extends AbstractEditableEntity<Person> implements Person {
 
 }

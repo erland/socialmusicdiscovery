@@ -257,4 +257,7 @@ public class TrackContributorPanel extends AbstractComposite<ObservableTrack> {
 			updateFilters();
 		}
 	}
+	public ContributorPanel getContributorPanel() {
+		return contributorPanel;
+	}
 }

@@ -27,35 +27,37 @@
 
 package org.socialmusicdiscovery.rcp.content;
 
-import java.util.Collection;
-
-import org.socialmusicdiscovery.server.business.model.core.Contributor;
+import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 
 /**
- * An instance that can delete itself and all affected (dependent) instances,
- * probably by notifying dependent elements and delegating the actual suicide to
- * the {@link DataSource}.
+ * <p>
+ * The root abstraction of all elements that we edit as part of another element
+ * in the client. The class implements a number of interfaces that are typical
+ * for "secondary" client objects; these can be deleted, inserted and edited
+ * only in association with class objects. They are not editor input elements.
+ * </p>
+ * 
+ * <p>
+ * One important purpose with this class is to allow separation of menus;
+ * although these objects can be deleted, they are constrained in terms of
+ * context; they cannot be deleted anywhere they are seen. Hence, they cannot
+ * implement {@link Deletable}.
+ * </p>
  * 
  * @author Peer Törngren
+ * 
+ * @param <T>
+ *            the interface the subclass implements
  */
-public interface Deletable {
+public abstract class AbstractDependentEntity<T extends SMDIdentity> extends AbstractObservableEntity<T> {
+
 
 	/**
-	 * Delete this instance. Fire events and take necessary actions to ensure
-	 * that the model stays consistent and all listeners are notified. The
-	 * recommended approach is that "core" entities delete themselves and all
-	 * dependents by calling {@link DataSource#delete(ObservableEntity)}, and
-	 * that dependent instances (like a {@link Contributor}) asks its owner to
-	 * be removed from the concerned property (typically a collection of some
-	 * sort).
+	 * Default implementation calls {@link DataSource#delete(ObservableEntity)}. 
+	 * Subclasses should override as necessary. 
 	 */
-	void delete();
-
-	/**
-	 * Get other {@link Deletable} elements that must be deleted with this
-	 * instance, in deletion order (if it matters).
-	 * 
-	 * @return Collection
-	 */
-	<T extends AbstractDependentEntity> Collection<T> getDeletableDependents();	
+	public void delete() {
+		getDataSource().delete(this);
+	}
+	
 }

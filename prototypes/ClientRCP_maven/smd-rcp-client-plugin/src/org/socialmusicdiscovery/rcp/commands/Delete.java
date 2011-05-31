@@ -36,13 +36,14 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.socialmusicdiscovery.rcp.content.AbstractDependentEntity;
 import org.socialmusicdiscovery.rcp.content.Deletable;
 import org.socialmusicdiscovery.rcp.util.CommandUtil;
 import org.socialmusicdiscovery.rcp.util.NotYetImplemented;
 import org.socialmusicdiscovery.rcp.util.WorkbenchUtil;
 
 /**
- * Deletes {@link Deletable} instances.
+ * Deletes {@link Deletable} instances and all dependents (if any).
  * 
  * @author Peer Törngren
  *
@@ -51,12 +52,16 @@ public class Delete extends AbstractHandler implements IHandler {
 
 	@Override
 	public Boolean execute(ExecutionEvent event) throws ExecutionException {
-		@SuppressWarnings("unchecked")
-		List<? extends Deletable> victims = resolveDependents((Collection<Deletable>) CommandUtil.getDefaultVariable(event));
-		boolean isConfirmed = MessageDialog.openConfirm(null, "Delete", "Delete "+victims.size()+" element(s) and all dependents? This action can NOT be undone!");
+		List<? extends Deletable> victims = CommandUtil.getDefaultVariable(event);
+		List<? extends AbstractDependentEntity> dependents = resolveDependents(victims);
+		
+		boolean isConfirmed = MessageDialog.openConfirm(null, "Delete", "Delete "+victims.size()+" element(s) and " +dependents.size() + "dependents? This action can NOT be undone!");
 		isConfirmed &= NotYetImplemented.confirm("Delete");
 		if (isConfirmed) {
 			if (WorkbenchUtil.closeEditors(victims)) {
+				for (AbstractDependentEntity d : dependents) {
+					d.delete();
+				}
 				for (Deletable v : victims) {
 					v.delete();
 				}
@@ -65,13 +70,12 @@ public class Delete extends AbstractHandler implements IHandler {
 		return Boolean.valueOf(isConfirmed);
 	}
 	
-	private <T extends Deletable> List<T> resolveDependents(Collection<T> primaryVictims) {
+	private <T extends AbstractDependentEntity> List<T> resolveDependents(Collection<? extends Deletable> primaryVictims) {
 		List<T> result = new ArrayList<T>();
 		for (Deletable deletable : primaryVictims) {
 			Collection<T> dependentsToDelete = deletable.getDeletableDependents();
 			result.addAll(dependentsToDelete);
 		}
-		result.addAll(primaryVictims);
 		return result;
 	}
 

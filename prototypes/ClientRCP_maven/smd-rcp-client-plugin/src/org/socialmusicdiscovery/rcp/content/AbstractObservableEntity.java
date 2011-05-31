@@ -28,40 +28,32 @@
 package org.socialmusicdiscovery.rcp.content;
 
 import java.beans.PropertyChangeListener;
-import java.lang.reflect.Field;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.observable.Observables;
 import org.eclipse.core.databinding.observable.set.IObservableSet;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.ui.IPersistableElement;
 import org.eclipse.ui.PlatformUI;
 import org.socialmusicdiscovery.rcp.Activator;
 import org.socialmusicdiscovery.rcp.content.DataSource.Root;
 import org.socialmusicdiscovery.rcp.event.AbstractObservable;
-import org.socialmusicdiscovery.rcp.util.NotYetImplemented;
-import org.socialmusicdiscovery.rcp.util.TextUtil;
-import org.socialmusicdiscovery.rcp.util.Util;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
-import org.socialmusicdiscovery.server.support.copy.CopyHelper;
 
 import com.google.gson.annotations.Expose;
 
 /**
  * <p>
- * The root abstraction of all persistent elements that we edit in the client.
+ * The root abstraction of all persistent elements that we handle in the client.
  * Each subclass implements a client-side version of the corresponding server
  * object, as defined by the interface defined by the class parameter
  * <code>T</code>. Compared to server objects, these instances are observable in
  * the sense that the accept {@link PropertyChangeListener}s and preserve stable
  * collections that can be observed thru the JFace data binding framework (e.g.
- * thru {@link BeansObservables}).
+ * thru {@link BeansObservables}). The instance keeps track of its "dirty"
+ * status, and fires events when the state changes.
  * </p>
  * 
  * <p>
@@ -74,25 +66,15 @@ import com.google.gson.annotations.Expose;
  * object that is fetched from the server.
  * </p>
  * 
- * <p>
- * <b>Editor Features</b><br>
- * The client object keeps track of its "dirty" status, and fires events when
- * the state changes. Before opening the instance in an editor, the editor makes
- * a "backup" of the instance in order to do a "restore" if user aborts changes.
- * </p>
  * 
  * @author Peer Törngren
  * 
- * @param <T> the interface the subclass implements
+ * @param <T> the core interface that the subclass implements
  */
 public abstract class AbstractObservableEntity<T extends SMDIdentity> extends AbstractObservable implements ObservableEntity<T> {
 	private DataSource dataSource;
 
 	private static final String PROP_id = "id"; //$NON-NLS-1$
-	private static final String PROP_isDirty = "dirty"; //$NON-NLS-1$
-	
-	private transient boolean isDirty;
-	private transient boolean isDirtyEnabled = true;
 	private transient boolean isInflated = false;
 
 	@Expose
@@ -101,6 +83,12 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 	@Expose
 	private String name;
 	private final Class rootType;
+
+	private static final String PROP_isDirty = "dirty"; //$NON-NLS-1$
+
+	private transient boolean isDirty;
+
+	private transient boolean isDirtyEnabled = true;
 
 	public AbstractObservableEntity() {
 		super();
@@ -148,42 +136,6 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 	}
 
 	/**
-	 * Returns an empty list. Subclasses should override as necessary.
-	 * Subclasses can add to the returned list.
-	 * @return {@link List}, empty 
-	 */
-	public <D extends Deletable> Collection<D> getDeletableDependents() {
-		return new ArrayList<D>();
-	}
-	
-	/**
-	 * Default implementation calls {@link DataSource#delete(ObservableEntity)} after 
-	 * deleting all {@link #getDeletableDependents()} (if any).
-	 * Subclasses should override and add behavior as necessary, e.g. to remove or notify
-	 * dependents as appropriate. 
-	 */
-	public void delete() {
-		List<Deletable> set = new ArrayList<Deletable>(getDeletableDependents());
-		for (Deletable c: set) {
-			c.delete();
-		}
-		assert getDeletableDependents().isEmpty() : this+" - all dependedents were not removed: "+getDeletableDependents();
-		getDataSource().delete(this);
-	}
-
-	/**
-	 * Default implementation delegates to {@link Root#newInstance()}.
-	 * Subclasses should override and add behavior as necessary, e.g. to
-	 * initialize or notify dependents as appropriate.
-	 */
-	public T newInstance() {
-		if (NotYetImplemented.confirm("Add")) {
-			return getRoot().newInstance();
-		}
-		return null;
-	}
-	
-	/**
 	 * Do any post-processing after basic inflate. This method is called after
 	 * {@link #inflate()}, if the instance was inflated. Default method does
 	 * nothing, subclasses should override as necessary, typically to load any
@@ -215,29 +167,6 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 		isInflated = true;
 	}
 	
-	@Override
-	public boolean exists() {
-		return true;
-	}
-
-	@Override
-	public ImageDescriptor getImageDescriptor() {
-		// TODO implement 
-		return null;
-	}
-
-	@Override
-	public IPersistableElement getPersistable() {
-		return null;
-	}
-
-	@Override
-	public String getToolTipText() {
-		String isModified = isDirty() ? " {modified}" : ""; 
-		String typeName = TextUtil.getText(getGenericType());
-		return "["+typeName+"] "+getName()+isModified ;
-	}
-
 	protected DataSource getDataSource() {
 		assert !(dataSource==null && Activator.getDefault()==null) : "DataSource not initialized and workbench not running";
 		return dataSource==null ? Activator.getDefault().getDataSource() : dataSource;
@@ -267,7 +196,7 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 	}
 
 	@SuppressWarnings("unchecked")
-	private Class<? extends AbstractObservableEntity> getGenericType() {
+	protected Class<? extends AbstractObservableEntity> getGenericType() {
 		for (Type type : getClass().getGenericInterfaces()) {
 			if (type instanceof Class) {
 				Class<? extends AbstractObservableEntity> genericClass = (Class<? extends AbstractObservableEntity>) type;
@@ -313,84 +242,6 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 	}
 
 	/**
-	 * Create a backup of the entity. Backup only holds the persistent data.
-	 * FIXME does not handle dependent entities! See {@link AbstractContributableEntity#getContributors()}
-	 * @return {@link AbstractObservableEntity}
-	 * @see #restore(AbstractObservableEntity)
-	 */
-	public AbstractObservableEntity backup() {
-		AbstractObservableEntity backup = new CopyHelper().copy(this, Expose.class);
-		assertBackup(backup);
-		return backup;
-	}
-
-	/**
-	 * Restore state from a backup of this entity. Backup only holds the persistent data.
-	 * FIXME does not handle dependent entities! See {@link AbstractContributableEntity#getContributors()}
-	 * @see #backup()
-	 */
-	public void restore(AbstractObservableEntity backup) {
-		assertBackup(backup);
-		new CopyHelper().mergeInto(this, backup, Expose.class);
-		refreshExposedProperties();
-		// fire dirty AFTER merge to make sure name changes are updated in 
-		// label providers (the copy does not fire any events)
-		setDirty(false); 
-	}
-
-	private void refreshExposedProperties() {
-		for (Field f : Util.getAllFields(getClass(), Expose.class)) {
-			firePropertyChange(f.getName());
-		};
-	}
-
-	/**
-	 * Assert that backup is a legal clone of this instance.
-	 * @param backup
-	 */
-	private void assertBackup(AbstractObservableEntity backup) {
-		// id may be null
-		assert backup.getId() == getId() || backup.getId().endsWith(getId()) : "Bad id: "+backup+". Backup="+backup.getId()+", this="+getId();
-		assert backup.getClass()==getClass() : "Bad class: "+backup+". Backup="+backup.getClass()+", this="+getClass();
-	}
-
-	
-	/**
-	 * Mark instance as dirty (or not). Method must be called whenever the
-	 * persistent state of this instance changes. Subclasses may disable dirty
-	 * handling while setting derived attributes that should fire property
-	 * change events but not alter the dirty status.
-	 * 
-	 * @param isDirty
-	 * @see #setDirtyEnabled(boolean)
-	 */
-	@Override
-	public void setDirty(boolean isDirty) {
-		if (isDirtyEnabled) {
-			super.firePropertyChange(PROP_isDirty, this.isDirty, this.isDirty = isDirty);
-		}
-	}
-
-	public boolean isDirty() {
-		return isDirty;
-	}
-	
-	protected boolean isDirtyEnabled() {
-		return isDirtyEnabled;
-	}
-
-	/**
-	 * Enable or disable dirty handling. Subclasses may need to disable dirty
-	 * handling while setting derived attributes that should fire property
-	 * change events but not alter the dirty status.
-	 * 
-	 * @param isDirtyEnabled
-	 */
-	protected void setDirtyEnabled(boolean isDirtyEnabled) {
-		this.isDirtyEnabled = isDirtyEnabled;
-	}
-	
-	/**
 	 * Is this instance fully loaded? If not, it will only hold fundamental
 	 * identity properties like {@link #getId()} and {@link #getName()}.
 	 * 
@@ -413,6 +264,68 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 		return getClass().getSimpleName()+"/'"+n+"'";
 	}
 	
+	/**
+	 * Convenience method, primarily intended for subclasses that implement
+	 * {@link #postInflate()} to inflate dependent entities.
+	 * 
+	 * @param entities
+	 */
+	protected void inflateAll(Collection<? extends AbstractObservableEntity> entities) {
+		for (AbstractObservableEntity entity : entities) {
+			entity.inflate();
+		}
+	}
+	
+	/**
+	 * Default implementation returns an empty set. Subclasses should override as necessary.
+	 */
+	public Set<? extends ObservableEntity> getRemovedDependents() {
+		return Collections.emptySet();
+	}
+
+	/**
+	 * Default implementation returns an empty set. Subclasses should override as necessary.
+	 * Returned set may include new, modified and unmodified entities.
+	 */
+	public Set<? extends ObservableEntity> getSaveableDependents() {
+		return Collections.emptySet();
+	}
+
+	public boolean isDirty() {
+		return isDirty;
+	}
+
+	protected boolean isDirtyEnabled() {
+		return isDirtyEnabled;
+	}
+
+	/**
+	 * Mark instance as dirty (or not). Method must be called whenever the
+	 * persistent state of this instance changes. Subclasses may disable dirty
+	 * handling while setting derived attributes that should fire property
+	 * change events but not alter the dirty status.
+	 * 
+	 * @param isDirty
+	 * @see #setDirtyEnabled(boolean)
+	 */
+	@Override
+	public void setDirty(boolean isDirty) {
+		if (isDirtyEnabled) {
+			super.firePropertyChange(PROP_isDirty, this.isDirty, this.isDirty = isDirty);
+		}
+	}
+
+	/**
+	 * Enable or disable dirty handling. Subclasses may need to disable dirty
+	 * handling while setting derived attributes that should fire property
+	 * change events but not alter the dirty status.
+	 * 
+	 * @param isDirtyEnabled
+	 */
+	protected void setDirtyEnabled(boolean isDirtyEnabled) {
+		this.isDirtyEnabled = isDirtyEnabled;
+	}
+
 	protected void fireIndexedPropertyChange(String propertyName, int index, boolean oldValue, boolean newValue) {
 		setDirty(true); // call before firing "real" change to let tooltip render dirty status
 		super.fireIndexedPropertyChange(propertyName, index, oldValue, newValue);
@@ -441,32 +354,5 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 	protected void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
 		setDirty(true); // call before firing "real" change to let tooltip render dirty status
 		super.firePropertyChange(propertyName, oldValue, newValue);
-	}
-
-	/**
-	 * Convenience method, primarily intended for subclasses that implement
-	 * {@link #postInflate()} to inflate dependent entities.
-	 * 
-	 * @param entities
-	 */
-	protected void inflateAll(Collection<? extends AbstractObservableEntity> entities) {
-		for (AbstractObservableEntity entity : entities) {
-			entity.inflate();
-		}
-	}
-	
-	/**
-	 * Default implementation returns an empty set. Subclasses should override as necessary.
-	 */
-	public Set<? extends ObservableEntity> getRemovedDependents() {
-		return Collections.emptySet();
-	}
-
-	/**
-	 * Default implementation returns an empty set. Subclasses should override as necessary.
-	 * Returned set may include new, modified and unmodified entities.
-	 */
-	public Set<? extends ObservableEntity> getSaveableDependents() {
-		return Collections.emptySet();
 	}
 }

@@ -193,7 +193,34 @@ public class ViewerUtil {
 		return selection instanceof IStructuredSelection ? ((IStructuredSelection) selection).toArray() : new Object[0];
 	}
 	
+	/**
+	 * Hook a default context menu for a viewer; the name of the part is used as the menu id.
+	 * @param part
+	 * @param viewer
+	 * @see IWorkbenchPartSite#registerContextMenu(MenuManager, ISelectionProvider)
+	 * @see IWorkbenchPartSite#getId()
+	 */
 	public static void hookContextMenu(IWorkbenchPart part, Viewer viewer) {
+		hookContextMenu(null, part, viewer);
+	}
+
+	/**
+	 * Hook a context menu for a viewer on a specific type of composite; the
+	 * supplied id should extend the part id as recommended by
+	 * {@link IWorkbenchPartSite#registerContextMenu(MenuManager, ISelectionProvider)}
+	 * .
+	 * 
+	 * @param part
+	 * @param menuId
+	 * @param viewers
+	 */
+	public static void hookContextMenu(IWorkbenchPart part, String menuId, Viewer... viewers) {
+		for (Viewer viewer : viewers) {
+			hookContextMenu(menuId, part, viewer);
+		}
+	}
+
+	public static void hookContextMenu(String menuId, IWorkbenchPart part, Viewer viewer) {
 		IWorkbenchPartSite site = part.getSite();
 		Control control = viewer.getControl();
 		
@@ -202,7 +229,11 @@ public class ViewerUtil {
 		Menu popup = menuManager.createContextMenu(control);
 		control.setMenu(popup);
 		
-		site.registerContextMenu(menuManager, viewer);	// let other plug-ins contribute
+		if (menuId==null) {
+			site.registerContextMenu(menuManager, viewer);	// let other plug-ins contribute
+		} else {
+			site.registerContextMenu(menuId, menuManager, viewer);	// let other plug-ins contribute
+		}
 		site.setSelectionProvider(viewer); 				// let manifest define selection-based expressions
 		new MyBridgeFromSelectionProviderToEvaluationService(viewer);
 	}

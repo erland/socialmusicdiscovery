@@ -33,7 +33,6 @@ import static org.socialmusicdiscovery.rcp.content.ObservableRecording.PROP_work
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -42,7 +41,7 @@ import org.eclipse.core.databinding.observable.Diffs;
 import org.eclipse.core.databinding.observable.set.IObservableSet;
 import org.eclipse.core.databinding.observable.set.SetDiff;
 import org.socialmusicdiscovery.rcp.util.ChangeMonitor;
-import org.socialmusicdiscovery.rcp.util.NotYetImplemented;
+import org.socialmusicdiscovery.rcp.util.GenericWritableSet;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
 import org.socialmusicdiscovery.server.business.model.core.Medium;
@@ -55,7 +54,7 @@ import org.socialmusicdiscovery.server.business.model.core.Work;
 
 import com.google.gson.annotations.Expose;
 
-public class ObservableTrack extends AbstractContributableEntity<Track> implements Track {
+public class ObservableTrack extends AbstractDependentEntity<Track> implements Track {
 	private class MyTitleManager implements Runnable {
 
 		@Override
@@ -173,7 +172,8 @@ public class ObservableTrack extends AbstractContributableEntity<Track> implemen
 	public static final String PROP_recording = "recording";
 	public static final String PROP_release = "release";
 	public static final String PROP_title = "title";
-	
+	public static final String PROP_contributors = "contributors";
+
 	private transient String title;
 	private transient final MyTitleManager titleManager = new MyTitleManager();
 	
@@ -183,10 +183,18 @@ public class ObservableTrack extends AbstractContributableEntity<Track> implemen
 	@Expose private Set<PlayableElement> playableElements = new HashSet<PlayableElement>();
 	@Expose private Release release;
 	private MyContributorFacade contributorFacade;
+	private GenericWritableSet<Contributor> contributors = new GenericWritableSet<Contributor>();
 
 	@Override
 	public Integer getNumber() {
 		return number;
+	}
+
+	/**
+	 * @return
+	 */
+	public IObservableSet getContributors() {
+		return contributors;
 	}
 
 	@Override
@@ -305,18 +313,4 @@ public class ObservableTrack extends AbstractContributableEntity<Track> implemen
 		super.delete();
 	}
 	
-	@Override
-	public Track newInstance() {
-		NotYetImplemented.openDialog("Cannot yet create "+getClass().getSimpleName());
-		return null;
-	}
-
-	/**
-	 * In contrast to superclass, I don't own my contributors (they are derived). 
-	 */
-	@Override
-	public <D extends Deletable> Collection<D> getDeletableDependents() {
-		return Collections.emptySet();
-	}
-
 }

@@ -31,10 +31,13 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.socialmusicdiscovery.rcp.content.ObservableRecording;
 import org.socialmusicdiscovery.rcp.editors.AbstractEditorPart;
+import org.socialmusicdiscovery.rcp.editors.widgets.ContributorPanel;
+import org.socialmusicdiscovery.rcp.util.ViewerUtil;
 
 public class RecordingEditor extends AbstractEditorPart<ObservableRecording, RecordingUI> {
 
 	public static final String ID = RecordingEditor.class.getName();
+	private static final String MENU_ID_CONTRIBUTORS = ContributorPanel.MENU_ID;
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -45,6 +48,9 @@ public class RecordingEditor extends AbstractEditorPart<ObservableRecording, Rec
 	private void hookAllContextMenus() {
 		hookContextMenus(
 			getUI().getTracksViewer(),
+			getUI().getArtistPanel().getGridViewer()
+		);
+		ViewerUtil.hookContextMenu(this, MENU_ID_CONTRIBUTORS, 
 			getUI().getArtistPanel().getGridViewer()
 		);
 	}

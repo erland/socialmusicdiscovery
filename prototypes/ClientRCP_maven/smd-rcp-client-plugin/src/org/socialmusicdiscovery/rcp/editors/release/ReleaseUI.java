@@ -344,4 +344,7 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 	public PlayableElementsPanel getPlayableElementsPanel() {
 		return playableElementsPanel;
 	}
+	public TrackContributorPanel getTrackContributorPanel() {
+		return trackContributorPanel;
+	}
 }
