@@ -296,13 +296,13 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
 
                 // Create Work entity and add composers to it if it didn't already exist
                 if (existingWorks.size() == 0) {
+                    workRepository.create(work);
                     if(getConfiguration().getBooleanParameter("composers")) {
                         Set<Contributor> workContributors = getContributorsForTag(tags.get(TagData.COMPOSER), Contributor.COMPOSER);
                         if (workContributors.size() > 0) {
                             saveContributors(work,workContributors);
                         }
                     }
-                    workRepository.create(work);
                 }
 
 
@@ -368,10 +368,10 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                 recordingContributors.addAll(conductorContributors);
                 recordingContributors.addAll(performerContributors);
 
+                recordingRepository.create(recording);
                 if (recordingContributors.size() > 0) {
                     saveContributors(recording, recordingContributors);
                 }
-                recordingRepository.create(recording);
 
                 // Add GENRE, STYLE and MOOD Classification entities and related them to the created Recording entity
                 if (tags.containsKey(TagData.GENRE) && getConfiguration().getBooleanParameter("genres")) {
@@ -420,10 +420,10 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                                 // Just ignore year if it can't be parsed
                             }
                         }
+                        releaseRepository.create(release);
                         if (albumArtistContributors.size() > 0) {
                             saveContributors(release, albumArtistContributors);
                         }
-                        releaseRepository.create(release);
                         this.releaseCache.put(albumName.toLowerCase(), Arrays.asList(release.getId()));
                     } else {
                         // We use the first Release entity found if it already existsted

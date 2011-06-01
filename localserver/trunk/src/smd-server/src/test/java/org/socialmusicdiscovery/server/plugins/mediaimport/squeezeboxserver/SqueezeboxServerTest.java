@@ -34,11 +34,9 @@ import org.socialmusicdiscovery.server.business.logic.config.MappedConfiguration
 import org.socialmusicdiscovery.server.business.model.GlobalIdentity;
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameter;
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameterEntity;
-import org.socialmusicdiscovery.server.business.model.core.Contributor;
-import org.socialmusicdiscovery.server.business.model.core.Release;
-import org.socialmusicdiscovery.server.business.model.core.ReleaseEntity;
-import org.socialmusicdiscovery.server.business.model.core.Track;
+import org.socialmusicdiscovery.server.business.model.core.*;
 import org.socialmusicdiscovery.server.business.repository.GlobalIdentityRepository;
+import org.socialmusicdiscovery.server.business.repository.core.ArtistRepository;
 import org.socialmusicdiscovery.server.business.repository.core.ReleaseRepository;
 import org.socialmusicdiscovery.test.BaseTestCase;
 import org.testng.annotations.BeforeClass;
@@ -52,6 +50,8 @@ import java.util.Set;
 public class SqueezeboxServerTest extends BaseTestCase {
     @Inject
     ReleaseRepository releaseRepository;
+    @Inject
+    ArtistRepository artistRepository;
     @Inject
     GlobalIdentityRepository globalIdentityRepository;
 
@@ -222,6 +222,10 @@ public class SqueezeboxServerTest extends BaseTestCase {
                     new TagData(TagData.ARTIST, "Ike Willis")
             ));
             squeezeboxServer.importNewPlayableElement(trackData);
+            em.getTransaction().commit();
+            updateSearchRelations();
+            em.getTransaction().begin();
+            em.clear();
 
             Collection<ReleaseEntity> releases = releaseRepository.findAll();
             assert releases != null;
@@ -234,6 +238,15 @@ public class SqueezeboxServerTest extends BaseTestCase {
                     validateTheBodyguard(release);
                 }
             }
+
+            em.clear();
+            Collection<ArtistEntity> artists = artistRepository.findAll();
+            assert artists.size()>0;
+            for (ArtistEntity artist : artists) {
+                Collection<ReleaseEntity> artistReleases = releaseRepository.findByArtistWithRelations(artist.getId(),null,null);
+                assert artistReleases.size()>0;
+            }
+
 
         } finally {
             if(em.getTransaction().getRollbackOnly()) {
