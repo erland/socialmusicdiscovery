@@ -37,10 +37,7 @@ import org.socialmusicdiscovery.server.business.logic.injections.database.Databa
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import java.io.BufferedOutputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.sql.Connection;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -62,15 +59,24 @@ public class SMDApplication {
     @Named("mediaimport")
     ExecutorService mediaImportService;
 
-    public static void main(String[] args) {
+    private boolean shutdownRequest = false;
+    private Thread mainThread;
+
+    public static void main(String[] args) throws IOException {
         String customStdOut = System.getProperty("org.socialmusicdiscovery.server.stdout");
         String customStdErr = System.getProperty("org.socialmusicdiscovery.server.stderr");
+        String isDaemon = System.getProperty("org.socialmusicdiscovery.server.daemon");
+        if(isDaemon != null && isDaemon.equalsIgnoreCase("true")) {
+            System.in.close();
+        }
         if (customStdOut != null) {
             try {
                 System.setOut(new PrintStream(new BufferedOutputStream(new FileOutputStream(customStdOut, true))));
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
+        }else if(isDaemon != null && isDaemon.equalsIgnoreCase("true")) {
+            System.out.close();
         }
         if (customStdErr != null) {
             try {
@@ -82,6 +88,8 @@ public class SMDApplication {
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
+        }else if(isDaemon != null && isDaemon.equalsIgnoreCase("true")) {
+            System.err.close();
         }
         new SMDApplication();
     }
@@ -107,6 +115,7 @@ public class SMDApplication {
 	}
 	
     public SMDApplication() {
+        mainThread = Thread.currentThread();
 
         try {
             DatabaseProvider provider = null;
@@ -130,19 +139,14 @@ public class SMDApplication {
 
             InjectHelper.injectMembers(this);
 
-            // Add shutdown hook to exit cleanly after receiving a CTRL-C (untested)
+            // Add shutdown hook to exit cleanly after receiving a CTRL-C
 			Runtime.getRuntime().addShutdownHook(new Thread() {
 				@Override
 				public void run() {
 					try {
-						System.out.println("\n\nShutdown hook triggered:\n");
-						// if factory is still open, shutdown haven't been called
-						if(emFactory.isOpen()) {
-							System.out.println("Doing gracefull shutdown...");
-							SMDApplication.this.shutdown();
-						} else {
-							System.out.println("nothing to do\n");
-						}
+                        System.out.println("Initiating shutdown...");
+                        shutdownRequest = true;
+                        mainThread.join();
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -152,9 +156,13 @@ public class SMDApplication {
             // Initialize all installed plugins
             pluginManager.startAll();
 
-            System.out.println("Hit q+enter to stop it...");
-            while (System.in.read() != 'q') {
-                // Ignore anything besides the 'q' key
+            System.out.println("Hit Ctrl+C to stop it...");
+            while(!shutdownRequest) {
+                try {
+                    Thread.sleep(1000);
+                }catch(InterruptedException e) {
+                    // Do nothing
+                }
             }
 
             System.out.println("\n\nExiting...\n");
@@ -162,6 +170,7 @@ public class SMDApplication {
             this.shutdown();
 
             provider.stop();
+            System.out.flush();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
