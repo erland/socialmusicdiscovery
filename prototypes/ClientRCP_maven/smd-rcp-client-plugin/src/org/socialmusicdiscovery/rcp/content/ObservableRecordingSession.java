@@ -44,6 +44,10 @@ public class ObservableRecordingSession extends AbstractContributableEntity<Reco
 	@Expose private Date date;
 	@Expose private Set<Recording> recordings = new HashSet<Recording>();
 
+	public ObservableRecordingSession() {
+		super(RecordingSession.TYPE);
+	}
+
 	@Override
 	public Date getDate() {
 		return date;

@@ -66,6 +66,10 @@ public class ObservableRelease extends AbstractContributableEntity<Release> impl
 
 	private transient GenericWritableList<Track> tracks = new GenericWritableList<Track>();
 
+	public ObservableRelease() {
+		super(Release.TYPE);
+	}
+
 	@Override
 	public Date getDate() {
 		return date;

@@ -37,6 +37,8 @@ import org.socialmusicdiscovery.rcp.util.GenericWritableSet;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
 
+import com.google.gson.annotations.Expose;
+
 /**
  * A common abstraction for all entities that can have contributors. Use to
  * enable common handling in shared widgets and methods. Should ideally be an
@@ -51,9 +53,12 @@ public abstract class AbstractContributableEntity<T extends SMDIdentity>  extend
 	public static final String PROP_contributors = "contributors";
 
 	private GenericWritableSet<Contributor> contributors = new GenericWritableSet<Contributor>();
+	@SuppressWarnings("unused")
+	@Expose private String objectType; // used by the AbstractJSONProvider through getObjectTypeConversionMap 
 
-	public AbstractContributableEntity() {
+	public AbstractContributableEntity(String objectType) {
 		super();
+		this.objectType = objectType;
 	}
 
 	public IObservableSet getContributors() {

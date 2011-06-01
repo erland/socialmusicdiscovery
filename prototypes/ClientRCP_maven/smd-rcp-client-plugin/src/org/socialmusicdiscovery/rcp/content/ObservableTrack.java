@@ -73,6 +73,7 @@ public class ObservableTrack extends AbstractDependentEntity<Track> implements T
 	private class MyContributorFacade extends AbstractContributableEntity implements Runnable {
 		private EffectiveContributorsResolver<ObservableContributor> effectiveContributorsResolver;
 		private MyContributorFacade() {
+			super(MyContributorFacade.class.getSimpleName()); //s dummy
 			update();
 			ChangeMonitor.observe(this, ObservableTrack.this, PROP_release, PROP_contributors, PROP_artist, PROP_name);
 			ChangeMonitor.observe(this, ObservableTrack.this, PROP_release, PROP_contributors, PROP_type);

@@ -35,23 +35,19 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.dialogs.ListDialog;
 import org.socialmusicdiscovery.rcp.content.AbstractContributableEntity;
 import org.socialmusicdiscovery.rcp.content.ArtistProvider;
 import org.socialmusicdiscovery.rcp.content.ContributorRoleProvider;
+import org.socialmusicdiscovery.rcp.content.ObservableArtist;
 import org.socialmusicdiscovery.rcp.content.ObservableContributor;
-import org.socialmusicdiscovery.rcp.views.util.LabelProviderFactory;
+import org.socialmusicdiscovery.rcp.editors.widgets.SelectionPanel;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
 
 /**
@@ -66,18 +62,13 @@ public class ContributorFactoryUI extends Composite {
 	private Combo roleCombo;
 	private ComboViewer roleViewer;
 	private Label roleLabel;
-	private Label artistLabel;
-	private Composite artistArea;
-	private Button artistButton;
-	private StyledText artistText;
-	private ArtistProvider artistProvider;
-	private ContributorRoleProvider roleProvider;
 	private Label ownerLabel;
 	private Text ownerText;
 	private Label infoLabel;
 	
 	// simplify data binding in UI tool + expose observable properties to parent
 	private final ObservableContributor template = new ObservableContributor(); 
+	private SelectionPanel<ObservableArtist> selectionPanel;
 
 	/**
 	 * Create the dialog.
@@ -85,6 +76,8 @@ public class ContributorFactoryUI extends Composite {
 	 */
 	public ContributorFactoryUI(Composite parent, int style) {
 		super(parent, style);
+		setBackgroundMode(SWT.INHERIT_DEFAULT);
+
 		setLayout(new FillLayout(SWT.HORIZONTAL));
 		composite = new Composite(this, SWT.NONE);
 		composite.setLayout(new GridLayout(1, false));
@@ -111,33 +104,21 @@ public class ContributorFactoryUI extends Composite {
 		roleCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		roleViewer.setContentProvider(new ArrayContentProvider());
 		
-		artistLabel = new Label(composite, SWT.NONE);
-		artistLabel.setText("Artist:");
-		artistLabel.setToolTipText("Who is contributing?");
-		artistLabel.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1));
-		
-		artistArea = new Composite(composite, SWT.NONE);
-		artistArea.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
-		GridLayout gl_artistArea = new GridLayout(2, false);
-		gl_artistArea.verticalSpacing = 0;
-		gl_artistArea.horizontalSpacing = 0;
-		gl_artistArea.marginHeight = 0;
-		gl_artistArea.marginWidth = 0;
-		artistArea.setLayout(gl_artistArea);
-		
-		artistText = new StyledText(artistArea, SWT.BORDER | SWT.READ_ONLY);
-		artistText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		
-		artistButton = new Button(artistArea, SWT.NONE);
-		artistButton.setText("...");
-		artistButton.addSelectionListener(new ArtistButtonSelectionListener());
-		artistButton.setToolTipText("Select artist from a selector dialog.");
+		selectionPanel = new SelectionPanel<ObservableArtist>(composite, SWT.NONE);
+		selectionPanel.getLabel().setToolTipText("Who contributes?");
+		selectionPanel.getButton().setToolTipText("Select the artist that makes the contribution");
+		GridLayout gridLayout = (GridLayout) selectionPanel.getLayout();
+		gridLayout.marginHeight = 0;
+		gridLayout.marginWidth = 0;
+		selectionPanel.getText().setEditable(true);
+		selectionPanel.getLabel().setText("Artist:");
+		selectionPanel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
 		initDataBindings();
 	}
 
 	void setArtistProvider(ArtistProvider artistProvider) {
-		this.artistProvider = artistProvider;
+		selectionPanel.setElementProvider(artistProvider);
 	}
 
 	void setOwner(AbstractContributableEntity owner) {
@@ -145,8 +126,7 @@ public class ContributorFactoryUI extends Composite {
 	}
 
 	void setRoleProvider(ContributorRoleProvider contributorRoleProvider) {
-		this.roleProvider = contributorRoleProvider;
-		roleViewer.setInput(roleProvider.getElements());
+		roleViewer.setInput(contributorRoleProvider.getElements());
 	}
 
 	Artist getArtist() {
@@ -156,29 +136,11 @@ public class ContributorFactoryUI extends Composite {
 	String getType() {
 		return template.getType();
 	}
-	
-	private class ArtistButtonSelectionListener extends SelectionAdapter {
-		@Override
-		public void widgetSelected(SelectionEvent e) {
-			ListDialog ld = new ListDialog(getShell());
-			ld.setContentProvider(new ArrayContentProvider());
-			ld.setInput(artistProvider.getElements());
-			ld.setLabelProvider(LabelProviderFactory.defaultStatic());
-			ld.setMessage("Choose artist");
-			ld.setTitle("Choose");
-			ld.open();
-			
-			Object[] allSelected = ld.getResult();
-			Object selected = allSelected!=null && allSelected.length==1 ? allSelected[0] : null;
-			Artist artist = (Artist) selected;
-			template.setArtist(artist);
-			artistText.setText(artist.getName());
-		}
-	}
 
 	public ObservableContributor getTemplate() {
 		return template;
 	}
+	
 	protected DataBindingContext initDataBindings() {
 		DataBindingContext bindingContext = new DataBindingContext();
 		//
@@ -186,6 +148,7 @@ public class ContributorFactoryUI extends Composite {
 		IObservableValue templateTypeObserveValue = BeansObservables.observeValue(template, "type");
 		bindingContext.bindValue(roleViewerObserveSingleSelection, templateTypeObserveValue, null, null);
 		//
+		selectionPanel.bindSelection(bindingContext, template, ObservableContributor.PROP_artist);
 		return bindingContext;
 	}
 }
