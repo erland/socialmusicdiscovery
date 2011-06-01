@@ -84,6 +84,10 @@ public class ObservableRecording extends AbstractContributableEntity<Recording> 
 	@Expose private Set<Work> works = new HashSet<Work>();
 	private transient GenericWritableSet<ObservableTrack> tracks = null; // initial null triggers lazy load
 
+	public ObservableRecording() {
+		super(Recording.TYPE);
+	}
+	
 	@Override
 	protected void postInflate() {
 		super.postInflate();

@@ -45,6 +45,10 @@ public class ObservableWork extends AbstractContributableEntity<Work> implements
 	@Expose private Set<Work> parts = new HashSet<Work>();
 	@Expose private Work parent;
 	
+	public ObservableWork() {
+		super(Work.TYPE);
+	}
+	
 	@Override
 	public Date getDate() {
 		return date;
