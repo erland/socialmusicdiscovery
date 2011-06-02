@@ -31,6 +31,7 @@ import static org.socialmusicdiscovery.rcp.test.AnObservable.CHILD;
 import static org.socialmusicdiscovery.rcp.test.AnObservable.CHILDREN;
 import static org.socialmusicdiscovery.rcp.test.AnObservable.NAME;
 
+import java.beans.PropertyDescriptor;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -45,6 +46,25 @@ import org.socialmusicdiscovery.rcp.util.ChangeMonitor.PropertyData;
  *
  */
 public class ChangeMonitorTest extends AbstractTestCase {
+	public interface MyInterface {
+		Set getGenericCollection();
+	}
+
+	public class MySuperClass {
+		public GenericWritableSet<String> getGenericCollection() {
+			return new GenericWritableSet<String>();
+		}
+	}
+
+	public class MyClass extends MySuperClass implements MyInterface {
+
+		@Override
+		public GenericWritableSet<String> getGenericCollection() {
+			// TODO Fix ChangeMonitor to make test run without this stupid declaration
+			return super.getGenericCollection();
+		}
+	}
+
 	private AnObservable root;
 	private MyObserver observer;
 	private AnObservable child1;
@@ -166,6 +186,14 @@ public class ChangeMonitorTest extends AbstractTestCase {
 		assertData(data, 2, AnObservable.class, null, 				false);
 		assertData(data, 3, Set.class, 			AnObservable.class, true);
 		assertData(data, 4, String.class, 		null, 				false);
+	}
+	
+	@Test
+	public void testGetGenericWritableSet() {
+		Class<MyClass> beanClass = MyClass.class;
+		PropertyDescriptor descriptor = ChangeMonitor.getDescriptor(beanClass, "genericCollection");
+		Class elementType = ChangeMonitor.resolveElementType(beanClass, descriptor);
+		assertEquals(String.class, elementType);
 	}
 	
 	private void assertData(List<PropertyData> data, int elementIndex, Class expectedPropertyType, Class expectedElementType, boolean expectedIsCollection) {
