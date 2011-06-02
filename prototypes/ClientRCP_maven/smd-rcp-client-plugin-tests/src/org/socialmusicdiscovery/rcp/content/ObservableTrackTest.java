@@ -229,6 +229,31 @@ public class ObservableTrackTest extends AbstractTestCase {
 	}
 	
 	@Test
+	public void testCreate() throws Exception {
+		MultiPurposeListener releaseListener = listener(release.getTracks());
+		MultiPurposeListener recordingListener = listener(recording.getTracks());
+
+		assertEquals(1, release.getTracks().size());
+		assertEquals(1, recording.getTracks().size());
+		
+		ObservableTrack template = new ObservableTrack();
+		template.setRelease(release);
+		template.setRecording(recording);
+
+		ObservableTrack testee = new ObservableTrack(template);
+
+		assertTrue(testee.isInflated());
+		assertTrue(testee.isDirty());
+		assertTrue(recordingListener.isChanged());
+		assertTrue(releaseListener.isChanged());
+		
+		assertEquals(2, release.getTracks().size());
+		assertEquals(2, recording.getTracks().size());
+		assertTrue(release.getTracks().contains(testee));
+		assertTrue(recording.getTracks().contains(testee));
+	}
+
+	@Test
 	public void testDelete() throws Exception {
 		assertTrue("Bad setup? Track not found", release.getTracks().contains(track));
 

@@ -30,8 +30,9 @@ package org.socialmusicdiscovery.rcp.content;
 import java.util.Collection;
 import java.util.Set;
 
-import org.eclipse.core.databinding.observable.set.IObservableSet;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.socialmusicdiscovery.rcp.content.DataSource.Root;
+import org.socialmusicdiscovery.rcp.util.ChangeMonitor;
 import org.socialmusicdiscovery.rcp.util.ChangeReplicator;
 import org.socialmusicdiscovery.rcp.util.GenericWritableSet;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
@@ -61,7 +62,18 @@ public abstract class AbstractContributableEntity<T extends SMDIdentity>  extend
 		this.objectType = objectType;
 	}
 
-	public IObservableSet getContributors() {
+	/**
+	 * <b>Note:</b> Subclasses <b>must</b> override this method to make sure we
+	 * pick up the proper generic element type. Apparently, the way we pick up
+	 * the method signature thru
+	 * {@link PropertyUtils#getPropertyDescriptors(Class)} returns the interface
+	 * method before the superclass method. This causes the
+	 * {@link ChangeMonitor} to fail since it doesn't understand what element
+	 * type to listen for. A proper solution is to fix the {@link ChangeMonitor}
+	 * , but for the time being, subclasses must override this method (it is
+	 * enough to simply call the superclass implementation, i.e. thus method).
+	 */
+	public GenericWritableSet<Contributor> getContributors() {
 		return contributors;		
 	}
 

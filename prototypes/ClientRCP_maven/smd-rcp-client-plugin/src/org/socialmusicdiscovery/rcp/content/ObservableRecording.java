@@ -40,6 +40,7 @@ import org.socialmusicdiscovery.rcp.util.ChangeMonitor;
 import org.socialmusicdiscovery.rcp.util.GenericWritableSet;
 import org.socialmusicdiscovery.rcp.util.NotYetImplemented;
 import org.socialmusicdiscovery.rcp.util.Util;
+import org.socialmusicdiscovery.server.business.model.core.Contributor;
 import org.socialmusicdiscovery.server.business.model.core.Recording;
 import org.socialmusicdiscovery.server.business.model.core.Track;
 import org.socialmusicdiscovery.server.business.model.core.Work;
@@ -88,6 +89,14 @@ public class ObservableRecording extends AbstractContributableEntity<Recording> 
 		super(Recording.TYPE);
 	}
 	
+	/**
+	 * Must override - see comments on superclass method.
+	 */
+	@Override
+	public GenericWritableSet<Contributor> getContributors() {
+		return super.getContributors();
+	}
+
 	@Override
 	protected void postInflate() {
 		super.postInflate();
@@ -198,12 +207,24 @@ public class ObservableRecording extends AbstractContributableEntity<Recording> 
 	}
 
 	public GenericWritableSet<ObservableTrack> getTracks() {
-		if (tracks==null) {
-			Root<Track> root = getDataSource().resolveRoot(Track.class);
-			Set<ObservableTrack> all = root.findAll(this);
-			this.tracks = new GenericWritableSet<ObservableTrack>(all, ObservableTrack.class);
+		if (!isTracksLoaded()) {
+			tracks = resolveTracks();
 		}
-		return this.tracks;
+		return tracks;
+	}
+
+	/**
+	 * Use to determine if and when to resolve {@link #getTracks()} 
+	 * @return boolean
+	 */
+	public boolean isTracksLoaded() {
+		return tracks!=null;
+	}
+
+	private GenericWritableSet<ObservableTrack> resolveTracks() {
+		Root<Track> root = getDataSource().resolveRoot(Track.class);
+		Set<ObservableTrack> all = root.findAll(this);
+		return new GenericWritableSet<ObservableTrack>(all, ObservableTrack.class);
 	}
 
 	/** ONLY FOR UNIT TESTING! */

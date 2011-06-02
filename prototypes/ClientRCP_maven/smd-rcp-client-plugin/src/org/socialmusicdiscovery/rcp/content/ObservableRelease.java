@@ -36,6 +36,8 @@ import java.util.Set;
 
 import org.socialmusicdiscovery.rcp.content.DataSource.Root;
 import org.socialmusicdiscovery.rcp.util.GenericWritableList;
+import org.socialmusicdiscovery.rcp.util.GenericWritableSet;
+import org.socialmusicdiscovery.server.business.model.core.Contributor;
 import org.socialmusicdiscovery.server.business.model.core.Label;
 import org.socialmusicdiscovery.server.business.model.core.Medium;
 import org.socialmusicdiscovery.server.business.model.core.RecordingSession;
@@ -68,6 +70,14 @@ public class ObservableRelease extends AbstractContributableEntity<Release> impl
 
 	public ObservableRelease() {
 		super(Release.TYPE);
+	}
+
+	/**
+	 * Must override - see comments on superclass method.
+	 */
+	@Override
+	public GenericWritableSet<Contributor> getContributors() {
+		return super.getContributors();
 	}
 
 	@Override

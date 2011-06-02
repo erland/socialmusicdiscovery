@@ -52,10 +52,10 @@ public class ObservableContributor extends AbstractDependentEntity<Contributor> 
 	/**
 	 * Constructor for new instances created by client.
 	 */
-	public ObservableContributor(AbstractContributableEntity owner, String type, Artist artist) {
-		this.owner = owner;
-		this.type = type;
-		this.artist = artist;
+	public ObservableContributor(ObservableContributor template) {
+		this.owner = template.getOwner();
+		this.type = template.getType();
+		this.artist = template.getArtist();
 		postCreate();
 	}
 
@@ -87,9 +87,8 @@ public class ObservableContributor extends AbstractDependentEntity<Contributor> 
 
 	@Override
 	public void delete() {
-		AbstractContributableEntity owner = getOwner();
-		if (owner.isInflated()) {
-			owner.getContributors().remove(this);
+		if (getOwner().isInflated()) {
+			getOwner().getContributors().remove(this);
 		}
 		if (getArtist().isContributionsLoaded()) {
 			getArtist().getContributions().remove(this);

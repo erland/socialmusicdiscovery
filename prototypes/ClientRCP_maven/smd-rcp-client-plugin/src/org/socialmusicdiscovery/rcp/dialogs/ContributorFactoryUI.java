@@ -48,7 +48,6 @@ import org.socialmusicdiscovery.rcp.content.ContributorRoleProvider;
 import org.socialmusicdiscovery.rcp.content.ObservableArtist;
 import org.socialmusicdiscovery.rcp.content.ObservableContributor;
 import org.socialmusicdiscovery.rcp.editors.widgets.SelectionPanel;
-import org.socialmusicdiscovery.server.business.model.core.Artist;
 
 /**
  * Creates an {@link ObservableContributor} instance. Place on a container.
@@ -122,6 +121,7 @@ public class ContributorFactoryUI extends Composite {
 	}
 
 	void setOwner(AbstractContributableEntity owner) {
+		template.setOwner(owner);
 		ownerText.setText(owner.getName());
 	}
 
@@ -129,15 +129,7 @@ public class ContributorFactoryUI extends Composite {
 		roleViewer.setInput(contributorRoleProvider.getElements());
 	}
 
-	Artist getArtist() {
-		return template.getArtist();
-	}
-
-	String getType() {
-		return template.getType();
-	}
-
-	public ObservableContributor getTemplate() {
+	ObservableContributor getTemplate() {
 		return template;
 	}
 	

@@ -29,7 +29,7 @@ package org.socialmusicdiscovery.rcp.dialogs;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Set;
+import java.util.List;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -39,19 +39,19 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-import org.socialmusicdiscovery.rcp.content.AbstractContributableEntity;
-import org.socialmusicdiscovery.rcp.content.ArtistProvider;
-import org.socialmusicdiscovery.rcp.content.ContributorRoleProvider;
-import org.socialmusicdiscovery.rcp.content.ObservableContributor;
-import org.socialmusicdiscovery.server.business.model.core.Contributor;
+import org.socialmusicdiscovery.rcp.content.ObservableRelease;
+import org.socialmusicdiscovery.rcp.content.ObservableTrack;
+import org.socialmusicdiscovery.rcp.content.RecordingProvider;
+import org.socialmusicdiscovery.rcp.util.Util;
+import org.socialmusicdiscovery.server.business.model.core.Track;
 
 /**
- * A dialog for creating a new {@link Contributor}.
+ * A dialog for creating a new {@link Track}.
  * 
  * @author Peer Törngren
  *
  */
-public class ContributorFactoryDialog extends Dialog {
+public class TrackFactoryDialog extends Dialog {
 
 	/**
 	 * Preliminary stub. Need to think about how to handle validation properly.
@@ -63,42 +63,41 @@ public class ContributorFactoryDialog extends Dialog {
 			okButton.setEnabled(isValid(ui.getTemplate()));
 		}
 		
-		private boolean isValid(ObservableContributor prospect) {
+		private boolean isValid(ObservableTrack prospect) {
 			return isFullyInitialized(prospect) && isUnique(prospect);
 		}
 
-		private boolean isFullyInitialized(Contributor template) {
-			boolean haveArtist = template.getArtist()!=null;
-			boolean haveType = template.getType()!=null;
-			return haveArtist && haveType;
+		private boolean isFullyInitialized(Track template) {
+			return template.getRecording()!=null;
 		}
 		
 		@SuppressWarnings("unchecked")
-		private boolean isUnique(Contributor prospect) {
-			Set<Contributor> contributors = owner.getContributors();
-			for (Contributor c : contributors) {
-				if (equal(c, prospect)) {
+		private boolean isUnique(Track prospect) {
+			List<Track> tracks = release.getTracks();
+			for (Track t : tracks) {
+				if (equal(t, prospect)) {
 					return false;
 				}
 			}
 			return true;
 		}
 
-		private boolean equal(Contributor c, Contributor c2) {
-			return c.getType().equals(c2.getType()) && c.getArtist().equals(c2.getArtist());
+		private boolean equal(Track t1, Track t2) {
+			int trackNumberDiff = Util.compare(t1.getNumber(), t2.getNumber());
+			return trackNumberDiff==0 && t1.getMedium()==t2.getMedium(); 
 		}
 
 	}
 	
-	private AbstractContributableEntity owner;
-	private ContributorFactoryUI ui;
+	private ObservableRelease release;
+	private TrackFactoryUI ui;
 	private Button okButton;
 
 	/**
 	 * Create the dialog.
 	 * @param parentShell
 	 */
-	public ContributorFactoryDialog(Shell parentShell) {
+	public TrackFactoryDialog(Shell parentShell) {
 		super(parentShell);
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 	}
@@ -113,10 +112,10 @@ public class ContributorFactoryDialog extends Dialog {
 		Composite area = (Composite) super.createDialogArea(parent);
 		area.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		ui = new ContributorFactoryUI(area, SWT.NONE);
-		ui.setOwner(owner);
-		ui.setRoleProvider(new ContributorRoleProvider());
-		ui.setArtistProvider(new ArtistProvider());
+		ui = new TrackFactoryUI(area, SWT.NONE);
+		ui.setRelease(release);
+		ui.setRecordingProvider(new RecordingProvider());
+		ui.getMediumViewer().setInput(release.getMediums());
 
 		return area;
 	}
@@ -136,19 +135,20 @@ public class ContributorFactoryDialog extends Dialog {
 	public void create() {
 		super.create();
 		bindValidation();
-		getShell().setText("Create Contributor");
+		getShell().setText("Create Track");
 	}
 
 	private void bindValidation() {
 		ui.getTemplate().addPropertyChangeListener(new MyButtonManager());
 	}
 
-	public static ObservableContributor open(AbstractContributableEntity owner) {
-		ContributorFactoryDialog dlg = new ContributorFactoryDialog(null);
-		dlg.owner = owner;
+	public static ObservableTrack open(ObservableRelease release) {
+		TrackFactoryDialog dlg = new TrackFactoryDialog(null);
+		dlg.release = release;
 		if (dlg.open()==Dialog.OK) {
-			return new ObservableContributor(dlg.ui.getTemplate());
+			return new ObservableTrack(dlg.ui.getTemplate());
 		}
 		return null;
 	}
+
 }
