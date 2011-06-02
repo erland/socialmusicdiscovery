@@ -88,11 +88,11 @@ public final class Util {
 	@SuppressWarnings("unchecked")
 	public static int compare(Comparable c1, Comparable c2) {
 		int nullComparison = compareNull(c1, c2);
-		return nullComparison==0 ? c1.compareTo(c2) : nullComparison; 
+		return nullComparison==0 && c1!=null ? c1.compareTo(c2) : nullComparison; 
 	}
 	
 	/**
-	 * Convenience method to compare two objects to dcetect if either or both 
+	 * Convenience method to compare two objects to detect if either or both 
 	 * are <code>null</code>. If both are non-null, method returns zero. 
 	 * 
 	 * @param o1
