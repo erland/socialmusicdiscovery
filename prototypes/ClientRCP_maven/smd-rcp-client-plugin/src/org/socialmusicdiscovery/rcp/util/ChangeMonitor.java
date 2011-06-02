@@ -100,7 +100,7 @@ public class ChangeMonitor {
 		return result;
 	}
 
-	private static Class resolveElementType(Class<?> type, PropertyDescriptor descriptor) {
+	static Class resolveElementType(Class<?> type, PropertyDescriptor descriptor) {
 		try {
 			String readMethodName = descriptor.getReadMethod().getName();
 			Type returnType = type.getMethod(readMethodName).getGenericReturnType();
@@ -127,7 +127,7 @@ public class ChangeMonitor {
 		return Collection.class.isAssignableFrom(currentType);
 	}
 
-	private static PropertyDescriptor getDescriptor(Class beanClass, String propertyName) {
+	static PropertyDescriptor getDescriptor(Class beanClass, String propertyName) {
 		// Silly, but beanutils only seem to offer methods to find distinct descriptor on instance, not class?
 		for (PropertyDescriptor d : PropertyUtils.getPropertyDescriptors(beanClass)) {
 			if (d.getName().equals(propertyName)) {
