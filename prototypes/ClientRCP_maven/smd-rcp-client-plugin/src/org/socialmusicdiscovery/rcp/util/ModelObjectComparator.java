@@ -42,7 +42,7 @@ public class ModelObjectComparator implements Comparator<ModelObject> {
 	@Override
 	public int compare(ModelObject o1, ModelObject o2) {
 		int nullComparison = Util.compareNull(o1, o2);
-		return nullComparison==0 ? Util.compare(o1.getName(), o2.getName()) : nullComparison; 
+		return nullComparison==0 && o1!=null ? Util.compare(o1.getName(), o2.getName()) : nullComparison; 
 	}
 
 
