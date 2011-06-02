@@ -145,7 +145,7 @@ public class ObservableTrack extends AbstractDependentEntity<Track> implements T
 		}
 
 		@Override
-		public IObservableSet getContributors() {
+		public GenericWritableSet<Contributor> getContributors() {
 			return ObservableTrack.this.getContributors();
 		}
 
@@ -186,15 +186,38 @@ public class ObservableTrack extends AbstractDependentEntity<Track> implements T
 	private MyContributorFacade contributorFacade;
 	private GenericWritableSet<Contributor> contributors = new GenericWritableSet<Contributor>();
 
+	/**
+	 * Default constructor.
+	 */
+	public ObservableTrack() {
+	}
+
+	/**
+	 * Constructor for client-created instances. Runs {@link #postCreate()}.
+	 */
+	public ObservableTrack(ObservableTrack template) {
+		release = template.release;
+		medium = template.medium;
+		number = template.getNumber();
+		recording = template.getRecording();
+		postCreate();
+	}
+
 	@Override
 	public Integer getNumber() {
 		return number;
 	}
 
 	/**
-	 * @return
+	 * Note: this set should typically not be modified by callers since it
+	 * represents a derived collection. It is a {@link GenericWritableSet} in
+	 * order to let the internal facade comply with the
+	 * {@link AbstractContributableEntity} superclass.
+	 * 
+	 * @return {@link GenericWritableSet}
+	 * @see AbstractContributableEntity#getContributors()
 	 */
-	public IObservableSet getContributors() {
+	public GenericWritableSet<Contributor> getContributors() {
 		return contributors;
 	}
 
@@ -204,8 +227,8 @@ public class ObservableTrack extends AbstractDependentEntity<Track> implements T
 	}
 
 	@Override
-	public Recording getRecording() {
-		return recording;
+	public ObservableRecording getRecording() {
+		return (ObservableRecording) recording;
 	}
 
 	@Override
@@ -214,8 +237,8 @@ public class ObservableTrack extends AbstractDependentEntity<Track> implements T
 	}
 
 	@Override
-	public Release getRelease() {
-		return release;
+	public ObservableRelease getRelease() {
+		return (ObservableRelease) release;
 	}
 
 	public void setNumber(Integer number) {
@@ -231,10 +254,12 @@ public class ObservableTrack extends AbstractDependentEntity<Track> implements T
 	}
 
 	public void setRecording(Recording recording) {
+		assert recording==null || recording instanceof ObservableRecording: "Not an "+ObservableRecording.class+": "+recording;
 		firePropertyChange(PROP_recording, this.recording, this.recording = recording);
 	}
 
 	public void setRelease(Release release) {
+		assert release==null || release instanceof ObservableRelease: "Not an "+ObservableRelease.class+": "+release;
 		firePropertyChange(PROP_release, this.release, this.release = release);
 	}
 
@@ -269,6 +294,12 @@ public class ObservableTrack extends AbstractDependentEntity<Track> implements T
 	@Override
 	protected void postCreate() {
 		super.postCreate();
+		if (getRelease()!=null && getRelease().isInflated()) {
+			getRelease().getTracks().add(this);
+		}
+		if (getRecording()!=null &&  getRecording().isTracksLoaded()) {
+			getRecording().getTracks().add(this);
+		}
 		hookTitleManager();
 		hookContributorsListener();
 	}

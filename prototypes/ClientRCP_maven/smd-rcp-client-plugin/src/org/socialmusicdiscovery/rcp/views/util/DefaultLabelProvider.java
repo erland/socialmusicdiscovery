@@ -31,12 +31,14 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.socialmusicdiscovery.rcp.content.ModelObject;
+import org.socialmusicdiscovery.rcp.content.ObservableMedium;
 
 /**
- * Simple, static label provider.
+ * Simple, static label provider. Returns a reasonable name for most/all known
+ * entity types.
  * 
  * @author Peer Törngren
- *
+ * 
  */
 public class DefaultLabelProvider extends LabelProvider implements ILabelProvider {
 
@@ -48,7 +50,16 @@ public class DefaultLabelProvider extends LabelProvider implements ILabelProvide
 
 	@Override
 	public String getText(Object element) {
-		return element instanceof ModelObject ? getName((ModelObject)element) : super.getText(element);
+		if (element instanceof ObservableMedium) {
+			ObservableMedium m = (ObservableMedium)element;
+			Integer number = m.getNumber();
+			String name = getName(m);
+			return name==null ? number.toString() : number + " - " + name;
+		}
+		if (element instanceof ModelObject) {
+			return getName((ModelObject)element);
+		} 
+		return super.getText(element);
 	}
 
 	private String getName(ModelObject mo) {

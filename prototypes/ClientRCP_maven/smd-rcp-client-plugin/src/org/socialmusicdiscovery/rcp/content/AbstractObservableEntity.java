@@ -165,6 +165,7 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 	 */
 	protected void postCreate() {
 		isInflated = true;
+		isDirty = true;
 	}
 	
 	protected DataSource getDataSource() {

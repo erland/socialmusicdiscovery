@@ -49,6 +49,32 @@ public class ObservableContributorTest extends AbstractTestCase {
 	}
 	
 	@Test
+	public void testCreate() throws Exception {
+		MultiPurposeListener releaseListener = listener(release.getContributors());
+		MultiPurposeListener artistListener = listener(artist.getContributions());
+
+		assertEquals(1, release.getContributors().size());
+		assertEquals(1, artist.getContributions().size());
+		
+		ObservableContributor template = new ObservableContributor();
+		template.setOwner(release);
+		template.setArtist(artist);
+		template.setType("imaginaryNewType");
+
+		ObservableContributor testee = new ObservableContributor(template);
+
+		assertTrue(testee.isInflated());
+		assertTrue(testee.isDirty());
+		assertTrue(artistListener.isChanged());
+		assertTrue(releaseListener.isChanged());
+		
+		assertEquals(2, release.getContributors().size());
+		assertEquals(2, artist.getContributions().size());
+		assertTrue(release.getContributors().contains(testee));
+		assertTrue(artist.getContributions().contains(testee));
+	}
+
+	@Test
 	public void testAddDuplicate() throws Exception {
 		MultiPurposeListener releaseListener = listener(release.getContributors());
 		MultiPurposeListener artistListener = listener(artist.getContributions());
@@ -65,9 +91,6 @@ public class ObservableContributorTest extends AbstractTestCase {
 		assertFalse(releaseListener.isChanged());
 	}
 
-	
-	
-	
 	@Test
 	public void testDelete() throws Exception {
 		release.setContributors(asSet(contributor));

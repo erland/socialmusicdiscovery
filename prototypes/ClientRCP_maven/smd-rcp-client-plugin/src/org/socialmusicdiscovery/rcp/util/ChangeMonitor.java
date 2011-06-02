@@ -115,11 +115,11 @@ public class ChangeMonitor {
 			        return (Class) typeArgument;
 			    }
 			}
-			throw new IllegalArgumentException("Expect exactly one generic type, found none: "+returnType);
+			throw new IllegalArgumentException(type+"."+descriptor.getName()+": expect exactly one generic type, found none: "+returnType);
 		} catch (SecurityException e) {
-			throw new FatalApplicationException("Unable to determine element type of collection property: "+descriptor, e);  //$NON-NLS-1$
+			throw new FatalApplicationException(type+"."+descriptor.getName()+": Unable to determine element type of collection property: "+descriptor.getPropertyType(), e);  //$NON-NLS-1$
 		} catch (NoSuchMethodException e) {
-			throw new FatalApplicationException("Unable to determine element type of collection property: "+descriptor, e);  //$NON-NLS-1$
+			throw new FatalApplicationException(type+"."+descriptor.getName()+": Unable to determine element type of collection property: "+descriptor.getPropertyType(), e);  //$NON-NLS-1$
 		}
 	}
 

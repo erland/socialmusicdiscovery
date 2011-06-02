@@ -25,40 +25,36 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.rcp.commands;
+package org.socialmusicdiscovery.rcp.content;
 
-import org.eclipse.core.commands.AbstractHandler;
-import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.commands.IHandler;
-import org.eclipse.swt.widgets.Shell;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 import org.socialmusicdiscovery.rcp.Activator;
-import org.socialmusicdiscovery.rcp.content.ObservableRelease;
-import org.socialmusicdiscovery.rcp.content.ObservableTrack;
-import org.socialmusicdiscovery.rcp.dialogs.TrackFactoryDialog;
-import org.socialmusicdiscovery.rcp.util.CommandUtil;
-import org.socialmusicdiscovery.rcp.util.NotYetImplemented;
+import org.socialmusicdiscovery.rcp.content.DataSource.Root;
+import org.socialmusicdiscovery.rcp.util.ModelObjectComparator;
+import org.socialmusicdiscovery.server.business.model.core.Recording;
 
 /**
- * Creates a new instance.
+ * Provides a sorted list of available recordings. Note that this may be a very
+ * naive approach in large databases; we probably need to filter in some way.
+ * 
  * @author Peer Törngren
+ * 
  */
-public class CreateTrack extends AbstractHandler implements IHandler {
+public class RecordingProvider implements ElementProvider<ObservableRecording> {
 
+	private Comparator comparator = new ModelObjectComparator();
+
+	@SuppressWarnings("unchecked")
 	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		ObservableRelease r = (ObservableRelease) CommandUtil.resolveEditorInput(event); 
-		return newInstance(r);
+	public List<ObservableRecording> getElements() {
+		Root<Recording> root = Activator.getDefault().getDataSource().resolveRoot(Recording.class);
+		List<ObservableRecording> all = new ArrayList(root.findAll());
+		Collections.sort(all, comparator);
+		return all;
 	}
 
-	private ObservableTrack newInstance(ObservableRelease r) {
-		if (NotYetImplemented.confirm("Create new Track")) {
-			ObservableTrack c = TrackFactoryDialog.open(r);
-			if (c!=null) {
-				Activator.getDefault().getDataSource().persist(new Shell(), c);
-			}
-			return c;
-		}
-		return null;
-	}
 }

@@ -557,7 +557,6 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		@Override
 		public T newInstance() {
 			AbstractObservableEntity<T> newInstance = createInstance();
-			newInstance.setDirty(true);
 			newInstance.postCreate();
 			newInstance.setName("<new>");
 			if (children!=null) {
