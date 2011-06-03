@@ -8,6 +8,7 @@ There are a number of different options to install the SMD prototype as describe
 
 The easiest way to install if you just want to beta test the software, is to do as follows. This is not the best way if you want to look at the source code or run the software in the debugger, but it's the preferred way if you are only looking for a way to get it up and running and do some testing.
 
+  # Make sure [http://www.java.com/inc/BrowserRedirect1.jsp Java 6] or later is installed on the computer running Squeezebox Server
   # Configure one of the following alpha repositories in your Squeezebox Server in Settings/Plugins
     * Official builds: http://socialmusicdiscovery.googlecode.com/svn/repository/alpha.xml
     * Nightly builds: http://downloads.socialmusicdiscovery.org/smd-plugin/svn-alpha-repository.xml
