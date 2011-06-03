@@ -47,21 +47,19 @@ import org.socialmusicdiscovery.rcp.util.ChangeMonitor.PropertyData;
  */
 public class ChangeMonitorTest extends AbstractTestCase {
 	public interface MyInterface {
-		Set getGenericCollection();
+		Set getCollection();
 	}
 
 	public class MySuperClass {
-		public GenericWritableSet<String> getGenericCollection() {
+		public GenericWritableSet<String> getCollection() {
 			return new GenericWritableSet<String>();
 		}
 	}
 
 	public class MyClass extends MySuperClass implements MyInterface {
-
-		@Override
-		public GenericWritableSet<String> getGenericCollection() {
-			// TODO Fix ChangeMonitor to make test run without this stupid declaration
-			return super.getGenericCollection();
+		@Override // MUST OVERRIDE TO DECLARE GENERIC RETURN TYPE   
+		public GenericWritableSet<String> getCollection() {
+			return super.getCollection();
 		}
 	}
 
@@ -191,7 +189,7 @@ public class ChangeMonitorTest extends AbstractTestCase {
 	@Test
 	public void testGetGenericWritableSet() {
 		Class<MyClass> beanClass = MyClass.class;
-		PropertyDescriptor descriptor = ChangeMonitor.getDescriptor(beanClass, "genericCollection");
+		PropertyDescriptor descriptor = ChangeMonitor.getDescriptor(beanClass, "collection");
 		Class elementType = ChangeMonitor.resolveElementType(beanClass, descriptor);
 		assertEquals(String.class, elementType);
 	}
