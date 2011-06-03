@@ -31,7 +31,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Set;
 
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -131,17 +130,13 @@ public class ContributorDialog extends AbstractEditorDialog<ObservableContributo
 	@Override
 	public void create() {
 		super.create();
-		bindValidation();
-	}
-
-	private void bindValidation() {
 		ui.getTemplate().addPropertyChangeListener(new MyButtonManager());
 	}
 
 	public static ObservableContributor open(AbstractContributableEntity owner) {
 		ContributorDialog dlg = new ContributorDialog(null);
 		dlg.owner = owner;
-		if (dlg.open()==Dialog.OK) {
+		if (openOK(dlg)) {
 			return new ObservableContributor(dlg.ui.getTemplate());
 		}
 		return null;
@@ -152,7 +147,7 @@ public class ContributorDialog extends AbstractEditorDialog<ObservableContributo
 		dlg.owner = input.getOwner();
 		dlg.type = input.getType();
 		dlg.artist = input.getArtist();
-		if (dlg.open()==Dialog.OK) {
+		if (openOK(dlg)) {
 			Util.mergeInto(input, dlg.ui.getTemplate());
 		}
 		return input;

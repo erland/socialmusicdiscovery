@@ -31,7 +31,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -130,17 +129,13 @@ public class TrackDialog extends AbstractEditorDialog<ObservableTrack> {
 	@Override
 	public void create() {
 		super.create();
-		bindValidation();
-	}
-
-	private void bindValidation() {
 		ui.getTemplate().addPropertyChangeListener(new MyButtonManager());
 	}
 
 	public static ObservableTrack open(ObservableRelease release) {
 		TrackDialog dlg = new TrackDialog(null);
 		dlg.release = release;
-		if (dlg.open()==Dialog.OK) {
+		if (openOK(dlg)) {
 			return new ObservableTrack(dlg.ui.getTemplate());
 		}
 		return null;
@@ -152,7 +147,7 @@ public class TrackDialog extends AbstractEditorDialog<ObservableTrack> {
 		dlg.medium = input.getMedium();
 		dlg.number = input.getNumber();
 		dlg.recording = input.getRecording();
-		if (dlg.open()==Dialog.OK) {
+		if (openOK(dlg)) {
 			Util.mergeInto(input, dlg.ui.getTemplate());
 		}
 		return input;
