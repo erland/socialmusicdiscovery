@@ -25,7 +25,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.rcp.dialogs;
+package org.socialmusicdiscovery.rcp.editors.contributor;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -45,17 +45,18 @@ import org.socialmusicdiscovery.rcp.content.ContributorRoleProvider;
 import org.socialmusicdiscovery.rcp.content.ObservableArtist;
 import org.socialmusicdiscovery.rcp.content.ObservableContributor;
 import org.socialmusicdiscovery.rcp.content.ObservableEntity;
+import org.socialmusicdiscovery.rcp.editors.track.TrackDialog;
 import org.socialmusicdiscovery.rcp.util.Util;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
 
 /**
  * A dialog for creating a new {@link Contributor}.
- * TODO refactor and abstract - lots of code duplicated in {@link TrackFactoryDialog} 
+ * TODO refactor and abstract - lots of code duplicated in {@link TrackDialog} 
  * 
  * @author Peer Törngren
  *
  */
-public class ContributorFactoryDialog extends Dialog {
+public class ContributorDialog extends Dialog {
 
 	/**
 	 * Preliminary stub. Need to think about how to handle validation properly.
@@ -95,7 +96,7 @@ public class ContributorFactoryDialog extends Dialog {
 	}
 	
 	private AbstractContributableEntity owner;
-	private ContributorFactoryUI ui;
+	private ContributorUI ui;
 	private Button okButton;
 	private String type;
 	private ObservableArtist artist;
@@ -104,7 +105,7 @@ public class ContributorFactoryDialog extends Dialog {
 	 * Create the dialog.
 	 * @param parentShell
 	 */
-	public ContributorFactoryDialog(Shell parentShell) {
+	public ContributorDialog(Shell parentShell) {
 		super(parentShell);
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 	}
@@ -119,7 +120,7 @@ public class ContributorFactoryDialog extends Dialog {
 		Composite area = (Composite) super.createDialogArea(parent);
 		area.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		ui = new ContributorFactoryUI(area, SWT.NONE);
+		ui = new ContributorUI(area, SWT.NONE);
 		ui.setRoleProvider(new ContributorRoleProvider());
 		ui.setArtistProvider(new ArtistProvider());
 		ui.setOwner(owner);
@@ -152,7 +153,7 @@ public class ContributorFactoryDialog extends Dialog {
 	}
 
 	public static ObservableContributor open(AbstractContributableEntity owner) {
-		ContributorFactoryDialog dlg = new ContributorFactoryDialog(null);
+		ContributorDialog dlg = new ContributorDialog(null);
 		dlg.owner = owner;
 		if (dlg.open()==Dialog.OK) {
 			return new ObservableContributor(dlg.ui.getTemplate());
@@ -161,7 +162,7 @@ public class ContributorFactoryDialog extends Dialog {
 	}
 
 	public static ObservableEntity open(ObservableContributor input) {
-		ContributorFactoryDialog dlg = new ContributorFactoryDialog(null);
+		ContributorDialog dlg = new ContributorDialog(null);
 		dlg.owner = input.getOwner();
 		dlg.type = input.getType();
 		dlg.artist = input.getArtist();

@@ -57,11 +57,11 @@ import org.socialmusicdiscovery.rcp.content.ObservableEntity;
 import org.socialmusicdiscovery.rcp.content.ObservableRecording;
 import org.socialmusicdiscovery.rcp.content.ObservableRelease;
 import org.socialmusicdiscovery.rcp.content.ObservableTrack;
-import org.socialmusicdiscovery.rcp.dialogs.ContributorFactoryDialog;
-import org.socialmusicdiscovery.rcp.dialogs.TrackFactoryDialog;
 import org.socialmusicdiscovery.rcp.editors.artist.ArtistEditor;
+import org.socialmusicdiscovery.rcp.editors.contributor.ContributorDialog;
 import org.socialmusicdiscovery.rcp.editors.recording.RecordingEditor;
 import org.socialmusicdiscovery.rcp.editors.release.ReleaseEditor;
+import org.socialmusicdiscovery.rcp.editors.track.TrackDialog;
 import org.socialmusicdiscovery.rcp.error.FatalApplicationException;
 
 public final class WorkbenchUtil {
@@ -183,10 +183,10 @@ public final class WorkbenchUtil {
 
 	private static ObservableEntity openDialog(Object input) {
 		if (input instanceof ObservableContributor) {
-			return ContributorFactoryDialog.open((ObservableContributor) input);
+			return ContributorDialog.open((ObservableContributor) input);
 		}
 		if (input instanceof ObservableTrack) {
-			return TrackFactoryDialog.open((ObservableTrack) input);
+			return TrackDialog.open((ObservableTrack) input);
 		}
 		return null;
 	}

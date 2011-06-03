@@ -24,7 +24,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.rcp.dialogs;
+package org.socialmusicdiscovery.rcp.editors.track;
 
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.beans.BeansObservables;
@@ -57,7 +57,7 @@ import org.socialmusicdiscovery.server.business.model.core.Medium;
  * @author Peer Törngren
  *
  */
-public class TrackFactoryUI extends Composite {
+public class TrackUI extends Composite {
 
 	private Composite composite;
 	private Combo mediumCombo;
@@ -78,7 +78,7 @@ public class TrackFactoryUI extends Composite {
 	 * Create the dialog.
 	 * @param parent
 	 */
-	public TrackFactoryUI(Composite parent, int style) {
+	public TrackUI(Composite parent, int style) {
 		super(parent, style);
 		setBackgroundMode(SWT.INHERIT_DEFAULT);
 
