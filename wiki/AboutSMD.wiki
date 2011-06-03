@@ -36,6 +36,9 @@ There are a number of fundamental principles which makes SMD different than anyt
 SMD is focused at satisfying users that like to explore and discover music. For some samples how SMD would be used by different users, take a look at the following page:
   * [Personas Description of sample usage for different user categories]
 
+== Downloads and Installation ==
+See the [SoftwareInstallation installation instructions] for further information.
+
 = Common questions =
 == Why should I care ? ==
 
