@@ -49,6 +49,7 @@ import org.socialmusicdiscovery.rcp.content.RecordingProvider;
 import org.socialmusicdiscovery.rcp.editors.widgets.SelectionPanel;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.socialmusicdiscovery.rcp.views.util.DefaultLabelProvider;
+import org.socialmusicdiscovery.server.business.model.core.Medium;
 
 /**
  * Creates an {@link ObservableTrack} instance. Place on a container.
@@ -142,6 +143,18 @@ public class TrackFactoryUI extends Composite {
 		releaseText.setText(release.getName());
 	}
 
+	public void setNumber(Integer number) {
+		template.setNumber(number);
+	}
+
+	public void setMedium(Medium medium) {
+		template.setMedium(medium);
+	}
+
+	public void setRecording(ObservableRecording recording) {
+		template.setRecording(recording);
+	}
+	
 	void setRecordingProvider(RecordingProvider provider) {
 		selectionPanel.setElementProvider(provider);
 	}
@@ -170,4 +183,5 @@ public class TrackFactoryUI extends Composite {
 		selectionPanel.bindSelection(bindingContext, template, ObservableTrack.PROP_recording);
 		return bindingContext;
 	}
+
 }

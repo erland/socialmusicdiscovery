@@ -39,15 +39,18 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
+import org.socialmusicdiscovery.rcp.content.ObservableEntity;
+import org.socialmusicdiscovery.rcp.content.ObservableRecording;
 import org.socialmusicdiscovery.rcp.content.ObservableRelease;
 import org.socialmusicdiscovery.rcp.content.ObservableTrack;
 import org.socialmusicdiscovery.rcp.content.RecordingProvider;
 import org.socialmusicdiscovery.rcp.util.Util;
+import org.socialmusicdiscovery.server.business.model.core.Medium;
 import org.socialmusicdiscovery.server.business.model.core.Track;
 
 /**
  * A dialog for creating a new {@link Track}.
- * 
+ * TODO refactor and abstract - lots of code duplicated in {@link ContributorFactoryDialog} 
  * @author Peer Törngren
  *
  */
@@ -92,6 +95,9 @@ public class TrackFactoryDialog extends Dialog {
 	private ObservableRelease release;
 	private TrackFactoryUI ui;
 	private Button okButton;
+	private Medium medium;
+	private Integer number;
+	private ObservableRecording recording;
 
 	/**
 	 * Create the dialog.
@@ -113,9 +119,12 @@ public class TrackFactoryDialog extends Dialog {
 		area.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
 		ui = new TrackFactoryUI(area, SWT.NONE);
-		ui.setRelease(release);
 		ui.setRecordingProvider(new RecordingProvider());
 		ui.getMediumViewer().setInput(release.getMediums());
+		ui.setRelease(release);
+		ui.setNumber(number);
+		ui.setMedium(medium);
+		ui.setRecording(recording);
 
 		return area;
 	}
@@ -149,6 +158,18 @@ public class TrackFactoryDialog extends Dialog {
 			return new ObservableTrack(dlg.ui.getTemplate());
 		}
 		return null;
+	}
+
+	public static ObservableEntity open(ObservableTrack input) {
+		TrackFactoryDialog dlg = new TrackFactoryDialog(null);
+		dlg.release = input.getRelease();
+		dlg.medium = input.getMedium();
+		dlg.number = input.getNumber();
+		dlg.recording = input.getRecording();
+		if (dlg.open()==Dialog.OK) {
+			Util.mergeInto(input, dlg.ui.getTemplate());
+		}
+		return input;
 	}
 
 }

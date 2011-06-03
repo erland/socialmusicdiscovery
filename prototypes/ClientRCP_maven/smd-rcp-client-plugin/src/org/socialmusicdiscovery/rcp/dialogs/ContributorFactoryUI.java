@@ -124,6 +124,13 @@ public class ContributorFactoryUI extends Composite {
 		template.setOwner(owner);
 		ownerText.setText(owner.getName());
 	}
+	public void setType(String type) {
+		template.setType(type);
+	}
+	
+	public void setArtist(ObservableArtist artist) {
+		template.setArtist(artist);
+	}
 
 	void setRoleProvider(ContributorRoleProvider contributorRoleProvider) {
 		roleViewer.setInput(contributorRoleProvider.getElements());
@@ -143,4 +150,5 @@ public class ContributorFactoryUI extends Composite {
 		selectionPanel.bindSelection(bindingContext, template, ObservableContributor.PROP_artist);
 		return bindingContext;
 	}
+
 }

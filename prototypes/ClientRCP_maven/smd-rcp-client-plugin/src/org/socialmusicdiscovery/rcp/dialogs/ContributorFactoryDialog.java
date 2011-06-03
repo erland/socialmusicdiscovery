@@ -42,11 +42,15 @@ import org.eclipse.swt.widgets.Shell;
 import org.socialmusicdiscovery.rcp.content.AbstractContributableEntity;
 import org.socialmusicdiscovery.rcp.content.ArtistProvider;
 import org.socialmusicdiscovery.rcp.content.ContributorRoleProvider;
+import org.socialmusicdiscovery.rcp.content.ObservableArtist;
 import org.socialmusicdiscovery.rcp.content.ObservableContributor;
+import org.socialmusicdiscovery.rcp.content.ObservableEntity;
+import org.socialmusicdiscovery.rcp.util.Util;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
 
 /**
  * A dialog for creating a new {@link Contributor}.
+ * TODO refactor and abstract - lots of code duplicated in {@link TrackFactoryDialog} 
  * 
  * @author Peer Törngren
  *
@@ -93,6 +97,8 @@ public class ContributorFactoryDialog extends Dialog {
 	private AbstractContributableEntity owner;
 	private ContributorFactoryUI ui;
 	private Button okButton;
+	private String type;
+	private ObservableArtist artist;
 
 	/**
 	 * Create the dialog.
@@ -114,9 +120,11 @@ public class ContributorFactoryDialog extends Dialog {
 		area.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
 		ui = new ContributorFactoryUI(area, SWT.NONE);
-		ui.setOwner(owner);
 		ui.setRoleProvider(new ContributorRoleProvider());
 		ui.setArtistProvider(new ArtistProvider());
+		ui.setOwner(owner);
+		ui.setType(type);
+		ui.setArtist(artist);
 
 		return area;
 	}
@@ -150,5 +158,16 @@ public class ContributorFactoryDialog extends Dialog {
 			return new ObservableContributor(dlg.ui.getTemplate());
 		}
 		return null;
+	}
+
+	public static ObservableEntity open(ObservableContributor input) {
+		ContributorFactoryDialog dlg = new ContributorFactoryDialog(null);
+		dlg.owner = input.getOwner();
+		dlg.type = input.getType();
+		dlg.artist = input.getArtist();
+		if (dlg.open()==Dialog.OK) {
+			Util.mergeInto(input, dlg.ui.getTemplate());
+		}
+		return input;
 	}
 }

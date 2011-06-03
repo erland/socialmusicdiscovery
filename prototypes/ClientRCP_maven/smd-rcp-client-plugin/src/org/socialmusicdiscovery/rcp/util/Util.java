@@ -27,6 +27,7 @@
 
 package org.socialmusicdiscovery.rcp.util;
 
+import java.beans.PropertyChangeEvent;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.socialmusicdiscovery.rcp.content.ObservableEntity;
 import org.socialmusicdiscovery.server.business.model.core.Work;
 import org.socialmusicdiscovery.server.support.copy.CopyHelper;
 
@@ -206,6 +208,27 @@ public final class Util {
 			result.addAll(c);
 		}
 		return result;
+	}
+
+	/**
+	 * Copy all exposed fields from source to target. Fire
+	 * {@link PropertyChangeEvent}s and set target as dirty after copy. The
+	 * effect is similar to calling the setter methods for all concerned fields.
+	 * 
+	 * @param target
+	 * @param source
+	 */
+	public static void mergeInto(ObservableEntity target, ObservableEntity source) {
+		assert target.getClass() == source.getClass() : "Attempt merge different source and target types: " + target.getClass()+" <= " + source.getClass();
+		
+		new CopyHelper().mergeInto(target, source, Expose.class);
+		for (Field f : getAllFields(target.getClass(), Expose.class)) {
+			target.firePropertyChange(f.getName());
+		};
+		
+		// fire dirty AFTER merge to make sure name changes are updated in 
+		// label providers (the copy does not fire any events)
+		target.setDirty(false); 
 	}
 
 }
