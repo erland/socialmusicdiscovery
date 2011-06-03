@@ -75,6 +75,32 @@ At the moment the project is in a very early stage, some simple browsing functio
 
 Since all project members involved are working on the project during their spare time, we currently don't have a release plan with exact dates ("we're not big fans of deadlines, we have enough of them at work" :-). But to give some kind of indication, it's not going to be ready for an official release within the next couple of months, it will hopefully have a lot more functionality 6 months in the future and if everything works as plan it's going to be continuously enhanced during many years.
 
+=== Functionality at the current stage ===
+  * Information in music file tags from all music files available in Squeezebox Server library will be imported into SMD library. We are working on an exact list of default tags to support, but at the moment we at least support:
+    * All tags supported by Squeezebox Server
+    * PERFORMER, WORK, MOOD, STYLE
+  * You will be able to browse the SMD library using your standard Squeezebox remote. Compared to standard SBS this will give you at least:
+    * Separate Composers, Conductors menus.
+    * Support for Styles and Moods menus if you have STYLE or MOOD tags in your music files.
+    * Context menu making it possible to browse related information on any item and not just on songs. For example, browse to an album and then select to browse among the composers which have composed material on that album.
+
+=== Functionality in the near future ===
+This might change but at the moment we are working on:
+  * A rich user interface to make it possible to add and modify information in SMD library without the need to use an external tagging tool.
+  * Making it possible to import information from some online sources for example Musicbrainz, Discogs, LastFM or Spotify into the SMD library and make it possible to use that information when browsing. Some examples of ideas:
+    * Import extra information from discogs.com for a selected album.
+    * Import all albums for a selected artist from Spotify and add it as any other album in your SMD library.
+    * Import the LastFM tags for a specific album or track and make it possible to browse your SMD library by LastFM tags set by other LastFM users.
+  * Browse menu configuration to make it possible for each user to reconfigure the menu structure so it's optimized for their needs.
+  * UPnP interface to make it possible to browse SMD library using your favorite UPnP client, for example:
+    * 
+
+
+=== Functionality on a longer perspective ===
+On a longer perspective we don't have any detailed plan exactly what's going to be supported, we will adapt the plan according to user requests and the needs among the project contributors.
+
+Some ideas of possible functionality which have been discussed has already been mentioned in other places on this page, so these should give you some kind of idea what we have in the plan.
+
 
 == Is there some way I can help to speed up the development ? ==
 
