@@ -27,7 +27,6 @@
 
 package org.socialmusicdiscovery.rcp.content;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -153,17 +152,7 @@ public abstract class AbstractEditableEntity<T extends SMDIdentity> extends Abst
 	 */
 	public void restore(AbstractObservableEntity backup) {
 		assertBackup(backup);
-		new CopyHelper().mergeInto(this, backup, Expose.class);
-		refreshExposedProperties();
-		// fire dirty AFTER merge to make sure name changes are updated in 
-		// label providers (the copy does not fire any events)
-		setDirty(false); 
-	}
-
-	private void refreshExposedProperties() {
-		for (Field f : Util.getAllFields(getClass(), Expose.class)) {
-			firePropertyChange(f.getName());
-		};
+		Util.mergeInto(this, backup);
 	}
 
 }

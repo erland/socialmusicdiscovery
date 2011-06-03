@@ -142,9 +142,9 @@ public class SelectionPanel<T extends ModelObject> extends ObservableComposite {
 	 * @param propertyName
 	 */
 	public void bindSelection(DataBindingContext bindingContext, Observable bean, String propertyName) {
-		IObservableValue templateArtistObserveValue = BeansObservables.observeValue(bean, propertyName);
-		IObservableValue selectionPanelAaaObserveValue = BeansObservables.observeValue(this, PROP_selected);
-		bindingContext.bindValue(templateArtistObserveValue, selectionPanelAaaObserveValue, null, null);
+		IObservableValue beanObserveValue = BeansObservables.observeValue(bean, propertyName);
+		IObservableValue selectedObserveValue = BeansObservables.observeValue(this, PROP_selected);
+		bindingContext.bindValue(beanObserveValue, selectedObserveValue, null, null);
 	}
 	
 	public T getSelected() {

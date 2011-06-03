@@ -37,31 +37,32 @@ import java.util.Set;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.services.IEvaluationService;
+import org.socialmusicdiscovery.rcp.Activator;
 import org.socialmusicdiscovery.rcp.content.ObservableArtist;
 import org.socialmusicdiscovery.rcp.content.ObservableContributor;
+import org.socialmusicdiscovery.rcp.content.ObservableEntity;
 import org.socialmusicdiscovery.rcp.content.ObservableRecording;
 import org.socialmusicdiscovery.rcp.content.ObservableRelease;
+import org.socialmusicdiscovery.rcp.content.ObservableTrack;
+import org.socialmusicdiscovery.rcp.dialogs.ContributorFactoryDialog;
+import org.socialmusicdiscovery.rcp.dialogs.TrackFactoryDialog;
 import org.socialmusicdiscovery.rcp.editors.artist.ArtistEditor;
 import org.socialmusicdiscovery.rcp.editors.recording.RecordingEditor;
 import org.socialmusicdiscovery.rcp.editors.release.ReleaseEditor;
 import org.socialmusicdiscovery.rcp.error.FatalApplicationException;
-import org.socialmusicdiscovery.server.business.model.core.Artist;
-import org.socialmusicdiscovery.server.business.model.core.Contributor;
-import org.socialmusicdiscovery.server.business.model.core.Recording;
-import org.socialmusicdiscovery.server.business.model.core.Track;
 
 public final class WorkbenchUtil {
 
@@ -149,50 +150,54 @@ public final class WorkbenchUtil {
 		}
 	}
 
-	public static void openDistinct(Object selectedElement) {
-		IEditorPart activeEditor = getActiveEditor();
-		IEditorInput currentInput= activeEditor==null ? null : activeEditor.getEditorInput();
-		IEditorInput nextInput = resolveEditableElement(currentInput, selectedElement);
-		String editorId = resolveEditorId(nextInput);
-		String viewId = resolveViewId(nextInput);
-		IWorkbenchPart part = null;
-		
-		if (editorId!=null) {
-			part = WorkbenchUtil.openEditor(nextInput, editorId);
-		} else if (viewId!=null) {
-			part = WorkbenchUtil.openView(viewId, viewId);
-		} else {
-			NotYetImplemented.openDialog("Unable to locate an editor for " + nextInput);
-		}
-		if (part!=null) {
+	public static Object openDistinct(Object selectedElement) {
+		IEditorInput editorInput = resolveEditableElement(selectedElement);
+
+		if (editorInput!=null) {
+			// editor?
+			String editorId = resolveEditorId(editorInput);
+			if (editorId!=null) {
+				return WorkbenchUtil.openEditor(editorInput, editorId);
+			}
 			
+			// view?
+			String viewId = resolveViewId(editorInput);
+			if (viewId!=null) {
+				return WorkbenchUtil.openView(viewId, viewId);
+			}
+		} 
+
+		// dialog?
+		ObservableEntity entity = openDialog(selectedElement);
+		if (entity!=null) {
+			if (entity.isDirty()) {
+				Activator.getDefault().getDataSource().persist(new Shell(), entity);
+			}
+			return entity;
 		}
+		
+		// no luck :-(
+		NotYetImplemented.openDialog("Unable to locate an editor for " + editorInput);
+		return null;
 	}
 
-	private static IEditorInput resolveEditableElement(IEditorInput currentEditorInput, Object selectedElement) {
-		if (selectedElement instanceof Track) {
-			Track track = (Track) selectedElement;
-			// what to open next depends on where we're currently editing the track
-			// Recording => Release, Release => Recording
-			Object target = currentEditorInput instanceof Recording ? track.getRelease() : track.getRecording();
-			return resolveEditableElement(currentEditorInput, target);
+	private static ObservableEntity openDialog(Object input) {
+		if (input instanceof ObservableContributor) {
+			return ContributorFactoryDialog.open((ObservableContributor) input);
 		}
-		if (selectedElement instanceof ObservableContributor) {
-			ObservableContributor c = (ObservableContributor) selectedElement;
-			// what to open next depends on where we're currently editing the contribution
-			// Artist => Entity, anything else => Artist
-			Object target = currentEditorInput instanceof Artist ? c.getOwner() : c.getArtist();
-			return resolveEditableElement(currentEditorInput, target);
+		if (input instanceof ObservableTrack) {
+			return TrackFactoryDialog.open((ObservableTrack) input);
 		}
-		if (selectedElement instanceof Contributor) {
-			return resolveEditableElement(currentEditorInput, ((Contributor) selectedElement).getArtist());
-		}
+		return null;
+	}
+
+	private static IEditorInput resolveEditableElement(Object selectedElement) {
 		if (selectedElement instanceof IEditorInput) {
 			return (IEditorInput) selectedElement;
 		}
 		if (selectedElement instanceof IAdaptable) {
 			IAdaptable a = (IAdaptable) selectedElement;
-			return resolveEditableElement(currentEditorInput, a.getAdapter(IEditorInput.class));
+			return resolveEditableElement(a.getAdapter(IEditorInput.class));
 		}
 		return null;
 	}
@@ -251,7 +256,7 @@ public final class WorkbenchUtil {
 
 	/**
 	 * Convenience method that accepts a collection, primarily to avoid errors
-	 * by passing a collection as the fiest varargs element to
+	 * by passing a collection as the first varargs element to
 	 * {@link #closeEditors(Object...)}.
 	 * 
 	 * @param victims
