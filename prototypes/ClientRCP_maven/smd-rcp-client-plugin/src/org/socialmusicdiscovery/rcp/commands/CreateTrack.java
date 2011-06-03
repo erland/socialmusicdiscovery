@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.socialmusicdiscovery.rcp.Activator;
 import org.socialmusicdiscovery.rcp.content.ObservableRelease;
 import org.socialmusicdiscovery.rcp.content.ObservableTrack;
-import org.socialmusicdiscovery.rcp.dialogs.TrackFactoryDialog;
+import org.socialmusicdiscovery.rcp.editors.track.TrackDialog;
 import org.socialmusicdiscovery.rcp.util.CommandUtil;
 import org.socialmusicdiscovery.rcp.util.NotYetImplemented;
 
@@ -53,7 +53,7 @@ public class CreateTrack extends AbstractHandler implements IHandler {
 
 	private ObservableTrack newInstance(ObservableRelease r) {
 		if (NotYetImplemented.confirm("Create new Track")) {
-			ObservableTrack c = TrackFactoryDialog.open(r);
+			ObservableTrack c = TrackDialog.open(r);
 			if (c!=null) {
 				Activator.getDefault().getDataSource().persist(new Shell(), c);
 			}

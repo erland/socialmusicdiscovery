@@ -25,7 +25,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.rcp.dialogs;
+package org.socialmusicdiscovery.rcp.editors.track;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -44,17 +44,18 @@ import org.socialmusicdiscovery.rcp.content.ObservableRecording;
 import org.socialmusicdiscovery.rcp.content.ObservableRelease;
 import org.socialmusicdiscovery.rcp.content.ObservableTrack;
 import org.socialmusicdiscovery.rcp.content.RecordingProvider;
+import org.socialmusicdiscovery.rcp.editors.contributor.ContributorDialog;
 import org.socialmusicdiscovery.rcp.util.Util;
 import org.socialmusicdiscovery.server.business.model.core.Medium;
 import org.socialmusicdiscovery.server.business.model.core.Track;
 
 /**
  * A dialog for creating a new {@link Track}.
- * TODO refactor and abstract - lots of code duplicated in {@link ContributorFactoryDialog} 
+ * TODO refactor and abstract - lots of code duplicated in {@link ContributorDialog} 
  * @author Peer Törngren
  *
  */
-public class TrackFactoryDialog extends Dialog {
+public class TrackDialog extends Dialog {
 
 	/**
 	 * Preliminary stub. Need to think about how to handle validation properly.
@@ -93,7 +94,7 @@ public class TrackFactoryDialog extends Dialog {
 	}
 	
 	private ObservableRelease release;
-	private TrackFactoryUI ui;
+	private TrackUI ui;
 	private Button okButton;
 	private Medium medium;
 	private Integer number;
@@ -103,7 +104,7 @@ public class TrackFactoryDialog extends Dialog {
 	 * Create the dialog.
 	 * @param parentShell
 	 */
-	public TrackFactoryDialog(Shell parentShell) {
+	public TrackDialog(Shell parentShell) {
 		super(parentShell);
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 	}
@@ -118,7 +119,7 @@ public class TrackFactoryDialog extends Dialog {
 		Composite area = (Composite) super.createDialogArea(parent);
 		area.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
-		ui = new TrackFactoryUI(area, SWT.NONE);
+		ui = new TrackUI(area, SWT.NONE);
 		ui.setRecordingProvider(new RecordingProvider());
 		ui.getMediumViewer().setInput(release.getMediums());
 		ui.setRelease(release);
@@ -152,7 +153,7 @@ public class TrackFactoryDialog extends Dialog {
 	}
 
 	public static ObservableTrack open(ObservableRelease release) {
-		TrackFactoryDialog dlg = new TrackFactoryDialog(null);
+		TrackDialog dlg = new TrackDialog(null);
 		dlg.release = release;
 		if (dlg.open()==Dialog.OK) {
 			return new ObservableTrack(dlg.ui.getTemplate());
@@ -161,7 +162,7 @@ public class TrackFactoryDialog extends Dialog {
 	}
 
 	public static ObservableEntity open(ObservableTrack input) {
-		TrackFactoryDialog dlg = new TrackFactoryDialog(null);
+		TrackDialog dlg = new TrackDialog(null);
 		dlg.release = input.getRelease();
 		dlg.medium = input.getMedium();
 		dlg.number = input.getNumber();

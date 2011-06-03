@@ -25,7 +25,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.rcp.dialogs;
+package org.socialmusicdiscovery.rcp.editors.contributor;
 
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.beans.BeansObservables;
@@ -55,7 +55,7 @@ import org.socialmusicdiscovery.rcp.editors.widgets.SelectionPanel;
  * @author Peer Törngren
  *
  */
-public class ContributorFactoryUI extends Composite {
+public class ContributorUI extends Composite {
 
 	private Composite composite;
 	private Combo roleCombo;
@@ -73,7 +73,7 @@ public class ContributorFactoryUI extends Composite {
 	 * Create the dialog.
 	 * @param parent
 	 */
-	public ContributorFactoryUI(Composite parent, int style) {
+	public ContributorUI(Composite parent, int style) {
 		super(parent, style);
 		setBackgroundMode(SWT.INHERIT_DEFAULT);
 

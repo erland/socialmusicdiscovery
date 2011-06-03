@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.socialmusicdiscovery.rcp.Activator;
 import org.socialmusicdiscovery.rcp.content.AbstractContributableEntity;
 import org.socialmusicdiscovery.rcp.content.ObservableContributor;
-import org.socialmusicdiscovery.rcp.dialogs.ContributorFactoryDialog;
+import org.socialmusicdiscovery.rcp.editors.contributor.ContributorDialog;
 import org.socialmusicdiscovery.rcp.util.CommandUtil;
 import org.socialmusicdiscovery.rcp.util.NotYetImplemented;
 
@@ -55,7 +55,7 @@ public class CreateContributor extends AbstractHandler implements IHandler {
 
 	private ObservableContributor newInstance(AbstractContributableEntity r) {
 		if (NotYetImplemented.confirm("Create new Contributor")) {
-			ObservableContributor c = ContributorFactoryDialog.open(r);
+			ObservableContributor c = ContributorDialog.open(r);
 			if (c!=null) {
 				Activator.getDefault().getDataSource().persist(new Shell(), c);
 			}
