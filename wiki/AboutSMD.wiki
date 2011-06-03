@@ -19,6 +19,7 @@ On longer terms, the vision is also to be able to support things like:
   * Third party UPnP clients
   * Smart playlists and advanced mixing
   * User friendly playlist management
+  * Ability to share and get recommendations from other users with similar musical taste
 
 == Important principles ==
 There are a number of fundamental principles which makes SMD different than anything else currently out there:
@@ -53,6 +54,19 @@ It's impossible to know what the future will look like, but at the moment it's n
 The goal is that music discovery related functionality should already from the beginning be possible to access using all major remotes available for Squeezebox today. This includes, Squeezebox Controller, Squeezebox IR-remote and all existing major iPhone/iPad/Android apps.
 
 On longer terms the SMD application will offer third party interfaces based on JSON and/or UPnP making it possible for third party developer to integrate their favorite remote or application.
+
+
+== Why should I care ? ==
+
+As mentioned earlier the main intention with SMD is to make it easy and interesting to discover music, SMD is for you if you answer "Yes" on one of the following questions:
+
+  * Do you find that the standard browsing on your Squeezebox isn't flexible enough ?
+  * Do you consume music from both your local library and an online streaming service which allows you to play individual songs ?
+  * Do you use different applications or web sites when listening to music compared to when finding something to buy ?
+  * Do you want to be able to share recommendations with friends and people with similar musical taste ?
+  * Do you get recommendations from friends but don't have any easy way to play them on your normal music player ?
+
+SMD is about solving and making all this easier. We aren't there yet but to goal is to get there eventually. We usually try to find and analyze user needs through the [http://forums.slimdevices.com Logitech community forums] but if you give us your thoughts already now you can make sure your ideas and needs are considered. The easiest way to give us your ideas is to post in the announcement thread in the [http://forums.slimdevices.com Logitech community forums].
 
 
 == Is there some way I can help to speed up the development ? ==
