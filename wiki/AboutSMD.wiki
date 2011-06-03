@@ -57,6 +57,28 @@ The answer to this question is that it's going to replace the parts that are "br
 It's impossible to know what the future will look like, but at the moment it's not a goal to replace the streaming and player control functionality of Squeezebox Server. 
 
 
+== Will it replace some existing third party plugins ? ==
+
+Squeezebox Server currently have a number of third party plugins partly similar area as SMD is targeting, for example:
+  * Various plugins related to import for information and browse menus
+    * [http://wiki.slimdevices.com/index.php/CustomScan_plugin CustomScan plugin]
+    * [http://wiki.slimdevices.com/index.php/CustomBrowse_plugin CustomBrowse plugin]
+  * Various plugins related to smart playlists and statistics
+    * [http://wiki.slimdevices.com/index.php/Dynamic_Playlist_plugin Dynamic Playlist plugin]
+    * [http://wiki.slimdevices.com/index.php/SQL_Playlist_plugin SQL Playlist plugin]
+    * [http://wiki.slimdevices.com/index.php/TrackStat_plugin TrackStat plugin]
+  * Various plugins that integrate with online services providing information, for example:
+    * [http://www.herger.net/slim-plugins/detail.php?nr=500 Biography plugin]
+    * [http://www.herger.net/slim-plugins/detail.php?nr=673 AlbumReview plugin]
+  * Various plugins that integrate with online streaming services, for example:
+    * [http://forums.slimdevices.com/showthread.php?t=79706 Spotify plugin]
+    * [http://forums.slimdevices.com/showthread.php?t=87731 YouTube plugin]
+
+The goal with SMD is to either provide a good integration with these plugins or to completely replace them. Custom Scan and Custom Browse plugins will definitely be replaced as SMD intends to provide similar functionality but in a more user friendly way. 
+
+We haven't decided exactly how to handle the rest but at least in the near future we are probably going to focus more on integrating existing plugins than replacing them. On longer terms some of them are going to be replaced with SMD as we want a solution which also can work with non Squeezebox players, but that's something to decide when we reach this stage of the project.
+
+
 == Can I access SMD using my current remote ? ==
 
 The goal is that music discovery related functionality should already from the beginning be possible to access using all major remotes available for Squeezebox today. This includes, Squeezebox Controller, Squeezebox IR-remote and all existing major iPhone/iPad/Android apps.
