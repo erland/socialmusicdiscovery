@@ -30,6 +30,7 @@ package org.socialmusicdiscovery.server.plugins.mediaimport.squeezeboxserver;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -128,6 +129,14 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
     private GlobalIdentityRepository globalIdentityRepository;
 
     @Inject
+    @Named("squeezeboxserver.username")
+    private String squeezeboxServerUsername;
+
+    @Inject
+    @Named("squeezeboxserver.password")
+    private String squeezeboxServerPassword;
+
+    @Inject
     @Named("squeezeboxserver.host")
     private String squeezeboxServerHost;
 
@@ -158,7 +167,11 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
         classificationCache.clear();
         try {
             JSONObject request = createRequest(offset, CHUNK_SIZE);
-            JSONObject response = Client.create().resource(SERVICE_URL).accept("application/json").post(JSONObject.class, request);
+            Client c = Client.create();
+            if(squeezeboxServerUsername!=null && squeezeboxServerUsername.length()>0 && squeezeboxServerPassword!=null && squeezeboxServerPassword.length()>0) {
+                c.addFilter(new HTTPBasicAuthFilter(squeezeboxServerUsername, squeezeboxServerPassword));
+            }
+            JSONObject response = c.resource(SERVICE_URL).accept("application/json").post(JSONObject.class, request);
             ObjectMapper mapper = new ObjectMapper();
             trackList = mapper.readValue(response.getString("result"), TrackListData.class);
 
@@ -177,7 +190,7 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                     if (offset + trackList.getTracks().size() < trackList.getCount()) {
                         offset = offset + trackList.getTracks().size();
                         request = createRequest(offset, CHUNK_SIZE);
-                        response = Client.create().resource(SERVICE_URL).accept("application/json").post(JSONObject.class, request);
+                        response = c.resource(SERVICE_URL).accept("application/json").post(JSONObject.class, request);
                         trackList = mapper.readValue(response.getString("result"), TrackListData.class);
                     } else {
                         trackList = null;
