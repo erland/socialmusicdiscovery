@@ -27,6 +27,7 @@
 
 package org.socialmusicdiscovery.rcp.util;
 
+import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -100,6 +101,59 @@ public class ChangeMonitor {
 		return result;
 	}
 
+	/**
+	 * <p>
+	 * Find the type elements in a collection type by introspecting the generic
+	 * type of the getter method's return type.
+	 * </p>
+	 * <p>
+	 * <b>Note:</b><br>
+	 * Subclasses that both inherit a generic superclass method and implement a
+	 * non-generic interface method <b>must</b> override and declare the method
+	 * with the generic return type. If not, this method will not be able to
+	 * pick up the proper generic element type. It is enough to simply call the
+	 * superclass implementation, the point is to have the class declare the
+	 * method with the generic return type.
+	 * </p>
+	 * <p>
+	 * <b>Rationale:</b><br>
+	 * The way we pick up the method signature thru
+	 * {@link PropertyUtils#getPropertyDescriptors(Class)} and the
+	 * {@link Introspector} returns the interface method before the superclass
+	 * method. A better solution is not easily implemented since the behavior
+	 * seems inherent to Java reflection. The only way around this seems to be
+	 * to check the generic type of the field that carries the collection, but
+	 * that would disable the option of letting the class implement the
+	 * collection getter as a dynamic (derived) property.
+	 * </p>
+	 * <p>
+	 * <u>Example:</u>
+	 * 
+	 * <pre>
+	 * public interface MyInterface {
+	 * 	Set getCollection();
+	 * }
+	 * 
+	 * public class MySuperClass {
+	 * 	public GenericWritableSet&lt;String&gt; getCollection() {
+	 * 		return new GenericWritableSet&lt;String&gt;();
+	 * 	}
+	 * }
+	 * 
+	 * public class MyClass extends MySuperClass implements MyInterface {
+	 * 	&#064;Override // MUST OVERRIDE TO DECLARE GENERIC RETURN TYPE
+	 * 	public GenericWritableSet&lt;String&gt; getCollection() {
+	 * 		return super.getCollection();
+	 * 	}
+	 * }
+	 * </pre>
+	 * 
+	 * </p>
+	 * 
+	 * @param type
+	 * @param descriptor
+	 * @return Class
+	 */
 	static Class resolveElementType(Class<?> type, PropertyDescriptor descriptor) {
 		try {
 			String readMethodName = descriptor.getReadMethod().getName();

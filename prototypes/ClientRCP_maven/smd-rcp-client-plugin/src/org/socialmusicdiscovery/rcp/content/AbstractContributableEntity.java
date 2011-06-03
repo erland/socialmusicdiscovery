@@ -27,6 +27,7 @@
 
 package org.socialmusicdiscovery.rcp.content;
 
+import java.beans.Introspector;
 import java.util.Collection;
 import java.util.Set;
 
@@ -63,15 +64,24 @@ public abstract class AbstractContributableEntity<T extends SMDIdentity>  extend
 	}
 
 	/**
+	 * <p>
+	 * Get all contributors to this entity.
+	 * </p>
+	 * <p>
 	 * <b>Note:</b> Subclasses <b>must</b> override this method to make sure we
-	 * pick up the proper generic element type. Apparently, the way we pick up
-	 * the method signature thru
-	 * {@link PropertyUtils#getPropertyDescriptors(Class)} returns the interface
-	 * method before the superclass method. This causes the
-	 * {@link ChangeMonitor} to fail since it doesn't understand what element
-	 * type to listen for. A proper solution is to fix the {@link ChangeMonitor}
-	 * , but for the time being, subclasses must override this method (it is
-	 * enough to simply call the superclass implementation, i.e. thus method).
+	 * pick up the proper generic element type. It is enough to simply call the
+	 * superclass implementation, i.e. this method.
+	 * </p>
+	 * <p>
+	 * Rationale: The way we pick up the method signature thru
+	 * {@link PropertyUtils#getPropertyDescriptors(Class)} and the
+	 * {@link Introspector} returns the interface method before the superclass
+	 * method. This causes the {@link ChangeMonitor} to fail since it doesn't
+	 * understand what element type to listen for. A proper solution is not
+	 * easily implemented since the behavior seems inherent to Java reflection.
+	 * See further comments on the {@link ChangeMonitor}.
+	 * </p>
+	 * @see ChangeMonitor
 	 */
 	public GenericWritableSet<Contributor> getContributors() {
 		return contributors;		
