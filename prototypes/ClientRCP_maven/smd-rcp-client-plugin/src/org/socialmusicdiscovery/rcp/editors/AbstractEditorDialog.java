@@ -62,6 +62,12 @@ public abstract class AbstractEditorDialog<T extends ObservableEntity> extends D
 		super.create();
 		getShell().setText(title);
 	}
+	
+	/**
+	 * Open dialog and check return status. 
+	 * @param dlg
+	 * @return <code>true</code> if dialog was closed with OK button, <code>false</code> if not
+	 */
 	protected static boolean openOK(AbstractEditorDialog dlg) {
 		return dlg.open() == Dialog.OK;
 	}
