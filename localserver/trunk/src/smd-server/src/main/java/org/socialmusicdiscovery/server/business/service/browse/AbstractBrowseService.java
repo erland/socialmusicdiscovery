@@ -171,7 +171,15 @@ public abstract class AbstractBrowseService {
         return query;
     }
 
-    protected <T extends SMDIdentity> Result<T> findChildren(Class entity, String objectType, String relationType, String orderBy, Collection<String> criteriaList, Collection<String> sortCriteriaList, Integer firstItem, Integer maxItems, Boolean returnChildCounters) {
+    protected <T extends SMDIdentity> ResultItem<T> findById(Class<T> entity, String objectType, String id) {
+        T instance = entityManager.find(entity, id);
+        ResultItem item = new ResultItem<T>(instance, getPlayable(), false);
+        item.setId(objectType+":"+instance.getId());
+        item.setType(objectType);
+        return item;
+    }
+
+    protected <T extends SMDIdentity, E extends T> Result<T> findChildren(Class<T> entity, String objectType, String relationType, String orderBy, Collection<String> criteriaList, Collection<String> sortCriteriaList, Integer firstItem, Integer maxItems, Boolean returnChildCounters) {
         String joinString = buildResultJoinString(objectType, "r", criteriaList);
         String whereString = buildResultWhereString(objectType, "searchRelations", criteriaList);
 

@@ -33,15 +33,18 @@ import java.util.List;
 
 public class Result<T> {
     private Long count;
+    private ResultItem context;
     private List<ResultItem<T>> items;
 
     public Result() {
         count = 0L;
+        context = null;
         items = new ArrayList<ResultItem<T>>();
     }
 
     public Result(Long count, List<ResultItem<T>> items) {
         this.count = count;
+        this.context = null;
         this.items = items;
     }
 
@@ -51,6 +54,14 @@ public class Result<T> {
 
     public void setCount(Long count) {
         this.count = count;
+    }
+
+    public ResultItem getContext() {
+        return context;
+    }
+
+    public void setContext(ResultItem context) {
+        this.context = context;
     }
 
     public Collection<ResultItem<T>> getItems() {

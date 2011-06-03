@@ -144,6 +144,8 @@ public class Result {
     @Expose
     private List<ResultItem> items;
     @Expose
+    private ResultItem context;
+    @Expose
     private Long totalSize;
     @Expose
     private Long offset;
@@ -153,11 +155,16 @@ public class Result {
     public Result() {
     }
 
-    public Result(List<ResultItem> items, Long totalSize, Long offset, Long size) {
+    public Result(ResultItem context, List<ResultItem> items, Long totalSize, Long offset, Long size) {
+        this.context = context;
         this.items = items;
         this.totalSize = totalSize;
         this.offset = offset;
         this.size = size;
+    }
+
+    public ResultItem getContext() {
+        return context;
     }
 
     public Collection<ResultItem> getItems() {

@@ -86,9 +86,9 @@ public class BrowseFacade {
         }
 
         if (size != null) {
-            return new Result(genericResultItems, result.getCount(), offset.longValue(), (long) result.getItems().size());
+            return new Result(null, genericResultItems, result.getCount(), offset.longValue(), (long) result.getItems().size());
         } else {
-            return new Result(genericResultItems, result.getCount(), 0L, (long) result.getItems().size());
+            return new Result(null, genericResultItems, result.getCount(), 0L, (long) result.getItems().size());
         }
     }
 
@@ -158,9 +158,9 @@ public class BrowseFacade {
         }
 
         if (size != null) {
-            return new Result(genericResultItems, result.getCount(), offset.longValue(), (long) result.getItems().size());
+            return new Result(null, genericResultItems, result.getCount(), offset.longValue(), (long) result.getItems().size());
         } else {
-            return new Result(genericResultItems, result.getCount(), 0L, (long) result.getItems().size());
+            return new Result(null, genericResultItems, result.getCount(), 0L, (long) result.getItems().size());
         }
     }
 
@@ -194,11 +194,18 @@ public class BrowseFacade {
                 genericResultItems.add(new Result.ResultItem(resultItem.getItem(), resultItem.getType(), resultItem.getId(), resultItem.getName(), resultItem.getPlayable(), resultItem.getLeaf()));
             }
         }
-
+        Result.ResultItem context = null;
+        if(result.getContext()!=null) {
+            if(result.getItems().size()>0) {
+                context = new Result.ResultItem(result.getContext().getItem(),result.getContext().getType(),result.getContext().getId(), result.getContext().getName(), result.getContext().getPlayable(),false);
+            }else {
+                context = new Result.ResultItem(result.getContext().getItem(),result.getContext().getType(),result.getContext().getId(), result.getContext().getName(), result.getContext().getPlayable(),true);
+            }
+        }
         if (size != null) {
-            return new Result(genericResultItems, result.getCount(), offset.longValue(), (long) result.getItems().size());
+            return new Result(context, genericResultItems, result.getCount(), offset.longValue(), (long) result.getItems().size());
         } else {
-            return new Result(genericResultItems, result.getCount(), 0L, (long) result.getItems().size());
+            return new Result(context, genericResultItems, result.getCount(), 0L, (long) result.getItems().size());
         }
     }
 }

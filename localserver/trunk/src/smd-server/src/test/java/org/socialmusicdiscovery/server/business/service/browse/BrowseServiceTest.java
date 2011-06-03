@@ -29,7 +29,6 @@ package org.socialmusicdiscovery.server.business.service.browse;
 
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
-import org.socialmusicdiscovery.server.business.model.classification.Classification;
 import org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity;
 import org.socialmusicdiscovery.server.business.model.core.*;
 import org.socialmusicdiscovery.test.BaseTestCase;
@@ -111,12 +110,12 @@ public class BrowseServiceTest extends BaseTestCase {
     @Test
     public void testBrowseTracks() throws Exception {
         TrackBrowseService browseService = new TrackBrowseService();
-        Result<Track> result = browseService.findChildren(new ArrayList<String>(), new ArrayList<String>(), null, null, true);
+        Result<TrackEntity> result = browseService.findChildren(new ArrayList<String>(), new ArrayList<String>(), null, null, true);
         assert result.getItems().size() == 79;
         assert result.getCount() == 79;
         boolean foundMedium = false;
         boolean foundWithoutMedium = false;
-        for (ResultItem<Track> trackResultItem : result.getItems()) {
+        for (ResultItem<TrackEntity> trackResultItem : result.getItems()) {
             assert trackResultItem.getChildItems() != null;
             assert trackResultItem.getChildItems().size() > 0;
             if (trackResultItem.getItem().getMedium() != null) {
@@ -164,7 +163,7 @@ public class BrowseServiceTest extends BaseTestCase {
         result = browseService.findChildren(new ArrayList<String>(), new ArrayList<String>(), 9, 10, false);
         assert result.getItems().size() == 10;
         assert result.getCount() == 79;
-        for (ResultItem<Track> resultItem : result.getItems()) {
+        for (ResultItem<TrackEntity> resultItem : result.getItems()) {
             assert resultItem.getChildItems() == null;
             assert resultItem.getItem() != null;
         }
@@ -180,7 +179,7 @@ public class BrowseServiceTest extends BaseTestCase {
         assert result.getCount() == 1;
 
         assert result.getItems().iterator().next().getItem().getRecording().getWorks().iterator().next().getName().equals("I Will Always Love You");
-        for (ResultItem<Track> releaseResultItem : result.getItems()) {
+        for (ResultItem<TrackEntity> releaseResultItem : result.getItems()) {
             assert releaseResultItem.getChildItems() != null;
             assert releaseResultItem.getChildItems().size() > 0;
             boolean foundWork = false;
@@ -211,7 +210,7 @@ public class BrowseServiceTest extends BaseTestCase {
         assert result.getCount() == 1;
         assert result.getItems().iterator().next().getItem().getRecording().getWorks().iterator().next().getName().equals("Queen Of The Night");
 
-        for (ResultItem<Track> releaseResultItem : result.getItems()) {
+        for (ResultItem<TrackEntity> releaseResultItem : result.getItems()) {
             assert releaseResultItem.getChildItems() != null;
             assert releaseResultItem.getChildItems().size() > 0;
             boolean foundWork = false;
@@ -236,10 +235,10 @@ public class BrowseServiceTest extends BaseTestCase {
     @Test
     public void testBrowseArtists() throws Exception {
         ArtistBrowseService browseService = new ArtistBrowseService();
-        Result<Artist> result = browseService.findChildren(new ArrayList<String>(), new ArrayList<String>(), null, null, true);
+        Result<ArtistEntity> result = browseService.findChildren(new ArrayList<String>(), new ArrayList<String>(), null, null, true);
         assert result.getItems().size() == 50;
         assert result.getCount() == 50;
-        for (ResultItem<Artist> artistResultItem : result.getItems()) {
+        for (ResultItem<ArtistEntity> artistResultItem : result.getItems()) {
             assert artistResultItem.getChildItems() != null;
             assert artistResultItem.getChildItems().size() > 0;
             boolean foundClassification = false;
@@ -278,7 +277,7 @@ public class BrowseServiceTest extends BaseTestCase {
         result = browseService.findChildren(new ArrayList<String>(), new ArrayList<String>(), 10, 10, false);
         assert result.getItems().size() == 10;
         assert result.getCount() == 50;
-        for (ResultItem<Artist> resultItem : result.getItems()) {
+        for (ResultItem<ArtistEntity> resultItem : result.getItems()) {
             assert resultItem.getChildItems() == null;
             assert resultItem.getItem() != null;
         }
@@ -286,7 +285,7 @@ public class BrowseServiceTest extends BaseTestCase {
         result = browseService.findChildren(Arrays.asList("Release:d972b0fa-42f5-45f9-ba56-2cede7666446"), new ArrayList<String>(), null, null, false);
         assert result.getItems().size() == 37;
         assert result.getCount() == 37;
-        for (ResultItem<Artist> resultItem : result.getItems()) {
+        for (ResultItem<ArtistEntity> resultItem : result.getItems()) {
             assert resultItem.getChildItems() == null;
             assert resultItem.getItem() != null;
         }
@@ -298,7 +297,7 @@ public class BrowseServiceTest extends BaseTestCase {
                 new ArrayList<String>(), null, null, true);
         assert result.getItems().size() == 2;
         assert result.getCount() == 2;
-        for (ResultItem<Artist> item : result.getItems()) {
+        for (ResultItem<ArtistEntity> item : result.getItems()) {
             assert item.getChildItems() != null;
             if (item.getItem().getName().equals("Rickey Minor")) {
                 long artists = 0;
@@ -333,11 +332,11 @@ public class BrowseServiceTest extends BaseTestCase {
     @Test
     public void testBrowseReleases() throws Exception {
         ReleaseBrowseService browseService = new ReleaseBrowseService();
-        Result<Release> result = browseService.findChildren(new ArrayList<String>(), new ArrayList<String>(), null, null, true);
+        Result<ReleaseEntity> result = browseService.findChildren(new ArrayList<String>(), new ArrayList<String>(), null, null, true);
         assert result.getItems().size() == 5;
         assert result.getCount() == 5;
 
-        for (ResultItem<Release> releaseResultItem : result.getItems()) {
+        for (ResultItem<ReleaseEntity> releaseResultItem : result.getItems()) {
             assert releaseResultItem.getChildItems() != null;
             assert releaseResultItem.getChildItems().size() > 0;
             boolean foundClassification = false;
@@ -374,7 +373,7 @@ public class BrowseServiceTest extends BaseTestCase {
         result = browseService.findChildren(new ArrayList<String>(), new ArrayList<String>(), 2, 2, false);
         assert result.getItems().size() == 2;
         assert result.getCount() == 5;
-        for (ResultItem<Release> resultItem : result.getItems()) {
+        for (ResultItem<ReleaseEntity> resultItem : result.getItems()) {
             assert resultItem.getChildItems() == null;
             assert resultItem.getItem() != null;
         }
@@ -383,10 +382,10 @@ public class BrowseServiceTest extends BaseTestCase {
     @Test
     public void testBrowseWorks() throws Exception {
         WorkBrowseService browseService = new WorkBrowseService();
-        Result<Work> result = browseService.findChildren(new ArrayList<String>(), new ArrayList<String>(), null, null, true);
+        Result<WorkEntity> result = browseService.findChildren(new ArrayList<String>(), new ArrayList<String>(), null, null, true);
         assert result.getItems().size() == 79;
         assert result.getCount() == 79;
-        for (ResultItem<Work> workResultItem : result.getItems()) {
+        for (ResultItem<WorkEntity> workResultItem : result.getItems()) {
             assert workResultItem.getChildItems() != null;
             assert workResultItem.getChildItems().size() > 0;
             boolean foundClassification = false;
@@ -423,7 +422,7 @@ public class BrowseServiceTest extends BaseTestCase {
         result = browseService.findChildren(new ArrayList<String>(), new ArrayList<String>(), 10, 10, false);
         assert result.getItems().size() == 10;
         assert result.getCount() == 79;
-        for (ResultItem<Work> resultItem : result.getItems()) {
+        for (ResultItem<WorkEntity> resultItem : result.getItems()) {
             assert resultItem.getChildItems() == null;
             assert resultItem.getItem() != null;
         }
@@ -432,10 +431,10 @@ public class BrowseServiceTest extends BaseTestCase {
     @Test
     public void testBrowseLabels() throws Exception {
         LabelBrowseService browseService = new LabelBrowseService();
-        Result<Label> result = browseService.findChildren(new ArrayList<String>(), new ArrayList<String>(), null, null, true);
+        Result<LabelEntity> result = browseService.findChildren(new ArrayList<String>(), new ArrayList<String>(), null, null, true);
         assert result.getItems().size() == 3;
         assert result.getCount() == 3;
-        for (ResultItem<Label> workResultItem : result.getItems()) {
+        for (ResultItem<LabelEntity> workResultItem : result.getItems()) {
             assert workResultItem.getChildItems() != null;
             assert workResultItem.getChildItems().size() > 0;
             boolean foundClassification = false;
@@ -472,7 +471,7 @@ public class BrowseServiceTest extends BaseTestCase {
         result = browseService.findChildren(new ArrayList<String>(), new ArrayList<String>(), 2, 10, false);
         assert result.getItems().size() == 1;
         assert result.getCount() == 3;
-        for (ResultItem<Label> resultItem : result.getItems()) {
+        for (ResultItem<LabelEntity> resultItem : result.getItems()) {
             assert resultItem.getChildItems() == null;
             assert resultItem.getItem() != null;
         }
@@ -481,10 +480,10 @@ public class BrowseServiceTest extends BaseTestCase {
     @Test
     public void testBrowseClassifications() throws Exception {
         ClassificationBrowseService browseService = new ClassificationBrowseService();
-        Result<Classification> result = browseService.findChildren(new ArrayList<String>(), new ArrayList<String>(), null, null, true);
+        Result<ClassificationEntity> result = browseService.findChildren(new ArrayList<String>(), new ArrayList<String>(), null, null, true);
         assert result.getItems().size() == 17;
         assert result.getCount() == 17;
-        for (ResultItem<Classification> classificationResultItem : result.getItems()) {
+        for (ResultItem<ClassificationEntity> classificationResultItem : result.getItems()) {
             assert classificationResultItem.getChildItems() != null;
             assert classificationResultItem.getChildItems().size() > 0;
             boolean foundArtist = false;
@@ -523,7 +522,7 @@ public class BrowseServiceTest extends BaseTestCase {
         result = browseService.findChildren(new ArrayList<String>(), new ArrayList<String>(), 10, 10, false);
         assert result.getItems().size() == 7;
         assert result.getCount() == 17;
-        for (ResultItem<Classification> resultItem : result.getItems()) {
+        for (ResultItem<ClassificationEntity> resultItem : result.getItems()) {
             assert resultItem.getChildItems() == null;
             assert resultItem.getItem() != null;
         }

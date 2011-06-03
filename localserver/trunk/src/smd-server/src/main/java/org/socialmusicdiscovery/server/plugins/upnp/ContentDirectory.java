@@ -27,24 +27,12 @@
 
 package org.socialmusicdiscovery.server.plugins.upnp;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity;
-import org.socialmusicdiscovery.server.business.model.core.ArtistEntity;
-import org.socialmusicdiscovery.server.business.model.core.Contributor;
-import org.socialmusicdiscovery.server.business.model.core.ReleaseEntity;
-import org.socialmusicdiscovery.server.business.model.core.Track;
-import org.socialmusicdiscovery.server.business.model.core.TrackEntity;
+import org.socialmusicdiscovery.server.business.model.core.*;
 import org.socialmusicdiscovery.server.business.service.browse.LibraryBrowseService;
 import org.socialmusicdiscovery.server.business.service.browse.Result;
 import org.socialmusicdiscovery.server.business.service.browse.ResultItem;
-import org.teleal.cling.binding.annotations.UpnpAction;
-import org.teleal.cling.binding.annotations.UpnpInputArgument;
-import org.teleal.cling.binding.annotations.UpnpOutputArgument;
-import org.teleal.cling.binding.annotations.UpnpStateVariables;
-import org.teleal.cling.binding.annotations.UpnpStateVariable;
+import org.teleal.cling.binding.annotations.*;
 import org.teleal.cling.model.message.header.UpnpHeader;
 import org.teleal.cling.model.types.ErrorCode;
 import org.teleal.cling.model.types.UnsignedIntegerFourBytes;
@@ -54,15 +42,13 @@ import org.teleal.cling.support.contentdirectory.AbstractContentDirectoryService
 import org.teleal.cling.support.contentdirectory.ContentDirectoryErrorCode;
 import org.teleal.cling.support.contentdirectory.ContentDirectoryException;
 import org.teleal.cling.support.contentdirectory.DIDLParser;
-import org.teleal.cling.support.model.BrowseFlag;
-import org.teleal.cling.support.model.BrowseResult;
-import org.teleal.cling.support.model.DIDLContent;
-import org.teleal.cling.support.model.PersonWithRole;
-import org.teleal.cling.support.model.ProtocolInfo;
-import org.teleal.cling.support.model.Res;
-import org.teleal.cling.support.model.SortCriterion;
+import org.teleal.cling.support.model.*;
 import org.teleal.cling.support.model.container.Container;
 import org.teleal.cling.support.model.item.MusicTrack;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @UpnpStateVariables({
     @UpnpStateVariable(
@@ -444,9 +430,9 @@ public class ContentDirectory extends AbstractContentDirectoryService  {
 
 		// quick and dirty hack for WMP search tracks
 		if(searchCriteria.startsWith("upnp:class derivedfrom \"object.item.audioItem\"") ) { 
-			Result<Track> searchResult = new org.socialmusicdiscovery.server.business.service.browse.TrackBrowseService().findChildren(new ArrayList<String>(), new ArrayList<String>(), (int)firstResult, (int)smdMaxItems, true);
+			Result<TrackEntity> searchResult = new org.socialmusicdiscovery.server.business.service.browse.TrackBrowseService().findChildren(new ArrayList<String>(), new ArrayList<String>(), (int)firstResult, (int)smdMaxItems, true);
 
-			for( ResultItem<Track> resultItem: searchResult.getItems() ) {
+			for( ResultItem<TrackEntity> resultItem: searchResult.getItems() ) {
 				Track smdTrack = resultItem.getItem();
 //				System.err.println(smdTrack.getId());
 //				if("9709128e-b607-4069-a101-ce76171c06dd".equals(smdTrack.getId())) {
