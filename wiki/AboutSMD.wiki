@@ -61,8 +61,8 @@ It's impossible to know what the future will look like, but at the moment it's n
 
 Squeezebox Server currently have a number of third party plugins partly similar area as SMD is targeting, for example:
   * Various plugins related to import for information and browse menus
-    * [http://wiki.slimdevices.com/index.php/Custom_Scan_plugin CustomScan plugin]
-    * [http://wiki.slimdevices.com/index.php/Custom_Browse_plugin CustomBrowse plugin]
+    * [http://wiki.slimdevices.com/index.php/Custom_Scan_plugin Custom Scan plugin]
+    * [http://wiki.slimdevices.com/index.php/Custom_Browse_plugin Custom Browse plugin]
   * Various plugins related to smart playlists and statistics
     * [http://wiki.slimdevices.com/index.php/Dynamic_Playlist_plugin Dynamic Playlist plugin]
     * [http://wiki.slimdevices.com/index.php/SQL_Playlist_plugin SQL Playlist plugin]
