@@ -95,6 +95,7 @@ public class LibraryBrowseService {
         List<Menu> menus = new ArrayList<Menu>();
 
         MappedConfigurationContext config = new MappedConfigurationContext(getClass().getName()+".");
+        MappedConfigurationContext formatConfigs = new MappedConfigurationContext(getClass().getName()+".formats.");
 
         int i=1;
         while(config.getParametersByPath(""+i).size()>0 && config.getBooleanParameter(""+i+".enabled")) {
@@ -105,6 +106,13 @@ public class LibraryBrowseService {
             while(config.getParametersByPath(""+i+"."+j).size()>0) {
                 String objectType = config.getStringParameter(""+i+"."+j+".type");
                 String format = config.getStringParameter(""+i+"."+j+".format");
+                if(format==null) {
+                    format = formatConfigs.getStringParameter(objectType);
+                    if(format == null && objectType.contains(".")) {
+                        format = formatConfigs.getStringParameter(objectType.substring(0,objectType.indexOf(".")));
+                    }
+                }
+
                 Boolean playable = config.getBooleanParameter(""+i+"."+j+".playable");
                 Integer parentCriterias = config.getIntegerParameter(""+i+"."+j+".parentcriterias");
 
@@ -286,7 +294,27 @@ public class LibraryBrowseService {
                 }
             }
         }
+        fillContext(result, currentBaseType, currentId);
         return result;
+    }
+
+    private void fillContext(Result result, String currentBaseType, String currentId){
+        if(currentId!=null && currentId.contains(":") && currentBaseType!=null) {
+            BrowseService browseService = InjectHelper.instanceWithName(BrowseService.class, currentBaseType);
+            if(browseService!=null) {
+                ResultItem currentItem = browseService.findById(currentId.substring(currentId.indexOf(":")+1));
+                if(currentItem!=null) {
+                    if(currentItem.getName()==null) {
+                        MappedConfigurationContext config = new MappedConfigurationContext(getClass().getName()+".formats.");
+                        String format = config.getStringParameter(currentItem.getType());
+                        if(format!=null) {
+                            currentItem.setName(new TitleFormat(format).format(currentItem.getItem()));
+                        }
+                    }
+                    result.setContext(currentItem);
+                }
+            }
+        }
     }
 }
 

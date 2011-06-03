@@ -27,13 +27,17 @@
 
 package org.socialmusicdiscovery.server.business.service.browse;
 
-import org.socialmusicdiscovery.server.business.model.core.Track;
 import org.socialmusicdiscovery.server.business.model.core.TrackEntity;
 
 import javax.persistence.Query;
 import java.util.Collection;
 
-public class TrackBrowseService extends AbstractBrowseService implements BrowseService<Track> {
+public class TrackBrowseService extends AbstractBrowseService implements BrowseService<TrackEntity> {
+    @Override
+    public ResultItem<TrackEntity> findById(String id) {
+        return findById(TrackEntity.class, "Track", id);
+    }
+
     protected Query createFindQuery(Class entity, String objectType, String relationType, String orderBy, Collection<String> criteriaList, Collection<String> sortCriteriaList, String joinString, String whereString) {
         Query query;
         if (criteriaList.size() > 0) {
@@ -46,7 +50,7 @@ public class TrackBrowseService extends AbstractBrowseService implements BrowseS
         return query;
     }
 
-    public Result<Track> findChildren(Collection<String> criteriaList, Collection<String> sortCriteriaList, Integer firstItem, Integer maxItems, Boolean returnChildCounters) {
+    public Result<TrackEntity> findChildren(Collection<String> criteriaList, Collection<String> sortCriteriaList, Integer firstItem, Integer maxItems, Boolean returnChildCounters) {
         return findChildren(TrackEntity.class, "Track", "track", "m.number,m.name,e.number", criteriaList, sortCriteriaList, firstItem, maxItems, returnChildCounters);
     }
 }
