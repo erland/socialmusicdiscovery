@@ -32,10 +32,8 @@ import java.beans.PropertyChangeListener;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
@@ -44,18 +42,18 @@ import org.socialmusicdiscovery.rcp.content.ObservableRecording;
 import org.socialmusicdiscovery.rcp.content.ObservableRelease;
 import org.socialmusicdiscovery.rcp.content.ObservableTrack;
 import org.socialmusicdiscovery.rcp.content.RecordingProvider;
-import org.socialmusicdiscovery.rcp.editors.contributor.ContributorDialog;
+import org.socialmusicdiscovery.rcp.editors.AbstractEditorDialog;
 import org.socialmusicdiscovery.rcp.util.Util;
 import org.socialmusicdiscovery.server.business.model.core.Medium;
 import org.socialmusicdiscovery.server.business.model.core.Track;
 
 /**
  * A dialog for creating a new {@link Track}.
- * TODO refactor and abstract - lots of code duplicated in {@link ContributorDialog} 
+ * 
  * @author Peer Törngren
  *
  */
-public class TrackDialog extends Dialog {
+public class TrackDialog extends AbstractEditorDialog<ObservableTrack> {
 
 	/**
 	 * Preliminary stub. Need to think about how to handle validation properly.
@@ -95,7 +93,6 @@ public class TrackDialog extends Dialog {
 	
 	private ObservableRelease release;
 	private TrackUI ui;
-	private Button okButton;
 	private Medium medium;
 	private Integer number;
 	private ObservableRecording recording;
@@ -105,7 +102,7 @@ public class TrackDialog extends Dialog {
 	 * @param parentShell
 	 */
 	public TrackDialog(Shell parentShell) {
-		super(parentShell);
+		super(parentShell, "Edit Track");
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 	}
 
@@ -130,22 +127,10 @@ public class TrackDialog extends Dialog {
 		return area;
 	}
 
-	/**
-	 * Create contents of the button bar.
-	 * @param parent
-	 */
-	@Override
-	protected void createButtonsForButtonBar(Composite parent) {
-		okButton = createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
-		okButton.setEnabled(false);
-		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
-	}
-	
 	@Override
 	public void create() {
 		super.create();
 		bindValidation();
-		getShell().setText("Create Track");
 	}
 
 	private void bindValidation() {

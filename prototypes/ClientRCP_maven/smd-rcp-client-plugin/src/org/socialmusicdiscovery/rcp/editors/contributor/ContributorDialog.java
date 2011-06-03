@@ -32,10 +32,8 @@ import java.beans.PropertyChangeListener;
 import java.util.Set;
 
 import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
@@ -45,6 +43,7 @@ import org.socialmusicdiscovery.rcp.content.ContributorRoleProvider;
 import org.socialmusicdiscovery.rcp.content.ObservableArtist;
 import org.socialmusicdiscovery.rcp.content.ObservableContributor;
 import org.socialmusicdiscovery.rcp.content.ObservableEntity;
+import org.socialmusicdiscovery.rcp.editors.AbstractEditorDialog;
 import org.socialmusicdiscovery.rcp.editors.track.TrackDialog;
 import org.socialmusicdiscovery.rcp.util.Util;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
@@ -56,7 +55,7 @@ import org.socialmusicdiscovery.server.business.model.core.Contributor;
  * @author Peer Törngren
  *
  */
-public class ContributorDialog extends Dialog {
+public class ContributorDialog extends AbstractEditorDialog<ObservableContributor>{
 
 	/**
 	 * Preliminary stub. Need to think about how to handle validation properly.
@@ -97,7 +96,6 @@ public class ContributorDialog extends Dialog {
 	
 	private AbstractContributableEntity owner;
 	private ContributorUI ui;
-	private Button okButton;
 	private String type;
 	private ObservableArtist artist;
 
@@ -106,7 +104,7 @@ public class ContributorDialog extends Dialog {
 	 * @param parentShell
 	 */
 	public ContributorDialog(Shell parentShell) {
-		super(parentShell);
+		super(parentShell, "Edit Contributor");
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 	}
 
@@ -130,22 +128,10 @@ public class ContributorDialog extends Dialog {
 		return area;
 	}
 
-	/**
-	 * Create contents of the button bar.
-	 * @param parent
-	 */
-	@Override
-	protected void createButtonsForButtonBar(Composite parent) {
-		okButton = createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
-		okButton.setEnabled(false);
-		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
-	}
-	
 	@Override
 	public void create() {
 		super.create();
 		bindValidation();
-		getShell().setText("Create Contributor");
 	}
 
 	private void bindValidation() {
