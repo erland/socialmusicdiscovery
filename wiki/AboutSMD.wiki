@@ -37,9 +37,17 @@ SMD is focused at satisfying users that like to explore and discover music. For 
   * [Personas Description of sample usage for different user categories]
 
 = Common questions =
-== Why not make a central database common to all users ? ==
+== Why should I care ? ==
 
-The answer to this question is that even if it's possible for multiple users to agree on facts related to music, it's very hard for all users to agree on subjective characteristics such as a relation if one artist is similar to another artist or the rating of a specific track. The central information about facts is also already available in sources like Musicbrainz or Discogs so there is no reason to implement another central source. Finally it's important to realize that central sources such as Musicbrainz spend a lot of effort to make users even agree on the parts that are facts. So even though a central database initially might feel like a good idea it's important to realize that SMD is about discovery and not about manually registering and maintaining facts which are already available somewhere else.
+As mentioned earlier the main intention with SMD is to make it easy and interesting to discover music, SMD is for you if you answer "Yes" on one of the following questions:
+
+  * Do you find that the standard browsing on your Squeezebox isn't flexible enough ?
+  * Do you consume music from both your local library and an online streaming service which allows you to play individual songs ?
+  * Do you use different applications or web sites when listening to music compared to when finding something to buy ?
+  * Do you want to be able to share recommendations with friends and people with similar musical taste ?
+  * Do you get recommendations from friends but don't have any easy way to play them on your normal music player ?
+
+SMD is about solving and making all this easier. We aren't there yet but to goal is to get there eventually. We usually try to find and analyze user needs through the [http://forums.slimdevices.com Logitech community forums] but if you give us your thoughts already now you can make sure your ideas and needs are considered. The easiest way to give us your ideas is to post in the announcement thread in the [http://forums.slimdevices.com Logitech community forums].
 
 
 == Is it or will it replace Squeezebox Server ? ==
@@ -56,17 +64,16 @@ The goal is that music discovery related functionality should already from the b
 On longer terms the SMD application will offer third party interfaces based on JSON and/or UPnP making it possible for third party developer to integrate their favorite remote or application.
 
 
-== Why should I care ? ==
+== Why not make a central database common to all users ? ==
 
-As mentioned earlier the main intention with SMD is to make it easy and interesting to discover music, SMD is for you if you answer "Yes" on one of the following questions:
+The answer to this question is that even if it's possible for multiple users to agree on facts related to music, it's very hard for all users to agree on subjective characteristics such as a relation if one artist is similar to another artist or the rating of a specific track. The central information about facts is also already available in sources like Musicbrainz or Discogs so there is no reason to implement another central source. Finally it's important to realize that central sources such as Musicbrainz spend a lot of effort to make users even agree on the parts that are facts. So even though a central database initially might feel like a good idea it's important to realize that SMD is about discovery and not about manually registering and maintaining facts which are already available somewhere else.
 
-  * Do you find that the standard browsing on your Squeezebox isn't flexible enough ?
-  * Do you consume music from both your local library and an online streaming service which allows you to play individual songs ?
-  * Do you use different applications or web sites when listening to music compared to when finding something to buy ?
-  * Do you want to be able to share recommendations with friends and people with similar musical taste ?
-  * Do you get recommendations from friends but don't have any easy way to play them on your normal music player ?
 
-SMD is about solving and making all this easier. We aren't there yet but to goal is to get there eventually. We usually try to find and analyze user needs through the [http://forums.slimdevices.com Logitech community forums] but if you give us your thoughts already now you can make sure your ideas and needs are considered. The easiest way to give us your ideas is to post in the announcement thread in the [http://forums.slimdevices.com Logitech community forums].
+== What's the current state, is there a release plan ? ==
+
+At the moment the project is in a very early stage, some simple browsing functionality is working and offers more than the standard Squeezebox Server browse menus, but we are continuously working on adding more features. 
+
+Since all project members involved are working on the project during their spare time, we currently don't have a release plan with exact dates ("we're not big fans of deadlines, we have enough of them at work" :-). But to give some kind of indication, it's not going to be ready for an official release within the next couple of months, it will hopefully have a lot more functionality 6 months in the future and if everything works as plan it's going to be continuously enhanced during many years.
 
 
 == Is there some way I can help to speed up the development ? ==
@@ -94,10 +101,3 @@ We also need people who are interested in helping with testing. It's important t
 Since a key aspect of SMD is integration with existing online services, we are also very interested in involving people with knowledge or interest in this area.
 
 If you are interested, contact any of the current project members or the project owner.
-
-
-== What's the current state, is there a release plan ? ==
-
-At the moment the project is in a very early stage, some simple browsing functionality is working and offers more than the standard Squeezebox Server browse menus, but we are continuously working on adding more features. 
-
-Since all project members involved are working on the project during their spare time, we currently don't have a release plan with exact dates ("we're not big fans of deadlines, we have enough of them at work" :-). But to give some kind of indication, it's not going to be ready for an official release within the next couple of months, it will hopefully have a lot more functionality 6 months in the future and if everything works as plan it's going to be continuously enhanced during many years.
