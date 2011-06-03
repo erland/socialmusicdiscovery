@@ -137,6 +137,10 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
     private String squeezeboxServerPassword;
 
     @Inject
+    @Named("squeezeboxserver.passwordhash")
+    private String squeezeboxServerPasswordHash;
+
+    @Inject
     @Named("squeezeboxserver.host")
     private String squeezeboxServerHost;
 
@@ -168,10 +172,19 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
         try {
             JSONObject request = createRequest(offset, CHUNK_SIZE);
             Client c = Client.create();
-            if(squeezeboxServerUsername!=null && squeezeboxServerUsername.length()>0 && squeezeboxServerPassword!=null && squeezeboxServerPassword.length()>0) {
-                c.addFilter(new HTTPBasicAuthFilter(squeezeboxServerUsername, squeezeboxServerPassword));
+            if(squeezeboxServerUsername!=null && squeezeboxServerUsername.length()>0) {
+                if(squeezeboxServerPassword!=null && squeezeboxServerPassword.length()>0) {
+                    c.addFilter(new HTTPBasicAuthFilter(squeezeboxServerUsername, squeezeboxServerPassword));
+                }else if(squeezeboxServerPasswordHash!=null && squeezeboxServerPasswordHash.length()>0) {
+                    c.addFilter(new HTTPBasicAuthFilter(squeezeboxServerUsername, squeezeboxServerPasswordHash));
+                }
             }
-            JSONObject response = c.resource(SERVICE_URL).accept("application/json").post(JSONObject.class, request);
+            JSONObject response = null;
+            if(squeezeboxServerPasswordHash!=null && squeezeboxServerPasswordHash.length()>0) {
+                response = c.resource(SERVICE_URL).accept("application/json").header("X-Scanner",1).post(JSONObject.class, request);
+            }else {
+                response = c.resource(SERVICE_URL).accept("application/json").post(JSONObject.class, request);
+            }
             ObjectMapper mapper = new ObjectMapper();
             trackList = mapper.readValue(response.getString("result"), TrackListData.class);
 
@@ -190,7 +203,11 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                     if (offset + trackList.getTracks().size() < trackList.getCount()) {
                         offset = offset + trackList.getTracks().size();
                         request = createRequest(offset, CHUNK_SIZE);
-                        response = c.resource(SERVICE_URL).accept("application/json").post(JSONObject.class, request);
+                        if(squeezeboxServerPasswordHash!=null && squeezeboxServerPasswordHash.length()>0) {
+                            response = c.resource(SERVICE_URL).accept("application/json").header("X-Scanner",1).post(JSONObject.class, request);
+                        }else {
+                            response = c.resource(SERVICE_URL).accept("application/json").post(JSONObject.class, request);
+                        }
                         trackList = mapper.readValue(response.getString("result"), TrackListData.class);
                     } else {
                         trackList = null;
