@@ -1,5 +1,11 @@
 [% PROCESS settings/header.html %]
 
+	[% IF pref_replacemenu.exists %]
+	[% WRAPPER setting title="SETUP_PLUGIN_SOCIALMUSICDISCOVERY_REPLACEMENU" desc="SETUP_PLUGIN_SOCIALMUSICDISCOVERY_REPLACEMENU_DESC" %]
+		[% "ENABLE" | string %]	<input name="pref_replacemenu" type="checkbox" [% IF prefs.pref_replacemenu %] checked [% END %]>
+	[% END %]
+	[% END %]
+
 	[% WRAPPER setting title="SETUP_PLUGIN_SOCIALMUSICDISCOVERY_HOSTNAME" desc="SETUP_PLUGIN_SOCIALMUSICDISCOVERY_HOSTNAME_DESC" %]
 		<input type="text" class="stdedit" name="pref_hostname" id="hostname" value="[% prefs.pref_hostname %]" size="15">
 	[% END %]

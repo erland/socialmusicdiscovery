@@ -31,6 +31,7 @@ package Plugins::SocialMusicDiscovery::Scanner;
 use base qw(Slim::Plugin::Base);
 
 use Slim::Utils::Prefs;
+use Slim::Utils::Log;
 
 use Slim::Utils::Misc;
 use Slim::Utils::OSDetect;
@@ -43,11 +44,7 @@ use Data::Dumper;
 
 my $prefs = preferences('plugin.socialmusicdiscovery');
 my $serverPrefs = preferences('server');
-my $log = Slim::Utils::Log->addLogCategory({
-	'category'     => 'plugin.socialmusicdiscovery',
-	'defaultLevel' => 'WARN',
-	'description'  => 'PLUGIN_SOCIALMUSICDISCOVERY',
-});
+my $log = logger('plugin.socialmusicdiscovery');
 
 my $NO_OF_BYTES_IN_SMDID = 10000;
 

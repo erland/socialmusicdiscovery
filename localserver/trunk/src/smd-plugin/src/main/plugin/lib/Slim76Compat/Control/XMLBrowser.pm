@@ -1,39 +1,20 @@
-#   Copyright 2010-2011, Social Music Discovery project
-#   All rights reserved.
-#
-#   Redistribution and use in source and binary forms, with or without
-#   modification, are permitted provided that the following conditions are met:
-#       * Redistributions of source code must retain the above copyright
-#         notice, this list of conditions and the following disclaimer.
-#       * Redistributions in binary form must reproduce the above copyright
-#         notice, this list of conditions and the following disclaimer in the
-#         documentation and/or other materials provided with the distribution.
-#       * Neither the name of Social Music Discovery project nor the
-#         names of its contributors may be used to endorse or promote products
-#         derived from this software without specific prior written permission.
-#
-#   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-#   ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-#   WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-#   DISCLAIMED. IN NO EVENT SHALL SOCIAL MUSIC DISCOVERY PROJECT BE LIABLE FOR ANY
-#   DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-#   (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-#   LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-#   ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-#   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-#   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+package Slim76Compat::Control::XMLBrowser;
 
-package Plugins::SocialMusicDiscovery::MenuAPI::Control::XMLBrowser;
+# $Id: XMLBrowser.pm 23262 2008-09-23 19:21:03Z andy $
+
+# Copyright 2005-2009 Logitech.
+
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License, 
+# version 2.
 
 =head1 NAME
 
-Plugins::SocialMusicDiscovery::MenuAPI::Control::XMLBrowser
+Slim::Control::XMLBrowser
 
 =head1 DESCRIPTION
 
-L<Plugins::SocialMusicDiscovery::MenuAPI::Control::XMLBrowser> offers base code for smdxmlbrowser based CLI commands. 
-
-This version is inspired on the 32300 version of the "onebrowser" branch in Squeezebox Server.
+L<Slim::Control::XMLBrowser> offers base code for xmlbrowser based CLI commands.
 
 =cut
 
@@ -175,7 +156,7 @@ sub cliQuery {
 		my $nextIndex;
 		if ( defined $itemId && length($itemId) ) {
 			my @index = split(/\./, $itemId);
-			if (length($index[0] >= 8)) {
+			if (length($index[0]) >= 8) {
 				shift @index;	# discard sid
 			}
 			$levels = scalar @index;
@@ -225,6 +206,8 @@ sub cliQuery {
 		}
 		
 		$feed =~ s/{QUERY}/$query/g;
+
+		$args{'url'} = $feed;
 	}
 	
 	# Lookup this browse session in cache if user is browsing below top-level
@@ -1122,6 +1105,10 @@ sub _cliQuery_done {
 							$itemParams->{'isContextMenu'} = 1;
 						}
 						
+						if ($item->{type} && $item->{type} eq 'slideshow') {
+							$itemParams->{slideshow} = 1;
+						}
+
 						my %merged = (%{$params}, %{$itemParams});
 
 						if ( $item->{icon} ) {
@@ -1141,7 +1128,15 @@ sub _cliQuery_done {
 							$hash{'action'} = 'none';
 						}
 						
-						if ( $item->{type} && $item->{type} eq 'search' ) {
+						if ( $item->{type} && $item->{type} eq 'localservice' ) {
+							$request->addResultLoop( $loopname, $cnt, 'actions',  {
+								go => {
+									localservice => $item->{serviceId},
+								},
+							});
+						}
+
+						elsif ( $item->{type} && $item->{type} eq 'search' ) {
 							#$itemParams->{search} = '__INPUT__';
 							
 							# XXX: bug in Jive, this should really be handled by the base go action
@@ -1883,7 +1878,7 @@ sub _defeatDestructiveTouchToPlay {
 	my ($request, $client) = @_;
 	my $pref;
 	
-	if (my $agent = $request->{'agent'}) {
+	if ($client && $client->can('controllerUA') && (my $agent = $client->controllerUA)) {
 		if ($agent =~ /squeezeplay/i) {
 			my ($version, $revision) = ($agent =~ m%/(\d+(?:\.\d+)?)[.\d]*-r(\d+)%);
 			
