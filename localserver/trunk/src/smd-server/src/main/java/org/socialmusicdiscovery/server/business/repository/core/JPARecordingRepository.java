@@ -53,13 +53,23 @@ public class JPARecordingRepository extends AbstractJPASMDIdentityRepository<Rec
     }
 
     public Collection<RecordingEntity> findByNameWithRelations(String name, Collection<String> mandatoryRelations, Collection<String> optionalRelations) {
-        Query query = entityManager.createQuery(queryStringFor("e",mandatoryRelations, optionalRelations)+" where lower(e.name)=:name");
+        Query query;
+        if(mandatoryRelations.contains("works") || optionalRelations.contains("works")) {
+            query = entityManager.createQuery(queryStringFor("e",mandatoryRelations, optionalRelations)+" where lower(e.name)=:name or lower(works.name)=:name");
+        }else {
+            query = entityManager.createQuery(queryStringFor("e",mandatoryRelations, optionalRelations)+" where lower(e.name)=:name");
+        }
         query.setParameter("name",name.toLowerCase());
         return query.getResultList();
     }
 
     public Collection<RecordingEntity> findByPartialNameWithRelations(String name, Collection<String> mandatoryRelations, Collection<String> optionalRelations) {
-        Query query = entityManager.createQuery(queryStringFor("e",mandatoryRelations, optionalRelations)+" where lower(e.name) like :name");
+        Query query;
+        if(mandatoryRelations.contains("works") || optionalRelations.contains("works")) {
+            query = entityManager.createQuery(queryStringFor("e",mandatoryRelations, optionalRelations)+" where lower(e.name) like :name or lower(works.name) like :name");
+        }else {
+            query = entityManager.createQuery(queryStringFor("e",mandatoryRelations, optionalRelations)+" where lower(e.name) like :name");
+        }
         query.setParameter("name","%"+name.toLowerCase()+"%");
         return query.getResultList();
     }

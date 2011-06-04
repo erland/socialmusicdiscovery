@@ -57,11 +57,11 @@ public class RecordingFacade extends AbstractSMDIdentityCRUDFacade<RecordingEnti
         try {
             transactionManager.begin();
             if (name != null) {
-                return new CopyHelper().detachedCopy(repository.findByNameWithRelations(name, Arrays.asList("reference"), null), Expose.class);
+                return new CopyHelper().detachedCopy(repository.findByNameWithRelations(name, Arrays.asList("reference"), Arrays.asList("works")), Expose.class);
             } else if (nameContains != null) {
-                return new CopyHelper().detachedCopy(repository.findByPartialNameWithRelations(nameContains, Arrays.asList("reference"), null), Expose.class);
+                return new CopyHelper().detachedCopy(repository.findByPartialNameWithRelations(nameContains, Arrays.asList("reference"), Arrays.asList("works")), Expose.class);
             } else {
-                return new CopyHelper().detachedCopy(repository.findAllWithRelations(Arrays.asList("reference"), null), Expose.class);
+                return new CopyHelper().detachedCopy(repository.findAllWithRelations(Arrays.asList("reference"), Arrays.asList("works")), Expose.class);
             }
         }finally {
             transactionManager.end();
