@@ -22,24 +22,15 @@
 #   ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 #   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 package Plugins::SocialMusicDiscovery::Settings;
 
 use strict;
 use base qw(Slim::Web::Settings);
 
-use Slim::Utils::Log;
-use Slim::Utils::Misc;
-use Slim::Utils::Strings qw(string);
 use Slim::Utils::Prefs;
 
 my $prefs = preferences('plugin.socialmusicdiscovery');
 
-$prefs->migrate(1, sub {
-	$prefs->set('hostname','localhost');
-	$prefs->set('port','9998');
-	1;
-});
 $prefs->setValidate({ 'validator' => 'intlimit', 'low' =>    1, 'high' => 65535 }, 'port'  );
 
 sub name {
@@ -51,15 +42,13 @@ sub page {
 }
 
 sub prefs {
-	return ($prefs, qw(hostname port simulatedData));
-}
+	my @prefs = qw(hostname port simulatedData);
 
-sub handler {
-	my ($class, $client, $params) = @_;
+	if (!Plugins::SocialMusicDiscovery::Browse->compat) {
+		push @prefs, 'replacemenu';
+	}
 
-	return $class->SUPER::handler($client, $params);
+	return ($prefs, @prefs);
 }
 
 1;
-
-__END__

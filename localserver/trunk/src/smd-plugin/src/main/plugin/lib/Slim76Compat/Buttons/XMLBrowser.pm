@@ -1,40 +1,22 @@
-#   Copyright 2010-2011, Social Music Discovery project
-#   All rights reserved.
-#
-#   Redistribution and use in source and binary forms, with or without
-#   modification, are permitted provided that the following conditions are met:
-#       * Redistributions of source code must retain the above copyright
-#         notice, this list of conditions and the following disclaimer.
-#       * Redistributions in binary form must reproduce the above copyright
-#         notice, this list of conditions and the following disclaimer in the
-#         documentation and/or other materials provided with the distribution.
-#       * Neither the name of Social Music Discovery project nor the
-#         names of its contributors may be used to endorse or promote products
-#         derived from this software without specific prior written permission.
-#
-#   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-#   ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-#   WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-#   DISCLAIMED. IN NO EVENT SHALL SOCIAL MUSIC DISCOVERY PROJECT BE LIABLE FOR ANY
-#   DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-#   (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-#   LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-#   ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-#   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-#   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+package Slim76Compat::Buttons::XMLBrowser;
 
-package Plugins::SocialMusicDiscovery::MenuAPI::Buttons::XMLBrowser;
+# $Id: XMLBrowser.pm 32407 2011-05-11 19:19:14Z adrian $
+
+# Copyright 2005-2009 Logitech.
+
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License, 
+# version 2.
 
 =head1 NAME
 
-Plugins::SocialMusicDiscovery::MenuAPI::Buttons::XMLBrowser
+Slim::Buttons::XMLBrowser
 
 =head1 DESCRIPTION
 
-L<Plugins::SocialMusicDiscovery::MenuAPI::Buttons::XMLBrowser> creates the 'smdxmlbrowser' mode.  The mode allows users to scroll
+L<Slim::Buttons::XMLBrowser> creates the 'xmlbrowser' mode.  The mode allows users to scroll
 through Podcast entries, RSS & OPML Outlines and play audio enclosures. 
 
-This version is inspired on the 32253 version of the "onebrowser" branch in Squeezebox Server.
 
 =cut
 
@@ -45,7 +27,7 @@ use URI::Escape qw(uri_unescape);
 
 use Slim::Buttons::Common;
 use Slim::Formats::XML;
-use Plugins::SocialMusicDiscovery::MenuAPI::Control::XMLBrowser;
+use Slim::Control::XMLBrowser;
 use Slim::Utils::Log;
 use Slim::Utils::Misc;
 use Slim::Utils::Timers;
@@ -55,7 +37,7 @@ my $log = logger('formats.xml');
 my $prefs = preferences('server');
 
 sub init {
-	Slim::Buttons::Common::addMode('smdxmlbrowser', getFunctions(), \&setMode);
+	Slim::Buttons::Common::addMode('xmlbrowser76compat', getFunctions(), \&setMode);
 }
 
 sub getFunctions {
@@ -85,6 +67,8 @@ sub setMode {
 	# Pre-filled menu of OPML items
 	if ( $opml ) {
 		gotOPML( $client, $url, $opml, {} );
+
+		$client->modeParam( handledTransition => 1 );
 		return;
 	}
 
@@ -104,6 +88,7 @@ sub setMode {
 
 		Slim::Buttons::Common::pushModeLeft($client, 'INPUT.Choice', \%params);
 		
+		$client->modeParam( handledTransition => 1 );
 		return;
 	}
 		
@@ -139,7 +124,7 @@ sub setMode {
 		'remember'  => $remember,
 	};
 	
-	if (my ($feedAction, $feedActions) = Plugins::SocialMusicDiscovery::MenuAPI::Control::XMLBrowser::findAction($parent, $item, 
+	if (my ($feedAction, $feedActions) = Slim76Compat::Control::XMLBrowser::findAction($parent, $item, 
 		($item->{'type'} && $item->{'type'} eq 'audio') ? 'info' : 'items') )
 	{
 		
@@ -218,6 +203,11 @@ sub setMode {
 	}
 	
 	# we're done.  gotFeed callback will finish setting up mode.
+
+	# xmlbrowser always handles the pushTransition into this mode
+	# - may have already transitioned to the destination mode if callbacks have already been called
+	# - or waiting for callback and should show block animation now without a transitions
+	$client->modeParam( handledTransition => 1 );
 }
 
 sub gotFeed {
@@ -230,7 +220,11 @@ sub gotFeed {
 	$client->unblock;
 	
 	# "feed" was originally an RSS feed.  Now it could be either RSS or an OPML outline.
-	if ($feed->{'type'} eq 'opml') {
+	if ($feed->{'type'} eq 'rss') {
+
+		gotRSS($client, $url, $feed, $params);
+
+	} elsif ($feed->{'type'} eq 'opml') {
 
 		gotOPML($client, $url, $feed, $params);
 
@@ -316,8 +310,121 @@ sub gotPlaylist {
 	else {
 		my $cmd = $action eq 'insert' ? 'inserttracks' : 'addtracks';
 		$client->execute([ 'playlist', $cmd, 'listref', \@urls ]);
-		Plugins::SocialMusicDiscovery::MenuAPI::Control::XMLBrowser::_addingToPlaylist($client, $action);
+		Slim76Compat::Control::XMLBrowser::_addingToPlaylist($client, $action);
 	}
+}
+
+sub gotRSS {
+	my ($client, $url, $feed, $params) = @_;
+
+	# Include an item to access feed info
+	if (($feed->{'items'}->[0]->{'value'} ne 'description') &&
+		# skip this if xmlns:slim is used, and no description found
+		!($feed->{'xmlns:slim'} && !$feed->{'description'})) {
+
+		my %desc = (
+			'name'       => '{XML_FEED_DESCRIPTION}',
+			'value'      => 'description',
+			'onRight'    => sub {
+				my $client = shift;
+				my $item   = shift;
+				displayFeedDescription($client, $client->modeParam('feed'));
+			},
+
+			# play all enclosures...
+			'onPlay'     => sub {
+				my $client = shift;
+				
+				Slim::Music::Info::setTitle( 
+					$client->modeParam('url'),
+					$client->modeParam('feed')->{'title'},
+				);
+
+				# play this feed as a playlist
+				$client->execute(
+					[ 'playlist', 'play',
+					$client->modeParam('url'),
+					$client->modeParam('feed')->{'title'},
+				] );
+			},
+
+			'onAdd'      => sub {
+				my $client   = shift;
+				my $functarg = $_[2];
+				
+				my $action = $functarg eq 'single' ? 'add' : 'insert';
+				
+				Slim::Music::Info::setTitle( 
+					$client->modeParam('url'),
+					$client->modeParam('feed')->{'title'},
+				);				
+
+				# addthis feed as a playlist
+				$client->execute(
+					[ 'playlist', $action,
+					$client->modeParam('url'),
+					$client->modeParam('feed')->{'title'},
+				] );
+			},
+
+			'overlayRef' => [ undef, shift->symbols('rightarrow') ],
+		);
+
+		unshift @{$feed->{'items'}}, \%desc; # prepend
+	}
+
+	# use INPUT.Choice mode to display the feed.
+	my %params = (
+		'url'      => $url,
+		'feed'     => $feed,
+		# unique modeName allows INPUT.Choice to remember where user was browsing
+		'modeName' => 
+			( defined $params->{remember} && $params->{remember} == 0 ) 
+			? undef : "XMLBrowser:$url",
+		'header'   => $feed->{'title'},
+		'headerAddCount' => 1,
+		
+		'blockPop' => $client->modeParam('blockPop'),
+		
+		# TODO: we show only items here, we skip the description of the entire channel
+		'listRef'  => $feed->{'items'},
+
+		'name' => sub {
+			my $client = shift;
+			my $item   = shift;
+			return $item->{'title'};
+		},
+
+		'onRight' => sub {
+			my $client = shift;
+			my $item   = shift;
+			if (Slim76Compat::Control::XMLBrowser::hasDescription($item)) {
+				displayItemDescription($client, $item, $feed);
+			} else {
+				displayItemLink($client, $item);
+			}
+		},
+
+		'onPlay' => sub {
+			my $client = shift;
+			my $item   = shift;
+			playItem($client, $item, $feed);
+		},
+
+		'onAdd' => sub {
+			my $client   = shift;
+			my $item     = shift;
+			my $functarg = shift;
+			
+			my $action = $functarg eq 'single' ? 'add' : 'insert';
+			
+			playItem($client, $item, $feed, $action);
+		},
+
+		'overlayRef' => \&overlaySymbol,
+	);
+
+	Slim::Buttons::Common::pushModeLeft($client, 'INPUT.Choice', \%params);
 }
 
 # use INPUT.Choice to display an OPML list of links. OPML support added
@@ -514,7 +621,7 @@ sub gotOPML {
 		# unique modeName allows INPUT.Choice to remember where user was browsing
 		'modeName' => 
 			( defined $params->{remember} && $params->{remember} == 0 ) 
-			? undef : "SMDXMLBrowser:$url:$title",
+			? undef : "XMLBrowser:$url:$title",
 		'windowId'   => $opml->{windowId} || '',
 		'header'     => $title,
 		'headerAddCount' => 1,
@@ -538,7 +645,7 @@ sub gotOPML {
 					$name .= " ($year)" if $year;
 				}
 		
-				if (my $artist = $item->{'artist'}) {
+				if ($prefs->get('showArtist') && (my $artist = $item->{'artist'})) {
 					$name .= sprintf(' %s %s', $client->string('BY'), $artist);
 				}
 				
@@ -661,7 +768,7 @@ sub gotOPML {
 					'parser'  => $parser,
 				);
 
-				if ($isAudio && ref $itemURL ne 'CODE' && !Plugins::SocialMusicDiscovery::MenuAPI::Control::XMLBrowser::findAction($opml, $item, 'info')) {
+				if ($isAudio && ref $itemURL ne 'CODE' && !Slim76Compat::Control::XMLBrowser::findAction($opml, $item, 'info')) {
 
 					# Additional info if known
 					my @details = ();
@@ -704,7 +811,7 @@ sub gotOPML {
 
 				} else {
 
-					Slim::Buttons::Common::pushMode($client, 'smdxmlbrowser', \%params);
+					Slim::Buttons::Common::pushMode($client, 'xmlbrowser76compat', \%params);
 				}
 
 			}
@@ -722,7 +829,7 @@ sub gotOPML {
 				);
 
 			}
-			elsif ( Plugins::SocialMusicDiscovery::MenuAPI::Control::XMLBrowser::hasDescription($item) ) {
+			elsif ( Slim76Compat::Control::XMLBrowser::hasDescription($item) ) {
 
 				displayItemDescription($client, $item, $opml);
 
@@ -800,15 +907,16 @@ sub handleSearch {
 		
 		my %params = (
 			'header'   => 'SEARCHING',
-			'modeName' => "SMDXMLBrowser:$searchURL:$searchString",
+			'modeName' => "XMLBrowser:$searchURL:$searchString",
 			'url'      => $searchURL,
 			'title'    => $searchString,
 			'search'   => $searchString,
 			'timeout'  => $item->{'timeout'},
 			'parser'   => $item->{'parser'},
+			'item'     => $item, # passed to carry passthrough params forward
 		);
 		
-		Slim::Buttons::Common::pushMode( $client, 'smdxmlbrowser', \%params );
+		Slim::Buttons::Common::pushMode( $client, 'xmlbrowser76compat', \%params );
 	}
 	else {
 		
@@ -829,7 +937,11 @@ sub overlaySymbol {
 		my $default = $item->{default};
 		$overlay = Slim::Buttons::Common::radioButtonOverlay( $client, $default eq $item->{name} );
 	}
-	elsif ( Plugins::SocialMusicDiscovery::MenuAPI::Control::XMLBrowser::hasAudio($item) ) {
+	elsif ( $item->{url} && ref $item->{url} eq 'CODE' && (!$item->{type} || $item->{type} ne 'audio') ) {
+		# Show rightarrow if there are more browseable levels below us
+		$overlay = $client->symbols('rightarrow');
+	}
+	elsif ( Slim76Compat::Control::XMLBrowser::hasAudio($item) ) {
 		$overlay = $client->symbols('notesymbol');
 	}
 	elsif ( !$item->{type} || $item->{type} ne 'text' ) {
@@ -879,7 +991,7 @@ sub displayItemDescription {
 	# break description into lines
 	my ($curline, @lines) = _breakItemIntoLines($client, $item);
 
-	if (my $link = Plugins::SocialMusicDiscovery::MenuAPI::Control::XMLBrowser::hasLink($item)) {
+	if (my $link = Slim76Compat::Control::XMLBrowser::hasLink($item)) {
 
 		push @lines, {
 			'name'      => '{XML_LINK}: ' . $link,
@@ -888,7 +1000,7 @@ sub displayItemDescription {
 		}
 	}
 
-	if (Plugins::SocialMusicDiscovery::MenuAPI::Control::XMLBrowser::hasAudio($item)) {
+	if (Slim76Compat::Control::XMLBrowser::hasAudio($item)) {
 
 		push @lines, {
 			'name'      => '{XML_ENCLOSURE}: ' . $item->{'enclosure'}->{'url'},
@@ -950,12 +1062,64 @@ sub displayItemDescription {
 	}
 }
 
+sub displayFeedDescription {
+	my $client = shift;
+	my $feed = shift;
+
+	# verbose debug
+	#use Data::Dumper;
+	#print Dumper($feed);
+
+	# use remotetrackinfo mode to display item in detail
+
+	# break description into lines
+	my ($curline, @lines) = _breakItemIntoLines($client, $feed);
+
+	# how many enclosures?
+	my $count = 0;
+
+	for my $i (@{$feed->{'items'}}) {
+		if (Slim76Compat::Control::XMLBrowser::hasAudio($i)) {
+			$count++;
+		}
+	}
+
+	if ($count) {
+		push @lines, {
+			'name'           => '{XML_AUDIO_ENCLOSURES}: ' . $count,
+			'value'          => $feed,
+			'overlayRef'     => [ undef, $client->symbols('notesymbol') ],
+		};
+	}
+
+	push @lines, '{URL}: ' . $client->modeParam('url');
+
+	$feed->{'lastBuildDate'}  && push @lines, '{XML_DATE}: ' . $feed->{'lastBuildDate'};
+	$feed->{'managingEditor'} && push @lines, '{XML_EDITOR}: ' . $feed->{'managingEditor'};
+	
+	# TODO: more lines to show feed date, ttl, source, etc.
+	# even a line to play all enclosures
+
+	my %params = (
+		'url'       => $client->modeParam('url'),
+		'title'     => $feed->{'title'},
+		'feed'      => $feed,
+		'header'    => $feed->{'title'},
+		'headerAddCount' => 1,
+		'details'   => \@lines,
+		'hideTitle' => 1,
+		'hideURL'   => 1,
+
+	);
+
+	Slim::Buttons::Common::pushModeLeft($client, 'remotetrackinfo', \%params);
+}
 
 sub displayItemLink {
 	my $client = shift;
 	my $item = shift;
 
-	my $url = Plugins::SocialMusicDiscovery::MenuAPI::Control::XMLBrowser::hasLink($item);
+	my $url = Slim76Compat::Control::XMLBrowser::hasLink($item);
 
 	if (!$url) {
 		$client->bumpRight();
@@ -968,7 +1132,7 @@ sub displayItemLink {
 		'title' => $item->{'title'},
 	);
 
-	Slim::Buttons::Common::pushModeLeft($client, 'smdxmlbrowser', \%params);
+	Slim::Buttons::Common::pushModeLeft($client, 'xmlbrowser76compat', \%params);
 }
 
 sub _showPlayAction {
@@ -995,10 +1159,6 @@ sub _showPlayAction {
 
 			$string   = $client->string('NOW_PLAYING') . ' (' . $client->string('CONNECTING_FOR') . ')';
 			$duration = 10;
-		}
-
-		if (Slim::Buttons::Common::mode($client) ne 'playlist') {
-			Slim::Buttons::Common::pushModeLeft($client, 'playlist');
 		}
 	}
 
@@ -1049,7 +1209,7 @@ sub playItem {
 		$actionKey .= 'all';
 	}
 	
-	if (my ($feedAction, $feedActions) = Plugins::SocialMusicDiscovery::MenuAPI::Control::XMLBrowser::findAction($feed, $item, $actionKey)) {
+	if (my ($feedAction, $feedActions) = Slim76Compat::Control::XMLBrowser::findAction($feed, $item, $actionKey)) {
 		
 		my @params = @{$feedAction->{'command'}};
 		if (my $params = $feedAction->{'fixedParams'}) {
@@ -1065,11 +1225,16 @@ sub playItem {
 		_showPlayAction($client, $action, $title);
 
 		Slim::Control::Request::executeRequest( $client, \@params );
+
+		if ($action ne 'add' && $action ne 'insert' && Slim::Buttons::Common::mode($client) ne 'playlist') {
+			Slim::Buttons::Common::pushModeLeft($client, 'playlist');
+		}
 	}
 	
 	elsif ( $type =~ /audio/i ) {
+
 		_showPlayAction($client, $action, $title);
-		
+
 		if ( $others && $playalbum && scalar @{$others} ) {
 			# Emulate normal track behavior where playing a single track adds
 			# all other tracks from that album to the playlist.
@@ -1130,6 +1295,11 @@ sub playItem {
 			
 			$client->execute([ 'playlist', $action, $url, $title ]);
 		}
+
+		if ($action ne 'add' && $action ne 'insert' && Slim::Buttons::Common::mode($client) ne 'playlist') {
+			Slim::Buttons::Common::pushModeLeft($client, 'playlist');
+		}
+		
 	}
 	elsif ($type eq 'playlist') {
 
@@ -1227,7 +1397,7 @@ sub playItem {
 			'item'    => $item,
 		);
 		
-		Slim::Buttons::Common::pushMode( $client, 'smdxmlbrowser', \%params );
+		Slim::Buttons::Common::pushMode( $client, 'xmlbrowser76compat', \%params );
 	}
 	else {
 
@@ -1268,7 +1438,7 @@ sub contextMenu {
 	
 	main::DEBUGLOG && $log->debug("Context menu for :", $title);
 	
-	if (my ($feedAction, $feedActions) = Plugins::SocialMusicDiscovery::MenuAPI::Control::XMLBrowser::findAction($feed, $item, 'info')) {
+	if (my ($feedAction, $feedActions) = Slim76Compat::Control::XMLBrowser::findAction($feed, $item, 'info')) {
 		
 		my @params = @{$feedAction->{'command'}};
 		if (my $params = $feedAction->{'fixedParams'}) {
@@ -1309,26 +1479,26 @@ sub contextMenu {
 }
 
 
-# some calls which have been moved to Plugins::SocialMusicDiscovery::MenuAPI::Control::XMLBrowser
+# some calls which have been moved to Slim::Control::XMLBrowser
 # keep them here for compatibility with 3rd party apps
 sub cliQuery {
-	$log->error('deprecated call - please use Plugins::SocialMusicDiscovery::MenuAPI::Control::XMLBrowser::cliQuery() instead');
-	Plugins::SocialMusicDiscovery::MenuAPI::Control::XMLBrowser::cliQuery(@_);
+	$log->error('deprecated call - please use Slim::Control::XMLBrowser::cliQuery() instead');
+	Slim76Compat::Control::XMLBrowser::cliQuery(@_);
 }
 
 sub hasAudio {
-	$log->error('deprecated call - please use Plugins::SocialMusicDiscovery::MenuAPI::Control::XMLBrowser::hasAudio() instead');
-	Plugins::SocialMusicDiscovery::MenuAPI::Control::XMLBrowser::hasAudio(@_);
+	$log->error('deprecated call - please use Slim::Control::XMLBrowser::hasAudio() instead');
+	Slim76Compat::Control::XMLBrowser::hasAudio(@_);
 }
 
 sub hasDescription {
-	$log->error('deprecated call - please use Plugins::SocialMusicDiscovery::MenuAPI::Control::XMLBrowser::hasDescription() instead');
-	Plugins::SocialMusicDiscovery::MenuAPI::Control::XMLBrowser::hasDescription(@_);
+	$log->error('deprecated call - please use Slim::Control::XMLBrowser::hasDescription() instead');
+	Slim76Compat::Control::XMLBrowser::hasDescription(@_);
 }
 
 sub hasLink {
-	$log->error('deprecated call - please use Plugins::SocialMusicDiscovery::MenuAPI::Control::XMLBrowser::hasLink() instead');
-	Plugins::SocialMusicDiscovery::MenuAPI::Control::XMLBrowser::hasLink(@_);
+	$log->error('deprecated call - please use Slim::Control::XMLBrowser::hasLink() instead');
+	Slim76Compat::Control::XMLBrowser::hasLink(@_);
 }
 
 
