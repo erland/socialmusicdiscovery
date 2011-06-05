@@ -65,23 +65,9 @@ sub start {
 	my $cacheDir  = preferences('server')->get('cachedir');
 	my $serverLog = catdir(Slim::Utils::OSDetect::dirsFor('log'), 'smd-server.log');
 	my $smdPort   = $prefs->get('port');
-	my $database;
 
-	if ($driver ne 'mysql') {
-
-		$log->info("Using default database for smd-server as server is using SQLite");
-		$database = "database.directory=$cacheDir";
-
-	} elsif ($source !~ /port=9092/) {
-
-		$log->info("Using default database for smd-server because an external MySQL server is used and we can't ensure we have permission to create a database");
-		$database = "database.directory=$cacheDir";
-
-	} else {
-
-        $log->info("Using the bundled MySQL database for smd-server, a separate smd schema is configured");
-	    $database = "database=mysql-sbs";
-	}
+	# use H2 default database in all cases, MySQL requires manual starting of the server
+	my $database = "database.directory=$cacheDir";
 
 	my @opts = (
 		"-Dorg.socialmusicdiscovery.server.$database",
