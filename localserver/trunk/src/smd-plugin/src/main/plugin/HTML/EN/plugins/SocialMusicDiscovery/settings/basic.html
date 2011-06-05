@@ -1,6 +1,6 @@
 [% PROCESS settings/header.html %]
 
-	[% IF pref_replacemenu.exists %]
+	[% IF show_replacemenu %]
 	[% WRAPPER setting title="SETUP_PLUGIN_SOCIALMUSICDISCOVERY_REPLACEMENU" desc="SETUP_PLUGIN_SOCIALMUSICDISCOVERY_REPLACEMENU_DESC" %]
 		[% "ENABLE" | string %]	<input name="pref_replacemenu" type="checkbox" [% IF prefs.pref_replacemenu %] checked [% END %]>
 	[% END %]

@@ -42,13 +42,13 @@ sub page {
 }
 
 sub prefs {
-	my @prefs = qw(hostname port simulatedData);
-
-	if (!Plugins::SocialMusicDiscovery::Browse->compat) {
-		push @prefs, 'replacemenu';
-	}
-
-	return ($prefs, @prefs);
+	return ($prefs, qw(hostname port replacemenu simulatedData));
 }
+
+sub beforeRender {
+	my ($class, $paramRef) = @_;
+	$paramRef->{'show_replacemenu'} = !Plugins::SocialMusicDiscovery::Browse->compat;
+}
+
 
 1;
