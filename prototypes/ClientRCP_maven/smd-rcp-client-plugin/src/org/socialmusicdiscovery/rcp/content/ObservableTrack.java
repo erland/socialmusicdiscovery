@@ -186,9 +186,10 @@ public class ObservableTrack extends AbstractDependentEntity<Track> implements T
 		}
 
 		/**
-		 * Do <b>NOT</b> call superclass; we must fire event even if no elements have changed since 
-		 * we need to update if a contributor name has changed. Also, we do <b>NOT</b> thus instance 
-		 * to become dirty because of a change in a derived property.  
+		 * Do <b>NOT</b> call superclass; we must fire event even if no elements
+		 * have changed since we need to update if a contributor name has
+		 * changed. Also, we do <b>NOT</b> want this instance to become dirty
+		 * because of a change in a derived property.
 		 */
 		@Override
 		public void setContributors(Set newContributors) {
