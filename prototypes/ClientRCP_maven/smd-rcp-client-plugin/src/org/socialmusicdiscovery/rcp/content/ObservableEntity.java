@@ -40,6 +40,7 @@ import org.socialmusicdiscovery.server.business.model.SMDIdentity;
  */
 public interface ObservableEntity<T extends SMDIdentity> extends ModelObject, SMDIdentity {
 	
+	String PROP_id = "id"; //$NON-NLS-1$
 	String PROP_dirty = "dirty"; //$NON-NLS-1$
 	
 	/**

@@ -27,6 +27,7 @@
 
 package org.socialmusicdiscovery.rcp.content;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -253,6 +254,34 @@ public class ObservableTrackTest extends AbstractTestCase {
 		assertTrue(recording.getTracks().contains(testee));
 	}
 
+	@Test
+	public void testChangeRecording() throws Exception {
+		ObservableRecording recording2 = recording();
+		recording2.setTracks(new ArrayList<ObservableTrack>());
+		
+		MultiPurposeListener releaseListener = listener(release.getTracks());
+		MultiPurposeListener recordingListener = listener(recording.getTracks());
+		MultiPurposeListener recordingListener2 = listener(recording2.getTracks());
+
+		assertEquals(1, release.getTracks().size());
+		assertTrue(release.getTracks().contains(track));
+		assertEquals(1, recording.getTracks().size());
+		assertTrue(recording.getTracks().contains(track));
+		
+		track.setRecording(recording2);
+		
+		assertEquals(1, release.getTracks().size());
+		assertFalse(releaseListener.isChanged());
+		assertTrue(release.getTracks().contains(track));
+		
+		assertEquals(0, recording.getTracks().size());
+		assertTrue(recordingListener.isChanged());
+		assertFalse(recording.getTracks().contains(track));
+
+		assertEquals(1, recording2.getTracks().size());
+		assertTrue(recordingListener2.isChanged());
+		assertTrue(recording2.getTracks().contains(track));
+	}
 	@Test
 	public void testDelete() throws Exception {
 		assertTrue("Bad setup? Track not found", release.getTracks().contains(track));

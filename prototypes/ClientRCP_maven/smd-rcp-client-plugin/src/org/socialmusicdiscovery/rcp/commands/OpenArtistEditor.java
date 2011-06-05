@@ -25,49 +25,39 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.rcp.util;
+package org.socialmusicdiscovery.rcp.commands;
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.IHandler;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.ui.handlers.HandlerUtil;
+import org.socialmusicdiscovery.rcp.util.ViewerUtil;
+import org.socialmusicdiscovery.rcp.util.WorkbenchUtil;
+import org.socialmusicdiscovery.server.business.model.core.Contributor;
 
-import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 
-public class TextUtil {
+public class OpenArtistEditor extends AbstractHandler implements IHandler {
+	public static final String COMMAND_ID = OpenArtistEditor.class.getName();	
 
-	private TextUtil() {}
-
-	public static String getShortText(String text) {
-		if (text.length()>20) {
-			String head = text.substring(0,12);
-			String tail = text.substring(text.length()-5);
-			String result = head+"..."+tail;
-			assert result.length()<=20 : "Not shortened: "+result+", size="+result.length();
-			return result;
+	@Override
+	public Object execute(ExecutionEvent event ) throws ExecutionException {
+		ISelection selection = HandlerUtil.getCurrentSelection(event);
+		Object[] selected = ViewerUtil.getSelectedObjects(selection);
+		for (Object s : selected) {
+			if (s instanceof Contributor) {
+				Contributor c = (Contributor) s;
+				WorkbenchUtil.openDistinct(c.getArtist());
+			}
 		}
-		return text;
+		return null;
 	}
 
-	/**
-	 * Get a human readable text for supplied class. Class is expected to be a
-	 * subtype of {@link SMDIdentity}, but this is not strictly enforced.
-	 * 
-	 * @param type
-	 * @return String
-	 */
-	public static String getText(Class type) {
-		// TODO externalize, now using raw interface as name
-		return toInitialUppercase(type.getSimpleName());
+	@Override
+	public boolean isEnabled() {
+		// TODO return false if no editor is registered
+		return super.isEnabled();
 	}
-
-	/**
-	 * Convert first character to uppercase (e.g. name becomes Name) 
-	 * @param string
-	 * @return String
-	 */
-	public static String toInitialUppercase(String string) {
-		if (string.length()<1) {
-			return string;
-		}
-		String first = string.substring(0,1).toUpperCase();
-		String rest = string.length()>1 ? string.substring(1) : "";
-		return first + rest;
-	}
-
+	
+	
 }

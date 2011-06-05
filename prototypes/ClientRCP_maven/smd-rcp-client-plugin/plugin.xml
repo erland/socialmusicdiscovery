@@ -284,15 +284,6 @@
             </visibleWhen>
          </command>
       </menuContribution>
-      <command
-            commandId="org.socialmusicdiscovery.rcp.commands.Create"
-            label="%popup.command.create.label"
-            mnemonic="%popup.command.create.mnemonic"
-            style="push">
-         <visibleWhen
-               checkEnabled="true">
-         </visibleWhen>
-      </command>
       <menuContribution
             allPopups="true"
             locationURI="org.socialmusicdiscovery.rcp.editors.artist.ArtistEditor">
@@ -324,6 +315,12 @@
                mnemonic="%popup.command.delete.mnemonic"
                style="push">
          </command>
+         <command
+               commandId="org.socialmusicdiscovery.rcp.commands.EditArtist"
+               label="%popup.command.editArtist.label"
+               mnemonic="%popup.command.editArtist.mnemonic"
+               style="push">
+         </command>
       </menuContribution>
       <menuContribution
             allPopups="true"
@@ -338,6 +335,12 @@
                commandId="org.socialmusicdiscovery.rcp.commands.DeleteDependent"
                label="%popup.command.delete.label"
                mnemonic="%popup.command.delete.mnemonic"
+               style="push">
+         </command>
+         <command
+               commandId="org.socialmusicdiscovery.rcp.commands.EditRecording"
+               label="%popup.command.editRecording.label"
+               mnemonic="%popup.command.editRecording.mnemonic"
                style="push">
          </command>
       </menuContribution>
@@ -385,6 +388,14 @@
       <command
             id="org.socialmusicdiscovery.rcp.commands.PlayElement"
             name="Play">
+      </command>
+      <command
+            id="org.socialmusicdiscovery.rcp.commands.EditRecording"
+            name="Edit Recording">
+      </command>
+      <command
+            id="org.socialmusicdiscovery.rcp.commands.EditArtist"
+            name="Edit Artist">
       </command>
    </extension>
    <extension
@@ -460,6 +471,30 @@
      <handler
            class="org.socialmusicdiscovery.rcp.commands.ImportFromSBS"
            commandId="org.socialmusicdiscovery.rcp.commands.ImportFromSBS">
+     </handler>
+     <handler
+           class="org.socialmusicdiscovery.rcp.commands.OpenRecordingEditor"
+           commandId="org.socialmusicdiscovery.rcp.commands.EditRecording">
+        <enabledWhen>
+           <iterate
+                 ifEmpty="false">
+              <instanceof
+                    value="org.socialmusicdiscovery.server.business.model.core.Track">
+              </instanceof>
+           </iterate>
+        </enabledWhen>
+     </handler>
+     <handler
+           class="org.socialmusicdiscovery.rcp.commands.OpenArtistEditor"
+           commandId="org.socialmusicdiscovery.rcp.commands.EditArtist">
+        <enabledWhen>
+           <iterate
+                 ifEmpty="false">
+              <instanceof
+                    value="org.socialmusicdiscovery.server.business.model.core.Contributor">
+              </instanceof>
+           </iterate>
+        </enabledWhen>
      </handler>
    </extension>
 

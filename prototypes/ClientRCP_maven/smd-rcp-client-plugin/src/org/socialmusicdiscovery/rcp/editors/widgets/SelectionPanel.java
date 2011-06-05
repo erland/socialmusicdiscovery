@@ -40,6 +40,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ListDialog;
@@ -201,6 +202,18 @@ public class SelectionPanel<T extends ModelObject> extends ObservableComposite {
 		label.setText(labelText);
 		button.setToolTipText(buttonTooltipText);
 		setElements(elements);
+	}
+
+	@Override
+	public void setEnabled(boolean enabled) {
+		super.setEnabled(enabled);
+		setEnabled(enabled, getButton(), getText()); // TODO set read-only style on Text? 
+	}
+
+	private static void setEnabled(boolean enabled, Control... controls) {
+		for (Control control : controls) {
+			control.setEnabled(enabled);
+		}
 	}
 
 }

@@ -49,6 +49,32 @@ public class ObservableContributorTest extends AbstractTestCase {
 	}
 	
 	@Test
+	public void testChangeArtist() throws Exception {
+		ObservableArtist artist2 = artist();
+		MultiPurposeListener releaseListener = listener(release.getContributors());
+		MultiPurposeListener artistListener = listener(artist.getContributions());
+		MultiPurposeListener artistListener2 = listener(artist2.getContributions());
+
+		assertEquals(1, release.getContributors().size());
+		assertEquals(1, artist.getContributions().size());
+		assertEquals(0, artist2.getContributions().size());
+		
+		contributor.setArtist(artist2);
+
+		assertEquals(1, release.getContributors().size());
+		assertTrue(release.getContributors().contains(contributor));
+		assertFalse(releaseListener.isChanged());
+		
+		assertEquals(0, artist.getContributions().size());
+		assertFalse(artist.getContributions().contains(contributor));
+		assertTrue(artistListener.isChanged());
+		
+		assertEquals(1, artist2.getContributions().size());
+		assertTrue(artist2.getContributions().contains(contributor));
+		assertTrue(artistListener2.isChanged());
+	}
+
+	@Test
 	public void testCreate() throws Exception {
 		MultiPurposeListener releaseListener = listener(release.getContributors());
 		MultiPurposeListener artistListener = listener(artist.getContributions());
@@ -73,7 +99,6 @@ public class ObservableContributorTest extends AbstractTestCase {
 		assertTrue(release.getContributors().contains(testee));
 		assertTrue(artist.getContributions().contains(testee));
 	}
-
 	@Test
 	public void testAddDuplicate() throws Exception {
 		MultiPurposeListener releaseListener = listener(release.getContributors());

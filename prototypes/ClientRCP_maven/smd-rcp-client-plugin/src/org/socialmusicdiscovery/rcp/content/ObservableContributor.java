@@ -27,6 +27,9 @@
 
 package org.socialmusicdiscovery.rcp.content;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
@@ -34,6 +37,39 @@ import org.socialmusicdiscovery.server.business.model.core.Contributor;
 import com.google.gson.annotations.Expose;
 
 public class ObservableContributor extends AbstractDependentEntity<Contributor> implements Contributor {
+
+	/**
+	 * Listen to my own property change events to update affected
+	 * {@link ObservableArtist} whenever the artist property changes. We
+	 * could do this as part of the setter, but using a separate listener lets
+	 * us control if and when to update dependencies; if we have no listeners,
+	 * the setter is free of side effects.
+	 */
+	private class MyArtistChangeListener implements PropertyChangeListener {
+		public MyArtistChangeListener(ObservableArtist artist) {
+			addTo(artist);
+		}
+
+		@Override
+		public void propertyChange(PropertyChangeEvent evt) {
+			removeFrom((ObservableArtist) evt.getOldValue());
+			addTo((ObservableArtist) evt.getNewValue());
+		}
+
+		private void removeFrom(ObservableArtist artist) {
+			if (artist!=null && artist.isContributionsLoaded()) {
+				boolean removed = artist.getContributions().remove(ObservableContributor.this);
+				assert removed : "Not removed from recording: "+artist;
+			}
+		}
+
+		private void addTo(ObservableArtist artist) {
+			if (artist!=null && artist.isContributionsLoaded()) {
+				boolean added = artist.getContributions().add(ObservableContributor.this);
+				assert added : "Not added to recording: "+artist;
+			}
+		}
+	}
 
 	public static final String PROP_owner = "owner";
 	public static final String PROP_artist = "artist";
@@ -52,8 +88,8 @@ public class ObservableContributor extends AbstractDependentEntity<Contributor> 
 	/**
 	 * Constructor for new instances created by client.
 	 */
-	public ObservableContributor(ObservableContributor template) {
-		this.owner = template.getOwner();
+	public ObservableContributor(Contributor template) {
+		this.owner = (AbstractContributableEntity) template.getOwner();
 		this.type = template.getType();
 		this.artist = template.getArtist();
 		postCreate();
@@ -105,6 +141,12 @@ public class ObservableContributor extends AbstractDependentEntity<Contributor> 
 	public void setOwner(SMDIdentity owner) {
 		firePropertyChange(PROP_owner, this.owner, this.owner = (AbstractContributableEntity) owner);
 	}
+	
+	@Override
+	protected void postInflate() {
+		super.postInflate();
+		hookListeners();
+	}
 
 	@Override
 	protected void postCreate() {
@@ -112,9 +154,11 @@ public class ObservableContributor extends AbstractDependentEntity<Contributor> 
 		if (getOwner()!=null && getOwner().isInflated()) {
 			getOwner().getContributors().add(this);
 		}
-		if (getArtist()!=null &&  getArtist().isContributionsLoaded()) {
-			getArtist().getContributions().add(this);
-		}
+		hookListeners();
+	}
+	
+	private void hookListeners() {
+		addPropertyChangeListener(PROP_artist, new MyArtistChangeListener(getArtist()));
 	}
 
 }

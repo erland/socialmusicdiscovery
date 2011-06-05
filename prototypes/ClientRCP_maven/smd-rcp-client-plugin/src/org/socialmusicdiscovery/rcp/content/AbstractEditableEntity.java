@@ -27,6 +27,7 @@
 
 package org.socialmusicdiscovery.rcp.content;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -35,9 +36,9 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 import org.socialmusicdiscovery.rcp.content.DataSource.Root;
+import org.socialmusicdiscovery.rcp.util.ClassUtil;
 import org.socialmusicdiscovery.rcp.util.NotYetImplemented;
 import org.socialmusicdiscovery.rcp.util.TextUtil;
-import org.socialmusicdiscovery.rcp.util.Util;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.support.copy.CopyHelper;
 
@@ -135,7 +136,6 @@ public abstract class AbstractEditableEntity<T extends SMDIdentity> extends Abst
 
 	/**
 	 * Create a backup of the entity. Backup only holds the persistent data.
-	 * TODO does not handle dependent entities! See {@link AbstractContributableEntity#getContributors()}
 	 * @return {@link AbstractEditableEntity}
 	 * @see #restore(AbstractEditableEntity)
 	 */
@@ -147,12 +147,22 @@ public abstract class AbstractEditableEntity<T extends SMDIdentity> extends Abst
 
 	/**
 	 * Restore state from a backup of this entity. Backup only holds the persistent data.
-	 * TODO does not handle dependent entities! See {@link AbstractContributableEntity#getContributors()}
+	 * TODO suspect bug here, should probably call {@link ClassUtil#copyPersistentProperties(Object, Object)} instead?
 	 * @see #backup()
 	 */
 	public void restore(AbstractObservableEntity backup) {
 		assertBackup(backup);
-		Util.mergeInto(this, backup);
+		new CopyHelper().mergeInto(this, backup, Expose.class);
+		refreshExposedProperties();
+		// fire dirty AFTER merge to make sure name changes are updated in 
+		// label providers (the copy does not fire any events)
+		setDirty(false); 
+	}
+
+	private void refreshExposedProperties() {
+		for (Field f : ClassUtil.getAllPersistentFields(getClass())) {
+			firePropertyChange(f.getName());
+		};
 	}
 
 }
