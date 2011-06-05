@@ -20,4 +20,19 @@ public class TextUtilTest {
 		assertTrue("Bad start: "+result, result.startsWith(original.substring(0,5)));
 		assertTrue("Bad end: "+result, result.endsWith(original.substring(original.length()-5)));
 	}
+
+	@Test
+	public void testToInitialUppercase() {
+		String[] patterns = {
+				"name",	"Name",
+				"s",	"S",
+				"",		"",
+				"älv",	"Älv"
+		};
+		for (int i = 0; i < patterns.length;) {
+			String in = patterns[i++];
+			String expected = patterns[i++];
+			assertEquals("Input: " + in, expected, TextUtil.toInitialUppercase(in));
+		}
+	}
 }

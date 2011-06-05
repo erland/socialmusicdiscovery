@@ -74,7 +74,6 @@ import com.google.gson.annotations.Expose;
 public abstract class AbstractObservableEntity<T extends SMDIdentity> extends AbstractObservable implements ObservableEntity<T> {
 	private DataSource dataSource;
 
-	private static final String PROP_id = "id"; //$NON-NLS-1$
 	private transient boolean isInflated = false;
 
 	@Expose
@@ -83,8 +82,6 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 	@Expose
 	private String name;
 	private final Class rootType;
-
-	private static final String PROP_isDirty = "dirty"; //$NON-NLS-1$
 
 	private transient boolean isDirty;
 
@@ -312,7 +309,7 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 	@Override
 	public void setDirty(boolean isDirty) {
 		if (isDirtyEnabled) {
-			super.firePropertyChange(PROP_isDirty, this.isDirty, this.isDirty = isDirty);
+			super.firePropertyChange(ObservableEntity.PROP_dirty, this.isDirty, this.isDirty = isDirty);
 		}
 	}
 

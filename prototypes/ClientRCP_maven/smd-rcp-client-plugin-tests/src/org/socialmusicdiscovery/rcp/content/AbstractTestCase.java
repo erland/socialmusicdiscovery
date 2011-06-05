@@ -132,6 +132,10 @@ public abstract class AbstractTestCase extends TestCase {
 		return a;
 	}
 
+	protected ObservableRecording recording() {
+		int nextId = id++;
+		return recording(nextId, "Recording#"+nextId);
+	}
 	protected ObservableRecording recording(int id, String name) {
 		ObservableRecording r = new ObservableRecording();
 		r.setTestDataSource(dataSource);

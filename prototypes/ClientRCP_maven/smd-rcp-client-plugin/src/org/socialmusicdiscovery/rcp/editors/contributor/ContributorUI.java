@@ -47,15 +47,74 @@ import org.socialmusicdiscovery.rcp.content.ArtistProvider;
 import org.socialmusicdiscovery.rcp.content.ContributorRoleProvider;
 import org.socialmusicdiscovery.rcp.content.ObservableArtist;
 import org.socialmusicdiscovery.rcp.content.ObservableContributor;
+import org.socialmusicdiscovery.rcp.content.ObservableEntity;
 import org.socialmusicdiscovery.rcp.editors.widgets.SelectionPanel;
+import org.socialmusicdiscovery.rcp.event.AbstractObservable;
+import org.socialmusicdiscovery.server.business.model.SMDIdentity;
+import org.socialmusicdiscovery.server.business.model.core.Artist;
+import org.socialmusicdiscovery.server.business.model.core.Contributor;
 
 /**
  * Creates an {@link ObservableContributor} instance. Place on a container.
+ * 
+ * TODO refactor, get rid of weird code to initialize and maintain template
  * 
  * @author Peer Törngren
  *
  */
 public class ContributorUI extends Composite {
+
+	/**
+	 * An internal implementation for the editing session. Fires events 
+	 * but does not hook any listeners or update any dependencies. 
+	 * This class is probably redundant, we should be able to use the regular
+	 * {@link ObservableContributor} as long as we do not call postCreate or postInflate?
+	 * TODO remove, use regular ObservableTrack   
+	 */
+	public class MyObservableContributor extends AbstractObservable implements Contributor {
+
+		private String id;
+		private Artist artist;
+		private SMDIdentity owner;
+		private String type;
+
+		@Override
+		public String getId() {
+			return id;
+		}
+
+		@Override
+		public Artist getArtist() {
+			return artist;
+		}
+
+		@Override
+		public SMDIdentity getOwner() {
+			return owner;
+		}
+
+		@Override
+		public String getType() {
+			return type;
+		}
+
+		public void setId(String id) {
+			firePropertyChange(ObservableEntity.PROP_id, this.id, this.id = id);
+		}
+
+		public void setArtist(Artist artist) {
+			firePropertyChange(ObservableContributor.PROP_artist, this.artist, this.artist = artist);
+		}
+
+		public void setOwner(SMDIdentity owner) {
+			firePropertyChange(ObservableContributor.PROP_owner, this.owner, this.owner = owner);
+		}
+
+		public void setType(String type) {
+			firePropertyChange(ObservableContributor.PROP_type, this.type, this.type = type);
+		}
+
+	}
 
 	private Composite composite;
 	private Combo roleCombo;
@@ -66,7 +125,7 @@ public class ContributorUI extends Composite {
 	private Label infoLabel;
 	
 	// simplify data binding in UI tool + expose observable properties to parent
-	private final ObservableContributor template = new ObservableContributor(); 
+	private final MyObservableContributor template = new MyObservableContributor(); 
 	private SelectionPanel<ObservableArtist> selectionPanel;
 
 	/**
@@ -82,7 +141,7 @@ public class ContributorUI extends Composite {
 		composite.setLayout(new GridLayout(1, false));
 		
 		infoLabel = new Label(composite, SWT.WRAP);
-		infoLabel.setText("Create a new contributor by selecting a new (unique) combination of type and artist.");
+		infoLabel.setText("Select a new (unique) combination of type and artist.");
 		infoLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 		
 		ownerLabel = new Label(composite, SWT.NONE);
@@ -136,7 +195,7 @@ public class ContributorUI extends Composite {
 		roleViewer.setInput(contributorRoleProvider.getElements());
 	}
 
-	ObservableContributor getTemplate() {
+	MyObservableContributor getTemplate() {
 		return template;
 	}
 	

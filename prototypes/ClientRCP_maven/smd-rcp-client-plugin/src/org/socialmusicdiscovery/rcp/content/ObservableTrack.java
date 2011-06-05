@@ -31,6 +31,8 @@ import static org.socialmusicdiscovery.rcp.content.ObservableContributor.PROP_ar
 import static org.socialmusicdiscovery.rcp.content.ObservableContributor.PROP_type;
 import static org.socialmusicdiscovery.rcp.content.ObservableRecording.PROP_works;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -55,6 +57,40 @@ import org.socialmusicdiscovery.server.business.model.core.Work;
 import com.google.gson.annotations.Expose;
 
 public class ObservableTrack extends AbstractDependentEntity<Track> implements Track {
+
+	/**
+	 * Listen to my own property change events to update affected
+	 * {@link ObservableRecording} whenever the recording property changes. We
+	 * could do this as part of the setter, but using a separate listener lets
+	 * us control if and when to update dependencies; if we have no listeners,
+	 * the setter is free of side effects.
+	 */
+	private class MyRecordingChangeListener implements PropertyChangeListener {
+		public MyRecordingChangeListener(ObservableRecording recording) {
+			addTo(recording);
+		}
+
+		@Override
+		public void propertyChange(PropertyChangeEvent evt) {
+			removeFrom((ObservableRecording) evt.getOldValue());
+			addTo((ObservableRecording) evt.getNewValue());
+		}
+
+		private void removeFrom(ObservableRecording r) {
+			if (r!=null && r.isTracksLoaded()) {
+				boolean removed = r.getTracks().remove(ObservableTrack.this);
+				assert removed : "Not removed from recording: "+r;
+			}
+		}
+
+		private void addTo(ObservableRecording r) {
+			if (r!=null && r.isTracksLoaded()) {
+				boolean added = r.getTracks().add(ObservableTrack.this);
+				assert added : "Not added to recording: "+r;
+			}
+		}
+	}
+
 	private class MyTitleManager implements Runnable {
 
 		@Override
@@ -195,11 +231,12 @@ public class ObservableTrack extends AbstractDependentEntity<Track> implements T
 	/**
 	 * Constructor for client-created instances. Runs {@link #postCreate()}.
 	 */
-	public ObservableTrack(ObservableTrack template) {
-		release = template.release;
-		medium = template.medium;
+	public ObservableTrack(Track template) {
+		release = template.getRelease();
+		medium = template.getMedium();
 		number = template.getNumber();
 		recording = template.getRecording();
+		playableElements.addAll(template.getPlayableElements());
 		postCreate();
 	}
 
@@ -287,8 +324,14 @@ public class ObservableTrack extends AbstractDependentEntity<Track> implements T
 		if (r!=null) {
 			r.inflate();
 		}
-		hookTitleManager();
-		hookContributorsListener();
+		hookListeners();
+	}
+
+	private void hookListeners() {
+		titleManager.run();
+		ChangeMonitor.observe(titleManager, this, PROP_recording, PROP_name);
+		contributorFacade = new MyContributorFacade();
+		addPropertyChangeListener(PROP_recording, new MyRecordingChangeListener(getRecording()));
 	}
 
 	@Override
@@ -297,20 +340,7 @@ public class ObservableTrack extends AbstractDependentEntity<Track> implements T
 		if (getRelease()!=null && getRelease().isInflated()) {
 			getRelease().getTracks().add(this);
 		}
-		if (getRecording()!=null &&  getRecording().isTracksLoaded()) {
-			getRecording().getTracks().add(this);
-		}
-		hookTitleManager();
-		hookContributorsListener();
-	}
-
-	private void hookContributorsListener() {
-		contributorFacade = new MyContributorFacade();
-	}
-
-	private void hookTitleManager() {
-		titleManager.run();
-		ChangeMonitor.observe(titleManager, this, PROP_recording, PROP_name);
+		hookListeners();
 	}
 
 	/**

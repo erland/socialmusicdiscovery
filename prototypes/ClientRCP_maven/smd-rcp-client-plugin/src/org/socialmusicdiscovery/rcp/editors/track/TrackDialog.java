@@ -42,6 +42,7 @@ import org.socialmusicdiscovery.rcp.content.ObservableRelease;
 import org.socialmusicdiscovery.rcp.content.ObservableTrack;
 import org.socialmusicdiscovery.rcp.content.RecordingProvider;
 import org.socialmusicdiscovery.rcp.editors.AbstractEditorDialog;
+import org.socialmusicdiscovery.rcp.util.ClassUtil;
 import org.socialmusicdiscovery.rcp.util.Util;
 import org.socialmusicdiscovery.server.business.model.core.Medium;
 import org.socialmusicdiscovery.server.business.model.core.Track;
@@ -64,8 +65,12 @@ public class TrackDialog extends AbstractEditorDialog<ObservableTrack> {
 			okButton.setEnabled(isValid(ui.getTemplate()));
 		}
 		
-		private boolean isValid(ObservableTrack prospect) {
-			return isFullyInitialized(prospect) && isUnique(prospect);
+		private boolean isValid(Track prospect) {
+			return isFullyInitialized(prospect) && (isUnique(prospect) || isChangedRecording(prospect));
+		}
+
+		private boolean isChangedRecording(Track prospect) {
+			return prospect.getRecording()!=recording && (prospect.getMedium()==medium && prospect.getNumber()==number);
 		}
 
 		private boolean isFullyInitialized(Track template) {
@@ -76,14 +81,14 @@ public class TrackDialog extends AbstractEditorDialog<ObservableTrack> {
 		private boolean isUnique(Track prospect) {
 			List<Track> tracks = release.getTracks();
 			for (Track t : tracks) {
-				if (equal(t, prospect)) {
+				if (equalIndex(t, prospect)) {
 					return false;
 				}
 			}
 			return true;
 		}
 
-		private boolean equal(Track t1, Track t2) {
+		private boolean equalIndex(Track t1, Track t2) {
 			int trackNumberDiff = Util.compare(t1.getNumber(), t2.getNumber());
 			return trackNumberDiff==0 && t1.getMedium()==t2.getMedium(); 
 		}
@@ -95,6 +100,8 @@ public class TrackDialog extends AbstractEditorDialog<ObservableTrack> {
 	private Medium medium;
 	private Integer number;
 	private ObservableRecording recording;
+	// enabled only on new tracks; to change recording, track must be deleted and a new track added
+//	private boolean recordingSelectorEnabled; 
 
 	/**
 	 * Create the dialog.
@@ -122,6 +129,7 @@ public class TrackDialog extends AbstractEditorDialog<ObservableTrack> {
 		ui.setNumber(number);
 		ui.setMedium(medium);
 		ui.setRecording(recording);
+//		ui.getSelectionPanel().setEnabled(recordingSelectorEnabled);
 
 		return area;
 	}
@@ -135,6 +143,7 @@ public class TrackDialog extends AbstractEditorDialog<ObservableTrack> {
 	public static ObservableTrack open(ObservableRelease release) {
 		TrackDialog dlg = new TrackDialog(null);
 		dlg.release = release;
+//		dlg.recordingSelectorEnabled = true;
 		if (openOK(dlg)) {
 			return new ObservableTrack(dlg.ui.getTemplate());
 		}
@@ -147,8 +156,9 @@ public class TrackDialog extends AbstractEditorDialog<ObservableTrack> {
 		dlg.medium = input.getMedium();
 		dlg.number = input.getNumber();
 		dlg.recording = input.getRecording();
+//		dlg.recordingSelectorEnabled = false;
 		if (openOK(dlg)) {
-			Util.mergeInto(input, dlg.ui.getTemplate());
+			ClassUtil.copyProperties(dlg.ui.getTemplate(), input, ObservableTrack.PROP_release, ObservableTrack.PROP_medium, ObservableTrack.PROP_number, ObservableTrack.PROP_recording);
 		}
 		return input;
 	}

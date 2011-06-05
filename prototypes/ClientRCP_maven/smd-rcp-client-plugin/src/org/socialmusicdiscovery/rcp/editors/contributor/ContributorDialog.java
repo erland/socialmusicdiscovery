@@ -43,13 +43,13 @@ import org.socialmusicdiscovery.rcp.content.ObservableArtist;
 import org.socialmusicdiscovery.rcp.content.ObservableContributor;
 import org.socialmusicdiscovery.rcp.content.ObservableEntity;
 import org.socialmusicdiscovery.rcp.editors.AbstractEditorDialog;
-import org.socialmusicdiscovery.rcp.editors.track.TrackDialog;
-import org.socialmusicdiscovery.rcp.util.Util;
+import org.socialmusicdiscovery.rcp.util.ClassUtil;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
 
 /**
  * A dialog for creating a new {@link Contributor}.
- * TODO refactor and abstract - lots of code duplicated in {@link TrackDialog} 
+ * 
+ * TODO refactor, get rid of weird code to initialize and maintain template
  * 
  * @author Peer Törngren
  *
@@ -66,7 +66,7 @@ public class ContributorDialog extends AbstractEditorDialog<ObservableContributo
 			okButton.setEnabled(isValid(ui.getTemplate()));
 		}
 		
-		private boolean isValid(ObservableContributor prospect) {
+		private boolean isValid(Contributor prospect) {
 			return isFullyInitialized(prospect) && isUnique(prospect);
 		}
 
@@ -148,7 +148,7 @@ public class ContributorDialog extends AbstractEditorDialog<ObservableContributo
 		dlg.type = input.getType();
 		dlg.artist = input.getArtist();
 		if (openOK(dlg)) {
-			Util.mergeInto(input, dlg.ui.getTemplate());
+			ClassUtil.copyProperties(dlg.ui.getTemplate(), input, ObservableContributor.PROP_owner, ObservableContributor.PROP_type, ObservableContributor.PROP_artist);
 		}
 		return input;
 	}

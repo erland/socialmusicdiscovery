@@ -26,9 +26,13 @@
 
 package org.socialmusicdiscovery.rcp.editors.track;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
+import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.databinding.viewers.ViewersObservables;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -42,14 +46,19 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
+import org.socialmusicdiscovery.rcp.content.ObservableEntity;
 import org.socialmusicdiscovery.rcp.content.ObservableRecording;
 import org.socialmusicdiscovery.rcp.content.ObservableRelease;
 import org.socialmusicdiscovery.rcp.content.ObservableTrack;
 import org.socialmusicdiscovery.rcp.content.RecordingProvider;
 import org.socialmusicdiscovery.rcp.editors.widgets.SelectionPanel;
-import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.socialmusicdiscovery.rcp.event.AbstractObservable;
 import org.socialmusicdiscovery.rcp.views.util.DefaultLabelProvider;
 import org.socialmusicdiscovery.server.business.model.core.Medium;
+import org.socialmusicdiscovery.server.business.model.core.PlayableElement;
+import org.socialmusicdiscovery.server.business.model.core.Recording;
+import org.socialmusicdiscovery.server.business.model.core.Release;
+import org.socialmusicdiscovery.server.business.model.core.Track;
 
 /**
  * Creates an {@link ObservableTrack} instance. Place on a container.
@@ -58,6 +67,71 @@ import org.socialmusicdiscovery.server.business.model.core.Medium;
  *
  */
 public class TrackUI extends Composite {
+
+	/**
+	 * An internal implementation for the editing session. Fires events 
+	 * but does not hook any listeners or update any dependencies. 
+	 * This class is probably redundant, we should be able to use the regular
+	 * {@link ObservableTrack} as long as we do not call postCreate or postInflate?
+	 * TODO remove, use regular ObservableTrack   
+	 */
+	public class MyObservableTrack extends AbstractObservable implements Track {
+		private String id;
+		private Release release;
+		private Medium medium;
+		private Integer number;
+		private Recording recording;
+		private Set<PlayableElement> playableElements = new HashSet<PlayableElement>();
+
+		public String getId() {
+			return id;
+		}
+
+		public void setId(String id) {
+			firePropertyChange(ObservableEntity.PROP_id, this.id, this.id = id);
+		}
+
+		public Release getRelease() {
+			return release;
+		}
+
+		public void setRelease(Release release) {
+			firePropertyChange(ObservableTrack.PROP_release, this.release, this.release = release);
+		}
+
+		public Medium getMedium() {
+			return medium;
+		}
+
+		public void setMedium(Medium medium) {
+			firePropertyChange(ObservableTrack.PROP_medium, this.medium, this.medium = medium);
+		}
+
+		public Integer getNumber() {
+			return number;
+		}
+
+		public void setNumber(Integer number) {
+			firePropertyChange(ObservableTrack.PROP_number, this.number, this.number = number);
+		}
+
+		public Recording getRecording() {
+			return recording;
+		}
+
+		public void setRecording(Recording recording) {
+			firePropertyChange(ObservableTrack.PROP_recording, this.recording, this.recording = recording);
+		}
+
+		public Set<PlayableElement> getPlayableElements() {
+			return playableElements;
+		}
+
+		public void setPlayableElements(Set<PlayableElement> playableElements) {
+			firePropertyChange(ObservableTrack.PROP_playableElements, this.playableElements, this.playableElements = playableElements);
+		}
+
+	}
 
 	private Composite composite;
 	private Combo mediumCombo;
@@ -68,7 +142,7 @@ public class TrackUI extends Composite {
 	private Label infoLabel;
 	
 	// simplify data binding in UI tool + expose observable properties to parent
-	private final ObservableTrack template = new ObservableTrack(); 
+	private final MyObservableTrack template = new MyObservableTrack(); 
 	private SelectionPanel<ObservableRecording> selectionPanel;
 	private Composite indexArea;
 	private Label trackLabel;
@@ -87,8 +161,8 @@ public class TrackUI extends Composite {
 		composite.setLayout(new GridLayout(1, false));
 		
 		infoLabel = new Label(composite, SWT.WRAP);
-		infoLabel.setText("Create a new track by assigning medium and track numbers to a new recording.");
-		infoLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
+		infoLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
+		infoLabel.setText("Assign a recording and (optionally) unique medium and track numbers.");
 		
 		ownerLabel = new Label(composite, SWT.NONE);
 		ownerLabel.setText("Release:");
@@ -160,7 +234,7 @@ public class TrackUI extends Composite {
 	}
 
 
-	public ObservableTrack getTemplate() {
+	public MyObservableTrack getTemplate() {
 		return template;
 	}
 	public ComboViewer getMediumViewer() {
@@ -184,4 +258,7 @@ public class TrackUI extends Composite {
 		return bindingContext;
 	}
 
+	public SelectionPanel getSelectionPanel() {
+		return selectionPanel;
+	}
 }
