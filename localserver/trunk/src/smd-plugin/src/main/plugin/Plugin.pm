@@ -107,9 +107,6 @@ sub webPages {
 
 	return unless main::WEBUI;
 
-	Slim::Web::Pages->addPageFunction("SocialMusicDiscovery/scanner\.(?:htm|xml)", \&webScanner);	
-	Slim::Web::Pages->addPageLinks("plugins", { 'PLUGIN_SOCIALMUSICDISCOVERY_SCANNER' => 'plugins/SocialMusicDiscovery/scanner.html' });
-
 	my ($name, $jarPath) = $class->jars(qr/^smd-frontend/);
 
 	if ($name) {
@@ -129,30 +126,6 @@ sub webPages {
 
 		Slim::Web::Pages->addPageLinks("plugins", { 'PLUGIN_SOCIALMUSICDISCOVERY' => 'plugins/SocialMusicDiscovery/index.html' });
 	}
-}
-
-# Page handler for the scanner status page of the plugin
-sub webScanner {
-	my ($client, $params) = @_;
-
-	if ($params->{'start'}) {
-
-		Plugins::SocialMusicDiscovery::Scanner::initScan();
-
-	} elsif ($params->{'stop'}) {
-
-		Plugins::SocialMusicDiscovery::Scanner::abortScan();
-	}
-
-	my ($totalNumberOfTracks, $currentlyScannedTrackNo, 
-		$currentlyScannedTrackFile, $inProgress) = Plugins::SocialMusicDiscovery::Scanner::getScanInformation();
-
-	$params->{'pluginSocialMusicDiscoveryScanning'}    = $inProgress;
-	$params->{'pluginSocialMusicDiscoveryCurrent'}     = $currentlyScannedTrackNo;
-	$params->{'pluginSocialMusicDiscoveryCurrentFile'} = $currentlyScannedTrackFile;
-	$params->{'pluginSocialMusicDiscoveryTotal'}       = $totalNumberOfTracks;
-
-	return Slim::Web::HTTP::filltemplatefile('plugins/SocialMusicDiscovery/scanner.html', $params);
 }
 
 1;

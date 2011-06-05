@@ -10,27 +10,6 @@ SETUP_PLUGIN_SOCIALMUSICDISCOVERY_GROUP
 SETUP_PLUGIN_SOCIALMUSICDISCOVERY_GROUP_DESC
 	EN	The Social Music Discovery plugin is a helper plugin for the Social Music Discovery application that makes it possible to synchronize the Squeezebox Server database contents with the Social Music Discovery database.
 
-PLUGIN_SOCIALMUSICDISCOVERY_SCANNING
-	EN	Scanning in progress...
-
-PLUGIN_SOCIALMUSICDISCOVERY_SCANNED
-	EN	Scanned:
-
-PLUGIN_SOCIALMUSICDISCOVERY_REFRESH
-	EN	Refresh
-
-PLUGIN_SOCIALMUSICDISCOVERY_CURRENT
-	EN	Scanning: 
-
-PLUGIN_SOCIALMUSICDISCOVERY_SCANNER
-	EN	Social Music Discovery Scanner
-
-PLUGIN_SOCIALMUSICDISCOVERY_START
-	EN	Initiate scanning
-
-PLUGIN_SOCIALMUSICDISCOVERY_STOP
-	EN	Abort scanning
-	
 PLUGIN_SOCIALMUSICDISCOVERY_FRONTEND_MISSING
 	EN	SMD user interface is not part of this distribution
 
