@@ -176,6 +176,7 @@ my $MAPPED_TAGS = {
 	'COMPOSER' => 'COMPOSER',
 	'CONDUCTOR' => 'CONDUCTOR',
 	'BAND' => 'BAND',
+	'ENSEMBLE' => 'BAND',
 	'ALBUMARTIST' => 'ALBUMARTIST',
 	'ALBUM ARTIST' => 'ALBUMARTIST',
 	'TRACKARTIST' => 'TRACKARTIST',
@@ -203,6 +204,24 @@ my $MAPPED_TAGS = {
 
 	'MUSICBRAINZ ALBUM ARTIST' => 'ALBUMARTIST',
 	'MUSICBRAINZ_ALBUM_TYPE' => 'ALBUMTYPE',
+
+	'TRACKNUMBER' => 'TRACKNUM',
+	'LABEL' => 'LABEL',
+	'PUBLISHER' => 'LABEL',
+	'ORGANIZATION' => 'LABEL',
+
+	'COUNTRY' => 'COUNTRY',
+
+	'DISCOGS_RELEASED' => 'RELEASEYEAR',
+	'ORIGYEAR' => 'ORIGYEAR',
+	'RELEASEYEAR' => 'RELEASEYEAR',
+	'RELEASE DATE' => 'RELEASEYEAR',
+
+	'DISCOGS_LABEL_LINK' => 'DISCOGS_LABEL_LINK',
+	'DISCOGS_RELEASE_ID' => 'DISCOGS_RELEASE_ID',
+	'DISCOGS_ARTIST_LINK' => 'DISCOGS_ARTIST_LINK',
+
+	'DISCNUMBER' => 'DISC',
 	
         'COMM' => 'COMMENT',
         'TALB' => 'ALBUM',
@@ -211,10 +230,13 @@ my $MAPPED_TAGS = {
         'TCMP' => 'COMPILATION',
         'YTCP' => 'COMPILATION', # non-standard v2.3 frame
         'TCON' => 'GENRE',
-        'TYER' => 'YEAR',
-        'TDRC' => 'YEAR',
-        'TDOR' => 'YEAR',
-        'XDOR' => 'YEAR',
+        'TYER' => 'YEAR', # Recording year (2.3)
+        'TRDA' => 'YEAR', # Recording dates (2.3)
+        'TDRC' => 'YEAR', # Recording time (2.4)
+        'TDOR' => 'ORIGYEAR', # Original release time (2.4)
+        'TORY' => 'ORIGYEAR', # Original release year (2.3)
+        'TDRL' => 'RELEASEYEAR', # Release time (2.4)
+        'XDOR' => 'ORIGYEAR', # Original release time (2.3 unofficial)
         'TIT2' => 'TITLE',
         'TPE1' => 'ARTIST',
         'TPE2' => 'BAND',
@@ -443,6 +465,23 @@ sub readTags {
 		my $item = {
 			'name' => 'SBSALBUMID',
 			'value' => $track->albumid,
+			'sortvalue' => undef,
+		};
+		push @tags, $item;
+	}
+	if(UNIVERSAL::can("Slim::Schema::Track","coverid")) {
+		if(defined($track->coverid)) {
+			my $item = {
+				'name' => 'SBSCOVERID',
+				'value' => $track->coverid,
+				'sortvalue' => undef,
+			};
+			push @tags, $item;
+		}
+	}elsif($track->album && $track->album->artwork) {
+		my $item = {
+			'name' => 'SBSCOVERID',
+			'value' => $track->album->artwork,
 			'sortvalue' => undef,
 		};
 		push @tags, $item;
