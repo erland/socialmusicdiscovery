@@ -41,18 +41,18 @@ public interface ImageProvider {
     /**
      * Get an resolved URL for the specified image URI
      *
-     * @param uri Image uri to resolve
+     * @param id Image uri to resolve
      * @return The resolved URL for this image uri
      */
-    String getImageURL(String uri);
+    String getImageURL(String id);
 
     /**
      * Get an resolved URL for the specified image URI rescaled to the specified size
      *
-     * @param uri Image uri to resolve
+     * @param id Image uri to resolve
      * @param maxWidth Maximum width of the image
      * @param maxHeight Maximum height of the image
      * @return The resolved URL for this image uri
      */
-    String getImageURL(String uri, Integer maxWidth, Integer maxHeight);
+    String getImageURL(String id, Integer maxWidth, Integer maxHeight);
 }

@@ -53,15 +53,15 @@ public class SqueezeboxServerImageProvider extends AbstractImageProvider {
      * @inheritDoc
      */
     @Override
-    public String getImageURL(String uri) {
-        return "http://"+squeezeboxServerHost+":"+squeezeboxServerPort+"/music/" + uri + "/cover";
+    public String getImageURL(String id) {
+        return "http://"+squeezeboxServerHost+":"+squeezeboxServerPort+"/music/" + id + "/cover";
     }
 
     /**
      * @inheritDoc
      */
     @Override
-    public String getImageURL(String uri, Integer maxWidth, Integer maxHeight) {
-        return "http://"+squeezeboxServerHost+":"+squeezeboxServerPort+"/music/" + uri + "/cover_"+maxWidth+"x"+maxHeight;
+    public String getImageURL(String id, Integer maxWidth, Integer maxHeight) {
+        return "http://"+squeezeboxServerHost+":"+squeezeboxServerPort+"/music/" + id + "/cover_"+maxWidth+"x"+maxHeight;
     }
 }

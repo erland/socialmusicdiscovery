@@ -43,15 +43,15 @@ public class InternetImageProvider extends AbstractImageProvider {
      * @inheritDoc
      */
     @Override
-    public String getImageURL(String uri) {
-        return "http://www.mysqueezebox.com/public/imageproxy?u=" + uri;
+    public String getImageURL(String id) {
+        return "http://www.mysqueezebox.com/public/imageproxy?u=" + id;
     }
 
     /**
      * @inheritDoc
      */
     @Override
-    public String getImageURL(String uri, Integer maxWidth, Integer maxHeight) {
-        return "http://www.mysqueezebox.com/public/imageproxy?u=" + uri + "&w=" + maxWidth + "&h=" + maxHeight;
+    public String getImageURL(String id, Integer maxWidth, Integer maxHeight) {
+        return "http://www.mysqueezebox.com/public/imageproxy?u=" + id + "&w=" + maxWidth + "&h=" + maxHeight;
     }
 }

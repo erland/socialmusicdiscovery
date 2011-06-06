@@ -56,12 +56,12 @@ public class ImageProviderManager {
     /**
      * Get image URL for the specified image source and uri
      * @param source Identity of the image source to get a URL for
-     * @param uri URI fo the image to get
+     * @param id Identity of the image to get
      * @return The image provider or null if no provider exists for this source
      */
-    public URL getImageURL(String source, String uri) {
+    public URL getImageURL(String source, String id) {
         try {
-            return new URL(imageProviders.get(source).getImageURL(uri));
+            return new URL(imageProviders.get(source).getImageURL(id));
         } catch (MalformedURLException e) {
             e.printStackTrace();
             return null;
@@ -71,14 +71,14 @@ public class ImageProviderManager {
     /**
      * Get image URL for the specified image source and uri and rescale it to the specified size
      * @param source Identity of the image source to get a URL for
-     * @param uri URI fo the image to get
+     * @param id Identity of the image to get
      * @param maxWidth Maximum width of image
      * @param maxHeight Maximum height of image
      * @return The URL of the image or null if no provider exists for this source
      */
-    public URL getImageURL(String source, String uri, Integer maxWidth, Integer maxHeight) {
+    public URL getImageURL(String source, String id, Integer maxWidth, Integer maxHeight) {
         try {
-            return new URL(imageProviders.get(source).getImageURL(uri, maxWidth, maxHeight));
+            return new URL(imageProviders.get(source).getImageURL(id, maxWidth, maxHeight));
         } catch (MalformedURLException e) {
             e.printStackTrace();
             return null;
