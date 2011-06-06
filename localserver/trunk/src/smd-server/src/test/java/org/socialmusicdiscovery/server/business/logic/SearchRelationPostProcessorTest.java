@@ -51,7 +51,7 @@ public class SearchRelationPostProcessorTest extends BaseTestCase {
     public void testSearchRelations() throws Exception {
         loadTestData("org.socialmusicdiscovery.server.business.model", "The Bodyguard.xml");
         SearchRelationPostProcessor searchRelationPostProcessor = new SearchRelationPostProcessor();
-        searchRelationPostProcessor.init();
+        searchRelationPostProcessor.init(null);
         searchRelationPostProcessor.execute(new ProcessingStatusCallback() {
             public void progress(String module, String currentDescription, Long currentNo, Long totalNo) {
             }

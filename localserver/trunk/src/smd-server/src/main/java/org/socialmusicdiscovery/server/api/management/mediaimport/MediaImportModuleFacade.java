@@ -27,6 +27,8 @@
 
 package org.socialmusicdiscovery.server.api.management.mediaimport;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import org.codehaus.jettison.json.JSONException;
 import org.socialmusicdiscovery.server.api.OperationStatus;
@@ -35,9 +37,7 @@ import org.socialmusicdiscovery.server.business.logic.MediaImportManager;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * Provides functionality for managing media importer modules and post processing actions
@@ -85,10 +85,15 @@ public class MediaImportModuleFacade {
      * @return true if the module can be started, false if the module doesn't exist or is currently executing
      */
     @POST
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{module}")
-    public OperationStatus startImport(@PathParam("module") String module) throws JSONException {
-        if (mediaImportManager.startImport(module)) {
+    public OperationStatus startImport(@PathParam("module") String module, JsonObject parameters) throws JSONException {
+        Map<String,String> parametersMap = new HashMap<String,String>();
+        for (Map.Entry<String, JsonElement> entry : parameters.entrySet()) {
+            parametersMap.put(entry.getKey(), entry.getValue().getAsString());
+        }
+        if (mediaImportManager.startImport(module, parametersMap)) {
             return new OperationStatus(true);
         } else {
             return new OperationStatus(false);

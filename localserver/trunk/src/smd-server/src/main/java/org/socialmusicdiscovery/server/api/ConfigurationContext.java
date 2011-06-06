@@ -39,11 +39,27 @@ public interface ConfigurationContext {
     String getStringParameter(String id);
 
     /**
+     * Get the string configuration parameter with specified identity
+     * @param id The identity of the configuration parameter
+     * @param defaultValue The default value to use if parameter doesn't exist
+     * @return The value of the configuration parameter
+     */
+    String getStringParameter(String id, String defaultValue);
+
+    /**
      * Get the boolean configuration parameter with specified identity
      * @param id The identity of the configuration parameter
      * @return The value of the configuration parameter
      */
     Boolean getBooleanParameter(String id);
+
+    /**
+     * Get the boolean configuration parameter with specified identity
+     * @param id The identity of the configuration parameter
+     * @param defaultValue The default value to use if parameter doesn't exist
+     * @return The value of the configuration parameter
+     */
+    Boolean getBooleanParameter(String id, Boolean defaultValue);
 
     /**
      * Get the integer configuration parameter with specified identity
@@ -53,9 +69,25 @@ public interface ConfigurationContext {
     Integer getIntegerParameter(String id);
 
     /**
+     * Get the integer configuration parameter with specified identity
+     * @param id The identity of the configuration parameter
+     * @param defaultValue The default value to use if parameter doesn't exist
+     * @return The value of the configuration parameter
+     */
+    Integer getIntegerParameter(String id, Integer defaultValue);
+
+    /**
      * Get the double configuration parameter with specified identity
      * @param id The identity of the configuration parameter
      * @return The value of the configuration parameter
      */
     Double getDoubleParameter(String id);
+
+    /**
+     * Get the double configuration parameter with specified identity
+     * @param id The identity of the configuration parameter
+     * @param defaultValue The default value to use if parameter doesn't exist
+     * @return The value of the configuration parameter
+     */
+    Double getDoubleParameter(String id, Double defaultValue);
 }

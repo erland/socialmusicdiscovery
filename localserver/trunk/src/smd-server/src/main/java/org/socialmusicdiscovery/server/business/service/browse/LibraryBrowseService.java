@@ -29,7 +29,10 @@ package org.socialmusicdiscovery.server.business.service.browse;
 
 import com.google.inject.Inject;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
+import org.socialmusicdiscovery.server.business.logic.config.ConfigurationManager;
 import org.socialmusicdiscovery.server.business.logic.config.MappedConfigurationContext;
+import org.socialmusicdiscovery.server.business.logic.config.MergedConfigurationManager;
+import org.socialmusicdiscovery.server.business.logic.config.PersistentConfigurationManager;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.support.format.TitleFormat;
 
@@ -79,10 +82,13 @@ public class LibraryBrowseService {
         }
     }
 
+    private ConfigurationManager configurationManager;
+
     private List<Menu> menus = null;
 
     public LibraryBrowseService() {
         InjectHelper.injectMembers(this);
+        configurationManager = new MergedConfigurationManager(new PersistentConfigurationManager());
     }
 
     protected List<Menu> getMenus() {
@@ -94,16 +100,16 @@ public class LibraryBrowseService {
     protected List<Menu> getMenuHierarchy() {
         List<Menu> menus = new ArrayList<Menu>();
 
-        MappedConfigurationContext config = new MappedConfigurationContext(getClass().getName()+".");
-        MappedConfigurationContext formatConfigs = new MappedConfigurationContext(getClass().getName()+".formats.");
+        MappedConfigurationContext config = new MappedConfigurationContext(getClass().getName()+".", configurationManager);
+        MappedConfigurationContext formatConfigs = new MappedConfigurationContext(getClass().getName()+".formats.", configurationManager);
 
         int i=1;
-        while(config.getParametersByPath(""+i).size()>0 && config.getBooleanParameter(""+i+".enabled")) {
+        while(configurationManager.getParametersByPath(getClass().getName()+"."+i).size()>0 && config.getBooleanParameter(""+i+".enabled")) {
             String menuId = config.getStringParameter(""+i+".id");
             String menuName = config.getStringParameter(""+i+".name");
             List<MenuLevel> levels = new ArrayList<MenuLevel>();
             int j=1;
-            while(config.getParametersByPath(""+i+"."+j).size()>0) {
+            while(configurationManager.getParametersByPath(getClass().getName()+"."+i+"."+j).size()>0) {
                 String objectType = config.getStringParameter(""+i+"."+j+".type");
                 String format = config.getStringParameter(""+i+"."+j+".format");
                 if(format==null) {
@@ -305,7 +311,7 @@ public class LibraryBrowseService {
                 ResultItem currentItem = browseService.findById(currentId.substring(currentId.indexOf(":")+1));
                 if(currentItem!=null) {
                     if(currentItem.getName()==null) {
-                        MappedConfigurationContext config = new MappedConfigurationContext(getClass().getName()+".formats.");
+                        MappedConfigurationContext config = new MappedConfigurationContext(getClass().getName()+".formats.", configurationManager);
                         String format = config.getStringParameter(currentItem.getType());
                         if(format!=null) {
                             currentItem.setName(new TitleFormat(format).format(currentItem.getItem()));

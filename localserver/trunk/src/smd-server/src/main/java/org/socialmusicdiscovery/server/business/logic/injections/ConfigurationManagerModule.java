@@ -34,6 +34,7 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
 import org.socialmusicdiscovery.server.business.logic.config.ConfigurationManager;
+import org.socialmusicdiscovery.server.business.logic.config.MemoryConfigurationManager;
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameter;
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameterEntity;
 import org.socialmusicdiscovery.server.business.repository.config.ConfigurationParameterRepository;
@@ -44,15 +45,15 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * Provides the singleton {@link ConfigurationManager} module that represents the default configuration provided with the application. Note that
- * this singleton instance should be used together with {@link org.socialmusicdiscovery.server.business.logic.config.MergedConfigurationContext}
+ * Provides the singleton {@link org.socialmusicdiscovery.server.business.logic.config.MemoryConfigurationManager} module that represents the default configuration provided with the application. Note that
+ * this singleton instance should be used together with {@link org.socialmusicdiscovery.server.business.logic.config.MergedConfigurationManager}
  * to be able to override the default configuration.
  *
  * The default configuration will be taken from the {@link Properties} object named "smd-default-configuration" which is handled by the
  * {@link PropertiesModule}
  */
 public class ConfigurationManagerModule extends AbstractModule {
-    ConfigurationManager configurationManager;
+    MemoryConfigurationManager configurationManager;
 
     @Override
     protected void configure() {
@@ -63,8 +64,16 @@ public class ConfigurationManagerModule extends AbstractModule {
     @Singleton
     @Named("default-value")
     public ConfigurationManager provideDefaultValueConfigurationManager(ConfigurationParameterRepository configurationParameterRepository) {
+        return provideDefaultValueMemoryConfigurationManager(configurationParameterRepository);
+    }
+
+    @Inject
+    @Provides
+    @Singleton
+    @Named("default-value")
+    public MemoryConfigurationManager provideDefaultValueMemoryConfigurationManager(ConfigurationParameterRepository configurationParameterRepository) {
         if(configurationManager==null) {
-            configurationManager = new ConfigurationManager();
+            configurationManager = new MemoryConfigurationManager();
             Properties defaultProperties = InjectHelper.instanceWithName(Properties.class, "smd-default-configuration");
             if(defaultProperties!=null) {
                 List<ConfigurationParameter> parameters = new ArrayList<ConfigurationParameter>();

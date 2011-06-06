@@ -152,7 +152,7 @@ public class DiscogsLargeDatabaseSampleCreator extends SampleCreator {
             System.setProperty("hibernate.hbm2ddl.auto", "validate");
             System.out.println("Starting to update search relations...");
             SearchRelationPostProcessor searchRelationPostProcessor = new SearchRelationPostProcessor();
-            searchRelationPostProcessor.init();
+            searchRelationPostProcessor.init(null);
             searchRelationPostProcessor.execute(new ProcessingStatusCallback() {
                 public void progress(String module, String currentDescription, Long currentNo, Long totalNo) {
                     System.out.println(currentNo + " of " + totalNo + ": " + currentDescription);

@@ -32,9 +32,10 @@ import com.google.inject.name.Named;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.socialmusicdiscovery.server.api.plugin.Plugin;
 import org.socialmusicdiscovery.server.api.plugin.PluginException;
-import org.socialmusicdiscovery.server.business.logic.config.ConfigurationManager;
 import org.socialmusicdiscovery.server.business.logic.config.MappedConfigurationContext;
-import org.socialmusicdiscovery.server.business.logic.config.MergedConfigurationContext;
+import org.socialmusicdiscovery.server.business.logic.config.MemoryConfigurationManager;
+import org.socialmusicdiscovery.server.business.logic.config.MergedConfigurationManager;
+import org.socialmusicdiscovery.server.business.logic.config.PersistentConfigurationManager;
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameter;
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameterEntity;
 
@@ -47,7 +48,7 @@ import java.util.*;
 public class PluginManager {
     @Inject
     @Named("default-value")
-    ConfigurationManager defaultValueConfigurationManager;
+    MemoryConfigurationManager defaultValueConfigurationManager;
 
     /**
      * The configuration path where plugin configurations are stored
@@ -91,7 +92,7 @@ public class PluginManager {
             if(defaultValueConfigurationManager.getParameter(pluginConfigurationPath+"enabled")==null) {
                 defaultValueConfigurationManager.setParameter(new ConfigurationParameterEntity(pluginConfigurationPath+"enabled", ConfigurationParameter.Type.BOOLEAN, "true", true));
             }
-            plugin.setConfiguration(new MappedConfigurationContext(pluginConfigurationPath));
+            plugin.setConfiguration(new MappedConfigurationContext(pluginConfigurationPath, new MergedConfigurationManager(new PersistentConfigurationManager())));
         }
     }
 
@@ -112,7 +113,7 @@ public class PluginManager {
 
         for (String pluginId : pluginIdentities) {
             if (!runningPlugins.containsKey(pluginId)) {
-                if(new MergedConfigurationContext().getBooleanParameter(PLUGIN_CONFIGURATION_PATH+pluginId+".enabled")) {
+                if(new MappedConfigurationContext("",new MergedConfigurationManager(new PersistentConfigurationManager())).getBooleanParameter(PLUGIN_CONFIGURATION_PATH+pluginId+".enabled",true)) {
                     try {
                         startPlugin(pluginId);
                     } catch (PluginException e) {

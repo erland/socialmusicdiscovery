@@ -28,37 +28,79 @@
 package org.socialmusicdiscovery.server.business.logic.config;
 
 import org.socialmusicdiscovery.server.api.ConfigurationContext;
-import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameter;
+import org.socialmusicdiscovery.server.business.logic.InjectHelper;
 
 /**
- * Mapped configuration context which provides simplified access by automatically adding a
- * prefix to all configuration parameters requested
+ * Abstract base class which can be used by all {@link ConfigurationContext} implementations to
+ * simplify type conversions
  */
-public class MappedConfigurationContext extends AbstractConfigurationContext implements ConfigurationContext {
-    String configurationPrefix;
-    ConfigurationManager configurationManager;
-
-    /**
-     * Creates a new instance with the specified configuration prefix, the prefix will always be used
-     * when requesting configuration parameters through this context object
-     *
-     * @param configurationPrefix
-     */
-    public MappedConfigurationContext(String configurationPrefix, ConfigurationManager configurationManager) {
-        this.configurationPrefix = configurationPrefix;
-        this.configurationManager = configurationManager;
+public abstract class AbstractConfigurationContext implements ConfigurationContext {
+    public AbstractConfigurationContext() {
+        InjectHelper.injectMembers(this);
     }
 
     /**
-     * Get the string configuration parameter with specified identity
-     *
-     * @param id           The identity of the configuration parameter, the actual parameter requested will be configurationPrefix+id
-     * @param defaultValue The default value to use if parameter doesn't exist
-     * @return The value of the configuration parameter
+     * @inheritDoc
      */
     @Override
-    public String getStringParameter(String id, String defaultValue) {
-        ConfigurationParameter parameter = configurationManager.getParameter(configurationPrefix + id);
-        return parameter != null && parameter.getValue() != null ? parameter.getValue() : defaultValue;
+    public abstract String getStringParameter(String id, String defaultValue);
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public String getStringParameter(String id) {
+        return getStringParameter(id, null);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public Boolean getBooleanParameter(String id) {
+        return getBooleanParameter(id, null);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public Boolean getBooleanParameter(String id, Boolean defaultValue) {
+        String value = getStringParameter(id);
+        return value != null ? Boolean.valueOf(value) : defaultValue;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public Integer getIntegerParameter(String id) {
+        return getIntegerParameter(id, null);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public Integer getIntegerParameter(String id, Integer defaultValue) {
+        String value = getStringParameter(id);
+        return value != null ? Integer.valueOf(value) : defaultValue;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public Double getDoubleParameter(String id) {
+        return getDoubleParameter(id, null);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public Double getDoubleParameter(String id, Double defaultValue) {
+        String value = getStringParameter(id);
+        return value != null ? Double.valueOf(value) : defaultValue;
     }
 }

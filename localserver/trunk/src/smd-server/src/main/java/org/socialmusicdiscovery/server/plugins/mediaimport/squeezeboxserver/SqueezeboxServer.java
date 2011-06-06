@@ -31,6 +31,10 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
+import liquibase.Liquibase;
+import liquibase.database.jvm.JdbcConnection;
+import liquibase.exception.LiquibaseException;
+import liquibase.resource.ClassLoaderResourceAccessor;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -40,6 +44,8 @@ import org.codehaus.jettison.json.JSONObject;
 import org.socialmusicdiscovery.server.api.mediaimport.AbstractProcessingModule;
 import org.socialmusicdiscovery.server.api.mediaimport.MediaImporter;
 import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
+import org.socialmusicdiscovery.server.business.logic.InjectHelper;
+import org.socialmusicdiscovery.server.business.logic.injections.database.DatabaseProvider;
 import org.socialmusicdiscovery.server.business.model.GlobalIdentity;
 import org.socialmusicdiscovery.server.business.model.GlobalIdentityEntity;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
@@ -57,6 +63,8 @@ import org.socialmusicdiscovery.server.business.repository.classification.Classi
 import org.socialmusicdiscovery.server.business.repository.core.*;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -164,6 +172,29 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
         final String SERVICE_URL = "http://" + squeezeboxServerHost + ":" + squeezeboxServerPort + "/jsonrpc.js";
         long offset = 0;
 
+        if(getExecutionConfiguration().getBooleanParameter("deletePrevious", Boolean.FALSE)) {
+            String database = InjectHelper.instanceWithName(String.class, "org.socialmusicdiscovery.server.database");
+            DatabaseProvider provider = InjectHelper.instanceWithName(DatabaseProvider.class, database);
+            try {
+                Connection connection = provider.getConnection();
+                Liquibase liquibase = new Liquibase("org/socialmusicdiscovery/server/database/smd-database-drop.xml", new
+                        ClassLoaderResourceAccessor(),
+                        new JdbcConnection(connection));
+                liquibase.update("");
+                liquibase = new Liquibase("org/socialmusicdiscovery/server/database/smd-database.changelog.xml", new
+                        ClassLoaderResourceAccessor(),
+                        new JdbcConnection(connection));
+                liquibase.update("");
+            } catch (LiquibaseException e) {
+                e.printStackTrace();
+                progressHandler.failed(getId(),e.getLocalizedMessage());
+                return;
+            } catch (SQLException e) {
+                e.printStackTrace();
+                progressHandler.failed(getId(),e.getLocalizedMessage());
+                return;
+            }
+        }
         artistCache.clear();
         artistMusicbrainzCache.clear();
         releaseCache.clear();

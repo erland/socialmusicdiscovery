@@ -31,7 +31,8 @@ import com.google.gson.annotations.Expose;
 import org.codehaus.jettison.json.JSONException;
 import org.socialmusicdiscovery.server.api.management.AbstractCRUDFacade;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
-import org.socialmusicdiscovery.server.business.logic.config.MergedConfigurationContext;
+import org.socialmusicdiscovery.server.business.logic.config.MergedConfigurationManager;
+import org.socialmusicdiscovery.server.business.logic.config.PersistentConfigurationManager;
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameter;
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameterEntity;
 import org.socialmusicdiscovery.server.business.repository.config.ConfigurationParameterRepository;
@@ -59,9 +60,9 @@ public class ConfigurationFacade extends AbstractCRUDFacade<String, Configuratio
     @Produces(MediaType.APPLICATION_JSON)
     public Collection<ConfigurationParameterEntity> getParameters(@QueryParam("path") String path) {
         if(path!=null) {
-            return new CopyHelper().detachedCopy(new MergedConfigurationContext().getParametersByPath(path), Expose.class);
+            return new CopyHelper().detachedCopy(new MergedConfigurationManager(new PersistentConfigurationManager()).getParametersByPath(path), Expose.class);
         }else {
-            return new CopyHelper().detachedCopy(new MergedConfigurationContext().getParameters(), Expose.class);
+            return new CopyHelper().detachedCopy(new MergedConfigurationManager(new PersistentConfigurationManager()).getParameters(), Expose.class);
         }
     }
 
@@ -75,7 +76,7 @@ public class ConfigurationFacade extends AbstractCRUDFacade<String, Configuratio
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
     public ConfigurationParameter getParameter(@PathParam("id") String id) {
-        return new CopyHelper().copy(new MergedConfigurationContext().getParameter(id), Expose.class);
+        return new CopyHelper().copy(new MergedConfigurationManager(new PersistentConfigurationManager()).getParameter(id), Expose.class);
     }
 
     /**

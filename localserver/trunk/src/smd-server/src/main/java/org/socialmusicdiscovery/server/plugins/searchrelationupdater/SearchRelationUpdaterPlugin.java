@@ -48,7 +48,7 @@ public class SearchRelationUpdaterPlugin extends AbstractPlugin {
         if ((database != null && (database.endsWith("-test"))) || (forcedUpdateOfSearchRelations != null && forcedUpdateOfSearchRelations.equalsIgnoreCase("true"))) {
             System.out.println("Starting to update search relations...");
             SearchRelationPostProcessor searchRelationPostProcessor = new SearchRelationPostProcessor();
-            searchRelationPostProcessor.init();
+            searchRelationPostProcessor.init(null);
             searchRelationPostProcessor.execute(new ProcessingStatusCallback() {
                 public void progress(String module, String currentDescription, Long currentNo, Long totalNo) {
                     System.out.println(currentNo + " of " + totalNo + ": " + currentDescription);
