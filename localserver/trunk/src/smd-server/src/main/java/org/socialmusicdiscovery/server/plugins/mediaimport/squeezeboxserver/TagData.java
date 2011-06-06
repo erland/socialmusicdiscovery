@@ -49,6 +49,10 @@ public class TagData {
     public static final String MUSICBRAINZ_ALBUM_ID = "MUSICBRAINZ_ALBUM_ID";
     public static final String MUSICBRAINZ_TRACK_ID = "MUSICBRAINZ_TRACK_ID";
 
+    public static final String DISCOGS_RELEASE_ID = "DISCOGS_RELEASE_ID";
+
+    public static final String SBS_COVER_ID = "SBSCOVERID";
+
     private String name;
     private String value;
     private String sortValue;
