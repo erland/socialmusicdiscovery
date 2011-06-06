@@ -40,13 +40,20 @@ public abstract class AbstractImageProvider implements ImageProvider {
         this.providerId = providerId;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public String getSource() {
         return providerId;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    public String getImageURL(String uri, Integer maxWidth, Integer maxHeight) {
-        return getImageURL(uri);
+    public String getImageURL(String id, Integer maxWidth, Integer maxHeight) {
+        // TODO: Should we have this in base class, doesn't all providers have to implement it ?
+        return getImageURL(id);
     }
 }
