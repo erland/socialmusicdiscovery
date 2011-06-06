@@ -28,9 +28,16 @@ use strict;
 use base qw(Slim::Web::Settings);
 
 use Slim::Utils::Prefs;
+use Plugins::SocialMusicDiscovery::Importer;
 
 my $prefs = preferences('plugin.socialmusicdiscovery');
 
+$prefs->migrate(2, sub {
+	if(!defined($prefs->get('autoimport'))) {
+		$prefs->set('autoimport',1);
+	}
+	1;
+});
 $prefs->setValidate({ 'validator' => 'intlimit', 'low' =>    1, 'high' => 65535 }, 'port'  );
 
 sub name {
@@ -42,7 +49,7 @@ sub page {
 }
 
 sub prefs {
-	return ($prefs, qw(hostname port replacemenu simulatedData));
+	return ($prefs, qw(hostname port replacemenu simulatedData autoimport));
 }
 
 sub beforeRender {
@@ -50,5 +57,13 @@ sub beforeRender {
 	$paramRef->{'show_replacemenu'} = !Plugins::SocialMusicDiscovery::Browse->compat;
 }
 
+sub handler {
+	my ($class, $client, $paramRef) = @_;
+
+	if($paramRef->{'full_import'}) {
+		Plugins::SocialMusicDiscovery::Importer::startFullImport();
+	}
+	return $class->SUPER::handler($client, $paramRef);
+}
 
 1;

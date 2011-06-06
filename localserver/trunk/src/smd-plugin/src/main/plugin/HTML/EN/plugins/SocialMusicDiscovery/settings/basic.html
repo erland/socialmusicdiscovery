@@ -14,6 +14,17 @@
 		<input type="text" class="stdedit" name="pref_port" id="port" value="[% prefs.pref_port %]" size="5">
 	[% END %]
 
+	[% WRAPPER setting title="SETUP_PLUGIN_SOCIALMUSICDISCOVERY_AUTO_IMPORT" desc="SETUP_PLUGIN_SOCIALMUSICDISCOVERY_AUTO_IMPORT_DESC" %]
+                <select name="pref_autoimport">
+                        <option value="1" [% IF prefs.pref_autoimport %]selected[% END %]>[% "YES" | string %]</option>
+                        <option value="0" [% IF NOT prefs.pref_autoimport %]selected[% END %]>[% "NO" | string %]</option>
+                </select>
+	[% END %]
+
+	[% WRAPPER setting title="SETUP_PLUGIN_SOCIALMUSICDISCOVERY_FULL_IMPORT" desc="SETUP_PLUGIN_SOCIALMUSICDISCOVERY_FULL_IMPORT_DESC" %]
+		<input name="full_import" type="submit" class="stdclick" value="[% "SETUP_PLUGIN_SOCIALMUSICDISCOVERY_FULL_IMPORT" | string %]">
+	[% END %]
+
 	[% WRAPPER setting title="SETUP_PLUGIN_SOCIALMUSICDISCOVERY_SIMULATED_DATA" desc="SETUP_PLUGIN_SOCIALMUSICDISCOVERY_SIMULATED_DATA_DESC" %]
 		<input type="text" class="stdedit selectFile" name="pref_simulatedData" id="simulatedData" value="[% prefs.pref_simulatedData %]" size="40">
 	[% END %]

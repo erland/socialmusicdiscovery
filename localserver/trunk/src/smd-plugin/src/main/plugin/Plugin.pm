@@ -41,6 +41,7 @@ use Plugins::SocialMusicDiscovery::Server;
 use Plugins::SocialMusicDiscovery::Browse;
 use Plugins::SocialMusicDiscovery::ContextMenu;
 use Plugins::SocialMusicDiscovery::Scanner;
+use Plugins::SocialMusicDiscovery::Importer;
 
 my $log = Slim::Utils::Log->addLogCategory({
 	'category'     => 'plugin.socialmusicdiscovery',
@@ -50,7 +51,7 @@ my $log = Slim::Utils::Log->addLogCategory({
 
 my $prefs = preferences('plugin.socialmusicdiscovery');
 
-$prefs->init({ hostname => 'localhost', port => '9998', replacemenu => 0 });
+$prefs->init({ hostname => 'localhost', port => '9998', replacemenu => 0, autoimport => 1 });
 
 sub initPlugin {
 	my $class = shift;
@@ -65,6 +66,7 @@ sub initPlugin {
 	Plugins::SocialMusicDiscovery::Browse->init;
 	Plugins::SocialMusicDiscovery::ContextMenu->init;
 	Plugins::SocialMusicDiscovery::Scanner::init();
+	Plugins::SocialMusicDiscovery::Importer::init();
 }
 
 sub shutdownPlugin {
