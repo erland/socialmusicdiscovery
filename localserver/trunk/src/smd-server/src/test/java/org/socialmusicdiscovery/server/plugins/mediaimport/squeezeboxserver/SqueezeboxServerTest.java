@@ -93,6 +93,7 @@ public class SqueezeboxServerTest extends BaseTestCase {
             trackData.setTags(Arrays.asList(
                     new TagData(TagData.ALBUM, "The Bodyguard (Original Soundtrack Album)"),
                     new TagData(TagData.MUSICBRAINZ_ALBUM_ID, "11cafb9e-5fbc-49c7-b920-4ff754e03e93"),
+                    new TagData(TagData.DISCOGS_RELEASE_ID, "1794218"),
                     new TagData(TagData.TITLE, "I Will Always Love You"),
                     new TagData(TagData.MUSICBRAINZ_TRACK_ID, "86cf33ac-5b7b-401b-9188-608bb2752063"),
                     new TagData(TagData.YEAR, "1992"),
@@ -115,6 +116,7 @@ public class SqueezeboxServerTest extends BaseTestCase {
             trackData.setTags(Arrays.asList(
                     new TagData(TagData.ALBUM, "The Bodyguard (Original Soundtrack Album)"),
                     new TagData(TagData.MUSICBRAINZ_ALBUM_ID, "11cafb9e-5fbc-49c7-b920-4ff754e03e93"),
+                    new TagData(TagData.DISCOGS_RELEASE_ID, "1794218"),
                     new TagData(TagData.TITLE, "Queen Of The Night"),
                     new TagData(TagData.MUSICBRAINZ_TRACK_ID, "bdd8624a-d0ac-480f-8fe5-253bd99b7d3f"),
                     new TagData(TagData.YEAR, "1992"),
@@ -139,6 +141,7 @@ public class SqueezeboxServerTest extends BaseTestCase {
             trackData.setTags(Arrays.asList(
                     new TagData(TagData.ALBUM, "The Bodyguard (Original Soundtrack Album)"),
                     new TagData(TagData.MUSICBRAINZ_ALBUM_ID, "11cafb9e-5fbc-49c7-b920-4ff754e03e93"),
+                    new TagData(TagData.DISCOGS_RELEASE_ID, "1794218"),
                     new TagData(TagData.TITLE, "It's Gonna Be A Lovely Day"),
                     new TagData(TagData.MUSICBRAINZ_TRACK_ID, "f2ba4ef6-7017-4b93-9176-c079ed0a97e9"),
                     new TagData(TagData.YEAR, "1992"),
@@ -164,6 +167,7 @@ public class SqueezeboxServerTest extends BaseTestCase {
             trackData.setTags(Arrays.asList(
                     new TagData(TagData.ALBUM, "The Bodyguard (Original Soundtrack Album)"),
                     new TagData(TagData.MUSICBRAINZ_ALBUM_ID, "11cafb9e-5fbc-49c7-b920-4ff754e03e93"),
+                    new TagData(TagData.DISCOGS_RELEASE_ID, "1794218"),
                     new TagData(TagData.TITLE, "Theme From The Bodyguard"),
                     new TagData(TagData.MUSICBRAINZ_TRACK_ID, "c3af5bb7-5711-495e-8fae-af8d730497cd"),
                     new TagData(TagData.YEAR, "1992"),
@@ -307,6 +311,10 @@ public class SqueezeboxServerTest extends BaseTestCase {
         GlobalIdentity identity = globalIdentityRepository.findBySourceAndEntity(GlobalIdentity.SOURCE_MUSICBRAINZ, release);
         assert identity != null;
         assert identity.getUri().equals("11cafb9e-5fbc-49c7-b920-4ff754e03e93");
+
+        identity = globalIdentityRepository.findBySourceAndEntity(GlobalIdentity.SOURCE_DISCOGS, release);
+        assert identity != null;
+        assert identity.getUri().equals("1794218");
 
         identity = globalIdentityRepository.findBySourceAndEntity(GlobalIdentity.SOURCE_MUSICBRAINZ, release.getContributors().iterator().next().getArtist());
         assert identity != null;

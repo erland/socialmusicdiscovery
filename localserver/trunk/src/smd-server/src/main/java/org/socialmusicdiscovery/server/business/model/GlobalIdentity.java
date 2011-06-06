@@ -32,6 +32,7 @@ package org.socialmusicdiscovery.server.business.model;
  */
 public interface GlobalIdentity extends SMDIdentity {
     final static String SOURCE_MUSICBRAINZ = "musicbrainz";
+    final static String SOURCE_DISCOGS = "discogs";
 
     String getSource();
 

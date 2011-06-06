@@ -102,6 +102,7 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
     private Set<String> artistMusicbrainzCache = new HashSet<String>();
     private Map<String, Collection<String>> releaseCache = new HashMap<String, Collection<String>>();
     private Set<String> releaseMusicbrainzCache = new HashSet<String>();
+    private Set<String> releaseDiscogsCache = new HashSet<String>();
 
     @Inject
     private PlayableElementRepository playableElementRepository;
@@ -199,6 +200,7 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
         artistMusicbrainzCache.clear();
         releaseCache.clear();
         releaseMusicbrainzCache.clear();
+        releaseDiscogsCache.clear();
         classificationCache.clear();
         try {
             JSONObject request = createRequest(offset, CHUNK_SIZE);
@@ -265,6 +267,7 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
         classificationCache.clear();
         releaseCache.clear();
         releaseMusicbrainzCache.clear();
+        releaseDiscogsCache.clear();
     }
 
 
@@ -505,6 +508,22 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                                 globalIdentityRepository.create(identity);
                             }
                             releaseMusicbrainzCache.add(releaseId);
+                        }
+                    }
+                    if (tags.containsKey(TagData.DISCOGS_RELEASE_ID)) {
+                        String releaseId = tags.get(TagData.DISCOGS_RELEASE_ID).iterator().next();
+                        if (!releaseDiscogsCache.contains(releaseId)) {
+                            GlobalIdentityEntity identity = globalIdentityRepository.findBySourceAndEntity(GlobalIdentity.SOURCE_DISCOGS, release);
+                            if (identity == null) {
+                                identity = new GlobalIdentityEntity();
+                                identity.setSource(GlobalIdentity.SOURCE_DISCOGS);
+                                identity.setEntityId(release.getId());
+                                identity.setUri(releaseId);
+                                identity.setLastUpdated(new Date());
+                                identity.setLastUpdatedBy(getId());
+                                globalIdentityRepository.create(identity);
+                            }
+                            releaseDiscogsCache.add(releaseId);
                         }
                     }
 
