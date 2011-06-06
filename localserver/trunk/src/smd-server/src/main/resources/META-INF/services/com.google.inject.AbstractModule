@@ -10,3 +10,4 @@ org.socialmusicdiscovery.server.business.logic.injections.database.HSQLProviderM
 org.socialmusicdiscovery.server.business.logic.injections.database.MySQLProviderModule
 org.socialmusicdiscovery.server.business.logic.injections.BrowseServiceModule
 org.socialmusicdiscovery.server.business.logic.injections.PluginManagerModule
+org.socialmusicdiscovery.server.business.logic.injections.ImageProviderModule
