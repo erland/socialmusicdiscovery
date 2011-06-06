@@ -35,7 +35,7 @@ import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.container.grizzly.GrizzlyWebContainerFactory;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
-import org.socialmusicdiscovery.server.business.logic.config.ConfigurationManager;
+import org.socialmusicdiscovery.server.business.logic.config.MemoryConfigurationManager;
 import org.socialmusicdiscovery.server.business.model.*;
 import org.socialmusicdiscovery.server.business.model.classification.Classification;
 import org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity;
@@ -1298,7 +1298,7 @@ public class FacadeTest extends BaseTestCase {
 
     @Test
     public void testCRUDConfig() throws Exception {
-        ConfigurationManager defaultValueConfigurationManager = InjectHelper.instanceWithName(ConfigurationManager.class, "default-value");
+        MemoryConfigurationManager defaultValueConfigurationManager = InjectHelper.instanceWithName(MemoryConfigurationManager.class, "default-value");
         defaultValueConfigurationManager.setParametersForPath("",new ArrayList<ConfigurationParameter>());
 
         ConfigurationParameter myBooleanConfig = new ConfigurationParameterEntity();

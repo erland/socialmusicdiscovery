@@ -27,69 +27,34 @@
 
 package org.socialmusicdiscovery.server.business.logic.config;
 
-import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameter;
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameterEntity;
 
-import java.util.*;
+import java.util.Set;
 
 /**
- * Configuration manager
+ * Represent a configuration manager that handles configuration parameters
  */
-public class ConfigurationManager {
-    private Map<String,ConfigurationParameterEntity> parameters = new HashMap<String,ConfigurationParameterEntity>();
+public interface ConfigurationManager {
+    /**
+     * Get all parameters handled by this configuration manager
+     *
+     * @return All parameters handled by this configuration manager
+     */
+    Set<ConfigurationParameterEntity> getParameters();
 
-    public ConfigurationManager() {
-    }
+    /**
+     * Get all parameters starting with the specified part managed by this configuration manager
+     *
+     * @param path Path which the parameter identities have to start with to be returned
+     * @return All matching parameters handled by this configuration manager
+     */
+    Set<ConfigurationParameterEntity> getParametersByPath(String path);
 
-    public void setParametersForPath(String path, Collection<ConfigurationParameter> parameters) {
-        Iterator<String> it= this.parameters.keySet().iterator();
-        while(it.hasNext() && path!=null) {
-            String key = it.next();
-            if(key.startsWith(path)) {
-                it.remove();
-            }
-        }
-        for (ConfigurationParameter parameter : parameters) {
-            this.parameters.put(parameter.getId(), new ConfigurationParameterEntity(parameter));
-        }
-    }
-
-    public void setParameter(ConfigurationParameter parameter) {
-        this.parameters.put(parameter.getId(), new ConfigurationParameterEntity(parameter));
-    }
-
-    public Set<ConfigurationParameterEntity> getParameters() {
-        Set<ConfigurationParameterEntity> resultParameters = new HashSet<ConfigurationParameterEntity>();
-        resultParameters.addAll(parameters.values());
-        return resultParameters;
-    }
-
-    public Set<ConfigurationParameterEntity> getParametersByPath(String path) {
-        Set<ConfigurationParameterEntity> resultParameters = new HashSet<ConfigurationParameterEntity>();
-        for (Map.Entry<String, ConfigurationParameterEntity> entry : parameters.entrySet()) {
-            if(entry.getKey().startsWith(path)) {
-                resultParameters.add(entry.getValue());
-            }
-        }
-        return resultParameters;
-    }
-
-    public ConfigurationParameterEntity getParameter(String id) {
-        ConfigurationParameterEntity parameter = parameters.get(id);
-        if(parameter!=null) {
-            return parameter;
-        }else {
-            return null;
-        }
-    }
-
-    public Collection<ConfigurationParameterEntity> getParametersForPath(String path) {
-        List<ConfigurationParameterEntity> result = new ArrayList<ConfigurationParameterEntity>();
-        for (Map.Entry<String, ConfigurationParameterEntity> entry : parameters.entrySet()) {
-            if(entry.getKey().startsWith(path)) {
-                result.add(entry.getValue());
-            }
-        }
-        return result;
-    }
+    /**
+     * Get the parameter with the specified identity
+     *
+     * @param id The identity of the parameter to get
+     * @return The parameter with the specified identity or null if it doesn't exist
+     */
+    ConfigurationParameterEntity getParameter(String id);
 }

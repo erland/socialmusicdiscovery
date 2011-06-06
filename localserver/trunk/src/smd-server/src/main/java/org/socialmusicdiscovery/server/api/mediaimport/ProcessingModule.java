@@ -31,6 +31,7 @@ import org.socialmusicdiscovery.server.api.ConfigurationContext;
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameter;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * Interface that all processing modules have to implement
@@ -70,5 +71,5 @@ public interface ProcessingModule {
      * Will be called just before the execute module to do any initialization needed before the import module is
      * ready for usage
      */
-    void init();
+    void init(Map<String,String> parameters);
 }

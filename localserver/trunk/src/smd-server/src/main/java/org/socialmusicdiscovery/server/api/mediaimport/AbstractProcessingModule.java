@@ -30,11 +30,15 @@ package org.socialmusicdiscovery.server.api.mediaimport;
 import com.google.inject.Inject;
 import org.socialmusicdiscovery.server.api.ConfigurationContext;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
+import org.socialmusicdiscovery.server.business.logic.config.MappedConfigurationContext;
+import org.socialmusicdiscovery.server.business.logic.config.MemoryConfigurationManager;
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameter;
 
 import javax.persistence.EntityManager;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 /**
  * Abstract helper class which all media importer or post processor modules should inherit from to simplify the implementation to avoid the need
@@ -50,6 +54,11 @@ public abstract class AbstractProcessingModule implements ProcessingModule {
      * Indication if the current execution has been requested to be aborted
      */
     private Boolean aborted;
+
+    /**
+     * Parameters which can be used by the processing module
+     */
+    private Map<String, String> executionParameters;
 
     /**
      * Entity manager to use for this execution
@@ -90,6 +99,14 @@ public abstract class AbstractProcessingModule implements ProcessingModule {
     }
 
     /**
+     * Get the execution parameter value of the specified execution parameter
+     * @return The execution parameter value or null if it doesn't exist
+     */
+    protected ConfigurationContext getExecutionConfiguration() {
+        return new MappedConfigurationContext(getId()+".",new MemoryConfigurationManager(executionParameters));
+    }
+
+    /**
      * Indicates if the current execution has been requested to be aborted, modules performing long operations should call this method at regular
      * intervals to check if they should be aborted or safely can continue to do their work a while longer
      * @return true if the current execution should be aborted
@@ -99,11 +116,15 @@ public abstract class AbstractProcessingModule implements ProcessingModule {
     }
 
     /**
-     * Default implementation which resets abort flag and makes sure the entity manager is ready to use
+     * Default implementation which resets abort flag and makes sure the entity manager and execution parameters are ready to use
      */
     @Override
-    public void init() {
+    public void init(Map<String,String> executionParameters) {
         InjectHelper.injectMembers(this);
         this.aborted = false;
+        this.executionParameters = executionParameters;
+        if(this.executionParameters==null) {
+            this.executionParameters = new HashMap<String,String>();
+        }
     }
 }

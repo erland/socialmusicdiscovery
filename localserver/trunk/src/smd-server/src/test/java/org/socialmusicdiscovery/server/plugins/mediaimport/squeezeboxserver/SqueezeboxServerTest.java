@@ -29,8 +29,8 @@ package org.socialmusicdiscovery.server.plugins.mediaimport.squeezeboxserver;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import org.socialmusicdiscovery.server.business.logic.config.ConfigurationManager;
 import org.socialmusicdiscovery.server.business.logic.config.MappedConfigurationContext;
+import org.socialmusicdiscovery.server.business.logic.config.MemoryConfigurationManager;
 import org.socialmusicdiscovery.server.business.model.GlobalIdentity;
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameter;
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameterEntity;
@@ -59,7 +59,7 @@ public class SqueezeboxServerTest extends BaseTestCase {
 
     @Inject
     @Named("default-value")
-    ConfigurationManager defaultValueConfigurationManager;
+    MemoryConfigurationManager defaultValueConfigurationManager;
 
     @BeforeClass
     public void setUp() {
@@ -76,8 +76,8 @@ public class SqueezeboxServerTest extends BaseTestCase {
             defaultConfiguration.add(entity);
         }
         defaultValueConfigurationManager.setParametersForPath(pluginConfigurationPath, defaultConfiguration);
-        squeezeboxServer.setConfiguration(new MappedConfigurationContext(pluginConfigurationPath));
-        squeezeboxServer.init();
+        squeezeboxServer.setConfiguration(new MappedConfigurationContext(pluginConfigurationPath, defaultValueConfigurationManager));
+        squeezeboxServer.init(null);
     }
 
     @Test

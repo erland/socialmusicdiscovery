@@ -267,8 +267,16 @@ public abstract class AbstractJSONProvider implements MessageBodyReader<Object>,
         } else {
             targetType = type;
         }
-
-        return gsonBuilder.create().fromJson(entityReader, targetType);
+        if(JsonObject.class.isAssignableFrom(type)) {
+            JsonElement element = new JsonParser().parse(entityReader);
+            if(element!=null && element.isJsonObject()) {
+                return element.getAsJsonObject();
+            }else {
+                return new JsonObject();
+            }
+        }else {
+            return gsonBuilder.create().fromJson(entityReader, targetType);
+        }
     }
 
     public <T> T fromJson(String jsonString, Class<T> type) {

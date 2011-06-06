@@ -166,7 +166,7 @@ public abstract class BaseTestCase {
      */
     protected void updateSearchRelations() {
         SearchRelationPostProcessor searchRelationPostProcessor = new SearchRelationPostProcessor();
-        searchRelationPostProcessor.init();
+        searchRelationPostProcessor.init(null);
         searchRelationPostProcessor.execute(new ProcessingStatusCallback() {
             public void progress(String module, String currentDescription, Long currentNo, Long totalNo) {
             }

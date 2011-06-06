@@ -34,8 +34,10 @@ import org.socialmusicdiscovery.server.api.mediaimport.MediaImporter;
 import org.socialmusicdiscovery.server.api.mediaimport.PostProcessor;
 import org.socialmusicdiscovery.server.api.mediaimport.ProcessingModule;
 import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
-import org.socialmusicdiscovery.server.business.logic.config.ConfigurationManager;
 import org.socialmusicdiscovery.server.business.logic.config.MappedConfigurationContext;
+import org.socialmusicdiscovery.server.business.logic.config.MemoryConfigurationManager;
+import org.socialmusicdiscovery.server.business.logic.config.MergedConfigurationManager;
+import org.socialmusicdiscovery.server.business.logic.config.PersistentConfigurationManager;
 import org.socialmusicdiscovery.server.business.logic.injections.StatisticsLogger;
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameter;
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameterEntity;
@@ -54,7 +56,7 @@ public class MediaImportManager {
 
     @Inject
     @Named("default-value")
-    private ConfigurationManager defaultValueConfigurationManager;
+    private MemoryConfigurationManager defaultValueConfigurationManager;
 
     @Inject
     private StatisticsLogger statisticsLogger;
@@ -146,7 +148,7 @@ public class MediaImportManager {
             }
             defaultValueConfigurationManager.setParametersForPath(pluginConfigurationPath, defaultConfiguration);
 
-            mediaImporter.setConfiguration(new MappedConfigurationContext(pluginConfigurationPath));
+            mediaImporter.setConfiguration(new MappedConfigurationContext(pluginConfigurationPath, new MergedConfigurationManager(new PersistentConfigurationManager())));
         }
     }
 
@@ -203,7 +205,7 @@ public class MediaImportManager {
      * @param module The identity of the media importer module, same as returned from {@link MediaImporter#getId()}
      * @return true if the module can be started, false if the module doesn't exist or is currently executing
      */
-    public boolean startImport(final String module) {
+    public boolean startImport(final String module, final Map<String,String> parameters) {
         if(module == null || !mediaImporters.containsKey(module) || runningModules.containsKey(module)) {
             return false;
         }
@@ -216,7 +218,7 @@ public class MediaImportManager {
             public void run() {
                 try {
                     statisticsLogger.start();
-                    mediaImporters.get(module).init();
+                    mediaImporters.get(module).init(parameters);
                     mediaImporters.get(module).execute(new ProcessingStatusCallback() {
                         public void progress(String module, String currentDescription, Long currentNo, Long totalNo) {
                             long processingTime;
@@ -295,7 +297,7 @@ public class MediaImportManager {
                                         runningModules.put(postProcessor.getId(), new ProcessState(postProcessor,ProcessState.Phase.EXECUTING));
                                     }
                                     statisticsLogger.start();
-                                    postProcessor.init();
+                                    postProcessor.init(parameters);
                                     postProcessor.execute(this);
                                 }
                                 failedModules.put(module, abortingModules.remove(module));
@@ -331,7 +333,7 @@ public class MediaImportManager {
                                         runningModules.put(postProcessor.getId(), new ProcessState(postProcessor,ProcessState.Phase.EXECUTING));
                                     }
                                     statisticsLogger.start();
-                                    postProcessor.init();
+                                    postProcessor.init(parameters);
                                     postProcessor.execute(this);
                                 }
                                 System.out.println(module+" finished after "+((System.currentTimeMillis()-state.started)/1000)+" seconds");
