@@ -288,6 +288,8 @@ public class DataSource extends AbstractObservable implements ModelObject {
 
 		private boolean isLoaded = false;
 
+		private final boolean isGreedyLoad;
+
 //		private final WritableSet writableSetOfChildren; 
 
 
@@ -311,14 +313,16 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		 *            for server query (see {@link #findAll(String)})
 		 * @param genericCollectionQueryType
 		 *            for server query (see {@link #findAll()})
+		 * @param isGreedyLoad see {@link #isGreedyLoad()}
 		 */
-		private Root(String nodeName, Class<? extends AbstractObservableEntity<T>> observableType, String queryPath, Class<T> distinctElementQueryType, GenericType<Set<T>> genericCollectionQueryType) {
+		private Root(String nodeName, Class<? extends AbstractObservableEntity<T>> observableType, String queryPath, Class<T> distinctElementQueryType, GenericType<Set<T>> genericCollectionQueryType, boolean isGreedyLoad) {
 			this.observableType = observableType;
 			this.name = nodeName;
 			this.path = queryPath;
 			this.distinctQueryType = distinctElementQueryType;
 			this.genericCollectionQueryType = genericCollectionQueryType;
 //			this.writableSetOfChildren = new SMDWritableSet(children, observableType);
+			this.isGreedyLoad = isGreedyLoad;
 		}
 
 		/**
@@ -579,6 +583,18 @@ public class DataSource extends AbstractObservable implements ModelObject {
 			}
 		}
 
+		/**
+		 * Does this root load all persistent attributes of the instance on
+		 * first read? If so, {@link DataSource#inflate(ObservableEntity)} does
+		 * not need to an extra read to fill all properties before editing or
+		 * hooking listeners.
+		 * 
+		 * @return boolean
+		 */
+		public boolean isGreedyLoad() {
+			return this.isGreedyLoad;
+		}
+
 	}
 
 	public DataSource(boolean isAutoConnect) {
@@ -590,12 +606,12 @@ public class DataSource extends AbstractObservable implements ModelObject {
 	public List<? extends Root> getRoots() {
 		if (roots == null) {
 			roots = Arrays.asList(
-				new Root<Artist>("Artists", ObservableArtist.class, "/artists", Artist.class, new GenericType<Set<Artist>>() {} )
-				,new Root<Contributor>("Contributors", ObservableContributor.class, "/contributors", Contributor.class, new GenericType<Set<Contributor>>() {} )
-				,new Root<Recording>("Recordings", ObservableRecording.class, "/recordings", Recording.class, new GenericType<Set<Recording>>() {} )
-				,new Root<Release>("Releases", ObservableRelease.class, "/releases", Release.class, new GenericType<Set<Release>>() {} ) 
-				,new Root<Track>("Tracks", ObservableTrack.class, "/tracks", Track.class, new GenericType<Set<Track>>() {} )
-				,new Root<PlayableElement>("Playables", ObservablePlayableElement.class, "/playableElements", PlayableElement.class, new GenericType<Set<PlayableElement>>() {} )
+				new Root<Artist>("Artists", ObservableArtist.class, "/artists", Artist.class, new GenericType<Set<Artist>>() {}, false )
+				,new Root<Contributor>("Contributors", ObservableContributor.class, "/contributors", Contributor.class, new GenericType<Set<Contributor>>() {}, true )
+				,new Root<Recording>("Recordings", ObservableRecording.class, "/recordings", Recording.class, new GenericType<Set<Recording>>() {}, true )
+				,new Root<Release>("Releases", ObservableRelease.class, "/releases", Release.class, new GenericType<Set<Release>>() {}, false ) 
+				,new Root<Track>("Tracks", ObservableTrack.class, "/tracks", Track.class, new GenericType<Set<Track>>() {}, true )
+				,new Root<PlayableElement>("Playables", ObservablePlayableElement.class, "/playableElements", PlayableElement.class, new GenericType<Set<PlayableElement>>() {}, false )
 			);
 		}
 		return roots;
@@ -773,14 +789,16 @@ public class DataSource extends AbstractObservable implements ModelObject {
 	public <T extends SMDIdentity> boolean inflate(ObservableEntity<T> shallowEntity) {
 		assert cache.contains(shallowEntity) : "Cache does not contain entity to inflate:\n\t"+shallowEntity+"Cache content:\n"+cache.dump();
 		Root root = resolveRoot(shallowEntity);
-		@SuppressWarnings("unchecked")
-		T richEntity = (T) root.read(shallowEntity.getId());
-		try {
-			cache.merge(richEntity, shallowEntity);
-//			copyHelper.mergeInto(unInflated, inflated, Exposed.class);
-//			PropertyUtils.copyProperties(unInflated, inflated);
-		} catch (Exception e) {
-			throw new FatalApplicationException("Failed to inflate instance: "+shallowEntity, e);  //$NON-NLS-1$
+		if (!root.isGreedyLoad()) {
+			@SuppressWarnings("unchecked")
+			T richEntity = (T) root.read(shallowEntity.getId());
+			try {
+				cache.merge(richEntity, shallowEntity);
+	//			copyHelper.mergeInto(unInflated, inflated, Exposed.class);
+	//			PropertyUtils.copyProperties(unInflated, inflated);
+			} catch (Exception e) {
+				throw new FatalApplicationException("Failed to inflate instance: "+shallowEntity, e);  //$NON-NLS-1$
+			}
 		}
 		return true;
 	}

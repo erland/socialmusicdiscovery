@@ -126,7 +126,7 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 	 * </p>
 	 */
 	public final void inflate() {
-		if (!isInflated) {
+		if (!isInflated()) {
 			isInflated = getDataSource().inflate(this);
 			postInflate();
 		}
