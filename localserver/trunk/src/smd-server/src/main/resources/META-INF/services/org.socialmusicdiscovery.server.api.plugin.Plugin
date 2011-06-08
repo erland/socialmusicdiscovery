@@ -3,3 +3,4 @@ org.socialmusicdiscovery.server.plugins.json.JSONPlugin
 org.socialmusicdiscovery.server.plugins.upnp.UpnpPlugin
 org.socialmusicdiscovery.server.plugins.testdataloader.TestDataLoaderPlugin
 org.socialmusicdiscovery.server.plugins.searchrelationupdater.SearchRelationUpdaterPlugin
+org.socialmusicdiscovery.server.plugins.mediaimport.spotify.SpotifyPlugin
