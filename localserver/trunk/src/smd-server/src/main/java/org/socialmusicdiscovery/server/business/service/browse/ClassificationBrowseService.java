@@ -45,4 +45,9 @@ public class ClassificationBrowseService extends AbstractBrowseService implement
     protected Boolean getPlayable() {
         return false;
     }
+
+    @Override
+    public String getObjectType() {
+        return "Classification";
+    }
 }
