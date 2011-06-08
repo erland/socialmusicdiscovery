@@ -27,27 +27,51 @@
 
 package org.socialmusicdiscovery.rcp.util;
 
+import java.util.Stack;
+
 import org.apache.commons.lang.time.DurationFormatUtils;
 
 /**
  * A utility to time duration of tasks, based on a wrapped instance of the
- * {@link org.apache.commons.lang.time.StopWatch}. Use as a simple
- * performance analyzer.
+ * {@link org.apache.commons.lang.time.StopWatch}. Use as a simple performance
+ * analyzer in several ways:
+ * <ul>
+ * <li>As a single anonymous watch using static methods {@link #start(String)}
+ * and {@link #stop()}. Each call to {@link #start(String)} prints elapsed time
+ * since last start, {@link #stop()} prints duration of last task and total
+ * time.</li>
+ * <li>As any number of named watches by calling constructor and methods
+ * {@link #task(String)} and {@link #done()}. Each call to {@link #task(String)}
+ * prints elapsed time since last call, {@link #done()} prints duration of last
+ * task and total time.</li>
+ * <li>As a stack of named watches accessible via {@link #push(String, String)} (creates a new named watch),
+ * {@link #start(String)} (starts a new task on most recent watch), {@link #pop()} (stops most recent watch) 
+ * and {@link #stop()} (stops all watches).</li>
+ * </ul>
  * 
  * @author Peer Törngren
  * 
  */
 public class StopWatch {
-	private static final org.apache.commons.lang.time.StopWatch SW = new org.apache.commons.lang.time.StopWatch();
-	private static String task;
-	private static long taskStarted; 
+	private final org.apache.commons.lang.time.StopWatch sw = new org.apache.commons.lang.time.StopWatch();
+	private static final StopWatch INSTANCE = new StopWatch(null);
+	private static Stack<StopWatch> STACK = new Stack<StopWatch>();
+	
+	private String task;
+	private long taskStarted;
+	private final String name;
+	private int indent = 0; 
+
+	public StopWatch(String name) {
+		this.name = name;
+	}
 
 	/** Start a new task
 	 * @param taskName
 	 */
-	public static void newTask(String taskName) {
+	public void task(String taskName) {
 		if (task==null) {
-			SW.start();
+			sw.start();
 			taskStarted = 0;
 		} else {
 			split();
@@ -56,26 +80,71 @@ public class StopWatch {
 		out("start ...");
 	}
 
-	public static void stop() {
+	public void done() {
 		split();
 		
-		SW.stop();
+		sw.stop();
 		task = "TOTAL";
-		out(SW.toString());
+		out(sw.toString());
 		task = null;
-		SW.reset();
+		sw.reset();
 	}
 
-	private static void split() {
-		SW.split();
-		long splitTime = SW.getSplitTime();
+	private void split() {
+		sw.split();
+		long splitTime = sw.getSplitTime();
 		String duration = DurationFormatUtils.formatDurationHMS(splitTime-taskStarted);
 		out(duration);
 		taskStarted=splitTime;
 	}
 
-	private static void out(String string) {
-		System.out.println(task + ": " + string);
+	/**
+	 * Push a new, named watch on the stack. 
+	 * @param name
+	 * @return StopWatch
+	 */
+	public static StopWatch push(String name, String taskName) {
+		StopWatch stopWatch = new StopWatch(name);
+		stopWatch.indent = STACK.size();
+		STACK.push(stopWatch);
+		start(taskName);
+		return stopWatch;
+	}
+
+	/**
+	 * Stop all active watches.
+	 */
+	public static void stop() {
+		if (STACK.isEmpty()) {
+			INSTANCE.done();
+		} else {
+			while(!STACK.isEmpty()) {
+				pop();
+			}
+		}
+	}
+
+	/**
+	 * Stop most recent watch on stack.
+	 */
+	public static void pop() {
+		STACK.pop().done();
+	}
+	
+	public static void start(String taskName) {
+		if (STACK.isEmpty()) {
+			INSTANCE.task(taskName);
+		} else {
+			STACK.peek().task(taskName);
+		}
+	}
+	
+	private void out(String string) {
+		String id = name==null ? task : name+"."+task;
+		for (int i = 0; i < indent; i++) {
+			System.out.print("  ");
+		}
+		System.out.println(id + ": " + string);
 	}
 
 	private static void sleep(long millis) {
@@ -87,10 +156,28 @@ public class StopWatch {
 	}
 	
 	public static void main(String[] args) {
-		StopWatch.newTask("First");
+		System.out.println("==DEFAULT==");
+		StopWatch.INSTANCE.task("First");
 		sleep(101);
-		StopWatch.newTask("Second");
+		StopWatch.INSTANCE.task("Second");
 		sleep(102);
+		StopWatch.INSTANCE.done();
+
+		System.out.println("==NAMED==");
+		StopWatch.push("A", "a1");
+		sleep(101);
+		StopWatch.start("a2");
+		sleep(102);
+		
+		StopWatch.push("B", "b1");
+		sleep(201);
+		StopWatch.start("b2");
+		sleep(202);
+		StopWatch.pop();
+		
+		StopWatch.start("a3");
+		sleep(102);
+		
 		StopWatch.stop();
 	}
 }
