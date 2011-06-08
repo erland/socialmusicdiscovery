@@ -586,8 +586,8 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		/**
 		 * Does this root load all persistent attributes of the instance on
 		 * first read? If so, {@link DataSource#inflate(ObservableEntity)} does
-		 * not need to an extra read to fill all properties before editing or
-		 * hooking listeners.
+		 * not need to do an extra read to fill all properties before editing or
+		 * hooking listeners - the instance is already "inflated".
 		 * 
 		 * @return boolean
 		 */
