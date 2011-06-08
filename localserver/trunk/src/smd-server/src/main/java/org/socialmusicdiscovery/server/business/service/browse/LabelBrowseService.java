@@ -45,4 +45,9 @@ public class LabelBrowseService extends AbstractBrowseService implements BrowseS
     protected Boolean getPlayable() {
         return false;
     }
+
+    @Override
+    public String getObjectType() {
+        return "Label";
+    }
 }

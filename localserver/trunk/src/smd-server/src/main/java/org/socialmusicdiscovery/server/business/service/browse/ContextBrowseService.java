@@ -27,7 +27,13 @@
 
 package org.socialmusicdiscovery.server.business.service.browse;
 
+import java.util.Collection;
+
 public class ContextBrowseService extends LibraryBrowseService {
+    @Override
+    protected Collection<Menu> getMenus() {
+        return browseMenuManager.getAllMenus(BrowseMenuManager.MenuType.CONTEXT);
+    }
 
     public Result<Object> findChildren(String parentPath, Integer firstItem, Integer maxItems, Boolean counts) {
         if (counts == null) {

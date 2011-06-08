@@ -40,47 +40,13 @@ import java.util.*;
 
 public class LibraryBrowseService {
     @Inject
+    BrowseServiceManager browseServiceManager;
+
+    @Inject
+    BrowseMenuManager browseMenuManager;
+
+    @Inject
     ObjectTypeBrowseService objectTypeBrowseService;
-
-    protected static class MenuLevel {
-        String type;
-        String format;
-        Boolean playable;
-        Long criteriaDepth = null;
-
-        MenuLevel(String type, String format, Boolean playable) {
-            this.type = type;
-            this.format = format;
-            this.playable = playable;
-            this.criteriaDepth = null;
-        }
-        MenuLevel(String type, String format, Boolean playable, Long criteriaDepth) {
-            this.type = type;
-            this.format = format;
-            this.playable = playable;
-            this.criteriaDepth = criteriaDepth;
-        }
-    }
-
-    protected static class Menu {
-        String name;
-        String id;
-        String selectedType;
-        List<MenuLevel> hierarchy;
-
-        Menu(String id, String name, List<MenuLevel> hierarchy) {
-            this.id = id;
-            this.name = name;
-            this.hierarchy = hierarchy;
-            this.selectedType = null;
-        }
-        Menu(String selectedType, String id, String name, List<MenuLevel> hierarchy) {
-            this.id = id;
-            this.name = name;
-            this.hierarchy = hierarchy;
-            this.selectedType = selectedType;
-        }
-    }
 
     private ConfigurationManager configurationManager;
 
@@ -91,60 +57,8 @@ public class LibraryBrowseService {
         configurationManager = new MergedConfigurationManager(new PersistentConfigurationManager());
     }
 
-    protected List<Menu> getMenus() {
-        if(menus==null) {
-            menus = getMenuHierarchy();
-        }
-        return menus;
-    }
-    protected List<Menu> getMenuHierarchy() {
-        List<Menu> menus = new ArrayList<Menu>();
-
-        MappedConfigurationContext config = new MappedConfigurationContext(getClass().getName()+".", configurationManager);
-        MappedConfigurationContext formatConfigs = new MappedConfigurationContext(getClass().getName()+".formats.", configurationManager);
-
-        int i=1;
-        while(configurationManager.getParametersByPath(getClass().getName()+"."+i).size()>0 && config.getBooleanParameter(""+i+".enabled")) {
-            String menuId = config.getStringParameter(""+i+".id");
-            String menuName = config.getStringParameter(""+i+".name");
-            List<MenuLevel> levels = new ArrayList<MenuLevel>();
-            int j=1;
-            while(configurationManager.getParametersByPath(getClass().getName()+"."+i+"."+j).size()>0) {
-                String objectType = config.getStringParameter(""+i+"."+j+".type");
-                String format = config.getStringParameter(""+i+"."+j+".format");
-                if(format==null) {
-                    format = formatConfigs.getStringParameter(objectType);
-                    if(format == null && objectType.contains(".")) {
-                        format = formatConfigs.getStringParameter(objectType.substring(0,objectType.indexOf(".")));
-                    }
-                }
-
-                Boolean playable = config.getBooleanParameter(""+i+"."+j+".playable");
-                Integer parentCriterias = config.getIntegerParameter(""+i+"."+j+".parentcriterias");
-
-                if(objectType!=null && format!=null && playable!=null) {
-                    if(parentCriterias!=null) {
-                        levels.add(new MenuLevel(objectType, format, playable,parentCriterias.longValue()));
-                    }else {
-                        levels.add(new MenuLevel(objectType, format, playable));
-                    }
-                }
-                j++;
-            }
-            if(levels.size()>0 && menuId!=null && menuName!=null) {
-                String context = config.getStringParameter(""+i+"."+j+".context");
-                if(context!=null) {
-                    String[] contexts = context.split(",");
-                    for (String item : contexts) {
-                        menus.add(new Menu(context,menuId, menuName, levels));
-                    }
-                }else {
-                    menus.add(new Menu(menuId, menuName, levels));
-                }
-            }
-            i++;
-        }
-        return menus;
+    protected Collection<Menu> getMenus() {
+        return browseMenuManager.getAllMenus(BrowseMenuManager.MenuType.LIBRARY);
     }
 
     public Result<Object> findChildren(Integer firstItem, Integer maxItems) {
@@ -181,25 +95,25 @@ public class LibraryBrowseService {
         if (parentPath == null) {
             List<ResultItem<Object>> items = new ArrayList<ResultItem<Object>>();
             result.setItems(items);
-            List<Menu> menus = getMenus();
+            Collection<Menu> menus = getMenus();
             int i = 0;
             Map<String, Long> counters = null;
             if (counts) {
                 counters = objectTypeBrowseService.findObjectTypes(new ArrayList<String>(), true);
             }
             for (Menu menu : menus) {
-                if (menu.selectedType!=null && (currentType==null || (!currentType.equals(menu.selectedType) && !currentBaseType.equals(menu.selectedType)))) {
+                if (menu.getContext() !=null && (currentType==null || (!currentType.equals(menu.getContext()) && !currentBaseType.equals(menu.getContext())))) {
                     continue;
                 }
                 if ((firstItem == null || firstItem <= i) && (maxItems == null || maxItems > items.size())) {
                     if (counts) {
                         Map<String, Long> childCounters = new HashMap<String, Long>(1);
-                        if (counters.get(menu.hierarchy.get(0).type) != null) {
-                            childCounters.put(menu.hierarchy.get(0).type, counters.get(menu.hierarchy.get(0).type));
+                        if (counters.get(menu.getHierarchy().get(0).getType()) != null) {
+                            childCounters.put(menu.getHierarchy().get(0).getType(), counters.get(menu.getHierarchy().get(0).getType()));
                         }
-                        items.add(new ResultItem<Object>(menu.name, "Folder", menu.id, menu.name, false, childCounters));
+                        items.add(new ResultItem<Object>(menu.getName(), "Folder", menu.getId(), menu.getName(), false, childCounters));
                     } else {
-                        items.add(new ResultItem<Object>(menu.name, "Folder", menu.id, menu.name, false, false));
+                        items.add(new ResultItem<Object>(menu.getName(), "Folder", menu.getId(), menu.getName(), false, false));
                     }
                 }
                 i++;
@@ -210,12 +124,12 @@ public class LibraryBrowseService {
             Menu currentMenu = null;
 
             for (Menu menu : getMenus()) {
-                if (menu.selectedType!=null && (currentType==null || (!currentType.equals(menu.selectedType) && !currentBaseType.equals(menu.selectedType)))) {
+                if (menu.getContext() !=null && (currentType==null || (!currentType.equals(menu.getContext()) && !currentBaseType.equals(menu.getContext())))) {
                     continue;
                 }
-                if (currentPath.equals(menu.id) || currentPath.contains("/") && currentPath.substring(0, currentPath.indexOf("/")).equals(menu.id)) {
+                if (currentPath.equals(menu.getId()) || currentPath.contains("/") && currentPath.substring(0, currentPath.indexOf("/")).equals(menu.getId())) {
                     currentMenu = menu;
-                    currentPath = currentPath.substring(menu.id.length());
+                    currentPath = currentPath.substring(menu.getId().length());
                     if (currentPath.startsWith(".")) {
                         currentPath = currentPath.substring(1);
                     }
@@ -245,47 +159,47 @@ public class LibraryBrowseService {
                 String requestedMainObjectType = null;
                 MenuLevel requestedObjectType = null;
                 String nextObjectType = null;
-                for (MenuLevel objectType : currentMenu.hierarchy) {
-                    String value = criteriaMap.get(objectType.type);
+                for (MenuLevel objectType : currentMenu.getHierarchy()) {
+                    String value = criteriaMap.get(objectType.getType());
                     if (value != null) {
-                        criterias.add(objectType.type + ":" + value);
+                        criterias.add(objectType.getType() + ":" + value);
                     } else {
-                        if (currentMenu.hierarchy.size() > criterias.size() + 1 - criteriaOffset) {
-                            nextObjectType = currentMenu.hierarchy.get(criterias.size() + 1 - criteriaOffset).type;
+                        if (currentMenu.getHierarchy().size() > criterias.size() + 1 - criteriaOffset) {
+                            nextObjectType = currentMenu.getHierarchy().get(criterias.size() + 1 - criteriaOffset).getType();
                         }
                         requestedObjectType = objectType;
-                        if (objectType.type.contains(".")) {
-                            requestedMainObjectType = objectType.type.substring(0, objectType.type.indexOf("."));
-                            criterias.add(objectType.type);
+                        if (objectType.getType().contains(".")) {
+                            requestedMainObjectType = objectType.getType().substring(0, objectType.getType().indexOf("."));
+                            criterias.add(objectType.getType());
                         } else {
-                            requestedMainObjectType = objectType.type;
+                            requestedMainObjectType = objectType.getType();
                         }
                         break;
                     }
                 }
 
                 if (requestedMainObjectType != null) {
-                    if(requestedObjectType.criteriaDepth!=null) {
-                        while(criterias.size()>requestedObjectType.criteriaDepth) {
+                    if(requestedObjectType.getCriteriaDepth() !=null) {
+                        while(criterias.size()> requestedObjectType.getCriteriaDepth()) {
                             criterias.remove(0);
                         }
                     }
-                    TitleFormat parser = new TitleFormat(requestedObjectType.format);
+                    TitleFormat parser = new TitleFormat(requestedObjectType.getFormat());
 
-                    BrowseService browseService = InjectHelper.instanceWithName(BrowseService.class, requestedMainObjectType);
+                    BrowseService browseService = browseServiceManager.getBrowseService(requestedMainObjectType);
                     Result browseResult = browseService.findChildren(criterias, new ArrayList<String>(), firstItem, maxItems, counts);
                     Collection<ResultItem> browseResultItems = browseResult.getItems();
                     for (ResultItem item : browseResultItems) {
                         String id;
                         if (item.getItem() instanceof SMDIdentity) {
-                            id = requestedObjectType.type + ":" + ((SMDIdentity) item.getItem()).getId();
+                            id = requestedObjectType.getType() + ":" + ((SMDIdentity) item.getItem()).getId();
                         } else {
-                            id = requestedObjectType.type + ":" + item.getItem().toString();
+                            id = requestedObjectType.getType() + ":" + item.getItem().toString();
                         }
                         item.setId(id);
                         item.setType(requestedMainObjectType);
                         item.setName(parser.format(item.getItem()));
-                        item.setPlayable(requestedObjectType.playable);
+                        item.setPlayable(requestedObjectType.getPlayable());
                         item.setLeaf(nextObjectType==null);
 
                         if (counts) {
@@ -306,7 +220,7 @@ public class LibraryBrowseService {
 
     private void fillContext(Result result, String currentBaseType, String currentId){
         if(currentId!=null && currentId.contains(":") && currentBaseType!=null) {
-            BrowseService browseService = InjectHelper.instanceWithName(BrowseService.class, currentBaseType);
+            BrowseService browseService = browseServiceManager.getBrowseService(currentBaseType);
             if(browseService!=null) {
                 ResultItem currentItem = browseService.findById(currentId.substring(currentId.indexOf(":")+1));
                 if(currentItem!=null) {

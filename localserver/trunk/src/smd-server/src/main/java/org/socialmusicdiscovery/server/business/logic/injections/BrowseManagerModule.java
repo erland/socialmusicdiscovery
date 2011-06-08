@@ -29,32 +29,54 @@ package org.socialmusicdiscovery.server.business.logic.injections;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import com.google.inject.Singleton;
+import org.socialmusicdiscovery.server.business.service.browse.BrowseMenuManager;
 import org.socialmusicdiscovery.server.business.service.browse.BrowseService;
-import org.socialmusicdiscovery.server.business.service.browse.ContextBrowseService;
-import org.socialmusicdiscovery.server.business.service.browse.LibraryBrowseService;
-import org.socialmusicdiscovery.server.business.service.browse.ObjectTypeBrowseService;
+import org.socialmusicdiscovery.server.business.service.browse.BrowseServiceManager;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.ServiceLoader;
 
 /**
- * Provides {@link BrowseService} implementations based on a name
+ * Provides the singleton instance of the {@link BrowseServiceManager} which manage all services in the application.
+ * The browse services are found using {@link ServiceLoader} which looks up all registered implementations of the {@link BrowseService} interface.
  */
-public class BrowseServiceModule extends AbstractModule {
+public class BrowseManagerModule extends AbstractModule {
+    private static BrowseServiceManager serviceManager;
+    private static BrowseMenuManager menuManager;
+
     @Override
     protected void configure() {
     }
 
     @Provides
-    public ObjectTypeBrowseService getObjectTypeBrowserService() {
-        return new ObjectTypeBrowseService();
+    @Singleton
+    public BrowseServiceManager provideServiceManager() {
+        if (serviceManager == null) {
+            serviceManager = new BrowseServiceManager();
+
+            // Load all plugins registered in:
+            // /META-INF/services/org.socialmusicdiscovery.server.api.mediaimport.ImageProvider
+            Map<String, BrowseService> browseServices = new HashMap<String, BrowseService>();
+            ServiceLoader<BrowseService> pluginLoader = ServiceLoader.load(BrowseService.class);
+            Iterator<BrowseService> it = pluginLoader.iterator();
+            while (it.hasNext()) {
+                BrowseService browseService = it.next();
+                serviceManager.addBrowseService(browseService.getObjectType(), browseService.getClass());
+            }
+
+        }
+        return serviceManager;
     }
 
     @Provides
-    public LibraryBrowseService getLibraryBrowserService() {
-        return new LibraryBrowseService();
-    }
-
-    @Provides
-    public ContextBrowseService getContextBrowserService() {
-        return new ContextBrowseService();
+    @Singleton
+    public BrowseMenuManager provideMenuManager() {
+        if (menuManager == null) {
+            menuManager = new BrowseMenuManager();
+        }
+        return menuManager;
     }
 }

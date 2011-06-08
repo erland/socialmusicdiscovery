@@ -27,7 +27,7 @@
 
 package org.socialmusicdiscovery.server.business.service.browse;
 
-import org.socialmusicdiscovery.server.business.logic.InjectHelper;
+import com.google.inject.Inject;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
 import org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity;
 import org.socialmusicdiscovery.server.business.model.core.*;
@@ -41,6 +41,9 @@ import java.util.List;
 import java.util.Map;
 
 public class BrowseServiceTest extends BaseTestCase {
+    @Inject
+    BrowseServiceManager browseServiceManager;
+
     @BeforeClass
     public void setUpClass() {
         loadTestData("org.socialmusicdiscovery.server.business.model", "Arista RCA Releases.xml");
@@ -59,7 +62,7 @@ public class BrowseServiceTest extends BaseTestCase {
                 serviceType = type.substring(0,type.indexOf("."));
                 criterias.add(type);
             }
-            BrowseService childBrowseService = InjectHelper.instanceWithName(BrowseService.class, serviceType);
+            BrowseService childBrowseService = browseServiceManager.getBrowseService(serviceType);
             Result result = childBrowseService.findChildren(criterias,new ArrayList<String>(),null,null,false);
             assert result.getItems().size() == types.get(type);
             assert result.getCount()==result.getItems().size();
@@ -78,7 +81,7 @@ public class BrowseServiceTest extends BaseTestCase {
                 serviceType = type.substring(0,type.indexOf("."));
                 criterias.add(type);
             }
-            BrowseService childBrowseService = InjectHelper.instanceWithName(BrowseService.class,serviceType);
+            BrowseService childBrowseService = browseServiceManager.getBrowseService(serviceType);
             Result result = childBrowseService.findChildren(criterias,new ArrayList<String>(),null,null,false);
             assert result.getItems().size() == types.get(type);
             assert result.getCount()==result.getItems().size();
@@ -101,7 +104,7 @@ public class BrowseServiceTest extends BaseTestCase {
                 serviceType = type.substring(0,type.indexOf("."));
                 criterias.add(type);
             }
-            BrowseService childBrowseService = InjectHelper.instanceWithName(BrowseService.class,serviceType);
+            BrowseService childBrowseService = browseServiceManager.getBrowseService(serviceType);
             Result result = childBrowseService.findChildren(criterias,new ArrayList<String>(),null,null,false);
             assert result.getItems().size() == types.get(type);
             assert result.getCount()==result.getItems().size();

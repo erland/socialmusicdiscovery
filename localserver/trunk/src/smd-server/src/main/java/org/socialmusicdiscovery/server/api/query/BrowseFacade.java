@@ -42,6 +42,9 @@ import java.util.*;
 @Path("/browse")
 public class BrowseFacade {
     @Inject
+    BrowseServiceManager browseServiceManager;
+
+    @Inject
     ObjectTypeBrowseService objectTypeBrowseService;
 
     public BrowseFacade() {
@@ -71,7 +74,7 @@ public class BrowseFacade {
             object = object.substring(0, object.indexOf("."));
         }
 
-        BrowseService browseService = InjectHelper.instanceWithName(BrowseService.class, object);
+        BrowseService browseService = browseServiceManager.getBrowseService(object);
         org.socialmusicdiscovery.server.business.service.browse.Result result = new CopyHelper().detachedCopy(browseService.findChildren(criteriaList, new ArrayList<String>(), offset, size, childs));
 
         List<Result.ResultItem> genericResultItems = new ArrayList<Result.ResultItem>(result.getItems().size());
@@ -143,7 +146,7 @@ public class BrowseFacade {
             offset = 0;
         }
 
-        LibraryBrowseService browseService = new LibraryBrowseService();
+        LibraryBrowseService browseService = InjectHelper.instance(LibraryBrowseService.class);
         org.socialmusicdiscovery.server.business.service.browse.Result result = new CopyHelper().detachedCopy(browseService.findChildren(objectId, offset, size, childs));
 
         List<Result.ResultItem> genericResultItems = new ArrayList<Result.ResultItem>(result.getItems().size());
@@ -181,7 +184,7 @@ public class BrowseFacade {
             offset = 0;
         }
 
-        ContextBrowseService browseService = new ContextBrowseService();
+        ContextBrowseService browseService = InjectHelper.instance(ContextBrowseService.class);
         org.socialmusicdiscovery.server.business.service.browse.Result result = new CopyHelper().detachedCopy(browseService.findChildren(objectId, offset, size, childs));
 
         List<Result.ResultItem> genericResultItems = new ArrayList<Result.ResultItem>(result.getItems().size());

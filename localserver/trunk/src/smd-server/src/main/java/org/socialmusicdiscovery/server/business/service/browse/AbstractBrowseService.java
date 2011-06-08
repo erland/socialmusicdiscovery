@@ -39,6 +39,9 @@ public abstract class AbstractBrowseService {
     @Inject
     EntityManager entityManager;
 
+    @Inject
+    protected BrowseServiceManager browseServiceManager;
+
     public AbstractBrowseService() {
         InjectHelper.injectMembers(this);
     }
@@ -239,7 +242,7 @@ public abstract class AbstractBrowseService {
                             if (!objects[1].equals("")) {
                                 type = "." + objects[1];
                             }
-                            if (InjectHelper.existsWithName(BrowseService.class, referenceType)) {
+                            if (browseServiceManager.getBrowseService(referenceType)!=null) {
                                 childCounters.put(referenceType + type, ((Long) objects[2]));
                             }
                         }
@@ -284,7 +287,7 @@ public abstract class AbstractBrowseService {
                     if (!objects[1].equals("")) {
                         type = "." + objects[1];
                     }
-                    if (InjectHelper.existsWithName(BrowseService.class, referenceType)) {
+                    if (browseServiceManager.getBrowseService(referenceType)!=null) {
                         childCounters.put(referenceType + type, ((Long) objects[2]));
                     }
                 }
@@ -308,7 +311,7 @@ public abstract class AbstractBrowseService {
                     if (!objects[1].equals("")) {
                         type = "." + objects[1];
                     }
-                    if (InjectHelper.existsWithName(BrowseService.class, referenceType)) {
+                    if (browseServiceManager.getBrowseService(referenceType)!=null) {
                         childCounters.put(referenceType + type, null);
                     }
                 }

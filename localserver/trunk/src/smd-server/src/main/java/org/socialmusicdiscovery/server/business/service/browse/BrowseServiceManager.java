@@ -27,23 +27,48 @@
 
 package org.socialmusicdiscovery.server.business.service.browse;
 
-import org.socialmusicdiscovery.server.business.model.core.ArtistEntity;
+import java.util.HashMap;
+import java.util.Map;
 
-import java.util.Collection;
+/**
+ * The browse service manager is a singleton object which manage all currently active browse services and offers functionality to retrieve
+ * a browse service for a specific object type
+ */
+public class BrowseServiceManager {
+    Map<String,Class<? extends BrowseService>> browseServices = new HashMap<String,Class<? extends BrowseService>>();
 
-public class ArtistBrowseService extends AbstractBrowseService implements BrowseService<ArtistEntity> {
-
-    @Override
-    public ResultItem<ArtistEntity> findById(String id) {
-        return findById(ArtistEntity.class, "Artist", id);
+    /**
+     * Register a new browse service for the specified object type
+     * @param objectType Type of object that are returned from this browse service
+     * @param serviceClass Browse service class, must have a default constructor as this will be used when creating instances
+     */
+    public void addBrowseService(String objectType, Class<? extends BrowseService> serviceClass) {
+        browseServices.put(objectType, serviceClass);
     }
 
-    public Result<ArtistEntity> findChildren(Collection<String> criteriaList, Collection<String> sortCriteriaList, Integer firstItem, Integer maxItems, Boolean returnChildCounters) {
-        return findChildren(ArtistEntity.class, "Artist","artist", "e.name", criteriaList, sortCriteriaList, firstItem, maxItems, returnChildCounters);
+    /**
+     * Unregister a previously registered browse service
+     * @param objectType Type type of object that are returned from this browse service
+     */
+    public void removeBrowseService(String objectType) {
+        browseServices.remove(objectType);
     }
 
-    @Override
-    public String getObjectType() {
-        return "Artist";
+    /**
+     * Get get the browse service for the specified object type
+     * @param objectType Object type to get a browse service for
+     * @return The browse service or null if it doesn't exist
+     */
+    public <T extends BrowseService> T getBrowseService(String objectType) {
+        try {
+            return (T)browseServices.get(objectType).newInstance();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+            return null;
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
+
 }

@@ -1,0 +1,6 @@
+org.socialmusicdiscovery.server.business.service.browse.LabelBrowseService
+org.socialmusicdiscovery.server.business.service.browse.ReleaseBrowseService
+org.socialmusicdiscovery.server.business.service.browse.ArtistBrowseService
+org.socialmusicdiscovery.server.business.service.browse.TrackBrowseService
+org.socialmusicdiscovery.server.business.service.browse.WorkBrowseService
+org.socialmusicdiscovery.server.business.service.browse.ClassificationBrowseService
