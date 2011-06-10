@@ -4,6 +4,7 @@ import com.sun.jersey.api.client.Client;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.socialmusicdiscovery.server.business.model.core.PlayableElementEntity;
 import org.socialmusicdiscovery.server.business.model.core.TrackEntity;
 import org.socialmusicdiscovery.server.business.service.browse.AbstractBrowseService;
 import org.socialmusicdiscovery.server.business.service.browse.BrowseService;
@@ -53,7 +54,10 @@ public class SpotifyTrackBrowseService extends AbstractBrowseService implements 
                         number = element.getInt("track-number");
                     }
                     SpotifyTrack track = new SpotifyTrack(id, number, name);
-                    ResultItem<SpotifyTrack> item = new ResultItem<SpotifyTrack>(track, false, false);
+                    PlayableElementEntity playableElement = new PlayableElementEntity();
+                    playableElement.setUri(id);
+                    track.getPlayableElements().add(playableElement);
+                    ResultItem<SpotifyTrack> item = new ResultItem<SpotifyTrack>(track, true, false);
                     item.setType(track.getClass().getSimpleName());
                     item.setId(item.getType() + ":" + id);
                     item.setName(track.getName());
@@ -79,7 +83,10 @@ public class SpotifyTrackBrowseService extends AbstractBrowseService implements 
                         number = element.getInt("track-number");
                     }
                     SpotifyTrack track = new SpotifyTrack(id, number, name);
-                    ResultItem<SpotifyTrack> item = new ResultItem<SpotifyTrack>(track, false, false);
+                    PlayableElementEntity playableElement = new PlayableElementEntity();
+                    playableElement.setUri(id);
+                    track.getPlayableElements().add(playableElement);
+                    ResultItem<SpotifyTrack> item = new ResultItem<SpotifyTrack>(track, true, false);
                     item.setType(track.getClass().getSimpleName());
                     tracks.add(item);
                 }
@@ -102,7 +109,10 @@ public class SpotifyTrackBrowseService extends AbstractBrowseService implements 
                 number = object.getJSONObject("track").getInt("track-number");
             }
             SpotifyTrack track = new SpotifyTrack(id, number, name);
-            ResultItem<SpotifyTrack> result = new ResultItem<SpotifyTrack>(track, false, false);
+            PlayableElementEntity playableElement = new PlayableElementEntity();
+            playableElement.setUri(id);
+            track.getPlayableElements().add(playableElement);
+            ResultItem<SpotifyTrack> result = new ResultItem<SpotifyTrack>(track, true, false);
             result.setType(track.getClass().getSimpleName());
             return result;
         } catch (JSONException e) {
@@ -114,5 +124,10 @@ public class SpotifyTrackBrowseService extends AbstractBrowseService implements 
     @Override
     public String getObjectType() {
         return SpotifyTrack.class.getSimpleName();
+    }
+
+    @Override
+    protected Boolean getPlayable() {
+        return true;
     }
 }

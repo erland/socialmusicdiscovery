@@ -1,29 +1,23 @@
-package org.socialmusicdiscovery.server.plugins.mediaimport.spotify;
+package org.socialmusicdiscovery.server.plugins.mediaimport.lastfm;
 
 import com.google.gson.annotations.Expose;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
-import org.socialmusicdiscovery.server.business.model.core.PlayableElement;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
- * Represent a Spotify track
+ * Represent a LastFM track
  */
-public class SpotifyTrack implements SMDIdentity {
+public class LastFMTrack implements SMDIdentity {
     @Expose
     private String id;
     @Expose
     private Integer number;
     @Expose
     private String name;
-    @Expose
-    private Set<PlayableElement> playableElements = new HashSet<PlayableElement>();
 
-    public SpotifyTrack() {
+    public LastFMTrack() {
     }
 
-    public SpotifyTrack(String id, Integer number, String name) {
+    public LastFMTrack(String id, Integer number, String name) {
         this.id = id;
         this.number = number;
         this.name = name;
@@ -51,13 +45,5 @@ public class SpotifyTrack implements SMDIdentity {
 
     public void setNumber(Integer number) {
         this.number = number;
-    }
-
-    public Set<PlayableElement> getPlayableElements() {
-        return playableElements;
-    }
-
-    public void setPlayableElements(Set<PlayableElement> playableElements) {
-        this.playableElements = playableElements;
     }
 }
