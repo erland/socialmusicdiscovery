@@ -225,10 +225,12 @@ sub _createResponse {
 		
 		if ($entry->{'playable'}) {
 
+			my $entrypath = $path . "/" . $entry->{'id'};
+
 			$playAction = 1;
 
 			if ($entry->{'leaf'}) {
-				
+
 				my $playable = $entry->{'item'}->{'playableElements'}->[0]->{'uri'};
 
 				my $menu = {
@@ -236,18 +238,17 @@ sub _createResponse {
 					type => 'audio',
 					uri  => $playable,
 					url  => $playable,
+					path => $entrypath,
 				};
 		
 				if ($flags->{'playalbum'}) {
-					$menu->{'id'}   = $i;
-					$menu->{'path'} = $path;
+					$menu->{'id'} = $i;
+					$menu->{'albumpath'} = $path;
 				}
 
 				push @menu, $menu;
 
 			} else {
-
-				my $entrypath = $path . "/" . $entry->{'id'};
 
 				push @menu, {
 					name => $entry->{'name'},
@@ -292,7 +293,7 @@ sub _createResponse {
 	if ($playAction || $infoAction) {
 
 		my %actions = (
-			commonVariables	=> [ index => 'id', path => 'path', uri => 'uri' ],
+			commonVariables	=> [ index => 'id', path => 'path', uri => 'uri', albumpath => 'albumpath' ],
 			info => { command => ['smdinfocmd', 'items'], fixedParams => { playable => $playAction || 0 } },
 		);
 
@@ -316,7 +317,8 @@ sub plCommand {
 	my $client = $request->client;
 	my $cmd    = $request->getParam('cmd');
 	my $uri    = $request->getParam('uri');
-	my $path   = $request->getParam('path');
+	# use albumpath in preference to path, play the album indicated by albumpath starting at given index
+	my $path   = $request->getParam('albumpath') || $request->getParam('path');
 	my $index  = $request->getParam('index');
 
 	if ($cmd && $uri && !(defined $index && defined $path)) {

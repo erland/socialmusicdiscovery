@@ -96,6 +96,11 @@ sub startImport {
 		return;
 	}
 
+	# work round fact that when external scanning process completes the next call to isScanning resets scanning flag
+	if (Slim::Music::Import->scanningProcess) {
+		Slim::Music::Import->scanningProcess(undef);
+	}
+
 	Slim::Music::Import->setIsScanning('PLUGIN_SOCIALMUSICDISCOVERY_SCAN_TYPE');
 
 	my $hostname = $prefs->get('hostname');
@@ -140,8 +145,7 @@ sub _checkStatus {
 	my $port = $prefs->get('port');
 
 	# If not aborted
-	# We can't use Slim::Music::Import->stillScanning to check this because it will set to false in 7.5 as soon as scanner process dies
-	if(_stillScanning()) {
+	if(Slim::Music::Import->stillScanning eq 'PLUGIN_SOCIALMUSICDISCOVERY_SCAN_TYPE') {
 		my $http = Slim::Networking::SimpleAsyncHTTP->new(\&_checkStatusReply, \&_smdServerError, {
 			'progresses' => $progresses,
 			'items' => $items,
@@ -158,12 +162,6 @@ sub _checkStatus {
 	}
 
 	return 0;
-}
-
-sub _stillScanning {
-	# We can't use Slim::Music::Import->stillScanning to check this 
-	# because it will set to false in 7.5 as soon as scanner process dies
-	return Slim::Schema->single('MetaInformation', { 'name' => 'isScanning' });
 }
 
 sub _endMonitoring {
