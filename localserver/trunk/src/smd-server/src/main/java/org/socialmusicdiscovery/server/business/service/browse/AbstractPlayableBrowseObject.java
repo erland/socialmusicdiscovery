@@ -28,7 +28,6 @@
 package org.socialmusicdiscovery.server.business.service.browse;
 
 import com.google.gson.annotations.Expose;
-import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,11 +38,7 @@ import java.util.List;
  * from this class. Objects represented in SMD database doesn't have to inherit from this class, for these
  * you just represent the browse object as the normal entity class.
  */
-public abstract class AbstractPlayableBrowseObject implements SMDIdentity {
-    @Expose
-    private String id;
-    @Expose
-    private String name;
+public abstract class AbstractPlayableBrowseObject extends AbstractBrowseObject {
     @Expose
     private List<PlayableStream> playableElements = new ArrayList<PlayableStream>();
 
@@ -92,8 +87,7 @@ public abstract class AbstractPlayableBrowseObject implements SMDIdentity {
      * @param name The name of this object which typically should be displayed to the user
      */
     public AbstractPlayableBrowseObject(String id, String name) {
-        this.id = id;
-        this.name = name;
+        super(id, name);
     }
 
     /**
@@ -104,8 +98,7 @@ public abstract class AbstractPlayableBrowseObject implements SMDIdentity {
      * @param playableURI The uri which should be played when the user selects to play this object
      */
     public AbstractPlayableBrowseObject(String id, String name, String playableURI) {
-        this.id = id;
-        this.name = name;
+        super(id, name);
         this.playableElements.add(new PlayableStream(playableURI));
     }
 
@@ -117,27 +110,10 @@ public abstract class AbstractPlayableBrowseObject implements SMDIdentity {
      * @param playableURIs A collection of uris which should be played when the user selects to play this object
      */
     public AbstractPlayableBrowseObject(String id, String name, Collection<String> playableURIs) {
-        this.id = id;
-        this.name = name;
+        super(id, name);
         for (String playableURI : playableURIs) {
             this.playableElements.add(new PlayableStream(playableURI));
         }
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public List<PlayableStream> getPlayableElements() {
