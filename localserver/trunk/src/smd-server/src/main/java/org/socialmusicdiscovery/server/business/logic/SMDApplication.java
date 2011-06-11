@@ -134,6 +134,13 @@ public class SMDApplication {
                     ClassLoaderResourceAccessor(),
                     new JdbcConnection(connection));
             if (System.getProperty("liquibase") == null || !System.getProperty("liquibase").equals("false")) {
+                // If database is locked, retry 10 times before we give up and force the lock to be released
+                for(int i=0;i<10 && liquibase.listLocks().length>0;i++) {
+                    Thread.sleep(1000);
+                }
+                if(liquibase.listLocks().length>0) {
+                    liquibase.forceReleaseLocks();
+                }
                 liquibase.update("");
             }
 
