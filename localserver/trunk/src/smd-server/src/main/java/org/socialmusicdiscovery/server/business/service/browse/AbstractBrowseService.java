@@ -28,6 +28,7 @@
 package org.socialmusicdiscovery.server.business.service.browse;
 
 import com.google.inject.Inject;
+import org.socialmusicdiscovery.server.api.ConfigurationContext;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 
@@ -42,8 +43,28 @@ public abstract class AbstractBrowseService {
     @Inject
     protected BrowseServiceManager browseServiceManager;
 
+    protected ConfigurationContext configurationContext;
+
     public AbstractBrowseService() {
         InjectHelper.injectMembers(this);
+    }
+
+    /**
+     * Set configuration context for this browse service
+     *
+     * @param configurationContext The configuration context to use
+     */
+    public void setConfiguration(ConfigurationContext configurationContext) {
+        this.configurationContext = configurationContext;
+    }
+
+    /**
+     * Get configuration context for this browse service
+     *
+     * @return The configuration context
+     */
+    protected ConfigurationContext getConfiguration() {
+        return configurationContext;
     }
 
     protected String buildResultJoinString(String objectType, String entityAlias, Collection<String> criteriaList) {
@@ -61,7 +82,7 @@ public abstract class AbstractBrowseService {
             }
             if (criteria.contains(":")) {
                 joinString.append(" JOIN ").append(entityAlias).append(".").append(referenceType).append("SearchRelations as rel").append(i);
-            }else if(criteria.contains(".") && !criteria.substring(0,criteria.indexOf(".")).equals(objectType)) {
+            } else if (criteria.contains(".") && !criteria.substring(0, criteria.indexOf(".")).equals(objectType)) {
                 joinString.append(" JOIN ").append(entityAlias).append(".").append(referenceType).append("SearchRelations as rel").append(i);
             }
         }
@@ -82,10 +103,10 @@ public abstract class AbstractBrowseService {
                     whereString.append(" and ").append(" rel").append(i).append(".type=:relType").append(i);
                 }
             } else if (criteria.contains(".")) {
-                if(relationType.equals(criteria.substring(0,criteria.indexOf(".")))) {
+                if (relationType.equals(criteria.substring(0, criteria.indexOf(".")))) {
                     whereString.append(" ").append(relationName).append(".type=:relType");
-                }else {
-                    whereString.append(" ").append( "rel").append(i).append(".type=:relType").append(i);
+                } else {
+                    whereString.append(" ").append("rel").append(i).append(".type=:relType").append(i);
                 }
             } else {
                 throw new RuntimeException("Type of criteria not specified: " + criteria);
@@ -104,10 +125,10 @@ public abstract class AbstractBrowseService {
                     query.setParameter("relType" + j, criteria.substring(criteria.indexOf(".") + 1, criteria.indexOf(":")));
                 }
             } else if (criteria.contains(".")) {
-                if(relationType.equals(criteria.substring(0,criteria.indexOf(".")))) {
+                if (relationType.equals(criteria.substring(0, criteria.indexOf(".")))) {
                     query.setParameter("relType", criteria.substring(criteria.indexOf(".") + 1));
-                }else {
-                    query.setParameter("relType"+j, criteria.substring(criteria.indexOf(".") + 1));
+                } else {
+                    query.setParameter("relType" + j, criteria.substring(criteria.indexOf(".") + 1));
                 }
             } else {
                 throw new RuntimeException("Type of criteria not specified: " + criteria);
@@ -177,7 +198,7 @@ public abstract class AbstractBrowseService {
     protected <T extends SMDIdentity> ResultItem<T> findById(Class<T> entity, String objectType, String id) {
         T instance = entityManager.find(entity, id);
         ResultItem item = new ResultItem<T>(instance, getPlayable(), false);
-        item.setId(objectType+":"+instance.getId());
+        item.setId(objectType + ":" + instance.getId());
         item.setType(objectType);
         return item;
     }
@@ -220,15 +241,15 @@ public abstract class AbstractBrowseService {
                             String excludeByType = "";
                             String excludedType = null;
                             for (String criteria : criteriaList) {
-                                if(!criteria.contains(":") && criteria.contains(".") && criteria.substring(0,criteria.indexOf(".")).equals(objectType)) {
+                                if (!criteria.contains(":") && criteria.contains(".") && criteria.substring(0, criteria.indexOf(".")).equals(objectType)) {
                                     excludeByType = " AND countRelations.type=:type ";
-                                    excludedType = criteria.substring(criteria.indexOf(".")+1);
+                                    excludedType = criteria.substring(criteria.indexOf(".") + 1);
                                 }
                             }
-                            countQuery = entityManager.createQuery("SELECT countRelations.referenceType,countRelations.type,count(distinct countRelations.reference) from RecordingEntity as r JOIN r." + relationType + "SearchRelations as searchRelations " + joinString + " JOIN r." + relation + "SearchRelations as countRelations WHERE searchRelations.reference=:item AND " + whereString + " AND NOT (countRelations.reference=:item " + excludeByType+") "+buildExclusionString("countRelations", criteriaList) + " GROUP BY countRelations.referenceType,countRelations.type");
+                            countQuery = entityManager.createQuery("SELECT countRelations.referenceType,countRelations.type,count(distinct countRelations.reference) from RecordingEntity as r JOIN r." + relationType + "SearchRelations as searchRelations " + joinString + " JOIN r." + relation + "SearchRelations as countRelations WHERE searchRelations.reference=:item AND " + whereString + " AND NOT (countRelations.reference=:item " + excludeByType + ") " + buildExclusionString("countRelations", criteriaList) + " GROUP BY countRelations.referenceType,countRelations.type");
                             setExclusionQueryParameters(countQuery, criteriaList);
-                            if(excludedType!=null) {
-                                countQuery.setParameter("type",excludedType);
+                            if (excludedType != null) {
+                                countQuery.setParameter("type", excludedType);
                             }
                         } else {
                             countQuery = entityManager.createQuery("SELECT countRelations.referenceType,countRelations.type,count(distinct countRelations.reference) from RecordingEntity as r JOIN r." + relationType + "SearchRelations as searchRelations JOIN r." + relation + "SearchRelations as countRelations WHERE searchRelations.reference=:item AND countRelations.reference!=:item GROUP BY countRelations.referenceType,countRelations.type");
@@ -242,7 +263,7 @@ public abstract class AbstractBrowseService {
                             if (!objects[1].equals("")) {
                                 type = "." + objects[1];
                             }
-                            if (browseServiceManager.getBrowseService(referenceType)!=null) {
+                            if (browseServiceManager.getBrowseService(referenceType) != null) {
                                 childCounters.put(referenceType + type, ((Long) objects[2]));
                             }
                         }
@@ -264,8 +285,8 @@ public abstract class AbstractBrowseService {
     }
 
     protected Map<String, Long> findObjectTypes(Collection<String> criteriaList, Boolean returnCounters) {
-        String joinString = buildResultJoinString("","r", criteriaList);
-        String whereString = buildResultWhereString("","searchRelations", criteriaList);
+        String joinString = buildResultJoinString("", "r", criteriaList);
+        String whereString = buildResultWhereString("", "searchRelations", criteriaList);
 
         Map<String, Long> childCounters = new HashMap<String, Long>();
         if (returnCounters != null && returnCounters) {
@@ -279,7 +300,7 @@ public abstract class AbstractBrowseService {
                 } else {
                     countQuery = entityManager.createQuery("SELECT countRelations.referenceType,countRelations.type,count(distinct countRelations.reference) from RecordingEntity as r JOIN r." + relation + "SearchRelations as countRelations GROUP BY countRelations.referenceType,countRelations.type");
                 }
-                setQueryParameters("",countQuery, criteriaList);
+                setQueryParameters("", countQuery, criteriaList);
                 List<Object[]> counts = countQuery.getResultList();
                 for (Object[] objects : counts) {
                     String referenceType = (String) objects[0];
@@ -287,12 +308,12 @@ public abstract class AbstractBrowseService {
                     if (!objects[1].equals("")) {
                         type = "." + objects[1];
                     }
-                    if (browseServiceManager.getBrowseService(referenceType)!=null) {
+                    if (browseServiceManager.getBrowseService(referenceType) != null) {
                         childCounters.put(referenceType + type, ((Long) objects[2]));
                     }
                 }
             }
-        }else {
+        } else {
             List<String> relations = Arrays.asList("label", "release", "track", "work", "artist", "classification");
             for (String relation : relations) {
                 Query countQuery = null;
@@ -303,7 +324,7 @@ public abstract class AbstractBrowseService {
                 } else {
                     countQuery = entityManager.createQuery("SELECT distinct countRelations.referenceType,countRelations.type from RecordingEntity as r JOIN r." + relation + "SearchRelations as countRelations");
                 }
-                setQueryParameters("",countQuery, criteriaList);
+                setQueryParameters("", countQuery, criteriaList);
                 List<Object[]> counts = countQuery.getResultList();
                 for (Object[] objects : counts) {
                     String referenceType = (String) objects[0];
@@ -311,7 +332,7 @@ public abstract class AbstractBrowseService {
                     if (!objects[1].equals("")) {
                         type = "." + objects[1];
                     }
-                    if (browseServiceManager.getBrowseService(referenceType)!=null) {
+                    if (browseServiceManager.getBrowseService(referenceType) != null) {
                         childCounters.put(referenceType + type, null);
                     }
                 }

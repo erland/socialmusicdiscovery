@@ -25,18 +25,52 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.server.plugins.mediaimport.lastfm;
+package org.socialmusicdiscovery.server.business.service.browse;
 
-import org.socialmusicdiscovery.server.business.service.browse.AbstractBrowseObject;
+import com.google.gson.annotations.Expose;
+import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 
 /**
- * Represent a LastFM album
+ * All browse objects which aren't represented in SMD database should inherit from this class.
+ * Browse object that are represented by an entity stored in SMD database doesn't have to inherit
+ * from this class.
  */
-public class LastFMAlbum extends AbstractBrowseObject {
-    public LastFMAlbum() {
+public abstract class AbstractBrowseObject implements SMDIdentity {
+    @Expose
+    private String id;
+    @Expose
+    private String name;
+
+    /**
+     * Constructs an empty object
+     */
+    public AbstractBrowseObject() {
     }
 
-    public LastFMAlbum(String id, String name) {
-        super(id, name);
+    /**
+     * Constructs an object with the specified id and name
+     *
+     * @param id   Identity of object
+     * @param name Name of object which typically is displayed to the user
+     */
+    public AbstractBrowseObject(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

@@ -1,3 +1,30 @@
+/*
+ *  Copyright 2010-2011, Social Music Discovery project
+ *  All rights reserved.
+ *
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
+ *      * Redistributions of source code must retain the above copyright
+ *        notice, this list of conditions and the following disclaimer.
+ *      * Redistributions in binary form must reproduce the above copyright
+ *        notice, this list of conditions and the following disclaimer in the
+ *        documentation and/or other materials provided with the distribution.
+ *      * Neither the name of Social Music Discovery project nor the
+ *        names of its contributors may be used to endorse or promote products
+ *        derived from this software without specific prior written permission.
+ *
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  DISCLAIMED. IN NO EVENT SHALL SOCIAL MUSIC DISCOVERY PROJECT BE LIABLE FOR ANY
+ *  DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ *  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package org.socialmusicdiscovery.server.plugins.mediaimport.lastfm;
 
 import com.sun.jersey.api.client.Client;
@@ -11,7 +38,6 @@ import org.socialmusicdiscovery.server.business.service.browse.ResultItem;
 
 import javax.ws.rs.core.MediaType;
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -20,9 +46,6 @@ import java.util.List;
  * Browse service that browses LastFM albums
  */
 public class LastFMAlbumBrowseService extends AbstractLastFMBrowseService implements BrowseService<LastFMAlbum> {
-    public LastFMAlbumBrowseService() {
-    }
-
     @Override
     public Result<LastFMAlbum> findChildren(Collection<String> criteriaList, Collection<String> sortCriteriaList, Integer firstItem, Integer maxItems, Boolean childCounters) {
         String currentId = "";
@@ -42,22 +65,11 @@ public class LastFMAlbumBrowseService extends AbstractLastFMBrowseService implem
 
         if (entity != null) {
             try {
-                JSONObject object = Client.create().resource(getLastFmUrl("album.search&album=" + URLEncoder.encode(entity.getName(), "utf8"))).accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
+                JSONObject object = Client.create().resource(getLastFmUrl("album.search&album=" + urlEncode(entity.getName()))).accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
                 List<ResultItem<LastFMAlbum>> albums = new ArrayList<ResultItem<LastFMAlbum>>();
                 JSONArray array = object.getJSONObject("results").getJSONObject("albummatches").getJSONArray("album");
                 for (int i = 0; i < array.length(); i++) {
-                    JSONObject element = array.getJSONObject(i);
-                    String id;
-                    if (element.has("mbid") && element.getString("mbid").length() > 0) {
-                        id = "mbid:" + element.getString("mbid");
-                    } else {
-                        id = "artist:" + URLEncoder.encode(element.getString("artist"), "utf8") + ":album:" + URLEncoder.encode(element.getString("name"), "utf8");
-                    }
-                    String name = element.getString("name");
-                    LastFMAlbum album = new LastFMAlbum(id, name);
-                    ResultItem<LastFMAlbum> item = new ResultItem<LastFMAlbum>(album, false, false);
-                    item.setType(album.getClass().getSimpleName());
-                    albums.add(item);
+                    albums.add(createFromJSON(array.getJSONObject(i)));
                 }
                 result.setCount((long) albums.size());
                 result.setItems(albums);
@@ -68,37 +80,18 @@ public class LastFMAlbumBrowseService extends AbstractLastFMBrowseService implem
             }
         } else if (currentId.startsWith(LastFMArtist.class.getSimpleName() + ":")) {
             try {
-                String query;
                 String artistId = currentId.substring(13);
-                if (artistId.startsWith("mbid")) {
-                    query = "&mbid=" + artistId.substring(5);
-                } else {
-                    query = "&" + artistId.replaceAll("artist:", "artist=");
-                }
-                JSONObject object = Client.create().resource(getLastFmUrl("artist.gettopalbums" + query)).accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
+                JSONObject object = Client.create().resource(getLastFmUrl("artist.gettopalbums" + createQueryFromId(artistId))).accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
                 List<ResultItem<LastFMAlbum>> albums = new ArrayList<ResultItem<LastFMAlbum>>();
                 if (object.getJSONObject("topalbums").has("album")) {
                     JSONArray array = object.getJSONObject("topalbums").getJSONArray("album");
                     for (int i = 0; i < array.length(); i++) {
-                        JSONObject element = array.getJSONObject(i);
-                        String id;
-                        if (element.has("mbid") && element.getString("mbid").length() > 0) {
-                            id = "mbid:" + element.getString("mbid");
-                        } else {
-                            id = "artist:" + URLEncoder.encode(element.getString("artist"), "utf8") + ":album:" + URLEncoder.encode(element.getString("name"), "utf8");
-                        }
-                        String name = element.getString("name");
-                        LastFMAlbum album = new LastFMAlbum(id, name);
-                        ResultItem<LastFMAlbum> item = new ResultItem<LastFMAlbum>(album, false, false);
-                        item.setType(album.getClass().getSimpleName());
-                        albums.add(item);
+                        albums.add(createFromJSON(array.getJSONObject(i)));
                     }
                 }
                 result.setCount((long) albums.size());
                 result.setItems(albums);
             } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
         }
@@ -108,23 +101,29 @@ public class LastFMAlbumBrowseService extends AbstractLastFMBrowseService implem
     @Override
     public ResultItem<LastFMAlbum> findById(String id) {
         try {
-            String query;
-            if (id.startsWith("mbid")) {
-                query = "&mbid=" + id.substring(5);
-            } else {
-                query = id.replaceAll(":album:", "&album=");
-                query = query.replaceAll("artist:", "artist=");
-                query = "&" + query;
-            }
-            JSONObject object = Client.create().resource(getLastFmUrl("album.getinfo" + query)).accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
-            String name = object.getJSONObject("album").getString("name");
-            LastFMAlbum album = new LastFMAlbum(id, name);
-            ResultItem<LastFMAlbum> result = new ResultItem<LastFMAlbum>(album, false, false);
-            result.setType(album.getClass().getSimpleName());
-            return result;
+            JSONObject object = Client.create().resource(getLastFmUrl("album.getinfo" + createQueryFromId(id))).accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
+            return createFromJSON(object.getJSONObject("album"));
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    private ResultItem<LastFMAlbum> createFromJSON(JSONObject json) throws JSONException {
+        try {
+            String id;
+            if (json.has("mbid") && json.getString("mbid").length() > 0) {
+                id = "mbid:" + json.getString("mbid");
+            } else {
+                id = "artist:" + urlEncode(json.getString("artist")) + ":album:" + urlEncode(json.getString("name"));
+            }
+            String name = json.getString("name");
+            LastFMAlbum album = new LastFMAlbum(id, name);
+            ResultItem<LastFMAlbum> item = new ResultItem<LastFMAlbum>(album, false, false);
+            item.setType(album.getClass().getSimpleName());
+            return item;
+        } catch (UnsupportedEncodingException e) {
+            throw new JSONException(e);
         }
     }
 
