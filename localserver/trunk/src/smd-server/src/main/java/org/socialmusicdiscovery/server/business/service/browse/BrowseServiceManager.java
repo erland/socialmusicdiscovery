@@ -27,6 +27,11 @@
 
 package org.socialmusicdiscovery.server.business.service.browse;
 
+import org.socialmusicdiscovery.server.api.ConfigurationContext;
+import org.socialmusicdiscovery.server.business.logic.config.MappedConfigurationContext;
+import org.socialmusicdiscovery.server.business.logic.config.MergedConfigurationManager;
+import org.socialmusicdiscovery.server.business.logic.config.PersistentConfigurationManager;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,33 +40,57 @@ import java.util.Map;
  * a browse service for a specific object type
  */
 public class BrowseServiceManager {
-    Map<String,Class<? extends BrowseService>> browseServices = new HashMap<String,Class<? extends BrowseService>>();
+    Map<String, Class<? extends BrowseService>> browseServices = new HashMap<String, Class<? extends BrowseService>>();
+    Map<String, ConfigurationContext> configurationContexts = new HashMap<String, ConfigurationContext>();
 
     /**
      * Register a new browse service for the specified object type
-     * @param objectType Type of object that are returned from this browse service
+     *
+     * @param objectType   Type of object that are returned from this browse service
      * @param serviceClass Browse service class, must have a default constructor as this will be used when creating instances
      */
     public void addBrowseService(String objectType, Class<? extends BrowseService> serviceClass) {
         browseServices.put(objectType, serviceClass);
+        configurationContexts.remove(objectType);
+    }
+
+    /**
+     * Register a new browse service for the specified object type
+     *
+     * @param objectType           Type of object that are returned from this browse service
+     * @param serviceClass         Browse service class, must have a default constructor as this will be used when creating instances
+     * @param configurationContext The configuration context which should be used by this browse service
+     */
+    public void addBrowseService(String objectType, Class<? extends BrowseService> serviceClass, ConfigurationContext configurationContext) {
+        browseServices.put(objectType, serviceClass);
+        configurationContexts.put(objectType, configurationContext);
     }
 
     /**
      * Unregister a previously registered browse service
+     *
      * @param objectType Type type of object that are returned from this browse service
      */
     public void removeBrowseService(String objectType) {
         browseServices.remove(objectType);
+        configurationContexts.remove(objectType);
     }
 
     /**
      * Get get the browse service for the specified object type
+     *
      * @param objectType Object type to get a browse service for
      * @return The browse service or null if it doesn't exist
      */
     public <T extends BrowseService> T getBrowseService(String objectType) {
         try {
-            return (T)browseServices.get(objectType).newInstance();
+            T service = (T) browseServices.get(objectType).newInstance();
+            ConfigurationContext context = configurationContexts.get(objectType);
+            if (context == null) {
+                context = new MappedConfigurationContext(service.getClass() + ".", new MergedConfigurationManager(new PersistentConfigurationManager()));
+            }
+            service.setConfiguration(context);
+            return service;
         } catch (InstantiationException e) {
             e.printStackTrace();
             return null;

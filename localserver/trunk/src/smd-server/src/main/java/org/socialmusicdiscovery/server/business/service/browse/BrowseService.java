@@ -27,10 +27,42 @@
 
 package org.socialmusicdiscovery.server.business.service.browse;
 
+import org.socialmusicdiscovery.server.api.ConfigurationContext;
+
 import java.util.Collection;
 
 public interface BrowseService<T> {
+    /**
+     * This method will be called by the {@link BrowseServiceManager} before an instance of this service is used for the first time
+     *
+     * @param configurationContext The configuration context which this service should use to get its configuration
+     */
+    void setConfiguration(ConfigurationContext configurationContext);
+
+    /**
+     * The type of objects which this service provides
+     *
+     * @return The identity of the object type this service provides
+     */
     String getObjectType();
+
+    /**
+     * Find children immediately matching the specified browse criterias
+     *
+     * @param criteriaList     The list of browse criteria the children has to match
+     * @param sortCriteriaList The list of sorting criteras which should be used
+     * @param firstItem        The index of the first item that should be returned, used for paged requests
+     * @param maxItems         The maximum number of items that should be returned, used for paged requests
+     * @param childCounters    Indicates if child counters should be returned
+     * @return The list of matching child object instances
+     */
     Result<T> findChildren(Collection<String> criteriaList, Collection<String> sortCriteriaList, Integer firstItem, Integer maxItems, Boolean childCounters);
+
+    /**
+     * Find the object with the specified identity
+     *
+     * @param id The identity of the object to find
+     * @return The object instance or null if it can't be found
+     */
     ResultItem<T> findById(String id);
 }

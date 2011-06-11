@@ -1,3 +1,30 @@
+/*
+ *  Copyright 2010-2011, Social Music Discovery project
+ *  All rights reserved.
+ *
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
+ *      * Redistributions of source code must retain the above copyright
+ *        notice, this list of conditions and the following disclaimer.
+ *      * Redistributions in binary form must reproduce the above copyright
+ *        notice, this list of conditions and the following disclaimer in the
+ *        documentation and/or other materials provided with the distribution.
+ *      * Neither the name of Social Music Discovery project nor the
+ *        names of its contributors may be used to endorse or promote products
+ *        derived from this software without specific prior written permission.
+ *
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  DISCLAIMED. IN NO EVENT SHALL SOCIAL MUSIC DISCOVERY PROJECT BE LIABLE FOR ANY
+ *  DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ *  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package org.socialmusicdiscovery.server.plugins.mediaimport.spotify;
 
 import com.sun.jersey.api.client.Client;
@@ -45,13 +72,7 @@ public class SpotifyArtistBrowseService extends AbstractBrowseService implements
                 List<ResultItem<SpotifyArtist>> artists = new ArrayList<ResultItem<SpotifyArtist>>();
                 JSONArray array = object.getJSONArray("artists");
                 for (int i = 0; i < array.length(); i++) {
-                    JSONObject element = array.getJSONObject(i);
-                    String id = element.getString("href");
-                    String name = element.getString("name");
-                    SpotifyArtist artist = new SpotifyArtist(id, name);
-                    ResultItem<SpotifyArtist> item = new ResultItem<SpotifyArtist>(artist, false, false);
-                    item.setType(artist.getClass().getSimpleName());
-                    artists.add(item);
+                    artists.add(createFromJSON(array.getJSONObject(i)));
                 }
                 result.setItems(artists);
             } catch (UnsupportedEncodingException e) {
@@ -67,15 +88,20 @@ public class SpotifyArtistBrowseService extends AbstractBrowseService implements
     public ResultItem<SpotifyArtist> findById(String id) {
         try {
             JSONObject object = Client.create().resource("http://ws.spotify.com/lookup/1/.json?uri=" + id).accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
-            String name = object.getJSONObject("artist").getString("name");
-            SpotifyArtist artist = new SpotifyArtist(id, name);
-            ResultItem<SpotifyArtist> result = new ResultItem<SpotifyArtist>(artist, false, false);
-            result.setType(artist.getClass().getSimpleName());
-            return result;
+            return createFromJSON(object.getJSONObject("artist"));
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private ResultItem<SpotifyArtist> createFromJSON(JSONObject json) throws JSONException {
+        String id = json.getString("href");
+        String name = json.getString("name");
+        SpotifyArtist artist = new SpotifyArtist(id, name);
+        ResultItem<SpotifyArtist> item = new ResultItem<SpotifyArtist>(artist, false, false);
+        item.setType(artist.getClass().getSimpleName());
+        return item;
     }
 
     @Override
