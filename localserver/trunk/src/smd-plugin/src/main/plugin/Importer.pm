@@ -34,6 +34,7 @@ use Slim::Utils::Log;
 use Slim::Music::Import;
 use LWP::UserAgent;
 use HTTP::Request;
+use Scalar::Util qw(blessed);
 
 my $prefs = preferences('plugin.socialmusicdiscovery');
 my $log = logger('plugin.socialmusicdiscovery');
@@ -96,7 +97,7 @@ sub startImport {
 		return;
 	}
 
-	# work round fact that when external scanning process completes the next call to isScanning resets scanning flag
+	# work round fact that when external scanning process completes on 7.6 the next call to isScanning resets scanning flag
 	if (Slim::Music::Import->scanningProcess) {
 		Slim::Music::Import->scanningProcess(undef);
 	}
@@ -145,7 +146,7 @@ sub _checkStatus {
 	my $port = $prefs->get('port');
 
 	# If not aborted
-	if(Slim::Music::Import->stillScanning eq 'PLUGIN_SOCIALMUSICDISCOVERY_SCAN_TYPE') {
+	if(_stillScanning() eq 'PLUGIN_SOCIALMUSICDISCOVERY_SCAN_TYPE') {
 		my $http = Slim::Networking::SimpleAsyncHTTP->new(\&_checkStatusReply, \&_smdServerError, {
 			'progresses' => $progresses,
 			'items' => $items,
@@ -162,6 +163,14 @@ sub _checkStatus {
 	}
 
 	return 0;
+}
+
+sub _stillScanning {
+	# We can't use Slim::Music::Import->stillScanning to check this
+	# because it will set to false in 7.5 as soon as scanner process dies
+	my $scanRS   = Slim::Schema->single('MetaInformation', { 'name' => 'isScanning' });
+	my $scanning = blessed($scanRS) ? $scanRS->value : 0;
+	return $scanning;
 }
 
 sub _endMonitoring {
