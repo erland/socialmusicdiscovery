@@ -32,10 +32,7 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.socialmusicdiscovery.server.business.model.core.TrackEntity;
-import org.socialmusicdiscovery.server.business.service.browse.AbstractBrowseService;
-import org.socialmusicdiscovery.server.business.service.browse.BrowseService;
-import org.socialmusicdiscovery.server.business.service.browse.Result;
-import org.socialmusicdiscovery.server.business.service.browse.ResultItem;
+import org.socialmusicdiscovery.server.business.service.browse.*;
 
 import javax.ws.rs.core.MediaType;
 import java.io.UnsupportedEncodingException;
@@ -47,7 +44,7 @@ import java.util.List;
 /**
  * Browse service that browses Spotify tracks
  */
-public class SpotifyTrackBrowseService extends AbstractBrowseService implements BrowseService<SpotifyTrack> {
+public class SpotifyTrackBrowseService extends AbstractBrowseService implements BrowseService<SpotifyTrack>, OnlinePlayableElementService {
     @Override
     public Result<SpotifyTrack> findChildren(Collection<String> criteriaList, Collection<String> sortCriteriaList, Integer firstItem, Integer maxItems, Boolean childCounters) {
         String currentId = "";
@@ -119,6 +116,18 @@ public class SpotifyTrackBrowseService extends AbstractBrowseService implements 
         ResultItem<SpotifyTrack> item = new ResultItem<SpotifyTrack>(track, true, false);
         item.setType(track.getClass().getSimpleName());
         return item;
+    }
+
+    @Override
+    public List<OnlinePlayableElement> find(List<String> criteriaList) {
+        List<OnlinePlayableElement> result = new ArrayList<OnlinePlayableElement>();
+        for (String criteria : criteriaList) {
+            if (criteria.startsWith(SpotifyTrack.class.getSimpleName())) {
+                result.add(new OnlinePlayableElement(criteria.substring(13)));
+                break;
+            }
+        }
+        return result;
     }
 
     @Override

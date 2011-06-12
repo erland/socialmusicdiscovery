@@ -70,7 +70,7 @@ public class SpotifyPlugin extends AbstractPlugin {
                                 new MenuLevel(SpotifyArtist.class.getSimpleName(),
                                         false),
                                 new MenuLevel(SpotifyAlbum.class.getSimpleName(),
-                                        false,
+                                        true,
                                         1L),
                                 new MenuLevel(SpotifyTrack.class.getSimpleName(),
                                         true,
@@ -81,7 +81,7 @@ public class SpotifyPlugin extends AbstractPlugin {
                 new Menu("Release", "spotifyalbums", "On Spotify", Menu.BOTTOM_WEIGHT,
                         Arrays.asList(
                                 new MenuLevel(SpotifyAlbum.class.getSimpleName(),
-                                        false),
+                                        true),
                                 new MenuLevel(SpotifyTrack.class.getSimpleName(),
                                         true,
                                         1L)

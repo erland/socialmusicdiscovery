@@ -25,31 +25,29 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.server.api.query;
+package org.socialmusicdiscovery.server.business.service.browse;
 
-import com.google.gson.annotations.Expose;
-import org.socialmusicdiscovery.server.business.service.browse.OnlinePlayableElement;
+import org.socialmusicdiscovery.server.api.ConfigurationContext;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
- * Represents a list of PlayableElement
+ * Represents a service which supports to retrieve playable element for a browse item
  */
-public class PlayableElementResult extends Result {
+public interface OnlinePlayableElementService {
+    /**
+     * This method will be called by the {@link BrowseServiceManager} before an instance of this service is used for the first time
+     *
+     * @param configurationContext The configuration context which this service should use to get its configuration
+     */
+    void setConfiguration(ConfigurationContext configurationContext);
 
-    @Expose
-    private List<OnlinePlayableElement> items;
-
-    public PlayableElementResult() {
-    }
-
-    public PlayableElementResult(List<OnlinePlayableElement> items, Long totalSize, Long offset, Long size) {
-        super(totalSize, offset, size);
-        this.items = items;
-    }
-
-    public Collection<OnlinePlayableElement> getItems() {
-        return items;
-    }
+    /**
+     * Return all playable elements matching the specified list of criterias, note that the playable elements returned
+     * typically doesn't exist in the database yet.
+     *
+     * @param criteriaList Criterias which the playable elements should match
+     * @return A list of playable elements
+     */
+    List<OnlinePlayableElement> find(List<String> criteriaList);
 }
