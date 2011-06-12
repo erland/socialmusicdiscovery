@@ -72,7 +72,7 @@ public class SpotifyAlbumBrowseService extends AbstractBrowseService implements 
                 List<ResultItem<SpotifyAlbum>> albums = new ArrayList<ResultItem<SpotifyAlbum>>();
                 JSONArray array = object.getJSONArray("albums");
                 for (int i = 0; i < array.length(); i++) {
-                    ResultItem<SpotifyAlbum> item = createFromJSON(array.getJSONObject(i).getJSONObject("album"));
+                    ResultItem<SpotifyAlbum> item = createFromJSON(array.getJSONObject(i));
                     if (item != null) {
                         albums.add(item);
                     }
