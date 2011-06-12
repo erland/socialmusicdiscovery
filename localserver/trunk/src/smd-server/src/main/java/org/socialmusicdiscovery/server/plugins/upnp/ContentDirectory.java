@@ -587,7 +587,7 @@ public class ContentDirectory extends AbstractContentDirectoryService  {
 
 //public class SmdArtist extends  org.teleal.cling.support.model.container.MusicArtist {
 //
-//    public SmdArtist(ResultItem<String> artistItem) {
+//    public SmdArtist(Item<String> artistItem) {
 //        setId(artistItem.getId());
 //        
 //        // for performance reason, childCount should be null

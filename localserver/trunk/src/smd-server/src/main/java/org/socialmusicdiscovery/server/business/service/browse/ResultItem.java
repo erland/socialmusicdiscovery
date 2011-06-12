@@ -36,6 +36,8 @@ public class ResultItem<T> {
     private String id;
     private String name;
     private Boolean playable;
+    private String playableElementsURL;
+    private String commandURL;
     private Boolean leaf;
     private T item;
 
@@ -126,5 +128,21 @@ public class ResultItem<T> {
 
     public void setLeaf(Boolean leaf) {
         this.leaf = leaf;
+    }
+
+    public String getPlayableElementsURL() {
+        return playableElementsURL;
+    }
+
+    public void setPlayableElementsURL(String playableElementsURL) {
+        this.playableElementsURL = playableElementsURL;
+    }
+
+    public String getCommandURL() {
+        return commandURL;
+    }
+
+    public void setCommandURL(String commandURL) {
+        this.commandURL = commandURL;
     }
 }
