@@ -83,10 +83,25 @@ public class PluginManager {
                 if(!entity.getId().startsWith(pluginConfigurationPath)) {
                     entity.setId(pluginConfigurationPath+entity.getId());
                 }
+                ConfigurationParameter defaultValue = defaultValueConfigurationManager.getParameter(pluginConfigurationPath+entity.getId());
+                if(defaultValue!=null) {
+                    entity.setValue(defaultValue.getValue());
+                }else if(System.getProperty(pluginConfigurationPath+entity.getId())!=null) {
+                    entity.setValue(System.getProperty(pluginConfigurationPath+entity.getId()));
+                }
                 entity.setDefaultValue(true);
                 defaultConfiguration.add(entity);
             }
+            ConfigurationParameter enabledParameter = defaultValueConfigurationManager.getParameter(pluginConfigurationPath+"enabled");
             defaultValueConfigurationManager.setParametersForPath(pluginConfigurationPath, defaultConfiguration);
+            if(enabledParameter!=null) {
+                enabledParameter.setDefaultValue(true);
+                defaultValueConfigurationManager.setParameter(enabledParameter);
+            }
+
+            if(defaultValueConfigurationManager.getParameter(pluginConfigurationPath+"enabled")==null && System.getProperty(pluginConfigurationPath+"enabled")!=null) {
+                defaultValueConfigurationManager.setParameter(new ConfigurationParameterEntity(pluginConfigurationPath+"enabled", ConfigurationParameter.Type.BOOLEAN, System.getProperty(pluginConfigurationPath+"enabled"), true));
+            }
 
             // Enable plugins by default unless they have specifically requested a specific default state
             if(defaultValueConfigurationManager.getParameter(pluginConfigurationPath+"enabled")==null) {
