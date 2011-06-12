@@ -25,31 +25,40 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.server.api.query;
+package org.socialmusicdiscovery.server.business.service.browse;
 
 import com.google.gson.annotations.Expose;
-import org.socialmusicdiscovery.server.business.service.browse.OnlinePlayableElement;
-
-import java.util.Collection;
-import java.util.List;
+import org.socialmusicdiscovery.server.business.model.core.PlayableElement;
 
 /**
- * Represents a list of PlayableElement
+ * Represents a single playable element
  */
-public class PlayableElementResult extends Result {
-
+public class OnlinePlayableElement {
     @Expose
-    private List<OnlinePlayableElement> items;
+    private String uri;
+    @Expose
+    private String smdID;
+    @Expose
+    private String format;
+    @Expose
+    private Integer bitrate;
 
-    public PlayableElementResult() {
+    public OnlinePlayableElement() {
     }
 
-    public PlayableElementResult(List<OnlinePlayableElement> items, Long totalSize, Long offset, Long size) {
-        super(totalSize, offset, size);
-        this.items = items;
+    public OnlinePlayableElement(String uri) {
+        this.uri = uri;
     }
 
-    public Collection<OnlinePlayableElement> getItems() {
-        return items;
+    public OnlinePlayableElement(String uri, String format) {
+        this.uri = uri;
+        this.format = format;
+    }
+
+    public OnlinePlayableElement(PlayableElement item) {
+        this.uri = item.getUri();
+        this.smdID = item.getSmdID();
+        this.format = item.getFormat();
+        this.bitrate = item.getBitrate();
     }
 }

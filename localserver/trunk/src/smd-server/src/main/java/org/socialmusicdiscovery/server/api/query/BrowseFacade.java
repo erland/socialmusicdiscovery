@@ -136,6 +136,14 @@ public class BrowseFacade {
         return new CommandResult(result.getSuccess(), result.getMessage());
     }
 
+    /**
+     * Retrieve playable elements matching the specified criterias
+     *
+     * @param criteriaList Critieras to use when searching
+     * @param offset       First item to return
+     * @param size         Maximum number of items to return
+     * @return A list of matching playable elements
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/PlayableElement")
@@ -145,37 +153,64 @@ public class BrowseFacade {
         }
 
         TrackBrowseService browseService = browseServiceManager.getBrowseService("Track");
+        OnlinePlayableElementService onlinePlayableElementService = null;
         String trackId = null;
-        for (String criteria : criteriaList) {
+
+        // We want to start from the right, because that's where the most specific criterias typically are
+        List<String> reversedCriteraList = new ArrayList<String>(criteriaList);
+        Collections.reverse(reversedCriteraList);
+        for (String criteria : reversedCriteraList) {
+            // Track already points to a unique playable element, so if we got a Track we can stop searching
             if (criteria.startsWith("Track:")) {
                 trackId = criteria.substring(6);
                 break;
             }
+            // Check if criteria is a online criteria which support playable elements
+            // In this case we want to play the online element and won't look it up in the database
+            String objectType = criteria;
+            if (objectType.contains(":")) {
+                objectType = objectType.substring(0, objectType.indexOf(":"));
+            }
+            onlinePlayableElementService = browseServiceManager.getOnlinePlayableElementService(objectType);
+            if (onlinePlayableElementService != null) {
+                break;
+            }
         }
-        org.socialmusicdiscovery.server.business.service.browse.Result<TrackEntity> result;
-        if (trackId != null) {
-            ResultItem<TrackEntity> track = browseService.findById(trackId);
-            if (track != null) {
-                result = new CopyHelper().detachedCopy(new org.socialmusicdiscovery.server.business.service.browse.Result<TrackEntity>(1L, new ArrayList<ResultItem<TrackEntity>>(Arrays.asList(track))));
+
+        List<OnlinePlayableElement> genericResultItems = new ArrayList<OnlinePlayableElement>();
+        if (onlinePlayableElementService == null) {
+            // Lookup playable elements from database if no online criteria was found
+            org.socialmusicdiscovery.server.business.service.browse.Result<TrackEntity> result = null;
+            if (trackId != null) {
+                // Special case for track since it's not supported to look for Track objects in TrackBrowseService
+                ResultItem<TrackEntity> track = browseService.findById(trackId);
+                if (track != null) {
+                    result = new CopyHelper().detachedCopy(new org.socialmusicdiscovery.server.business.service.browse.Result<TrackEntity>(1L, new ArrayList<ResultItem<TrackEntity>>(Arrays.asList(track))));
+                } else {
+                    result = new org.socialmusicdiscovery.server.business.service.browse.Result<TrackEntity>();
+                }
             } else {
-                result = new org.socialmusicdiscovery.server.business.service.browse.Result<TrackEntity>();
+                // Lookup track objects matching the search criteria
+                result = new CopyHelper().detachedCopy(browseService.findChildren(criteriaList, new ArrayList<String>(), offset, size, false));
+            }
+
+            // Extract the first playable element for each found track object
+            for (ResultItem<TrackEntity> resultItem : result.getItems()) {
+                PlayableElement playableElement = resultItem.getItem().getPlayableElements().iterator().next();
+                if (playableElement != null) {
+                    genericResultItems.add(new OnlinePlayableElement(playableElement));
+                }
+            }
+
+            if (size != null) {
+                return new PlayableElementResult(genericResultItems, result.getCount(), offset.longValue(), (long) result.getItems().size());
+            } else {
+                return new PlayableElementResult(genericResultItems, result.getCount(), 0L, (long) result.getItems().size());
             }
         } else {
-            result = new CopyHelper().detachedCopy(browseService.findChildren(criteriaList, new ArrayList<String>(), offset, size, false));
-        }
-
-        List<PlayableElementResult.PlayableElementItem> genericResultItems = new ArrayList<PlayableElementResult.PlayableElementItem>(result.getItems().size());
-        for (ResultItem<TrackEntity> resultItem : result.getItems()) {
-            PlayableElement playableElement = resultItem.getItem().getPlayableElements().iterator().next();
-            if (playableElement != null) {
-                genericResultItems.add(new PlayableElementResult.PlayableElementItem(playableElement));
-            }
-        }
-
-        if (size != null) {
-            return new PlayableElementResult(genericResultItems, result.getCount(), offset.longValue(), (long) result.getItems().size());
-        } else {
-            return new PlayableElementResult(genericResultItems, result.getCount(), 0L, (long) result.getItems().size());
+            // Retrieve playable elements from service supporting the specified criteria type
+            genericResultItems = onlinePlayableElementService.find(criteriaList);
+            return new PlayableElementResult(genericResultItems, (long) genericResultItems.size(), 0L, (long) genericResultItems.size());
         }
     }
 

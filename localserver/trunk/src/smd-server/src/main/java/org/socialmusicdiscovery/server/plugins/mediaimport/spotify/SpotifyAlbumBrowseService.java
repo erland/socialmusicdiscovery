@@ -32,10 +32,7 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.socialmusicdiscovery.server.business.model.core.ReleaseEntity;
-import org.socialmusicdiscovery.server.business.service.browse.AbstractBrowseService;
-import org.socialmusicdiscovery.server.business.service.browse.BrowseService;
-import org.socialmusicdiscovery.server.business.service.browse.Result;
-import org.socialmusicdiscovery.server.business.service.browse.ResultItem;
+import org.socialmusicdiscovery.server.business.service.browse.*;
 
 import javax.ws.rs.core.MediaType;
 import java.io.UnsupportedEncodingException;
@@ -47,7 +44,7 @@ import java.util.List;
 /**
  * Browse service that browses Spotify albums
  */
-public class SpotifyAlbumBrowseService extends AbstractBrowseService implements BrowseService<SpotifyAlbum> {
+public class SpotifyAlbumBrowseService extends AbstractBrowseService implements BrowseService<SpotifyAlbum>, OnlinePlayableElementService {
     @Override
     public Result<SpotifyAlbum> findChildren(Collection<String> criteriaList, Collection<String> sortCriteriaList, Integer firstItem, Integer maxItems, Boolean childCounters) {
         String currentId = "";
@@ -112,6 +109,26 @@ public class SpotifyAlbumBrowseService extends AbstractBrowseService implements 
             e.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public List<OnlinePlayableElement> find(List<String> criteriaList) {
+        List<OnlinePlayableElement> result = new ArrayList<OnlinePlayableElement>();
+        for (String criteria : criteriaList) {
+            if (criteria.startsWith(SpotifyAlbum.class.getSimpleName())) {
+                JSONObject object = Client.create().resource("http://ws.spotify.com/lookup/1/.json?uri=" + criteria.substring(13) + "&extras=track").accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
+                try {
+                    JSONArray array = object.getJSONObject("album").getJSONArray("tracks");
+                    for (int i = 0; i < array.length(); i++) {
+                        result.add(new OnlinePlayableElement(array.getJSONObject(i).getString("href")));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+        }
+        return result;
     }
 
     private ResultItem<SpotifyAlbum> createFromJSON(JSONObject json) throws JSONException {

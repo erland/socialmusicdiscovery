@@ -41,6 +41,7 @@ import java.util.Map;
  */
 public class BrowseServiceManager {
     Map<String, Class<? extends BrowseService>> browseServices = new HashMap<String, Class<? extends BrowseService>>();
+    Map<String, Class<? extends OnlinePlayableElementService>> playableElementServices = new HashMap<String, Class<? extends OnlinePlayableElementService>>();
     Map<String, ConfigurationContext> configurationContexts = new HashMap<String, ConfigurationContext>();
 
     /**
@@ -52,6 +53,9 @@ public class BrowseServiceManager {
     public void addBrowseService(String objectType, Class<? extends BrowseService> serviceClass) {
         browseServices.put(objectType, serviceClass);
         configurationContexts.remove(objectType);
+        if(OnlinePlayableElementService.class.isAssignableFrom(serviceClass)) {
+            playableElementServices.put(objectType, (Class<? extends OnlinePlayableElementService>)serviceClass);
+        }
     }
 
     /**
@@ -64,6 +68,9 @@ public class BrowseServiceManager {
     public void addBrowseService(String objectType, Class<? extends BrowseService> serviceClass, ConfigurationContext configurationContext) {
         browseServices.put(objectType, serviceClass);
         configurationContexts.put(objectType, configurationContext);
+        if(OnlinePlayableElementService.class.isAssignableFrom(serviceClass)) {
+            playableElementServices.put(objectType, (Class<? extends OnlinePlayableElementService>)serviceClass);
+        }
     }
 
     /**
@@ -74,6 +81,7 @@ public class BrowseServiceManager {
     public void removeBrowseService(String objectType) {
         browseServices.remove(objectType);
         configurationContexts.remove(objectType);
+        playableElementServices.remove(objectType);
     }
 
     /**
@@ -100,4 +108,27 @@ public class BrowseServiceManager {
         }
     }
 
+    /**
+     * Get get the service to get playable elements for the specified object type
+     *
+     * @param objectType Object type to get a service for
+     * @return The service or null if it doesn't exist
+     */
+    public <T extends OnlinePlayableElementService> T getOnlinePlayableElementService(String objectType) {
+        try {
+            T service = (T) playableElementServices.get(objectType).newInstance();
+            ConfigurationContext context = configurationContexts.get(objectType);
+            if (context == null) {
+                context = new MappedConfigurationContext(service.getClass() + ".", new MergedConfigurationManager(new PersistentConfigurationManager()));
+            }
+            service.setConfiguration(context);
+            return service;
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+            return null;
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
