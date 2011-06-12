@@ -83,7 +83,7 @@ public class LastFMTrackBrowseService extends AbstractLastFMBrowseService implem
                 String artistId = currentId.substring(12);
                 JSONObject object = Client.create().resource(getLastFmUrl("album.getinfo" + createQueryFromId(artistId))).accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
                 List<ResultItem<LastFMTrack>> tracks = new ArrayList<ResultItem<LastFMTrack>>();
-                if (object.getJSONObject("album").getJSONObject("tracks").has("track")) {
+                if (object.getJSONObject("album").optJSONObject("tracks")!=null && object.getJSONObject("album").getJSONObject("tracks").has("track")) {
                     JSONArray array = object.getJSONObject("album").getJSONObject("tracks").getJSONArray("track");
                     for (int i = 0; i < array.length(); i++) {
                         tracks.add(createFromJSON(array.getJSONObject(i)));
@@ -115,7 +115,13 @@ public class LastFMTrackBrowseService extends AbstractLastFMBrowseService implem
             if (json.has("mbid") && json.getString("mbid").length() > 0) {
                 id = "mbid:" + json.getString("mbid");
             } else {
-                id = "artist:" + urlEncode(json.getJSONObject("artist").getString("name")) + ":track:" + urlEncode(json.getString("name"));
+                String artist;
+                if(json.optJSONObject("artist")==null) {
+                    artist = json.getString("artist");
+                }else {
+                    artist = json.getJSONObject("artist").getString("name");
+                }
+                id = "artist:" + urlEncode(artist) + ":track:" + urlEncode(json.getString("name"));
             }
             String name = json.getString("name");
             LastFMTrack track = new LastFMTrack(id, null, name);
