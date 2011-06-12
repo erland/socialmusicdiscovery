@@ -259,7 +259,7 @@ public class BrowseFacade {
         ContextBrowseService browseService = InjectHelper.instance(ContextBrowseService.class);
         org.socialmusicdiscovery.server.business.service.browse.Result result = new CopyHelper().detachedCopy(browseService.findChildren(objectId, offset, size, childs));
 
-        List<String> parentObjects = Arrays.asList(objectId.split("/"));
+        List<String> parentObjects = new ArrayList<String>(Arrays.asList(objectId.split("/")));
         parentObjects.remove(0);
 
         List<ItemResult.Item> genericResultItems = new ArrayList<ItemResult.Item>(result.getItems().size());
