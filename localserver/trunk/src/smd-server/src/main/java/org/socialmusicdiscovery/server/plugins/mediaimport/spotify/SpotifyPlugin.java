@@ -33,10 +33,7 @@ import org.socialmusicdiscovery.server.api.plugin.PluginException;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameter;
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameterEntity;
-import org.socialmusicdiscovery.server.business.service.browse.BrowseMenuManager;
-import org.socialmusicdiscovery.server.business.service.browse.BrowseServiceManager;
-import org.socialmusicdiscovery.server.business.service.browse.Menu;
-import org.socialmusicdiscovery.server.business.service.browse.MenuLevel;
+import org.socialmusicdiscovery.server.business.service.browse.*;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -96,6 +93,31 @@ public class SpotifyPlugin extends AbstractPlugin {
                                 new MenuLevel(SpotifyTrack.class.getSimpleName(),
                                         true)
                         )));
+
+        browseMenuManager.addMenu(BrowseMenuManager.MenuType.CONTEXT,
+                new Menu("SpotifyArtist", "spotifyimportartist", "Import from Spotify", Menu.BOTTOM_WEIGHT,
+                        Arrays.asList(
+                                new MenuLevel(CommandObject.class.getSimpleName(),
+                                        false)
+                        )));
+
+        browseMenuManager.addMenu(BrowseMenuManager.MenuType.CONTEXT,
+                new Menu("SpotifyAlbum", "spotifyimportalbum", "Import from Spotify", Menu.BOTTOM_WEIGHT,
+                        Arrays.asList(
+                                new MenuLevel(CommandObject.class.getSimpleName(),
+                                        false)
+                        )));
+
+        browseMenuManager.addMenu(BrowseMenuManager.MenuType.CONTEXT,
+                new Menu("SpotifyTrack", "spotifyimporttrack", "Import from Spotify", Menu.BOTTOM_WEIGHT,
+                        Arrays.asList(
+                                new MenuLevel(CommandObject.class.getSimpleName(),
+                                        false)
+                        )));
+
+        browseMenuManager.addCommand("spotifyimportartist", SpotifyImport.class);
+        browseMenuManager.addCommand("spotifyimportalbum", SpotifyImport.class);
+        browseMenuManager.addCommand("spotifyimporttrack", SpotifyImport.class);
 
         browseServiceManager.addBrowseService(SpotifyArtist.class.getSimpleName(), SpotifyArtistBrowseService.class, getConfiguration());
         browseServiceManager.addBrowseService(SpotifyAlbum.class.getSimpleName(), SpotifyAlbumBrowseService.class, getConfiguration());

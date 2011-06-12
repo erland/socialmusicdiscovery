@@ -56,6 +56,7 @@ public class BrowseMenuManager {
     }
 
     private Map<MenuType, Map<String, Menu>> menus = new HashMap<MenuType, Map<String, Menu>>();
+    private Map<String, Class<? extends Command>> commands = new HashMap<String, Class<? extends Command>>();
     private Map<String, String> formats = new HashMap<String, String>();
 
     private ConfigurationManager configurationManager;
@@ -229,5 +230,26 @@ public class BrowseMenuManager {
             }
         });
         return menus;
+    }
+
+    public void addCommand(String commandId, Class<? extends Command> browseCommandService) {
+        this.commands.put(commandId, browseCommandService);
+
+    }
+
+    public void removeCommand(String commandId) {
+        this.commands.remove(commandId);
+    }
+
+    public Command getCommand(String commandId) {
+        try {
+            return this.commands.get(commandId).newInstance();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+            return null;
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

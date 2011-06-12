@@ -25,7 +25,7 @@ public class ItemResult extends Result {
         @Expose
         private String playable;
         @Expose
-        private String commandURL;
+        private String command;
         @Expose
         private Boolean leaf;
 
@@ -44,7 +44,7 @@ public class ItemResult extends Result {
             this.leaf = leaf;
         }
 
-        public Item(Object item, String type, String id, String name, Boolean playable, String playableElementsURL, Boolean leaf) {
+        public Item(Object item, String type, String id, String name, Boolean playable, String playableElementsURL, String command, Boolean leaf) {
             this.item = item;
             this.type = type;
             this.id = id;
@@ -52,6 +52,7 @@ public class ItemResult extends Result {
             if (playable) {
                 this.playable = playableElementsURL;
             }
+            this.command = command;
             this.leaf = leaf;
         }
 
@@ -67,7 +68,7 @@ public class ItemResult extends Result {
             }
         }
 
-        public Item(Object item, String type, String id, String name, Boolean playable, String playableElementsURL, Map<String, Long> childCounters) {
+        public Item(Object item, String type, String id, String name, Boolean playable, String playableElementsURL, String command, Map<String, Long> childCounters) {
             this.item = item;
             this.type = type;
             this.id = id;
@@ -75,6 +76,7 @@ public class ItemResult extends Result {
             if (playable) {
                 this.playable = playableElementsURL;
             }
+            this.command = command;
             this.leaf = childCounters.size() == 0;
             childItems = new ArrayList<Child>(childCounters.size());
             for (Map.Entry<String, Long> entry : childCounters.entrySet()) {

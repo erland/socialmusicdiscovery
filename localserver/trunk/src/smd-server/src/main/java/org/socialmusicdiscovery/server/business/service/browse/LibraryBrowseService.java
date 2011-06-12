@@ -84,12 +84,12 @@ public class LibraryBrowseService {
         }
 
         String currentType = null;
-        if(currentId!=null && currentId.contains(":")) {
-            currentType = currentId.substring(0,currentId.indexOf(":"));
+        if (currentId != null && currentId.contains(":")) {
+            currentType = currentId.substring(0, currentId.indexOf(":"));
         }
         String currentBaseType = currentType;
-        if(currentBaseType!=null && currentBaseType.contains(".")) {
-            currentBaseType = currentBaseType.substring(0,currentBaseType.indexOf("."));
+        if (currentBaseType != null && currentBaseType.contains(".")) {
+            currentBaseType = currentBaseType.substring(0, currentBaseType.indexOf("."));
         }
 
         if (parentPath == null) {
@@ -102,18 +102,23 @@ public class LibraryBrowseService {
                 counters = objectTypeBrowseService.findObjectTypes(new ArrayList<String>(), true);
             }
             for (Menu menu : menus) {
-                if (menu.getContext() !=null && (currentType==null || (!currentType.equals(menu.getContext()) && !currentBaseType.equals(menu.getContext())))) {
+                if (menu.getContext() != null && (currentType == null || (!currentType.equals(menu.getContext()) && !currentBaseType.equals(menu.getContext())))) {
                     continue;
                 }
                 if ((firstItem == null || firstItem <= i) && (maxItems == null || maxItems > items.size())) {
-                    if (counts) {
+                    MenuLevel firstLevel = menu.getHierarchy().iterator().next();
+                    if (counts && !firstLevel.getType().equals(CommandObject.class.getSimpleName())) {
                         Map<String, Long> childCounters = new HashMap<String, Long>(1);
                         if (counters.get(menu.getHierarchy().get(0).getType()) != null) {
                             childCounters.put(menu.getHierarchy().get(0).getType(), counters.get(menu.getHierarchy().get(0).getType()));
                         }
                         items.add(new ResultItem<Object>(menu.getName(), "Folder", menu.getId(), menu.getName(), false, childCounters));
                     } else {
-                        items.add(new ResultItem<Object>(menu.getName(), "Folder", menu.getId(), menu.getName(), false, false));
+                        if (firstLevel.getType().equals(CommandObject.class.getSimpleName())) {
+                            items.add(new ResultItem<Object>(menu.getName(), firstLevel.getType(), menu.getId(), menu.getName(), false, false));
+                        } else {
+                            items.add(new ResultItem<Object>(menu.getName(), "Folder", menu.getId(), menu.getName(), false, false));
+                        }
                     }
                 }
                 i++;
@@ -124,7 +129,7 @@ public class LibraryBrowseService {
             Menu currentMenu = null;
 
             for (Menu menu : getMenus()) {
-                if (menu.getContext() !=null && (currentType==null || (!currentType.equals(menu.getContext()) && !currentBaseType.equals(menu.getContext())))) {
+                if (menu.getContext() != null && (currentType == null || (!currentType.equals(menu.getContext()) && !currentBaseType.equals(menu.getContext())))) {
                     continue;
                 }
                 if (currentPath.equals(menu.getId()) || currentPath.contains("/") && currentPath.substring(0, currentPath.indexOf("/")).equals(menu.getId())) {
@@ -151,7 +156,7 @@ public class LibraryBrowseService {
 
                 List<String> criterias = new ArrayList<String>();
                 int criteriaOffset = 0;
-                if(currentId!=null) {
+                if (currentId != null) {
                     criterias.add(currentId);
                     criteriaOffset = 1;
                 }
@@ -179,8 +184,8 @@ public class LibraryBrowseService {
                 }
 
                 if (requestedMainObjectType != null) {
-                    if(requestedObjectType.getCriteriaDepth() !=null) {
-                        while(criterias.size()> requestedObjectType.getCriteriaDepth()) {
+                    if (requestedObjectType.getCriteriaDepth() != null) {
+                        while (criterias.size() > requestedObjectType.getCriteriaDepth()) {
                             criterias.remove(0);
                         }
                     }
@@ -200,7 +205,7 @@ public class LibraryBrowseService {
                         item.setType(requestedMainObjectType);
                         item.setName(parser.format(item.getItem()));
                         item.setPlayable(requestedObjectType.getPlayable());
-                        item.setLeaf(nextObjectType==null);
+                        item.setLeaf(nextObjectType == null);
 
                         if (counts) {
                             Map<String, Long> childCounters = new HashMap<String, Long>();
@@ -218,16 +223,16 @@ public class LibraryBrowseService {
         return result;
     }
 
-    private void fillContext(Result result, String currentBaseType, String currentId){
-        if(currentId!=null && currentId.contains(":") && currentBaseType!=null) {
+    private void fillContext(Result result, String currentBaseType, String currentId) {
+        if (currentId != null && currentId.contains(":") && currentBaseType != null) {
             BrowseService browseService = browseServiceManager.getBrowseService(currentBaseType);
-            if(browseService!=null) {
-                ResultItem currentItem = browseService.findById(currentId.substring(currentId.indexOf(":")+1));
-                if(currentItem!=null) {
-                    if(currentItem.getName()==null) {
-                        MappedConfigurationContext config = new MappedConfigurationContext(getClass().getName()+".formats.", configurationManager);
+            if (browseService != null) {
+                ResultItem currentItem = browseService.findById(currentId.substring(currentId.indexOf(":") + 1));
+                if (currentItem != null) {
+                    if (currentItem.getName() == null) {
+                        MappedConfigurationContext config = new MappedConfigurationContext(getClass().getName() + ".formats.", configurationManager);
                         String format = config.getStringParameter(currentItem.getType());
-                        if(format!=null) {
+                        if (format != null) {
                             currentItem.setName(new TitleFormat(format).format(currentItem.getItem()));
                         }
                     }
