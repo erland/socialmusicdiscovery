@@ -28,79 +28,52 @@
 package org.socialmusicdiscovery.server.api.query;
 
 import com.google.gson.annotations.Expose;
+import org.socialmusicdiscovery.server.business.model.core.PlayableElement;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
- * Represents a browsing result
+ * Represents a list of PlayableElement
  */
-public abstract class Result {
+public class PlayableElementResult extends Result {
+
     /**
-     * Represents a counter for a specific type of objects which exists beneath an item in the browse result
+     * Represents a single playable element
      */
-    public static class Child {
+    public static class PlayableElementItem {
         @Expose
-        private String id;
+        private String uri;
         @Expose
-        private Long count;
+        private String smdID;
+        @Expose
+        private String format;
+        @Expose
+        private Integer bitrate;
 
-        public Child() {
+        public PlayableElementItem() {
         }
 
-        public Child(String id, Long count) {
-            this.id = id;
-            this.count = count;
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public void setId(String id) {
-            this.id = id;
-        }
-
-        public Long getCount() {
-            return count;
-        }
-
-        public void setCount(Long count) {
-            this.count = count;
+        public PlayableElementItem(PlayableElement item) {
+            this.uri = item.getUri();
+            this.smdID = item.getSmdID();
+            this.format = item.getFormat();
+            this.bitrate = item.getBitrate();
         }
     }
 
     @Expose
-    private String playableBaseURL;
-    @Expose
-    private Long totalSize;
-    @Expose
-    private Long offset;
-    @Expose
-    private Long size;
+    private List<PlayableElementItem> items;
 
-    public Result() {
+    public PlayableElementResult() {
     }
 
-    public Result(Long totalSize, Long offset, Long size) {
-        this.totalSize = totalSize;
-        this.offset = offset;
-        this.size = size;
+    public PlayableElementResult(List<PlayableElementItem> items, Long totalSize, Long offset, Long size) {
+        super(totalSize, offset, size);
+        this.items = items;
     }
 
-    public Result(String playableBaseURL, Long totalSize, Long offset, Long size) {
-        this.totalSize = totalSize;
-        this.offset = offset;
-        this.size = size;
-        this.playableBaseURL = playableBaseURL;
-    }
-
-    public Long getTotalSize() {
-        return totalSize;
-    }
-
-    public Long getOffset() {
-        return offset;
-    }
-
-    public Long getSize() {
-        return size;
+    public Collection<PlayableElementItem> getItems() {
+        return items;
     }
 }

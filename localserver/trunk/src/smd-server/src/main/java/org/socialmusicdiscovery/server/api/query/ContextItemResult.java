@@ -29,78 +29,26 @@ package org.socialmusicdiscovery.server.api.query;
 
 import com.google.gson.annotations.Expose;
 
+import java.util.List;
+
 /**
- * Represents a browsing result
+ * Represents a browsing result from a context menu
  */
-public abstract class Result {
-    /**
-     * Represents a counter for a specific type of objects which exists beneath an item in the browse result
-     */
-    public static class Child {
-        @Expose
-        private String id;
-        @Expose
-        private Long count;
-
-        public Child() {
-        }
-
-        public Child(String id, Long count) {
-            this.id = id;
-            this.count = count;
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public void setId(String id) {
-            this.id = id;
-        }
-
-        public Long getCount() {
-            return count;
-        }
-
-        public void setCount(Long count) {
-            this.count = count;
-        }
-    }
-
+public class ContextItemResult extends ItemResult {
     @Expose
-    private String playableBaseURL;
-    @Expose
-    private Long totalSize;
-    @Expose
-    private Long offset;
-    @Expose
-    private Long size;
+    private Item context;
 
-    public Result() {
+    public ContextItemResult(Item context, List<Item> items, Long totalSize, Long offset, Long size) {
+        super(items, totalSize, offset, size);
+        this.context = context;
     }
 
-    public Result(Long totalSize, Long offset, Long size) {
-        this.totalSize = totalSize;
-        this.offset = offset;
-        this.size = size;
+    public ContextItemResult(Item context, List<Item> items, String playableElementsBaseURL, Long totalSize, Long offset, Long size) {
+        super(items, playableElementsBaseURL, totalSize, offset, size);
+        this.context = context;
     }
 
-    public Result(String playableBaseURL, Long totalSize, Long offset, Long size) {
-        this.totalSize = totalSize;
-        this.offset = offset;
-        this.size = size;
-        this.playableBaseURL = playableBaseURL;
-    }
-
-    public Long getTotalSize() {
-        return totalSize;
-    }
-
-    public Long getOffset() {
-        return offset;
-    }
-
-    public Long getSize() {
-        return size;
+    public Item getContext() {
+        return context;
     }
 }

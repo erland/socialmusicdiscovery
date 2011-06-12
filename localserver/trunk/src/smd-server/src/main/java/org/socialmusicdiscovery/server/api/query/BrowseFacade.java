@@ -29,6 +29,8 @@ package org.socialmusicdiscovery.server.api.query;
 
 import com.google.inject.Inject;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
+import org.socialmusicdiscovery.server.business.model.core.PlayableElement;
+import org.socialmusicdiscovery.server.business.model.core.TrackEntity;
 import org.socialmusicdiscovery.server.business.service.browse.*;
 import org.socialmusicdiscovery.server.support.copy.CopyHelper;
 
@@ -63,7 +65,7 @@ public class BrowseFacade {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{object}")
-    public Result browseChildren(@PathParam("object") String object, @QueryParam("criteria") List<String> criteriaList, @QueryParam("offset") Integer offset, @QueryParam("size") Integer size, @QueryParam("childs") Boolean childs) {
+    public Result browseChildren(@PathParam("object") String object, @QueryParam("criteria") List<String> criteriaList, @QueryParam("offset") Integer offset, @QueryParam("size") Integer size, @QueryParam("childs") Boolean childs, @QueryParam("itemInfo") Boolean itemInfo) {
         if (size != null && offset == null) {
             offset = 0;
         }
@@ -77,21 +79,67 @@ public class BrowseFacade {
         BrowseService browseService = browseServiceManager.getBrowseService(object);
         org.socialmusicdiscovery.server.business.service.browse.Result result = new CopyHelper().detachedCopy(browseService.findChildren(criteriaList, new ArrayList<String>(), offset, size, childs));
 
-        List<Result.ResultItem> genericResultItems = new ArrayList<Result.ResultItem>(result.getItems().size());
-        Iterator<ResultItem> itemIterator = result.getItems().iterator();
-        while (itemIterator.hasNext()) {
-            ResultItem resultItem = itemIterator.next();
+        List<ItemResult.Item> genericResultItems = new ArrayList<ItemResult.Item>(result.getItems().size());
+        for (Object o : result.getItems()) {
+            ResultItem resultItem = (ResultItem) o;
+            Object item = null;
+            if(itemInfo==null || itemInfo) {
+                item = resultItem.getItem();
+            }
             if (resultItem.getChildItems() != null) {
-                genericResultItems.add(new Result.ResultItem(resultItem.getItem(), resultItem.getPlayable(), new HashMap<String, Long>(resultItem.getChildItems())));
+                genericResultItems.add(new ItemResult.Item(item, resultItem.getPlayable(), getPlayableElementsURL(criteriaList,resultItem.getId()), new HashMap<String, Long>(resultItem.getChildItems())));
             } else {
-                genericResultItems.add(new Result.ResultItem(resultItem.getItem(), resultItem.getPlayable(), resultItem.getLeaf()));
+                genericResultItems.add(new ItemResult.Item(item, resultItem.getPlayable(), getPlayableElementsURL(criteriaList, resultItem.getId()), resultItem.getLeaf()));
             }
         }
 
         if (size != null) {
-            return new Result(null, genericResultItems, result.getCount(), offset.longValue(), (long) result.getItems().size());
+            return new ItemResult(genericResultItems, result.getCount(), offset.longValue(), (long) result.getItems().size());
         } else {
-            return new Result(null, genericResultItems, result.getCount(), 0L, (long) result.getItems().size());
+            return new ItemResult(genericResultItems, result.getCount(), 0L, (long) result.getItems().size());
+        }
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/PlayableElement")
+    public PlayableElementResult browseChildren(@QueryParam("criteria") List<String> criteriaList, @QueryParam("offset") Integer offset, @QueryParam("size") Integer size) {
+        if (size != null && offset == null) {
+            offset = 0;
+        }
+
+        TrackBrowseService browseService = browseServiceManager.getBrowseService("Track");
+        String trackId = null;
+        for (String criteria : criteriaList) {
+            if(criteria.startsWith("Track:")) {
+                trackId = criteria.substring(6);
+                break;
+            }
+        }
+        org.socialmusicdiscovery.server.business.service.browse.Result<TrackEntity> result;
+        if(trackId!=null) {
+            ResultItem<TrackEntity> track = browseService.findById(trackId);
+            if(track!=null) {
+                result = new CopyHelper().detachedCopy(new org.socialmusicdiscovery.server.business.service.browse.Result<TrackEntity>(1L,new ArrayList<ResultItem<TrackEntity>>(Arrays.asList(track))));
+            }else {
+                result = new org.socialmusicdiscovery.server.business.service.browse.Result<TrackEntity>();
+            }
+        }else {
+            result = new CopyHelper().detachedCopy(browseService.findChildren(criteriaList, new ArrayList<String>(), offset, size, false));
+        }
+
+        List<PlayableElementResult.PlayableElementItem> genericResultItems = new ArrayList<PlayableElementResult.PlayableElementItem>(result.getItems().size());
+        for (ResultItem<TrackEntity> resultItem : result.getItems()) {
+            PlayableElement playableElement = resultItem.getItem().getPlayableElements().iterator().next();
+            if (playableElement != null) {
+                genericResultItems.add(new PlayableElementResult.PlayableElementItem(playableElement));
+            }
+        }
+
+        if (size != null) {
+            return new PlayableElementResult(genericResultItems, result.getCount(), offset.longValue(), (long) result.getItems().size());
+        } else {
+            return new PlayableElementResult(genericResultItems, result.getCount(), 0L, (long) result.getItems().size());
         }
     }
 
@@ -125,8 +173,8 @@ public class BrowseFacade {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/library")
-    public Result browseLibrary(@QueryParam("offset") Integer offset, @QueryParam("size") Integer size, @QueryParam("childs") Boolean childs) {
-        return browseLibrary(null, offset, size, childs);
+    public Result browseLibrary(@QueryParam("offset") Integer offset, @QueryParam("size") Integer size, @QueryParam("childs") Boolean childs, @QueryParam("itemInfo") Boolean itemInfo) {
+        return browseLibrary(null, offset, size, childs, itemInfo);
     }
 
     /**
@@ -141,7 +189,7 @@ public class BrowseFacade {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/library/{object:.*}")
-    public Result browseLibrary(@PathParam("object") String objectId, @QueryParam("offset") Integer offset, @QueryParam("size") Integer size, @QueryParam("childs") Boolean childs) {
+    public Result browseLibrary(@PathParam("object") String objectId, @QueryParam("offset") Integer offset, @QueryParam("size") Integer size, @QueryParam("childs") Boolean childs, @QueryParam("itemInfo") Boolean itemInfo) {
         if (size != null && offset == null) {
             offset = 0;
         }
@@ -149,24 +197,48 @@ public class BrowseFacade {
         LibraryBrowseService browseService = InjectHelper.instance(LibraryBrowseService.class);
         org.socialmusicdiscovery.server.business.service.browse.Result result = new CopyHelper().detachedCopy(browseService.findChildren(objectId, offset, size, childs));
 
-        List<Result.ResultItem> genericResultItems = new ArrayList<Result.ResultItem>(result.getItems().size());
-        Iterator<ResultItem> itemIterator = result.getItems().iterator();
-        while (itemIterator.hasNext()) {
-            ResultItem resultItem = itemIterator.next();
+        List<String> parentObjects = new ArrayList<String>();
+        if(objectId!=null) {
+            parentObjects = Arrays.asList(objectId.split("/"));
+        }
+        List<ItemResult.Item> genericResultItems = new ArrayList<ItemResult.Item>(result.getItems().size());
+        for (Object o : result.getItems()) {
+            ResultItem resultItem = (ResultItem) o;
+            Object item = null;
+            if(itemInfo==null || itemInfo) {
+                item = resultItem.getItem();
+            }
             if (resultItem.getChildItems() != null) {
-                genericResultItems.add(new Result.ResultItem(resultItem.getItem(), resultItem.getType(), resultItem.getId(), resultItem.getName(), resultItem.getPlayable(), new HashMap<String, Long>(resultItem.getChildItems())));
+                genericResultItems.add(new ItemResult.Item(item, resultItem.getType(), resultItem.getId(), resultItem.getName(), resultItem.getPlayable(), getPlayableElementsURL(null, resultItem.getId()), new HashMap<String, Long>(resultItem.getChildItems())));
             } else {
-                genericResultItems.add(new Result.ResultItem(resultItem.getItem(), resultItem.getType(), resultItem.getId(), resultItem.getName(), resultItem.getPlayable(), resultItem.getLeaf()));
+                genericResultItems.add(new ItemResult.Item(item, resultItem.getType(), resultItem.getId(), resultItem.getName(), resultItem.getPlayable(), getPlayableElementsURL(null, resultItem.getId()), resultItem.getLeaf()));
             }
         }
 
         if (size != null) {
-            return new Result(null, genericResultItems, result.getCount(), offset.longValue(), (long) result.getItems().size());
+            return new ItemResult(genericResultItems, getPlayableElementsURL(parentObjects, null), result.getCount(), offset.longValue(), (long) result.getItems().size());
         } else {
-            return new Result(null, genericResultItems, result.getCount(), 0L, (long) result.getItems().size());
+            return new ItemResult(genericResultItems, getPlayableElementsURL(parentObjects,null), result.getCount(), 0L, (long) result.getItems().size());
         }
     }
 
+    private String getPlayableElementsURL(List<String> parentHierarchy, String objectId) {
+        StringBuffer sb = new StringBuffer();
+        if(parentHierarchy!=null) {
+            sb.append("/browse/PlayableElement?");
+            for (String object : parentHierarchy) {
+                if(object.contains(":")) {
+                    sb.append("&criteria=");
+                    sb.append(object);
+                }
+            }
+        }
+        if(objectId!=null) {
+            sb.append("&criteria=");
+            sb.append(objectId);
+        }
+        return sb.toString();
+    }
     /**
      * Browse context of a specified objects by using the predefined menu structure, starting at the the parent object specified as input
      *
@@ -179,7 +251,7 @@ public class BrowseFacade {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/context/{object:.*}")
-    public Result browseContext(@PathParam("object") String objectId, @QueryParam("offset") Integer offset, @QueryParam("size") Integer size, @QueryParam("childs") Boolean childs) {
+    public Result browseContext(@PathParam("object") String objectId, @QueryParam("offset") Integer offset, @QueryParam("size") Integer size, @QueryParam("childs") Boolean childs, @QueryParam("itemInfo") Boolean itemInfo) {
         if (size != null && offset == null) {
             offset = 0;
         }
@@ -187,28 +259,38 @@ public class BrowseFacade {
         ContextBrowseService browseService = InjectHelper.instance(ContextBrowseService.class);
         org.socialmusicdiscovery.server.business.service.browse.Result result = new CopyHelper().detachedCopy(browseService.findChildren(objectId, offset, size, childs));
 
-        List<Result.ResultItem> genericResultItems = new ArrayList<Result.ResultItem>(result.getItems().size());
-        Iterator<ResultItem> itemIterator = result.getItems().iterator();
-        while (itemIterator.hasNext()) {
-            ResultItem resultItem = itemIterator.next();
+        List<String> parentObjects = Arrays.asList(objectId.split("/"));
+        parentObjects.remove(0);
+
+        List<ItemResult.Item> genericResultItems = new ArrayList<ItemResult.Item>(result.getItems().size());
+        for (Object o : result.getItems()) {
+            ResultItem resultItem = (ResultItem) o;
+            Object item = null;
+            if(itemInfo==null || itemInfo) {
+                item = resultItem.getItem();
+            }
             if (resultItem.getChildItems() != null) {
-                genericResultItems.add(new Result.ResultItem(resultItem.getItem(), resultItem.getType(), resultItem.getId(), resultItem.getName(), resultItem.getPlayable(), new HashMap<String, Long>(resultItem.getChildItems())));
+                genericResultItems.add(new ItemResult.Item(item, resultItem.getType(), resultItem.getId(), resultItem.getName(), resultItem.getPlayable(), getPlayableElementsURL(null, resultItem.getId()), new HashMap<String, Long>(resultItem.getChildItems())));
             } else {
-                genericResultItems.add(new Result.ResultItem(resultItem.getItem(), resultItem.getType(), resultItem.getId(), resultItem.getName(), resultItem.getPlayable(), resultItem.getLeaf()));
+                genericResultItems.add(new ItemResult.Item(item, resultItem.getType(), resultItem.getId(), resultItem.getName(), resultItem.getPlayable(), getPlayableElementsURL(null, resultItem.getId()), resultItem.getLeaf()));
             }
         }
-        Result.ResultItem context = null;
+        ItemResult.Item context = null;
         if(result.getContext()!=null) {
+            Object item = null;
+            if(itemInfo==null || itemInfo) {
+                item = result.getContext().getItem();
+            }
             if(result.getItems().size()>0) {
-                context = new Result.ResultItem(result.getContext().getItem(),result.getContext().getType(),result.getContext().getId(), result.getContext().getName(), result.getContext().getPlayable(),false);
+                context = new ItemResult.Item(item,result.getContext().getType(),result.getContext().getId(), result.getContext().getName(), result.getContext().getPlayable(),getPlayableElementsURL(parentObjects,null),false);
             }else {
-                context = new Result.ResultItem(result.getContext().getItem(),result.getContext().getType(),result.getContext().getId(), result.getContext().getName(), result.getContext().getPlayable(),true);
+                context = new ItemResult.Item(item,result.getContext().getType(),result.getContext().getId(), result.getContext().getName(), result.getContext().getPlayable(),getPlayableElementsURL(parentObjects,null),true);
             }
         }
         if (size != null) {
-            return new Result(context, genericResultItems, result.getCount(), offset.longValue(), (long) result.getItems().size());
+            return new ContextItemResult(context, genericResultItems, getPlayableElementsURL(parentObjects,null), result.getCount(), offset.longValue(), (long) result.getItems().size());
         } else {
-            return new Result(context, genericResultItems, result.getCount(), 0L, (long) result.getItems().size());
+            return new ContextItemResult(context, genericResultItems, getPlayableElementsURL(parentObjects,null), result.getCount(), 0L, (long) result.getItems().size());
         }
     }
 }
