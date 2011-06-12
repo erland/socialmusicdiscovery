@@ -151,13 +151,14 @@ sub get {
 			},
 
 			sub {
+				my $error = $_[1];
 				my $time = Time::HiRes::time();
-				if ($time < $timeout) {
+				if ($time < $timeout && $error !~ /^500/) {
 					$log->debug("retrying fetch of: $url");
 					Slim::Utils::Timers::setTimer(undef, $time + 5, $try);
 				} else {
-					$log->warn("error fetching $url: " . $_[1]);
-					$ecb->($_[1]);
+					$log->warn("error fetching $url: " . $error);
+					$ecb->($error);
 				}
 			},
 

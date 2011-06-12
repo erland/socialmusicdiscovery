@@ -29,6 +29,8 @@ use warnings;
 
 use base qw(Slim::Menu::Base);
 
+use URI::Escape;
+
 use Slim::Utils::Strings qw(cstring);
 use Slim::Utils::Log;
 use Slim::Utils::Prefs;
@@ -76,7 +78,7 @@ sub registerDefaultInfoProviders {
 }
 
 sub menu {
-	my ($class, $client, $uri, $path, $tags, $contextInfo) = @_;
+	my ($class, $client, $playpath, $path, $tags, $contextInfo) = @_;
 
 	my $infoOrdering = $class->getInfoOrdering;
 	
@@ -87,7 +89,7 @@ sub menu {
 		if ( defined $ref->{func} ) {
 			
 			# nb functions are called with different params from normal SBS context menus
-			my $item = eval { $ref->{func}->($client, $uri, $path, $tags, $contextInfo) };
+			my $item = eval { $ref->{func}->($client, $playpath, $path, $tags, $contextInfo) };
 			if ( $@ ) {
 				$log->error( 'smdinfo menu item "' . $ref->{name} . '" failed: ' . $@ );
 				return;
@@ -139,9 +141,9 @@ sub menu {
 			}
 		}
 	}
-	
+
 	return {
-		name  => $contextInfo->{'context'} && $contextInfo->{'context'}->{'name'},
+		name  => $contextInfo && $contextInfo->{'context'} && $contextInfo->{'context'}->{'name'},
 		type  => 'opml',
 		items => $items,
 		menuComplete => 1,
@@ -149,25 +151,25 @@ sub menu {
 }
 
 sub _entry {
-	my ($cmd, $uri, $path) = @_;
+	my ($cmd, $playpath, $path) = @_;
 	return {
 		player => 0,
 		cmd => [ 'smdplcmd' ],
 		params => {
-			uri  => $uri,
-			path => $path,
-			cmd  => $cmd,
+			cmd      => $cmd,
+			playpath => $playpath,
+			infopath => $path,
 		},
 		nextWindow => $cmd eq 'load' ? 'nowPlaying' :'parent',
 	}
 }
 
 sub addItemEnd {
-	my ($client, $uri, $path, $tags, $contextInfo) = @_;
+	my ($client, $playpath, $path, $tags, $contextInfo) = @_;
 
 	return if !$tags->{'playable'};
 
-	my $action = _entry('add', $uri, $path);
+	my $action = _entry('add', $playpath, $path);
 
 	return { 
 		name => cstring($client, 'ADD'),
@@ -184,11 +186,11 @@ sub addItemEnd {
 }
 
 sub addItemNext {
-	my ($client, $uri, $path, $tags, $contextInfo) = @_;
+	my ($client, $playpath, $path, $tags, $contextInfo) = @_;
 
 	return if !$tags->{'playable'};
 
-	my $action = _entry('insert', $uri, $path);
+	my $action = _entry('insert', $playpath, $path);
 
 	return { 
 		name => cstring($client, 'PLAY_NEXT'),
@@ -205,11 +207,11 @@ sub addItemNext {
 }
 
 sub playItem {
-	my ($client, $uri, $path, $tags, $contextInfo) = @_;
+	my ($client, $playpath, $path, $tags, $contextInfo) = @_;
 
 	return if !$tags->{'playable'};
 
-	my $action = _entry('load', $uri, $path);
+	my $action = _entry('load', $playpath, $path);
 
 	return { 
 		name => cstring($client, 'PLAY'),
@@ -225,7 +227,9 @@ sub playItem {
 }
 
 sub smdContext {
-	my ($client, $uri, $path, $tags, $contextInfo) = @_;
+	my ($client, $playpath, $path, $tags, $contextInfo) = @_;
+
+	return if !$contextInfo;
 
 	my @menu;
 
@@ -253,11 +257,13 @@ sub infoCommand {
 
 	my $client = $request->client;
 	my $connectionId = $request->connectionID;
-	my $uri          = $request->getParam('uri');
-	my $path         = $request->getParam('path');
+	my $infopath     = $request->getParam('infopath');
+	my $playpath     = $request->getParam('playpath');
 	my $menuMode     = $request->getParam('menu') || 0;
 	my $menuContext  = $request->getParam('context') || 'normal';
 	my $playable     = $request->getParam('playable');
+
+	$infopath = uri_unescape($infopath);
 
 	my $tags = {
 		menuMode      => $menuMode,
@@ -267,11 +273,11 @@ sub infoCommand {
 
 	my $feed;
 
-	if ($path) {
+	if ($infopath) {
 		
-		$log->info("info request for: $path");
+		$log->info("info request for: $infopath");
 		
-		my @pathElements = split(/\//, $path);
+		my @pathElements = split(/\//, $infopath);
 		
 		# strip off non object items
 		while (scalar @pathElements && $pathElements[0] !~ /:/) {
@@ -283,27 +289,29 @@ sub infoCommand {
 
 		$request->setStatusProcessing;
 		
+		my $contextCB = sub {
+			my $contextInfo = shift;
+
+			$feed = __PACKAGE__->menu($client, $playpath, $contextPath, $tags, $contextInfo);
+			
+			if ($connectionId && $contextInfo) {
+				$cachedFeed{ $connectionId } = $feed;
+			}
+			
+			# call xmlbrowser using compat version if necessary
+			if (!Plugins::SocialMusicDiscovery::Browse->compat) {
+				Slim::Control::XMLBrowser::cliQuery('smdinfocmd', $feed, $request);
+			} else {
+				Slim76Compat::Control::XMLBrowser::cliQuery('smdinfocmd', $feed, $request);
+			}
+		};
+
 		Plugins::SocialMusicDiscovery::Server->get(
 			$contextPath,
-			sub {
-				my $contextInfo = shift;
-
-				$feed = __PACKAGE__->menu($client, $uri, $contextPath, $tags, $contextInfo);
-
-				if ($connectionId) {
-					$cachedFeed{ $connectionId } = $feed;
-				}
-
-				# call xmlbrowser using compat version if necessary
-				if (!Plugins::SocialMusicDiscovery::Browse->compat) {
-					Slim::Control::XMLBrowser::cliQuery('smdinfocmd', $feed, $request);
-				} else {
-					Slim76Compat::Control::XMLBrowser::cliQuery('smdinfocmd', $feed, $request);
-				}
-			},
+			$contextCB,
 			sub {
 				$log->warn("can't get context menu for $contextPath");
-				$request->setStatusBadParams();
+				$contextCB->(undef);
 			},
 			{ timeout => 35 },
 		);
