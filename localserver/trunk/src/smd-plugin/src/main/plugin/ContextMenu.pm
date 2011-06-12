@@ -151,7 +151,7 @@ sub menu {
 }
 
 sub _entry {
-	my ($cmd, $playpath, $path) = @_;
+	my ($cmd, $playpath, $path, $index) = @_;
 	return {
 		player => 0,
 		cmd => [ 'smdplcmd' ],
@@ -159,6 +159,7 @@ sub _entry {
 			cmd      => $cmd,
 			playpath => $playpath,
 			infopath => $path,
+			index_cm => $index,
 		},
 		nextWindow => $cmd eq 'load' ? 'nowPlaying' :'parent',
 	}
@@ -169,7 +170,7 @@ sub addItemEnd {
 
 	return if !$tags->{'playable'};
 
-	my $action = _entry('add', $playpath, $path);
+	my $action = _entry('add', $playpath, $path, $tags->{'index'});
 
 	return { 
 		name => cstring($client, 'ADD'),
@@ -190,7 +191,7 @@ sub addItemNext {
 
 	return if !$tags->{'playable'};
 
-	my $action = _entry('insert', $playpath, $path);
+	my $action = _entry('insert', $playpath, $path, $tags->{'index'});
 
 	return { 
 		name => cstring($client, 'PLAY_NEXT'),
@@ -211,7 +212,7 @@ sub playItem {
 
 	return if !$tags->{'playable'};
 
-	my $action = _entry('load', $playpath, $path);
+	my $action = _entry('load', $playpath, $path, $tags->{'index'});
 
 	return { 
 		name => cstring($client, 'PLAY'),
@@ -262,6 +263,7 @@ sub infoCommand {
 	my $menuMode     = $request->getParam('menu') || 0;
 	my $menuContext  = $request->getParam('context') || 'normal';
 	my $playable     = $request->getParam('playable');
+	my $index        = $request->getParam('index');
 
 	$infopath = uri_unescape($infopath);
 
@@ -269,9 +271,8 @@ sub infoCommand {
 		menuMode      => $menuMode,
 		menuContext   => $menuContext,
 		playable      => $playable,
+		index         => $index,
 	};
-
-	my $feed;
 
 	if ($infopath) {
 		
@@ -292,11 +293,11 @@ sub infoCommand {
 		my $contextCB = sub {
 			my $contextInfo = shift;
 
-			$feed = __PACKAGE__->menu($client, $playpath, $contextPath, $tags, $contextInfo);
-			
-			if ($connectionId && $contextInfo) {
-				$cachedFeed{ $connectionId } = $feed;
+			if ($connectionId) {
+				$cachedFeed{ $connectionId } = [ $client, $playpath, $contextPath, $tags, $contextInfo ];
 			}
+
+			my $feed = __PACKAGE__->menu($client, $playpath, $contextPath, $tags, $contextInfo);
 			
 			# call xmlbrowser using compat version if necessary
 			if (!Plugins::SocialMusicDiscovery::Browse->compat) {
@@ -321,23 +322,24 @@ sub infoCommand {
 	} elsif ($connectionId) {
 
 		if ( $cachedFeed{ $connectionId } ) {
+
 			$log->info("using cached feed");
-			$feed = $cachedFeed{ $connectionId };
+
+			my $feed = __PACKAGE__->menu(@{ $cachedFeed{ $connectionId } });
+
+			# call xmlbrowser using compat version if necessary
+			if (!Plugins::SocialMusicDiscovery::Browse->compat) {
+				Slim::Control::XMLBrowser::cliQuery('smdinfocmd', $feed, $request);
+			} else {
+				Slim76Compat::Control::XMLBrowser::cliQuery('smdinfocmd', $feed, $request);
+			}
+
+			return;
 		}
 	}
 
-	if (!$feed) {
-		$log->warn("no feed");
-		$request->setStatusBadParams();
-		return;
-	}
-
-	# call xmlbrowser using compat version if necessary
-	if (!Plugins::SocialMusicDiscovery::Browse->compat) {
-		Slim::Control::XMLBrowser::cliQuery('smdinfocmd', $feed, $request);
-	} else {
-		Slim76Compat::Control::XMLBrowser::cliQuery('smdinfocmd', $feed, $request);
-	}
+	$log->warn("no feed");
+	$request->setStatusBadParams();
 }
 
 1;

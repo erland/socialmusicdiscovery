@@ -321,6 +321,7 @@ sub plCommand {
 	my $cmd      = $request->getParam('cmd');
 	my $playpath = $request->getParam('playpath');
 	my $index    = $request->getParam('index');
+	my $index_cm = $request->getParam('index_cm');
 
 	$playpath = uri_unescape($playpath);
 
@@ -332,7 +333,7 @@ sub plCommand {
 			my $json = shift;
 			my @tracks;
 			my @urls;
-			
+
 			for my $item (@{$json->{'items'}}) {
 				
 				if (my $url = $item->{'uri'}) {
@@ -343,6 +344,11 @@ sub plCommand {
 						push @tracks, $url;
 					}
 				}
+			}
+
+			if (defined $index_cm) {
+				$log->debug("context menu - ${cmd}ing single track at index: $index_cm");
+				@tracks = ( $tracks[$index_cm] );
 			}
 			
 			if (scalar @tracks) {
