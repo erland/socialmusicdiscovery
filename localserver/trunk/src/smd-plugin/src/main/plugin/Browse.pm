@@ -29,6 +29,7 @@ use warnings;
 
 use Tie::Cache::LRU;
 use Tie::RegexpHash;
+use URI::Escape;
 
 use Slim::Utils::Log;
 use Slim::Utils::Prefs;
@@ -187,7 +188,7 @@ sub level {
 		# FIXME: do we want this - makes the web interface only play the selected track?
 		# FIXME: is this offset always correct - better to add something to the params?
 		if (caller(10) =~ /Web/) {
-			$flags->{'playalbum'} = 0;
+		#	$flags->{'playalbum'} = 0;
 		}
 
 		if (!defined $flags->{'playalbum'} && $client) {
@@ -221,6 +222,8 @@ sub _createResponse {
 	my @menu;
 	my $playAction; my $infoAction;
 
+	my $playableBase = $json->{'playableBaseURL'};
+
 	for my $entry (@{$json->{'items'}}) {
 		
 		if ($entry->{'playable'}) {
@@ -231,19 +234,18 @@ sub _createResponse {
 
 			if ($entry->{'leaf'}) {
 
-				my $playable = $entry->{'item'}->{'playableElements'}->[0]->{'uri'};
-
 				my $menu = {
-					name => $entry->{'name'},
-					type => 'audio',
-					uri  => $playable,
-					url  => $playable,
-					path => $entrypath,
+					name     => $entry->{'name'},
+					type     => 'audio',
+					url      => 'someurl', # needed to make button mode context menu appear
+					infopath => uri_escape($entrypath),
 				};
 		
 				if ($flags->{'playalbum'}) {
-					$menu->{'id'} = $i;
-					$menu->{'albumpath'} = $path;
+					$menu->{'index'} = $i;
+					$menu->{'playpath'} = uri_escape($playableBase);
+				} else {
+					$menu->{'playpath'} = uri_escape($playableBase . $entry->{'playable'});
 				}
 
 				push @menu, $menu;
@@ -251,10 +253,11 @@ sub _createResponse {
 			} else {
 
 				push @menu, {
-					name => $entry->{'name'},
-					type => $flags->{'ipeng'} ? 'opml' : 'playlist',
-					url  => \&level,
-					path => $entrypath,
+					name     => $entry->{'name'},
+					type     => $flags->{'ipeng'} ? 'opml' : 'playlist',
+					url      => \&level,
+					infopath => uri_escape($entrypath),
+					playpath => uri_escape($playableBase . $entry->{'playable'}),
 					passthrough => [ $entrypath, $flags ],
 				};
 			}
@@ -273,10 +276,10 @@ sub _createResponse {
 			my $entrypath = $path . "/" . $entry->{'id'};
 
 			push @menu, {
-				name => $entry->{'name'},
-				type => 'link',
-				url  => \&level,
-				path => $entrypath,
+				name     => $entry->{'name'},
+				type     => 'link',
+				url      => \&level,
+				infopath => uri_escape($entrypath),
 				passthrough => [ $entrypath, $flags ],
 			};
 		}
@@ -293,7 +296,7 @@ sub _createResponse {
 	if ($playAction || $infoAction) {
 
 		my %actions = (
-			commonVariables	=> [ index => 'id', path => 'path', uri => 'uri', albumpath => 'albumpath' ],
+			commonVariables	=> [ index => 'index', playpath => 'playpath', infopath => 'infopath' ],
 			info => { command => ['smdinfocmd', 'items'], fixedParams => { playable => $playAction || 0 } },
 		);
 
@@ -314,85 +317,53 @@ sub _createResponse {
 sub plCommand {
 	my $request = shift;
 
-	my $client = $request->client;
-	my $cmd    = $request->getParam('cmd');
-	my $uri    = $request->getParam('uri');
-	# use albumpath in preference to path, play the album indicated by albumpath starting at given index
-	my $path   = $request->getParam('albumpath') || $request->getParam('path');
-	my $index  = $request->getParam('index');
+	my $client   = $request->client;
+	my $cmd      = $request->getParam('cmd');
+	my $playpath = $request->getParam('playpath');
+	my $index    = $request->getParam('index');
 
-	if ($cmd && $uri && !(defined $index && defined $path)) {
+	$playpath = uri_unescape($playpath);
 
-		my $obj;
+	$log->info("fetching playable items from: $playpath");
 
-		if ($uri =~ /^file:\/\// && (my $track = Slim::Schema->objectForUrl({'url' => $uri }))) {
-			$obj = $track;
-		} else {
-			$obj = $uri;
-		}
+	Plugins::SocialMusicDiscovery::Server->get(
+		$playpath,
+		sub {
+			my $json = shift;
+			my @tracks;
+			my @urls;
+			
+			for my $item (@{$json->{'items'}}) {
+				
+				if (my $url = $item->{'uri'}) {
 
-		$log->info("${cmd}ing track from $uri");
-		$client->execute(['playlist', "${cmd}tracks", 'listref', [ $obj ] ]);
-
-	} elsif ($cmd && $path) {
-
-		my @pathElements;
-
-		# extract object elements containing ':'
-		for my $obj (split(/\//, $path)) {
-			if ($obj =~ /:/) {
-				push @pathElements, $obj;
-			}
-		}
-
-		my $query = "/browse/Track?criteria=" . join("&criteria=", @pathElements);
-
-		$log->info("fetching playlist from: $query");
-
-		Plugins::SocialMusicDiscovery::Server->get(
-			$query,
-			sub {
-				my $json = shift;
-				my @tracks;
-				my @urls;
-
-				for my $entry (@{$json->{'items'}}) {
-
-					if ($entry->{'playable'}) {
-
-						for my $item (@{$entry->{'item'}->{'playableElements'}}) {
-
-							my $url = $item->{'uri'};
-
-							if ($url =~ /^file:\/\// && (my $track = Slim::Schema->objectForUrl({'url' => $url }))) {
-								push @tracks, $track;
-							} else {
-								push @tracks, $url;
-							}
-						}
-					}
-				}
-
-				if (scalar @tracks) {
-					$log->info("${cmd}ing " . scalar @tracks . " tracks" . ($index ? " starting at $index" : ""));
-					if (!$compat) {
-						$client->execute([ 'playlist', "${cmd}tracks", 'listref', \@tracks, undef, $index ]);
+					if ($url =~ /^file:\/\// && (my $track = Slim::Schema->objectForUrl({'url' => $url }))) {
+						push @tracks, $track;
 					} else {
-						$client->execute([ 'playlist', "${cmd}tracks", 'listref', \@tracks ]);
-						if ($cmd eq 'load' && $index) {
-							$client->execute([ 'playlist', 'jump', $index ]);
-						}
+						push @tracks, $url;
 					}
-				} else {
-					$log->info("no playable urls found");
 				}
-			},
-			sub {
-				$log->warn("error getting playlist: " . $_[0]);
-			},
-			{ timeout => 35 },
-		);									   
-	}
+			}
+			
+			if (scalar @tracks) {
+				$log->info("${cmd}ing " . scalar @tracks . " tracks" . ($index ? " starting at $index" : ""));
+				if (!$compat) {
+					$client->execute([ 'playlist', "${cmd}tracks", 'listref', \@tracks, undef, $index ]);
+				} else {
+					$client->execute([ 'playlist', "${cmd}tracks", 'listref', \@tracks ]);
+					if ($cmd eq 'load' && $index) {
+						$client->execute([ 'playlist', 'jump', $index ]);
+					}
+				}
+			} else {
+				$log->info("no playable urls found");
+			}
+		},
+		sub {
+			$log->warn("error getting playable: " . $_[0]);
+		},
+		{ timeout => 35 },
+	);									   
 }
 
 1;
