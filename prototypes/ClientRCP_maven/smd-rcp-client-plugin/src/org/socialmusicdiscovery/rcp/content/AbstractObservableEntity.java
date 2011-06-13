@@ -35,7 +35,9 @@ import java.util.Set;
 
 import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.observable.Observables;
+import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.databinding.observable.set.IObservableSet;
+import org.eclipse.jface.util.Util;
 import org.eclipse.ui.PlatformUI;
 import org.socialmusicdiscovery.rcp.Activator;
 import org.socialmusicdiscovery.rcp.content.DataSource.Root;
@@ -112,6 +114,10 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 		return null;
 	}
 
+    public int compareTo(ModelObject o) {
+    	return o==null ? -1 : Util.compare(getName(), o.getName());
+    }
+    
 	/**
 	 * <p>
 	 * Load remaining data by fetching the 'full' object from the server. If all
@@ -206,6 +212,11 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 		return getClass(); // emergency exit
 	}
 
+	@Override
+	public boolean hasChildren() {
+		return false;
+	}
+
 	/**
 	 * Default implementation returns an empty collection.
 	 * Subclasses are expected to override as necessary.
@@ -214,8 +225,8 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 	 * @see Observables#emptyObservableList()
 	 */
 	@Override
-	public IObservableSet getObservableChildren() {
-		return Observables.emptyObservableSet();
+	public IObservableList getObservableChildren() {
+		return Observables.emptyObservableList();
 	}
 
 	public String getId() {

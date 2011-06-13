@@ -28,19 +28,18 @@
 package org.socialmusicdiscovery.rcp.views.navigator;
 
 import org.eclipse.jface.databinding.viewers.TreeStructureAdvisor;
+import org.socialmusicdiscovery.rcp.content.ModelObject;
 
 class NavigatorStructureAdvisor extends TreeStructureAdvisor {
 
 	@Override
 	public Object getParent(Object element) {
-		// TODO Auto-generated method stub
 		return super.getParent(element);
 	}
 
 	@Override
 	public Boolean hasChildren(Object element) {
-		// TODO Auto-generated method stub
-		return super.hasChildren(element);
+		return element instanceof ModelObject ? ((ModelObject) element).hasChildren() : super.hasChildren(element);
 	}
 
 }

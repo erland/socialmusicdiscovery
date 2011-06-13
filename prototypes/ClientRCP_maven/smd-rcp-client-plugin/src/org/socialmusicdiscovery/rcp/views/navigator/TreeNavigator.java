@@ -28,13 +28,14 @@
 package org.socialmusicdiscovery.rcp.views.navigator;
 
 
-import org.eclipse.jface.databinding.viewers.ObservableSetTreeContentProvider;
+import org.eclipse.jface.databinding.viewers.ObservableListTreeContentProvider;
 import org.eclipse.jface.databinding.viewers.ViewerSupport;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.part.ViewPart;
 import org.socialmusicdiscovery.rcp.content.DataSource;
 import org.socialmusicdiscovery.rcp.util.ViewerUtil;
@@ -55,8 +56,8 @@ public class TreeNavigator extends Composite {
 	public TreeNavigator(Composite parent, int style) {
 		super(parent, style);
 		setLayout(new FillLayout(SWT.HORIZONTAL));
-		
-		treeViewer = new TreeViewer(this, SWT.NONE);
+		Tree tree = new Tree(this, SWT.VIRTUAL | SWT.MULTI);
+		treeViewer = new TreeViewer(tree);
 		
 		bindViewer();
 	}
@@ -67,10 +68,10 @@ public class TreeNavigator extends Composite {
 	 * when we set input? Not sure which is simpler or better.
 	 */
 	private void bindViewer() {
-		treeViewer.setSorter(new ViewerSorter());
-		ObservableSetTreeContentProvider contentProvider = new ObservableSetTreeContentProvider(new NavigatorSetFactory(), new NavigatorStructureAdvisor());
+		ObservableListTreeContentProvider contentProvider = new ObservableListTreeContentProvider(new NavigatorObservableFactory(), new NavigatorStructureAdvisor());
 		treeViewer.setContentProvider(contentProvider);
 		treeViewer.setLabelProvider(LabelProviderFactory.defaultObservable(contentProvider));
+		treeViewer.setSorter(new ViewerSorter()); // list is initially sorted, but we need to handle additions,removals and name changes
 	}
 
 	@Override
