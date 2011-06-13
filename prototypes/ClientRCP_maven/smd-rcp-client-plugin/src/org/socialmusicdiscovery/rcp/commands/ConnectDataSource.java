@@ -31,6 +31,7 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.HandlerEvent;
+import org.eclipse.swt.widgets.Display;
 import org.socialmusicdiscovery.rcp.Activator;
 import org.socialmusicdiscovery.rcp.content.DataSource;
 
@@ -47,7 +48,7 @@ public class ConnectDataSource extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		Activator.getDefault().getDataSource().connect();
+		Activator.getDefault().getDataSource().connect(Display.getCurrent().getActiveShell());
 		fireHandlerChanged(new HandlerEvent(this, true, isEnabled()));
 		return null;
 	}

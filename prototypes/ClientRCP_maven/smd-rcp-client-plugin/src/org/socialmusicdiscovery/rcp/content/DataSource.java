@@ -28,6 +28,7 @@
 package org.socialmusicdiscovery.rcp.content;
 
 import java.beans.PropertyChangeEvent;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -138,6 +139,37 @@ public class DataSource extends AbstractObservable implements ModelObject {
 
 	public static final String MODULE_SQUEEZEBOXSERVER = "squeezeboxserver";
 
+	/**
+	 * Loads instances with callback to a {@link ProgressMonitor}.
+	 */
+	private class MyLoader implements IRunnableWithProgress {
+
+		private final List<Root> roots;
+		private final Shell shell;
+
+		public MyLoader(Shell shell, List<Root> visibleRoots) {
+			assert shell!=null : "Must have shell!";
+			this.roots = visibleRoots;
+			this.shell = shell;
+		}
+
+		@Override
+		public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+			monitor.beginTask("Load content: "+roots.size() + " roots.", roots.size());
+			for (final Root root : roots) {
+				monitor.subTask("Load "+root.name+" ...");
+				shell.getDisplay().syncExec(new Runnable() {
+					@Override
+					public void run() {
+						root.getObservableChildren(); // pre-load children to speed subsequent operations 
+					}
+				});
+				monitor.worked(1);
+			}
+			
+		}
+		
+	}
 	/**
 	 * Runs persistency operations on proper thread with callback to a {@link ProgressMonitor}.
 	 * Dispatches the actual work to {@link MyInnerPersistor}. 
@@ -381,7 +413,7 @@ public class DataSource extends AbstractObservable implements ModelObject {
 
 		/**
 		 * <p>
-		 * Returns a {@link WritableSet}. Loads children and updates
+			 * Returns a {@link WritableSet}. Loads children and updates
 		 * {@link #isLoaded} status if connected but not loaded. Do <b>NOT</b>
 		 * maintain the same set across sessions; set must be replaced when Root
 		 * is reloaded.
@@ -937,16 +969,15 @@ public class DataSource extends AbstractObservable implements ModelObject {
 	 * @see #disconnect()
 	 * @throws IllegalStateException
 	 */
-	public boolean connect() {
+	public boolean connect(Shell shell) {
 		if (isConnected) {
 			throw new IllegalStateException("Already connected");
 		}
 		isConnected = true; // do NOT fire events, but tell roots that they can load data
-		for (Root root : getVisibleRoots()) {
-			root.getObservableChildren(); // pre-load children to speed subsequent operations 
-		}
-		// now fire an event to notify listeners and refresh input 
-		firePropertyChange(new PropertyChangeEvent(this, PROP_IS_CONNECTED, false, true));
+		isConnected  = JobUtil.run(shell, new MyLoader(shell, getVisibleRoots()), "Connect to server", false);
+
+		// now fire an event to notify listeners and refresh input
+		firePropertyChange(new PropertyChangeEvent(this, PROP_IS_CONNECTED, false, isConnected()));
 		return isConnected();
 	}
 
@@ -982,7 +1013,7 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		if (entities.length==1) {
 			return new MyPersistor(shell, entities).persistOnProperThread(entities[0]);
 		} else {
-			return JobUtil.run(shell, new MyPersistor(shell, entities), "Save "+entities.length+" object(s)");
+			return JobUtil.run(shell, new MyPersistor(shell, entities), "Save "+entities.length+" object(s)", false);
 		}
 	}
 
@@ -1047,9 +1078,9 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		return true;
 	}
 
-	public void initialize() {
+	public void initialize(Shell shell) {
 		if (isAutoConnect) {
-			connect();
+			connect(shell);
 		}
 	}
 }

@@ -106,18 +106,19 @@ public final class JobUtil {
 	 * @param shell
 	 * @param runnable
 	 * @param dialogTitle
+	 * @param isCancelable show Cancel button or not?
 	 * @return <code>true</code> if job finished ok, <code>false</code> if not (e.g. user canceled)
 	 * 
 	 * @see #schedule(Job)
 	 */
-	public static boolean run(Shell shell, IRunnableWithProgress runnable, String dialogTitle) {
+	public static boolean run(Shell shell, IRunnableWithProgress runnable, String dialogTitle, boolean isCancelable) {
 //		double started = System.currentTimeMillis();
 		ProgressMonitorDialog dialog = new ProgressMonitorDialog(shell);
 
 		try {
 			dialog.create();
 			dialog.getShell().setText(dialogTitle);
-			dialog.run(true, true, runnable);
+			dialog.run(true, isCancelable, runnable);
 			if (dialog.getProgressMonitor().isCanceled()) {
 				MessageDialog.openInformation(shell, dialogTitle+" cancelled", "Operation was canceled");
 				return false;
