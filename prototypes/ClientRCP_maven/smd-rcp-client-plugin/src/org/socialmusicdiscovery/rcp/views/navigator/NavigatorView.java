@@ -70,7 +70,7 @@ public class NavigatorView extends ViewPart {
 		ui = new ShelfNavigator(parent, SWT.NONE);
 		ui.setView(this);
 		createActions();
-		Activator.getDefault().getDataSource().initialize();
+		Activator.getDefault().getDataSource().initialize(getSite().getShell());
 	}
 
 	/**

@@ -51,7 +51,7 @@ public class ImportFromSBS extends AbstractHandler {
 			JobUtil.schedule(new ImportJob(jobName, SMDUtil.getDataSource(), DataSource.MODULE_SQUEEZEBOXSERVER));
 		} else {
 			ImportRunner importer = new ImportRunner(jobName, SMDUtil.getDataSource(), DataSource.MODULE_SQUEEZEBOXSERVER);
-			JobUtil.run(null, importer, jobName);
+			JobUtil.run(null, importer, jobName, true);
 		}
 		return null;
 	}
