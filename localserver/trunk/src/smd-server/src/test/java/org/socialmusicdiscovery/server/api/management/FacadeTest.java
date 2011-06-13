@@ -1232,6 +1232,7 @@ public class FacadeTest extends BaseTestCase {
         myImage.setRelatedTo(new SMDIdentityReferenceEntity("1", "Artist"));
         myImage.setUri("some://random/uri");
         myImage.setType("default");
+        myImage.setProviderId("JUnit");
         
         // and add it to database through json
         Image img = Client.create(config).resource(HOSTURL+"/images").type(MediaType.APPLICATION_JSON).post(Image.class,myImage);

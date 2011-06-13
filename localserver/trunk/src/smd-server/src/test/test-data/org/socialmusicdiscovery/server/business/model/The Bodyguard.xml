@@ -179,6 +179,6 @@
     <playable_elements/>
     <configurations/>
     <images id="bf87a7ad-88fa-4ec4-8da0-dfec05d7cf5e" related_to_id="20000" type="front" uri="http://s.dsimg.com/image/R-1794218-1260432856.jpeg"
-     		last_updated="2011-05-23" last_updated_by="JUnit"  />
+     		last_updated="2011-05-23" last_updated_by="JUnit" provider_id="JUnit" provider_image_id="JUnit_007"  />
      <smdidentity_references id="bf87a7ad-88fa-4ec4-8da0-dfec05d7cf5e" type="org.socialmusicdiscovery.server.business.model.core.ImageEntity"/>
 </dataset>

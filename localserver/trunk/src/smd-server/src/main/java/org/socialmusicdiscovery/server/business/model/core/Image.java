@@ -20,5 +20,13 @@ public interface Image extends SMDIdentity {
     String getType();
 
 	void setType(String type);
+	
+    public String getProviderId();
+
+	public void setProviderId(String providerId);
+
+	public String getProviderImageId();
+
+	public void setProviderImageId(String providerImageId);
 
 }
