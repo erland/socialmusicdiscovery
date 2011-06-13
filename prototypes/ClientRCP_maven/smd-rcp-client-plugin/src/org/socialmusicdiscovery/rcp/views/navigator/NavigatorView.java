@@ -43,7 +43,12 @@ public class NavigatorView extends ViewPart {
 		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
 			if (ui!=null && evt.getSource() instanceof DataSource) {
-				ui.setInput((DataSource) evt.getSource());
+				Boolean isConnected = (Boolean) evt.getNewValue();
+				if (isConnected) {
+					ui.setInput((DataSource) evt.getSource());
+				} else {
+					ui.setInput(null);
+				}
 			}
 		}
 
@@ -65,7 +70,7 @@ public class NavigatorView extends ViewPart {
 		ui = new ShelfNavigator(parent, SWT.NONE);
 		ui.setView(this);
 		createActions();
-		ui.setInput(Activator.getDefault().getDataSource());
+		Activator.getDefault().getDataSource().initialize();
 	}
 
 	/**

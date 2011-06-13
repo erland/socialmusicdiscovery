@@ -28,16 +28,22 @@
 package org.socialmusicdiscovery.rcp.content;
 
 import java.beans.PropertyChangeEvent;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.swing.ProgressMonitor;
 import javax.ws.rs.core.MediaType;
 
 import org.eclipse.core.databinding.observable.Observables;
-import org.eclipse.core.databinding.observable.set.IObservableSet;
+import org.eclipse.core.databinding.observable.list.IListChangeListener;
+import org.eclipse.core.databinding.observable.list.IObservableList;
+import org.eclipse.core.databinding.observable.list.ListChangeEvent;
+import org.eclipse.core.databinding.observable.list.WritableList;
 import org.eclipse.core.databinding.observable.set.WritableSet;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -132,6 +138,10 @@ public class DataSource extends AbstractObservable implements ModelObject {
 
 	public static final String MODULE_SQUEEZEBOXSERVER = "squeezeboxserver";
 
+	/**
+	 * Runs persistency operations on proper thread with callback to a {@link ProgressMonitor}.
+	 * Dispatches the actual work to {@link MyInnerPersistor}. 
+	 */
 	private class MyPersistor implements IRunnableWithProgress {
 
 		private final ObservableEntity[] entities;
@@ -184,6 +194,10 @@ public class DataSource extends AbstractObservable implements ModelObject {
 
 	}
 
+	/**
+	 * The inner class that implements the actual save operations.
+	 * This class is run by {@link MyPersistor}.
+	 */
 	private final class MyInnerPersistor implements Runnable {
 		private final ObservableEntity entity;
 		private final Shell shell;
@@ -270,29 +284,30 @@ public class DataSource extends AbstractObservable implements ModelObject {
 	private List<Root<? extends SMDIdentity>> roots;
 
 	/**
-	 * @author Peer Törngren
+	 * The "home" of a specific type of entity.
 	 *
 	 * @param <T> the common entity interface that this instance operates on
 	 */
 	public class Root<T extends SMDIdentity> extends AbstractObservable implements ModelObject, ItemFactory<T> {
 
-		public static final String PROP_OBSERVABLE_CHILDREN = "observableChildren";
-//		private static final String PROP_children = "children";
-		
+		private final class MyEntityCollectionListener implements IListChangeListener {
+			@Override
+			public void handleListChange(ListChangeEvent event) {
+				firePropertyChange(PROP_name);  // update number of children in name
+			}
+		}
+
 		private final String name; // for user presentation
 		private final String path; // for querying server
 		private final Class<T> distinctQueryType; // for querying server
-		private GenericType<Set<T>> genericCollectionQueryType;
+		private final GenericType<Set<T>> genericCollectionQueryType; // for querying server
 		private final Class<? extends AbstractObservableEntity<T>> observableType;
-		private IObservableSet children;
-
-		private boolean isLoaded = false;
-
 		private final boolean isGreedyLoad;
 
-//		private final WritableSet writableSetOfChildren; 
-
-
+		private WritableList sortedEntities;
+		private boolean isLoaded = false;
+		private IObservableList sections;
+		private final int mimimumSectionSize;
 
 //		private final Set newInstances = new HashSet(); // keep track of created instances 
 
@@ -323,6 +338,7 @@ public class DataSource extends AbstractObservable implements ModelObject {
 			this.genericCollectionQueryType = genericCollectionQueryType;
 //			this.writableSetOfChildren = new SMDWritableSet(children, observableType);
 			this.isGreedyLoad = isGreedyLoad;
+			this.mimimumSectionSize = 100; // TODO read from user prefs?
 		}
 
 		/**
@@ -331,7 +347,8 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		 */
 		final public synchronized <O extends ObservableEntity<T>> Set<O> findAll() {
 			Set<O> result = new HashSet<O>();
-			for (T serverObject : get(genericCollectionQueryType)) {
+			Set<T> set = get(genericCollectionQueryType);
+			for (T serverObject : set) {
 				O clientObject = getOrStore(serverObject);
 				result.add(clientObject);
 			}
@@ -382,16 +399,21 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		 * 
 		 * @see #dispose()
 		 */
-		public IObservableSet getObservableChildren() {
+		@SuppressWarnings("unchecked")
+		public IObservableList getObservableChildren() {
 			if (!isLoaded && (isConnected || isAutoConnect)) {
-				children = new WritableSet(findAll(), getType());
+				List<ObservableEntity> all = new ArrayList<ObservableEntity>(findAll());
+				Collections.sort(all);
+				sortedEntities = new WritableList(all, getType());
 				isLoaded = true;
+				sortedEntities.addListChangeListener(new MyEntityCollectionListener());
+				sections = createSections();
 			}
-			return children;
+			return sortedEntities.size()<mimimumSectionSize ? sortedEntities : sections;
 		}
 
 		public String getName() {
-			return name;
+			return sortedEntities==null || sortedEntities.isDisposed() ? name : name + " ("+sortedEntities.size()+")";
 		}
 
 		@Override
@@ -467,6 +489,7 @@ public class DataSource extends AbstractObservable implements ModelObject {
 			} else {
 				update(entity);
 			}
+			sectionChange(entity);
 		}
 
 		/**
@@ -525,11 +548,51 @@ public class DataSource extends AbstractObservable implements ModelObject {
 				resource(entityPath).type(MediaType.APPLICATION_JSON).delete();
 				cache.delete(entity);
 			}
-			if (children!=null) {
-				children.remove(entity);
+			if (sortedEntities!=null) {
+				sortedEntities.remove(entity);
+				sectionRemove(entity);
 			}
 			
 			assert !cache.contains(entity) : "cache not updated - entity still present: "+entity;
+		}
+
+		private void sectionAdd(ModelObject element) {
+			Section s = sectionMatch(element);
+			if (s!=null) {
+				s.add(element);
+			}
+		}
+
+		private void sectionRemove(ModelObject element) {
+			if (sections != null) {
+				for (Section s : getSections()) {
+					if (s.remove(element)) {
+						break;
+					}
+				}
+			}
+		}
+		private void sectionChange(ModelObject entity) {
+			Section s = sectionMatch(entity);
+			if (!s.contains(entity)) {
+				sectionRemove(entity);
+				s.add(entity);
+			}
+		}
+
+		private Section sectionMatch(ModelObject element) {
+			if (sections != null) {
+				List<Section> reversedSections = new ArrayList<Section>(getSections());
+				Collections.reverse(reversedSections);
+				for (Section s : reversedSections) {
+					boolean sortsAfterFirstChild = element.getName().compareTo(s.getFirstName()) >= 0;
+					if (sortsAfterFirstChild) {
+						return s;
+					}
+				}
+				throw new IllegalStateException("Cannot find section for element: "+element);
+			}
+			return null;
 		}
 
 		private boolean isNew(ObservableEntity entity) {
@@ -549,7 +612,7 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		 * {@link #getObservableChildren()}.
 		 */
 		public void dispose() {
-			children = null;
+			sortedEntities = null;
 			isLoaded = false;
 		}
 
@@ -563,9 +626,11 @@ public class DataSource extends AbstractObservable implements ModelObject {
 			AbstractObservableEntity<T> newInstance = createInstance();
 			newInstance.postCreate();
 			newInstance.setName("<new>");
-			if (children!=null) {
-				children.add(newInstance);
+			if (sortedEntities!=null) {
+				sortedEntities.add(newInstance);
+				sectionAdd(newInstance);
 			}
+			
 			return (T) newInstance;
 		}
 
@@ -595,8 +660,148 @@ public class DataSource extends AbstractObservable implements ModelObject {
 			return this.isGreedyLoad;
 		}
 
+		@Override
+		public boolean hasChildren() {
+			return sortedEntities!=null && sortedEntities.size()>0;
+		}
+
+		/**
+		 * Find a reasonable balance between sections and children, and create
+		 * sections with subsets of children accordingly. This simple algorithm
+		 * should work reasonably well up to 100k entries (333*333), if we want
+		 * to go beyond that we probably need to add an extra layer.
+		 * 
+		 * @return {@link IObservableList} of {@link Section}s
+		 */
+		private IObservableList createSections() {
+			// calculate sizes
+			int totalSize = sortedEntities.size();
+			double nominalSectionSize = Math.max(Math.sqrt(totalSize), mimimumSectionSize);
+			int nofSections = (int) Math.ceil(totalSize/nominalSectionSize );
+			int sectionSize = (int) (nofSections==0 ? nominalSectionSize : Math.ceil(totalSize/nofSections));
+
+			// create sections
+			IObservableList result = new WritableList();
+			for (int s = 0; s < nofSections; s++) {
+				int fromIndex = s * sectionSize;
+				int toIndex = Math.min(fromIndex + sectionSize, totalSize);
+				Section<T> section = new Section<T>(this, sortedEntities.subList(fromIndex, toIndex), s==0);
+				result.add(section);
+			}
+			
+			// done!
+			return result;
+		}
+
+		@SuppressWarnings("unchecked")
+		private List<Section> getSections() {
+			return sections;
+		}
 	}
 
+	/**
+	 * <p>
+	 * A subset of a {@link Root}, primarily created in order to improve
+	 * usability and viewer performance; maintaining a large observable
+	 * collections (+1k) can take significant time - with a few thousnad
+	 * entries, the UI simply becomes unusable.
+	 * </p>
+	 * 
+	 * <p>
+	 * Each Section holds an alphabetical subset of the root's entities; think
+	 * of this as a page in a dictionary, where each page lists the first word
+	 * of the page.
+	 * </p>
+	 * <p>
+	 * Section size is determined by the {@link Root} that creates it, the
+	 * {@link Root} is responsible for creating the section with a valid subset
+	 * of elements. The first element will determine the "section threshold"
+	 * that is used to match new entries against the section. There is no "end";
+	 * a matching section is found by traversing the sections backwards and
+	 * finding the first section where the threshold is lower than the entry
+	 * (see {@link #sectionMatch(ModelObject)}).
+	 * </p>
+	 * <p>
+	 * Sections are updated when root contents change, and also when an existing
+	 * instance is saved: if the name has changed, the instance may have to be
+	 * relocated to a new section.
+	 * </p>
+	 * 
+	 * @param <T>
+	 *            the common entity interface that this instance operates on
+	 */
+	public class Section<T extends SMDIdentity> extends AbstractObservable implements ModelObject, ItemFactory<T> {
+		
+		private final Root<T> root;
+		private final String name;
+		private final String firstName;
+		private IObservableList children;
+		
+		@SuppressWarnings("unchecked")
+		private Section(Root<T> root, List list, boolean isFirstSection) {
+			this.root = root;
+			
+			// Must wrap wrapped list since WritableList updates backed list, which is an unmodifiable subset.
+			// If we change this to a WritableSet, the extra wrapping is not required (compare the 
+			// internal implementation of WritableList with WritableSet).
+			ArrayList wrappedWrapped = new ArrayList(list);
+			this.children = new WritableList(wrappedWrapped, null);
+			
+			ModelObject firstChild = (ModelObject) list.get(0);
+			this.name = firstChild.getName() + " >>"; // TODO replace with icon/decorator? 
+			this.firstName = isFirstSection ? "" : firstChild.getName(); 
+//			int max = Math.min(10, n.length());
+//			String string = n.substring(0, max);
+		}
+
+		public boolean contains(ModelObject entity) {
+			return getObservableChildren().contains(entity);
+		}
+
+		public boolean remove(ModelObject element) {
+			return getObservableChildren().remove(element);
+		}
+
+		/**
+		 * Add if not already found (mimics {@link Set#add(Object)}).
+		 * @param element
+		 * @return <code>true</code> if element was added
+		 */
+		public boolean add(ModelObject element) {
+			return !contains(element) && getObservableChildren().add(element);
+		}
+
+		public String getFirstName() {
+			return this.firstName;
+		}
+
+		@Override
+		public Object getAdapter(Class adapter) {
+			return adapter.isInstance(this) ? this : root.getAdapter(adapter);
+		}
+
+		@Override
+		public T newInstance() {
+			return root.newInstance();
+		}
+
+		@Override
+		public String getName() {
+			return name;
+		}
+
+		@Override
+		public IObservableList getObservableChildren() {
+			return children;
+		}
+
+		@Override
+		public boolean hasChildren() {
+			return children!=null && !children.isEmpty();
+		}
+
+	}
+	
 	public DataSource(boolean isAutoConnect) {
 		this.isAutoConnect = isAutoConnect;
 		this.cache = new DataCache();
@@ -634,7 +839,7 @@ public class DataSource extends AbstractObservable implements ModelObject {
 	}
 
 	@SuppressWarnings("unchecked")
-	private Set<Root> getVisibleRoots() {
+	private List<Root> getVisibleRoots() {
 		return resolveRoots(Artist.class, Release.class);
 	}
 
@@ -644,8 +849,8 @@ public class DataSource extends AbstractObservable implements ModelObject {
 	 * @param requestedTypes
 	 * @return List<Root>, possibly empty
 	 */
-	private Set<Root> resolveRoots(Class<? extends SMDIdentity>... requestedTypes) {
-		Set<Root> matches = new HashSet<Root>();
+	private List<Root> resolveRoots(Class<? extends SMDIdentity>... requestedTypes) {
+		List<Root> matches = new ArrayList<Root>();
 		for (Root prospect : getRoots()) {
 			for (Class requestedType : requestedTypes) {
 				if (prospect.getType().equals(requestedType)) {
@@ -695,7 +900,6 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		return Client.create(config).resource(path);
 	}
 
-
 	private void setConnected(boolean isConnected) {
 		firePropertyChange(PROP_IS_CONNECTED, this.isConnected, this.isConnected = isConnected);
 	}
@@ -739,10 +943,10 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		}
 		isConnected = true; // do NOT fire events, but tell roots that they can load data
 		for (Root root : getVisibleRoots()) {
-			root.getObservableChildren();
+			root.getObservableChildren(); // pre-load children to speed subsequent operations 
 		}
-		// now fire a "refresh event" to notify listeners and refresh input 
-		firePropertyChange(new PropertyChangeEvent(this, PROP_IS_CONNECTED, null, null));
+		// now fire an event to notify listeners and refresh input 
+		firePropertyChange(new PropertyChangeEvent(this, PROP_IS_CONNECTED, false, true));
 		return isConnected();
 	}
 
@@ -757,8 +961,8 @@ public class DataSource extends AbstractObservable implements ModelObject {
 	 * If/when that happens, this code must be changed.  
 	 */
 	@Override
-	public IObservableSet getObservableChildren() {
-		return Observables.staticObservableSet(getVisibleRoots());
+	public IObservableList getObservableChildren() {
+		return Observables.staticObservableList(getVisibleRoots());
 	}
 
 	@Override
@@ -836,5 +1040,16 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		ClientConfig clientConfig = new DefaultClientConfig();
 		clientConfig.getClasses().add(ClientConfigModule.JSONProvider.class);
 		return clientConfig;
+	}
+
+	@Override
+	public boolean hasChildren() {
+		return true;
+	}
+
+	public void initialize() {
+		if (isAutoConnect) {
+			connect();
+		}
 	}
 }

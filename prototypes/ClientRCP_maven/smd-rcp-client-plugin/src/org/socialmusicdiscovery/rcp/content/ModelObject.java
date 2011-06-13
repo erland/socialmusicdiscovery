@@ -27,12 +27,11 @@
 
 package org.socialmusicdiscovery.rcp.content;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.databinding.observable.list.WritableList;
-import org.eclipse.core.databinding.observable.set.IObservableSet;
 import org.eclipse.core.runtime.IAdaptable;
 import org.socialmusicdiscovery.rcp.event.Observable;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
@@ -72,16 +71,14 @@ public interface ModelObject extends Observable, IAdaptable {
 
 	/**
 	 * <p>
-	 * Get an observable, read-only collection of all children of this instance.
-	 * If instance has no children, method returns an empty collection.
+	 * Get an observable collection of all children of this instance. If
+	 * instance has no children, method returns an empty collection.
 	 * </p>
 	 * <p>
 	 * <b>Design note 1:</b><br>
-	 * we return a {@link Set}, not a {@link List} or a {@link Collection},
-	 * since we want the ability to modify the result - implementers may return
-	 * a {@link WritableSet}. We also need a specific collection type to make
-	 * data binding easy; most/all data binding methods need to know if they
-	 * observe a {@link List} or a {@link Set}.
+	 * we need a specific collection type to make data binding easy; most/all
+	 * data binding methods need to know if they observe a {@link List} or a
+	 * {@link Set}. Implementers may return a {@link WritableList}.
 	 * </p>
 	 * 
 	 * <p>
@@ -94,7 +91,7 @@ public interface ModelObject extends Observable, IAdaptable {
 	 * Artists, or .. something completely different. Hence, the expectation is
 	 * that returned changes are made elsewhere, and reflected in this set.
 	 * Again: this is an expectation. Time will tell what we actually need. And
-	 * as stated above, some implementers may return a {@link WritableSet}.
+	 * as stated above, some implementers may return a {@link WritableList}.
 	 * </p>
 	 * <p>
 	 * <b>Nonsense note:</b><br>
@@ -103,7 +100,9 @@ public interface ModelObject extends Observable, IAdaptable {
 	 * /Peer
 	 * </p>
 	 * 
-	 * @return {@link IObservableSet}, possibly empty (never <code>null</code>)
+	 * @return {@link IObservableList}, possibly empty (never <code>null</code>)
 	 */
-	IObservableSet getObservableChildren();
+	IObservableList getObservableChildren();
+	
+	boolean hasChildren();
 }
