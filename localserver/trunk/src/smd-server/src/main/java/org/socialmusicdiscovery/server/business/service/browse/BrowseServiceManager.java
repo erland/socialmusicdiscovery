@@ -109,6 +109,16 @@ public class BrowseServiceManager {
     }
 
     /**
+     * Indicates if there is a specific service to get online playable elements for the specified object type
+     *
+     * @param objectType Object type to get a service for
+     * @return true if there is a server, else false
+     */
+    public Boolean existsOnlinePlayableElementService(String objectType) {
+        return playableElementServices.containsKey(objectType);
+    }
+
+    /**
      * Get get the service to get playable elements for the specified object type
      *
      * @param objectType Object type to get a service for
