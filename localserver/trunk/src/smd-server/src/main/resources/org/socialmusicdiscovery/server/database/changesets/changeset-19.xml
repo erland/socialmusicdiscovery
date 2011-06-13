@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+	<changeSet author="robin" id="19">
+
+		<dropNotNullConstraint columnDataType="VARCHAR(1024)" tableName="images" columnName="uri"/>
+	
+		<addColumn tableName="images">
+			<column name="provider_id" type="VARCHAR(40)" defaultValue="">
+				<constraints nullable="false" primaryKey="false"/>
+			</column>
+		</addColumn>
+
+		<addColumn tableName="images">
+			<column name="provider_image_id" type="VARCHAR(64)" >
+				<constraints nullable="true" primaryKey="false"/>
+			</column>
+		</addColumn>
+
+
+	</changeSet>
+</databaseChangeLog>

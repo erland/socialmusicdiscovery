@@ -29,7 +29,33 @@ public class ImageEntity extends AbstractSMDIdentityEntity implements Image {
     @Expose
     @Column(nullable = true, length = 36)
     private String type;
+    
+    @Expose
+    @Column(name = "provider_id", nullable = false, length = 40)
+    private String providerId;
 
+	@Expose
+    @Column(name = "provider_image_id", nullable = true, length = 64)
+    private String providerImageId;
+
+
+    public String getProviderId() {
+		return providerId;
+	}
+
+	public void setProviderId(String providerId) {
+		this.providerId = providerId;
+	}
+
+	public String getProviderImageId() {
+		return providerImageId;
+	}
+
+	public void setProviderImageId(String providerImageId) {
+		this.providerImageId = providerImageId;
+	}
+
+    
 	public String getType() {
 		return type;
 	}

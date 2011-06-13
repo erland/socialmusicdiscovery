@@ -128,6 +128,7 @@ public class CoreTest extends BaseTestCase {
             
             ImageEntity image = new ImageEntity();
             image.setUri("foo://nowhere.to/image");
+            image.setProviderId("JUnit");
             setLastChanged(image);
             image.setRelatedTo(release.getReference());
             imageRepository.create(image);
@@ -368,26 +369,37 @@ public class CoreTest extends BaseTestCase {
         Image image = (Image) query.getSingleResult();
         assert(image != null);
 		assert("http://s.dsimg.com/image/R-1794218-1260432856.jpeg".equals(image.getUri()));
+		assert("JUnit".equals(image.getProviderId()));
+		assert("JUnit_007".equals(image.getProviderImageId()));
 
 		// Find by Release
 		image = (Image) imageRepository.findByRelease(release).iterator().next();
 		assert(image != null);
 		assert("http://s.dsimg.com/image/R-1794218-1260432856.jpeg".equals(image.getUri()));
+		assert("JUnit".equals(image.getProviderId()));
+		assert("JUnit_007".equals(image.getProviderImageId()));
 
 		// Find by ReleaseId
 		image = (Image) imageRepository.findByReleaseId(release.getId()).iterator().next();
 		assert(image != null);
 		assert("http://s.dsimg.com/image/R-1794218-1260432856.jpeg".equals(image.getUri()));
-		
+		assert("JUnit".equals(image.getProviderId()));
+		assert("JUnit_007".equals(image.getProviderImageId()));
+
 		// Find by relatedTo SMDId
 		image = (Image) imageRepository.findByRelatedToSMDId(release.getId()).iterator().next();
 		assert(image != null);
 		assert("http://s.dsimg.com/image/R-1794218-1260432856.jpeg".equals(image.getUri()));
-
+		assert("JUnit".equals(image.getProviderId()));
+		assert("JUnit_007".equals(image.getProviderImageId()));
+		
 		// Find by image SMDId
 		image = (Image) imageRepository.findBySMDId("bf87a7ad-88fa-4ec4-8da0-dfec05d7cf5e").iterator().next();
 		assert(image != null);
 		assert("http://s.dsimg.com/image/R-1794218-1260432856.jpeg".equals(image.getUri()));
+		assert("JUnit".equals(image.getProviderId()));
+		assert("JUnit_007".equals(image.getProviderImageId()));
+		
 
         
         em.getTransaction().commit();
