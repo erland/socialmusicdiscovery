@@ -171,8 +171,8 @@ public class BrowseFacade {
             if (objectType.contains(":")) {
                 objectType = objectType.substring(0, objectType.indexOf(":"));
             }
-            onlinePlayableElementService = browseServiceManager.getOnlinePlayableElementService(objectType);
-            if (onlinePlayableElementService != null) {
+            if (browseServiceManager.existsOnlinePlayableElementService(objectType)) {
+                onlinePlayableElementService = browseServiceManager.getOnlinePlayableElementService(objectType);
                 break;
             }
         }
