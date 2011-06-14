@@ -43,8 +43,11 @@ sub init {
 
 	$class->SUPER::init;
 
-	# create our own info command
-	Slim::Control::Request::addDispatch(['smdinfocmd', 'items', '_index', '_quantity' ], [0, 1, 1, \&infoCommand]);
+	# create our own info commands
+	# support 3 levels of context menu through 3 different commands, this allows us to cache each level separately
+	Slim::Control::Request::addDispatch(['smdinfocmd0', 'items', '_index', '_quantity' ], [0, 1, 1, \&infoCommand]);
+	Slim::Control::Request::addDispatch(['smdinfocmd1', 'items', '_index', '_quantity' ], [0, 1, 1, \&infoCommand]);
+	Slim::Control::Request::addDispatch(['smdinfocmd2', 'items', '_index', '_quantity' ], [0, 1, 1, \&infoCommand]);
 }
 
 sub name {
@@ -232,51 +235,65 @@ sub smdContext {
 
 	return if !$contextInfo;
 
+	my $cmDepth = $tags->{'cmDepth'} + 1;
+
+	if ($cmDepth > 2) {
+		$log->warn("context menu depth exceeded");
+		return undef;
+	}
+
 	my @menu;
 
 	for my $item (@{$contextInfo->{'items'}}) {
 		push @menu, {
 			name => $item->{'name'},
 			url  => \&Plugins::SocialMusicDiscovery::Browse::level, 
-			passthrough => [ $path . "/" . $item->{'id'} ],
+			passthrough => [ $path . "/" . $item->{'id'}, { cm_depth => $cmDepth } ],
 		};
 	}
 
 	return \@menu;
 }
 
-# keep a very small cache of feeds to allow browsing into feed
-tie my %cachedFeed, 'Tie::Cache::LRU', 2;
+# keep a small cache of feeds params to allow browsing into feeds
+tie my %cachedFeed, 'Tie::Cache::LRU', 10;
 
 sub infoCommand {
 	my $request = shift;
 
-	if ($request->isNotQuery([['smdinfocmd']])) {
+	if ($request->isNotQuery([['smdinfocmd0', 'smdinfocmd1', 'smdinfocmd2']])) {
 		$request->setStatusBadDispatch();
 		return;
 	}
 
 	my $client = $request->client;
-	my $connectionId = $request->connectionID;
-	my $infopath     = $request->getParam('infopath');
-	my $playpath     = $request->getParam('playpath');
-	my $menuMode     = $request->getParam('menu') || 0;
-	my $menuContext  = $request->getParam('context') || 'normal';
-	my $playable     = $request->getParam('playable');
-	my $index        = $request->getParam('index');
+	my $infopath    = $request->getParam('infopath');
+	my $playpath    = $request->getParam('playpath');
+	my $menuMode    = $request->getParam('menu') || 0;
+	my $menuContext = $request->getParam('context') || 'normal';
+	my $playable    = $request->getParam('playable');
+	my $index       = $request->getParam('index');
+
+	my $connectionId = $request->connectionID || 0;
+
+	my $command = $request->getRequest(0);
+	my ($cmDepth) = $command =~ /smdinfocmd(\d+)/ ;
+
+	my $cacheKey = "$cmDepth-$connectionId";
 
 	$infopath = uri_unescape($infopath);
 
 	my $tags = {
-		menuMode      => $menuMode,
-		menuContext   => $menuContext,
-		playable      => $playable,
-		index         => $index,
+		menuMode    => $menuMode,
+		menuContext => $menuContext,
+		playable    => $playable,
+		index       => $index,
+		cmDepth     => $cmDepth,
 	};
 
 	if ($infopath) {
 		
-		$log->info("info request for: $infopath");
+		$log->info("info request for: $infopath cache key: $cacheKey");
 		
 		my @pathElements = split(/\//, $infopath);
 		
@@ -286,24 +303,22 @@ sub infoCommand {
 		}
 		
 		# use the last object as the key for the context menu
-		my $contextPath = "/browse/context/" . join(',', $pathElements[-1]);
+		my $contextPath = "/browse/context/" . join(',', $pathElements[-1] || '');
 
 		$request->setStatusProcessing;
 		
 		my $contextCB = sub {
 			my $contextInfo = shift;
 
-			if ($connectionId) {
-				$cachedFeed{ $connectionId } = [ $client, $playpath, $contextPath, $tags, $contextInfo ];
-			}
+			$cachedFeed{ $cacheKey } = [ $client, $playpath, $contextPath, $tags, $contextInfo ];
 
 			my $feed = __PACKAGE__->menu($client, $playpath, $contextPath, $tags, $contextInfo);
 			
 			# call xmlbrowser using compat version if necessary
 			if (!Plugins::SocialMusicDiscovery::Browse->compat) {
-				Slim::Control::XMLBrowser::cliQuery('smdinfocmd', $feed, $request);
+				Slim::Control::XMLBrowser::cliQuery($command, $feed, $request);
 			} else {
-				Slim76Compat::Control::XMLBrowser::cliQuery('smdinfocmd', $feed, $request);
+				Slim76Compat::Control::XMLBrowser::cliQuery($command, $feed, $request);
 			}
 		};
 
@@ -319,19 +334,19 @@ sub infoCommand {
 
 		return;
 
-	} elsif ($connectionId) {
+	} else {
 
-		if ( $cachedFeed{ $connectionId } ) {
+		if ( $cachedFeed{ $cacheKey } ) {
 
-			$log->info("using cached feed");
+			$log->info("using cached feed key: $cacheKey");
 
-			my $feed = __PACKAGE__->menu(@{ $cachedFeed{ $connectionId } });
+			my $feed = __PACKAGE__->menu(@{ $cachedFeed{ $cacheKey } });
 
 			# call xmlbrowser using compat version if necessary
 			if (!Plugins::SocialMusicDiscovery::Browse->compat) {
-				Slim::Control::XMLBrowser::cliQuery('smdinfocmd', $feed, $request);
+				Slim::Control::XMLBrowser::cliQuery($command, $feed, $request);
 			} else {
-				Slim76Compat::Control::XMLBrowser::cliQuery('smdinfocmd', $feed, $request);
+				Slim76Compat::Control::XMLBrowser::cliQuery($command, $feed, $request);
 			}
 
 			return;
