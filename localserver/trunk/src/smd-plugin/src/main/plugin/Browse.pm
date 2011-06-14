@@ -182,6 +182,7 @@ sub level {
 
 	$flags ||= {};
 	$flags->{'ipeng'} ||= $args->{'params'}->{'userInterfaceIdiom'} && $args->{'params'}->{'userInterfaceIdiom'} =~ /iPeng/;
+	$flags->{'cm_depth'} ||= 0;
 
 	if (!defined $flags->{'playalbum'}) {
 
@@ -297,7 +298,7 @@ sub _createResponse {
 
 		my %actions = (
 			commonVariables	=> [ index => 'index', playpath => 'playpath', infopath => 'infopath' ],
-			info => { command => ['smdinfocmd', 'items'], fixedParams => { playable => $playAction || 0 } },
+			info => { command => [ "smdinfocmd$flags->{cm_depth}", 'items' ], fixedParams => { playable => $playAction || 0 } },
 		);
 
 		if ($playAction) {
