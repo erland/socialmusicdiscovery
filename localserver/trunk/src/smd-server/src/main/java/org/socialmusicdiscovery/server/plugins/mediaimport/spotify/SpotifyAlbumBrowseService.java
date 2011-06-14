@@ -71,7 +71,10 @@ public class SpotifyAlbumBrowseService extends AbstractBrowseService implements 
                 for (int i = 0; i < array.length(); i++) {
                     ResultItem<SpotifyAlbum> item = createFromJSON(array.getJSONObject(i));
                     if (item != null) {
-                        albums.add(item);
+                        result.setCount(result.getCount()+1);
+                        if((firstItem==null || i>=firstItem) && (maxItems==null || maxItems>albums.size())) {
+                            albums.add(item);
+                        }
                     }
                 }
                 result.setItems(albums);
@@ -88,10 +91,12 @@ public class SpotifyAlbumBrowseService extends AbstractBrowseService implements 
                 for (int i = 0; i < array.length(); i++) {
                     ResultItem<SpotifyAlbum> item = createFromJSON(array.getJSONObject(i).getJSONObject("album"));
                     if (item != null) {
-                        albums.add(item);
+                        result.setCount(result.getCount()+1);
+                        if((firstItem==null || i>=firstItem) && (maxItems==null || maxItems>albums.size())) {
+                            albums.add(item);
+                        }
                     }
                 }
-                result.setCount((long) albums.size());
                 result.setItems(albums);
             } catch (JSONException e) {
                 e.printStackTrace();

@@ -68,8 +68,11 @@ public class LastFMAlbumBrowseService extends AbstractLastFMBrowseService implem
                 JSONObject object = Client.create().resource(getLastFmUrl("album.search&album=" + urlEncode(entity.getName()))).accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
                 List<ResultItem<LastFMAlbum>> albums = new ArrayList<ResultItem<LastFMAlbum>>();
                 JSONArray array = object.getJSONObject("results").getJSONObject("albummatches").getJSONArray("album");
+                result.setCount((long)array.length());
                 for (int i = 0; i < array.length(); i++) {
-                    albums.add(createFromJSON(array.getJSONObject(i)));
+                    if((firstItem==null || i>=firstItem) && (maxItems==null || maxItems>albums.size())) {
+                        albums.add(createFromJSON(array.getJSONObject(i)));
+                    }
                 }
                 result.setCount((long) albums.size());
                 result.setItems(albums);
@@ -85,11 +88,13 @@ public class LastFMAlbumBrowseService extends AbstractLastFMBrowseService implem
                 List<ResultItem<LastFMAlbum>> albums = new ArrayList<ResultItem<LastFMAlbum>>();
                 if (object.getJSONObject("topalbums").has("album")) {
                     JSONArray array = object.getJSONObject("topalbums").getJSONArray("album");
+                    result.setCount((long)array.length());
                     for (int i = 0; i < array.length(); i++) {
-                        albums.add(createFromJSON(array.getJSONObject(i)));
+                        if((firstItem==null || i>=firstItem) && (maxItems==null || maxItems>albums.size())) {
+                            albums.add(createFromJSON(array.getJSONObject(i)));
+                        }
                     }
                 }
-                result.setCount((long) albums.size());
                 result.setItems(albums);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -115,7 +120,13 @@ public class LastFMAlbumBrowseService extends AbstractLastFMBrowseService implem
             if (json.has("mbid") && json.getString("mbid").length() > 0) {
                 id = "mbid:" + json.getString("mbid");
             } else {
-                id = "artist:" + urlEncode(json.getString("artist")) + ":album:" + urlEncode(json.getString("name"));
+                String artist;
+                if(json.optJSONObject("artist")!=null) {
+                    artist = json.getJSONObject("artist").getString("name");
+                }else {
+                    artist = json.getString("artist");
+                }
+                id = "artist:" + urlEncode(artist) + ":album:" + urlEncode(json.getString("name"));
             }
             String name = json.getString("name");
             LastFMAlbum album = new LastFMAlbum(id, name);

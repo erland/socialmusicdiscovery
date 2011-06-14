@@ -71,8 +71,11 @@ public class SpotifyArtistBrowseService extends AbstractBrowseService implements
                 result.setCount(object.getJSONObject("info").getLong("num_results"));
                 List<ResultItem<SpotifyArtist>> artists = new ArrayList<ResultItem<SpotifyArtist>>();
                 JSONArray array = object.getJSONArray("artists");
+                result.setCount((long)array.length());
                 for (int i = 0; i < array.length(); i++) {
-                    artists.add(createFromJSON(array.getJSONObject(i)));
+                    if((firstItem==null || i>=firstItem) && (maxItems==null || maxItems>artists.size())) {
+                        artists.add(createFromJSON(array.getJSONObject(i)));
+                    }
                 }
                 result.setItems(artists);
             } catch (UnsupportedEncodingException e) {

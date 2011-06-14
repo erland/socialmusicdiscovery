@@ -68,10 +68,12 @@ public class LastFMTrackBrowseService extends AbstractLastFMBrowseService implem
                 JSONObject object = Client.create().resource(getLastFmUrl("track.search&track=" + urlEncode(entity.getRecording().getWorks().iterator().next().getName()))).accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
                 List<ResultItem<LastFMTrack>> tracks = new ArrayList<ResultItem<LastFMTrack>>();
                 JSONArray array = object.getJSONObject("results").getJSONObject("trackmatches").getJSONArray("track");
+                result.setCount((long)array.length());
                 for (int i = 0; i < array.length(); i++) {
-                    tracks.add(createFromJSON(array.getJSONObject(i)));
+                    if((firstItem==null || i>=firstItem) && (maxItems==null || maxItems>tracks.size())) {
+                        tracks.add(createFromJSON(array.getJSONObject(i)));
+                    }
                 }
-                result.setCount((long) tracks.size());
                 result.setItems(tracks);
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
@@ -85,8 +87,11 @@ public class LastFMTrackBrowseService extends AbstractLastFMBrowseService implem
                 List<ResultItem<LastFMTrack>> tracks = new ArrayList<ResultItem<LastFMTrack>>();
                 if (object.getJSONObject("album").optJSONObject("tracks")!=null && object.getJSONObject("album").getJSONObject("tracks").has("track")) {
                     JSONArray array = object.getJSONObject("album").getJSONObject("tracks").getJSONArray("track");
+                    result.setCount((long)array.length());
                     for (int i = 0; i < array.length(); i++) {
-                        tracks.add(createFromJSON(array.getJSONObject(i)));
+                        if((firstItem==null || i>=firstItem) && (maxItems==null || maxItems>tracks.size())) {
+                            tracks.add(createFromJSON(array.getJSONObject(i)));
+                        }
                     }
                 }
                 result.setCount((long) tracks.size());
