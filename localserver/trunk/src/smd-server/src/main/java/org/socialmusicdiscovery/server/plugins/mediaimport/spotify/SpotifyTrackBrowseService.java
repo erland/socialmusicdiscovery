@@ -68,8 +68,11 @@ public class SpotifyTrackBrowseService extends AbstractBrowseService implements 
                 result.setCount(object.getJSONObject("info").getLong("num_results"));
                 List<ResultItem<SpotifyTrack>> tracks = new ArrayList<ResultItem<SpotifyTrack>>();
                 JSONArray array = object.getJSONArray("tracks");
+                result.setCount((long)array.length());
                 for (int i = 0; i < array.length(); i++) {
-                    tracks.add(createFromJSON(array.getJSONObject(i)));
+                    if((firstItem==null || i>=firstItem) && (maxItems==null || maxItems>tracks.size())) {
+                        tracks.add(createFromJSON(array.getJSONObject(i)));
+                    }
                 }
                 result.setItems(tracks);
             } catch (UnsupportedEncodingException e) {
@@ -82,10 +85,12 @@ public class SpotifyTrackBrowseService extends AbstractBrowseService implements 
                 JSONObject object = Client.create().resource("http://ws.spotify.com/lookup/1/.json?uri=" + currentId.substring(13) + "&extras=track").accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
                 List<ResultItem<SpotifyTrack>> tracks = new ArrayList<ResultItem<SpotifyTrack>>();
                 JSONArray array = object.getJSONObject("album").getJSONArray("tracks");
+                result.setCount((long)array.length());
                 for (int i = 0; i < array.length(); i++) {
-                    tracks.add(createFromJSON(array.getJSONObject(i)));
+                    if((firstItem==null || i>=firstItem) && (maxItems==null || maxItems>tracks.size())) {
+                        tracks.add(createFromJSON(array.getJSONObject(i)));
+                    }
                 }
-                result.setCount((long) tracks.size());
                 result.setItems(tracks);
             } catch (JSONException e) {
                 e.printStackTrace();

@@ -68,10 +68,12 @@ public class LastFMArtistBrowseService extends AbstractLastFMBrowseService imple
                 JSONObject object = Client.create().resource(getLastFmUrl("artist.search&artist=" + urlEncode(entity.getName()))).accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
                 List<ResultItem<LastFMArtist>> artists = new ArrayList<ResultItem<LastFMArtist>>();
                 JSONArray array = object.getJSONObject("results").getJSONObject("artistmatches").getJSONArray("artist");
+                result.setCount((long)array.length());
                 for (int i = 0; i < array.length(); i++) {
-                    artists.add(createFromJSON(array.getJSONObject(i)));
+                    if((firstItem==null || i>=firstItem) && (maxItems==null || maxItems>artists.size())) {
+                        artists.add(createFromJSON(array.getJSONObject(i)));
+                    }
                 }
-                result.setCount((long) artists.size());
                 result.setItems(artists);
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
