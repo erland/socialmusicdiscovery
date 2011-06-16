@@ -36,4 +36,20 @@ import javax.persistence.EntityManager;
 public class JPAMediumRepository extends AbstractJPASMDIdentityRepository<MediumEntity> implements MediumRepository {
     @Inject
     public JPAMediumRepository(EntityManager em) {super(em);}
+
+    @Override
+    public void create(MediumEntity entity) {
+        if(entity.getSortAs()==null) {
+            entity.setSortAsAutomatically();
+        }
+        super.create(entity);
+    }
+
+    @Override
+    public MediumEntity merge(MediumEntity entity) {
+        if(entity.getSortAs()==null) {
+            entity.setSortAsAutomatically();
+        }
+        return super.merge(entity);
+    }
 }

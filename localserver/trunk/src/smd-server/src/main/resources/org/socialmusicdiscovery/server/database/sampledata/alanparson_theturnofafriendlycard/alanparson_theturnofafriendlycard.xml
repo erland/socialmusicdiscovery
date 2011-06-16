@@ -12,6 +12,7 @@
                   file="org/socialmusicdiscovery/server/database/sampledata/alanparson_theturnofafriendlycard/releases.csv">
             <column header="id" type="STRING"/>
             <column header="name" type="STRING"/>
+            <column header="sort_as" type="STRING"/>
             <column header="last_updated" type="DATE"/>
             <column header="last_updated_by" type="STRING"/>
         </loadData>
@@ -19,6 +20,7 @@
                   file="org/socialmusicdiscovery/server/database/sampledata/alanparson_theturnofafriendlycard/persons.csv">
             <column header="id" type="STRING"/>
             <column header="name" type="STRING"/>
+            <column header="sort_as" type="STRING"/>
             <column header="last_updated" type="DATE"/>
             <column header="last_updated_by" type="STRING"/>
         </loadData>
@@ -26,6 +28,7 @@
                   file="org/socialmusicdiscovery/server/database/sampledata/alanparson_theturnofafriendlycard/artists.csv">
             <column header="id" type="STRING"/>
             <column header="name" type="STRING"/>
+            <column header="sort_as" type="STRING"/>
             <column header="person_id" type="STRING"/>
             <column header="last_updated" type="DATE"/>
             <column header="last_updated_by" type="STRING"/>
@@ -34,6 +37,7 @@
                   file="org/socialmusicdiscovery/server/database/sampledata/alanparson_theturnofafriendlycard/works.csv">
             <column header="id" type="STRING"/>
             <column header="name" type="STRING"/>
+            <column header="sort_as" type="STRING"/>
             <column header="parent_id" type="STRING"/>
             <column header="last_updated" type="DATE"/>
             <column header="last_updated_by" type="STRING"/>

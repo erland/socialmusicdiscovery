@@ -1,2 +1,2 @@
-id,name,last_updated,last_updated_by
-68d09343-e179-4caa-bce3-98b752ba2e85,Arista,2010-10-01,testdataloader
+id,name,sort_as,last_updated,last_updated_by
+68d09343-e179-4caa-bce3-98b752ba2e85,Arista,Arista,2010-10-01,testdataloader

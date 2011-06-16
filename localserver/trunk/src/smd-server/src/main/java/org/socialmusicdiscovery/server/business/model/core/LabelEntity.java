@@ -44,6 +44,9 @@ public class LabelEntity extends AbstractSMDIdentityEntity implements Label {
     @Column(nullable = false)
     @Expose
     private String name;
+    @Column(name="sort_as", nullable = false)
+    @Expose
+    private String sortAs;
 
     public String getName() {
         return name;
@@ -51,5 +54,17 @@ public class LabelEntity extends AbstractSMDIdentityEntity implements Label {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getSortAs() {
+        return sortAs;
+    }
+
+    public void setSortAs(String sortAs) {
+        this.sortAs = sortAs;
+    }
+
+    public void setSortAsAutomatically() {
+        setSortAs(getName());
     }
 }

@@ -51,7 +51,7 @@ public class TrackBrowseService extends AbstractBrowseService implements BrowseS
     }
 
     public Result<TrackEntity> findChildren(Collection<String> criteriaList, Collection<String> sortCriteriaList, Integer firstItem, Integer maxItems, Boolean returnChildCounters) {
-        return findChildren(TrackEntity.class, "Track", "track", "m.number,m.name,e.number", criteriaList, sortCriteriaList, firstItem, maxItems, returnChildCounters);
+        return findChildren(TrackEntity.class, "Track", "track", "m.sortAs,e.number", criteriaList, sortCriteriaList, firstItem, maxItems, returnChildCounters);
     }
 
     @Override

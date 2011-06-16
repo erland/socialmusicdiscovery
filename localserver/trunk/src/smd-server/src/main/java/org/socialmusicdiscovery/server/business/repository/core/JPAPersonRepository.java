@@ -60,6 +60,23 @@ public class JPAPersonRepository extends AbstractJPASMDIdentityRepository<Person
         query.setParameter("name","%"+name.toLowerCase()+"%");
         return query.getResultList();
     }
+
+    @Override
+    public void create(PersonEntity entity) {
+        if(entity.getSortAs()==null) {
+            entity.setSortAsAutomatically();
+        }
+        super.create(entity);
+    }
+
+    @Override
+    public PersonEntity merge(PersonEntity entity) {
+        if(entity.getSortAs()==null) {
+            entity.setSortAsAutomatically();
+        }
+        return super.merge(entity);
+    }
+
     public void remove(PersonEntity entity) {
         Collection<ArtistEntity> artists = artistRepository.findByPersonWithRelations(entity.getId(), null, null);
         for (Artist artist : artists) {

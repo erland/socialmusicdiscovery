@@ -11,6 +11,7 @@
         <loadData tableName="labels" file="org/socialmusicdiscovery/server/database/sampledata/thebodyguard/labels.csv">
             <column header="id" type="STRING"/>
             <column header="name" type="STRING"/>
+            <column header="sort_as" type="STRING"/>
             <column header="last_updated" type="DATE"/>
             <column header="last_updated_by" type="STRING"/>
         </loadData>
@@ -18,6 +19,7 @@
                   file="org/socialmusicdiscovery/server/database/sampledata/thebodyguard/releases.csv">
             <column header="id" type="STRING"/>
             <column header="name" type="STRING"/>
+            <column header="sort_as" type="STRING"/>
             <column header="label_id" type="STRING"/>
             <column header="last_updated" type="DATE"/>
             <column header="last_updated_by" type="STRING"/>
@@ -26,6 +28,7 @@
                   file="org/socialmusicdiscovery/server/database/sampledata/thebodyguard/persons.csv">
             <column header="id" type="STRING"/>
             <column header="name" type="STRING"/>
+            <column header="sort_as" type="STRING"/>
             <column header="last_updated" type="DATE"/>
             <column header="last_updated_by" type="STRING"/>
         </loadData>
@@ -33,12 +36,14 @@
                   file="org/socialmusicdiscovery/server/database/sampledata/thebodyguard/artists.csv">
             <column header="id" type="STRING"/>
             <column header="name" type="STRING"/>
+            <column header="sort_as" type="STRING"/>
             <column header="last_updated" type="DATE"/>
             <column header="last_updated_by" type="STRING"/>
         </loadData>
         <loadData tableName="works" file="org/socialmusicdiscovery/server/database/sampledata/thebodyguard/works.csv">
             <column header="id" type="STRING"/>
             <column header="name" type="STRING"/>
+            <column header="sort_as" type="STRING"/>
             <column header="last_updated" type="DATE"/>
             <column header="last_updated_by" type="STRING"/>
         </loadData>
@@ -86,6 +91,7 @@
             <column header="id" type="STRING"/>
             <column header="type" type="STRING"/>
             <column header="name" type="STRING"/>
+            <column header="sort_as" type="STRING"/>
             <column header="last_updated" type="DATE"/>
             <column header="last_updated_by" type="STRING"/>
         </loadData>

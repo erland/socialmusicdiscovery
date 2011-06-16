@@ -12,12 +12,14 @@
                   file="org/socialmusicdiscovery/server/database/sampledata/crazyfrog_axelf/artists.csv">
             <column header="id" type="STRING"/>
             <column header="name" type="STRING"/>
+            <column header="sort_as" type="STRING"/>
             <column header="last_updated" type="DATE"/>
             <column header="last_updated_by" type="STRING"/>
         </loadData>
         <loadData tableName="works"
                   file="org/socialmusicdiscovery/server/database/sampledata/crazyfrog_axelf/works.csv">
             <column header="id" type="STRING"/>
+            <column header="name" type="STRING"/>
             <column header="name" type="STRING"/>
             <column header="last_updated" type="DATE"/>
             <column header="last_updated_by" type="STRING"/>

@@ -47,6 +47,9 @@ public class ReleaseEntity extends AbstractSMDIdentityEntity implements Release,
     @Column(nullable = false)
     @Expose
     private String name;
+    @Column(name="sort_as", nullable = false)
+    @Expose
+    private String sortAs;
     @ManyToOne(targetEntity = LabelEntity.class)
     @JoinColumn(name = "label_id")
     @Expose
@@ -132,6 +135,18 @@ public class ReleaseEntity extends AbstractSMDIdentityEntity implements Release,
 
     public void setSearchRelations(Set<ReleaseSearchRelationEntity> searchRelations) {
         this.searchRelations = searchRelations;
+    }
+
+    public String getSortAs() {
+        return sortAs;
+    }
+
+    public void setSortAs(String sortAs) {
+        this.sortAs = sortAs;
+    }
+
+    public void setSortAsAutomatically() {
+        setSortAs(getName());
     }
 
     public void addTrack(TrackEntity track) {

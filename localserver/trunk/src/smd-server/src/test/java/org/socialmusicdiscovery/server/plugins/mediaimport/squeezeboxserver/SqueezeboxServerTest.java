@@ -103,8 +103,8 @@ public class SqueezeboxServerTest extends BaseTestCase {
                     new TagData(TagData.ARTIST, "Whitney Houston", "Houston, Whitney"),
                     new TagData(TagData.MUSICBRAINZ_ARTIST_ID, "0307edfc-437c-4b48-8700-80680e66a228"),
                     new TagData(TagData.GENRE, "Soundtrack"),
-                    new TagData(TagData.CONDUCTOR, "Ricky Minor"),
-                    new TagData(TagData.COMPOSER, "Dolly Parton")
+                    new TagData(TagData.CONDUCTOR, "Ricky Minor", "Minor, Ricky"),
+                    new TagData(TagData.COMPOSER, "Dolly Parton", "Dolly, Parton")
             ));
             squeezeboxServer.importNewPlayableElement(trackData);
 
@@ -280,6 +280,7 @@ public class SqueezeboxServerTest extends BaseTestCase {
         assert release.getTracks() != null;
         assert release.getTracks().size() == 4;
         assert release.getContributors().size() == 1;
+        assert ((ArtistEntity)release.getContributors().iterator().next().getArtist()).getSortAs().equals("Houston, Whitney");
 
         for (Track track : release.getTracks()) {
             assert track.getNumber() != null;
@@ -290,6 +291,7 @@ public class SqueezeboxServerTest extends BaseTestCase {
             if (track.getNumber().equals(1)) {
                 assert track.getRecording().getWorks().iterator().next().getName().equals("I Will Always Love You");
                 assert track.getRecording().getContributors().size() == 1;
+                assert ((ArtistEntity)track.getRecording().getContributors().iterator().next().getArtist()).getSortAs().equals("Minor, Ricky");
                 assert track.getRecording().getWorks().iterator().next().getContributors().size() == 1;
             } else if (track.getNumber().equals(5)) {
                 assert track.getRecording().getWorks().iterator().next().getName().equals("Queen Of The Night");

@@ -54,4 +54,20 @@ public class JPALabelRepository extends AbstractJPASMDIdentityRepository<LabelEn
         query.setParameter("name","%"+name.toLowerCase()+"%");
         return query.getResultList();
     }
+
+    @Override
+    public void create(LabelEntity entity) {
+        if(entity.getSortAs()==null) {
+            entity.setSortAsAutomatically();
+        }
+        super.create(entity);
+    }
+
+    @Override
+    public LabelEntity merge(LabelEntity entity) {
+        if(entity.getSortAs()==null) {
+            entity.setSortAsAutomatically();
+        }
+        return super.merge(entity);
+    }
 }
