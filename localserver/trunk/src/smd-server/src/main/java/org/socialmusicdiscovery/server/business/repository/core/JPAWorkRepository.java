@@ -78,6 +78,9 @@ public class JPAWorkRepository extends AbstractJPASMDIdentityRepository<WorkEnti
         if (entity.getParent() != null && !entityManager.contains(entity.getParent())) {
             entity.setParent(findById(entity.getParent().getId()));
         }
+        if(entity.getSortAs()==null) {
+            entity.setSortAsAutomatically();
+        }
         super.create(entity);
          for (Contributor contributor : entity.getContributors()) {
             if(!entityManager.contains(contributor)) {
@@ -109,6 +112,9 @@ public class JPAWorkRepository extends AbstractJPASMDIdentityRepository<WorkEnti
                 entity.addContributor((ContributorEntity) contributor);
                 contributorRepository.merge((ContributorEntity) contributor);
             }
+        }
+        if(entity.getSortAs()==null) {
+            entity.setSortAsAutomatically();
         }
         return super.merge(entity);
     }

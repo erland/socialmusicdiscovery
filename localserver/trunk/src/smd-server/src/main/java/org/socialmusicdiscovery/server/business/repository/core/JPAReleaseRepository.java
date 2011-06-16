@@ -98,8 +98,14 @@ public class JPAReleaseRepository extends AbstractJPASMDIdentityRepository<Relea
                 if(((MediumEntity)medium).getReference()==null || entity.getReference().getId() == null) {
                     ((MediumEntity)medium).setReference(SMDIdentityReferenceEntity.forEntity(medium));
                 }
+                if(((MediumEntity)medium).getSortAs()==null) {
+                    ((MediumEntity)medium).setSortAsAutomatically();
+                }
                 ((MediumEntity) medium).setRelease(entity);
             }
+        }
+        if(entity.getSortAs()==null) {
+            entity.setSortAsAutomatically();
         }
         super.create(entity);
         for (Contributor contributor : entity.getContributors()) {
@@ -144,6 +150,9 @@ public class JPAReleaseRepository extends AbstractJPASMDIdentityRepository<Relea
                 entity.addContributor((ContributorEntity) contributor);
                 contributorRepository.merge((ContributorEntity) contributor);
             }
+        }
+        if(entity.getSortAs()==null) {
+            entity.setSortAsAutomatically();
         }
         return super.merge(entity);
     }

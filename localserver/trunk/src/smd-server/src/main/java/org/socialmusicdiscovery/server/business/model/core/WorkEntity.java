@@ -47,6 +47,9 @@ public class WorkEntity extends AbstractSMDIdentityEntity implements Work, Contr
     @Column(nullable = false)
     @Expose
     private String name;
+    @Column(name="sort_as", nullable = false)
+    @Expose
+    private String sortAs;
     @Expose
     private Date date;
     @OneToMany(targetEntity = WorkEntity.class)
@@ -90,6 +93,18 @@ public class WorkEntity extends AbstractSMDIdentityEntity implements Work, Contr
 
     public void setParent(Work parent) {
         this.parent = parent;
+    }
+
+    public String getSortAs() {
+        return sortAs;
+    }
+
+    public void setSortAs(String sortAs) {
+        this.sortAs = sortAs;
+    }
+
+    public void setSortAsAutomatically() {
+        setSortAs(getName());
     }
 
     public Set<Contributor> getContributors() {

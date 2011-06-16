@@ -1,8 +1,8 @@
-id,name,last_updated,last_updated_by
-241ca410-7104-4c71-91f9-fa62a45e38ee,Chris Rainbow,2010-10-01,testdataloader
-772b7ed7-d01c-408b-b40a-524fcd57fc04,Elmer Gantry,2010-10-01,testdataloader
-4af1ca35-b142-4489-ba0e-b3650e205168,Eric Woolfson,2010-10-01,testdataloader
-1672f5a0-c618-40a3-8edd-074d263b13d0,Lenny Zakatek,2010-10-01,testdataloader
-d571fa67-0066-4c8b-9861-d7f55efed52b,Orchester Der Kammeroper München,2010-10-01,testdataloader
-a08e281c-0275-4cc1-bd32-8c0a4e38fc87,Mel Collins,2010-10-01,testdataloader
-ee3f43b6-e56c-43c4-8da3-0923cb6a3c99,Alan Parsons,2010-10-01,testdataloader
+id,name,sort_as,last_updated,last_updated_by
+241ca410-7104-4c71-91f9-fa62a45e38ee,Chris Rainbow,Chris Rainbow,2010-10-01,testdataloader
+772b7ed7-d01c-408b-b40a-524fcd57fc04,Elmer Gantry,Elmer Gantry,2010-10-01,testdataloader
+4af1ca35-b142-4489-ba0e-b3650e205168,Eric Woolfson,Eric Woolfson,2010-10-01,testdataloader
+1672f5a0-c618-40a3-8edd-074d263b13d0,Lenny Zakatek,Lenny Zakatek,2010-10-01,testdataloader
+d571fa67-0066-4c8b-9861-d7f55efed52b,Orchester Der Kammeroper München,Orchester Der Kammeroper München,2010-10-01,testdataloader
+a08e281c-0275-4cc1-bd32-8c0a4e38fc87,Mel Collins,Mel Collins,2010-10-01,testdataloader
+ee3f43b6-e56c-43c4-8da3-0923cb6a3c99,Alan Parsons,Alan Parsons,2010-10-01,testdataloader

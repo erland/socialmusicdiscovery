@@ -47,6 +47,9 @@ public class MediumEntity extends AbstractSMDIdentityEntity implements Medium {
     private Integer number;
     @Expose
     private String name;
+    @Column(name="sort_as", nullable = false)
+    @Expose
+    private String sortAs;
     @OneToMany(targetEntity = TrackEntity.class, mappedBy = "medium")
     @OrderBy("number")
     private List<Track> tracks = new ArrayList<Track>();
@@ -85,6 +88,22 @@ public class MediumEntity extends AbstractSMDIdentityEntity implements Medium {
 
     public void setRelease(Release release) {
         this.release = release;
+    }
+
+    public String getSortAs() {
+        return sortAs;
+    }
+
+    public void setSortAs(String sortAs) {
+        this.sortAs = sortAs;
+    }
+
+    public void setSortAsAutomatically() {
+        if(getName()!=null) {
+            setSortAs(getName());
+        }else if(getNumber()!=null) {
+            setSortAs(getNumber().toString());
+        }
     }
 
     public void addTrack(TrackEntity track) {

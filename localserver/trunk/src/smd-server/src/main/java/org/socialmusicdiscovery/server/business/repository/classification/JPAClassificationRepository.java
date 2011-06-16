@@ -68,6 +68,9 @@ public class JPAClassificationRepository extends AbstractJPASMDIdentityRepositor
 
     @Override
     public void create(ClassificationEntity entity) {
+        if(entity.getSortAs()==null) {
+            entity.setSortAsAutomatically();
+        }
         super.create(entity);
         for (ClassificationReference classificationReference : entity.getReferences()) {
             if(!entityManager.contains(classificationReference)) {
@@ -96,6 +99,9 @@ public class JPAClassificationRepository extends AbstractJPASMDIdentityRepositor
                 ((ClassificationReferenceEntity) classificationReference).setClassification(entity);
                 classificationReferenceRepository.merge((ClassificationReferenceEntity) classificationReference);
             }
+        }
+        if(entity.getSortAs()==null) {
+            entity.setSortAsAutomatically();
         }
         return super.merge(entity);
     }

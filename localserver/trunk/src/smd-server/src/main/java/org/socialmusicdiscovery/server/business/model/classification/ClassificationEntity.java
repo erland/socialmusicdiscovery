@@ -52,6 +52,9 @@ public class ClassificationEntity extends AbstractSMDIdentityEntity implements C
     @Column(nullable = false)
     @Expose
     private String name;
+    @Column(name="sort_as", nullable = false)
+    @Expose
+    private String sortAs;
     @OneToMany(targetEntity = ClassificationEntity.class, orphanRemoval = true)
     @JoinColumn(name = "parent_id")
     @Expose
@@ -90,6 +93,18 @@ public class ClassificationEntity extends AbstractSMDIdentityEntity implements C
 
     public void setReferences(Set<ClassificationReference> references) {
         this.references = references;
+    }
+
+    public String getSortAs() {
+        return sortAs;
+    }
+
+    public void setSortAs(String sortAs) {
+        this.sortAs = sortAs;
+    }
+
+    public void setSortAsAutomatically() {
+        setSortAs(getName());
     }
 
     public void addReference(ClassificationReferenceEntity reference) {

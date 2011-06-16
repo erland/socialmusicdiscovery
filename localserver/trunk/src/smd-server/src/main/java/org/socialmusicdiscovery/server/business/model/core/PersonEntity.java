@@ -49,6 +49,9 @@ public class PersonEntity extends AbstractSMDIdentityEntity implements Person {
     @Column(nullable = false)
     @Expose
     private String name;
+    @Column(name="sort_as", nullable = false)
+    @Expose
+    private String sortAs;
 
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "id")
     private Set<PersonSearchRelationEntity> searchRelations = new HashSet<PersonSearchRelationEntity>();
@@ -67,5 +70,16 @@ public class PersonEntity extends AbstractSMDIdentityEntity implements Person {
 
     public void setSearchRelations(Set<PersonSearchRelationEntity> searchRelations) {
         this.searchRelations = searchRelations;
+    }
+
+    public String getSortAs() {
+        return sortAs;
+    }
+
+    public void setSortAs(String sortAs) {
+        this.sortAs = sortAs;
+    }
+    public void setSortAsAutomatically() {
+        setSortAs(getName());
     }
 }

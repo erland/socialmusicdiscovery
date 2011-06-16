@@ -325,11 +325,19 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
 
             // Convert list of tags to a map to make them easier to handle
             Map<String, Collection<String>> tags = new HashMap<String, Collection<String>>();
+            Map<String, String> sortTags = new HashMap<String, String>();
             for (TagData tagData : data.getTags()) {
                 if (tags.containsKey(tagData.getName())) {
                     tags.get(tagData.getName()).add(tagData.getValue());
                 } else {
                     tags.put(tagData.getName(), new ArrayList<String>(Arrays.asList(tagData.getValue())));
+                }
+                if(tagData.getSortValue()!=null) {
+                    String tagName = tagData.getName();
+                    if(tagName.equals(TagData.COMPOSER) || tagName.equals(TagData.CONDUCTOR) || tagName.contains(TagData.ARTIST)) {
+                        tagName=TagData.ARTIST;
+                    }
+                    sortTags.put(tagName+":"+tagData.getValue(),tagData.getSortValue());
                 }
             }
             // We need a TITLE tag, tracks without titles isn't currenlty imported
@@ -345,15 +353,24 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                         // Create a Work entity based on the WORK tag
                         work = new WorkEntity();
                         work.setName(workName);
+                        if(sortTags.containsKey(TagData.WORK+":"+workName)) {
+                            work.setSortAs(sortTags.get(TagData.WORK+":"+workName));
+                        }
                         work.setLastUpdated(new Date());
                         work.setLastUpdatedBy(getId());
                     } else {
                         work = (WorkEntity)existingWorks.iterator().next();
+                        if(work.getLastUpdatedBy().equals(getId()) && sortTags.containsKey(TagData.WORK+":"+workName)) {
+                            work.setSortAs(sortTags.get(TagData.WORK+":"+workName));
+                        }
                     }
                 } else {
                     // Create a Work entity based on the TITLE tag
                     work = new WorkEntity();
                     work.setName(title);
+                    if(sortTags.containsKey(TagData.TITLE+":"+title)) {
+                        work.setSortAs(sortTags.get(TagData.TITLE+":"+title));
+                    }
                     work.setLastUpdated(new Date());
                     work.setLastUpdatedBy(getId());
                 }
@@ -362,7 +379,7 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                 if (existingWorks.size() == 0) {
                     workRepository.create(work);
                     if(getConfiguration().getBooleanParameter("composers")) {
-                        Set<Contributor> workContributors = getContributorsForTag(tags.get(TagData.COMPOSER), Contributor.COMPOSER);
+                        Set<Contributor> workContributors = getContributorsForTag(tags.get(TagData.COMPOSER), TagData.ARTIST+":", sortTags, Contributor.COMPOSER);
                         if (workContributors.size() > 0) {
                             saveContributors(work,workContributors);
                         }
@@ -376,13 +393,13 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                 recording.setLastUpdatedBy(getId());
                 recording.getWorks().add(work);
 
-                Set<Contributor> albumArtistContributors = getContributorsForTag(tags.get(TagData.ALBUMARTIST), Contributor.PERFORMER);
-                Set<Contributor> artistContributors = getContributorsForTag(tags.get(TagData.ARTIST), Contributor.PERFORMER);
-                Set<Contributor> trackArtistContributors = getContributorsForTag(tags.get(TagData.TRACKARTIST), Contributor.PERFORMER);
-                Set<Contributor> performerContributors = getContributorsForTag(tags.get(TagData.PERFORMER), Contributor.PERFORMER);
+                Set<Contributor> albumArtistContributors = getContributorsForTag(tags.get(TagData.ALBUMARTIST), TagData.ARTIST+":", sortTags, Contributor.PERFORMER);
+                Set<Contributor> artistContributors = getContributorsForTag(tags.get(TagData.ARTIST), TagData.ARTIST+":", sortTags, Contributor.PERFORMER);
+                Set<Contributor> trackArtistContributors = getContributorsForTag(tags.get(TagData.TRACKARTIST), TagData.ARTIST+":", sortTags, Contributor.PERFORMER);
+                Set<Contributor> performerContributors = getContributorsForTag(tags.get(TagData.PERFORMER), TagData.ARTIST+":", sortTags, Contributor.PERFORMER);
                 Set<Contributor> conductorContributors = new HashSet<Contributor>();
                 if(getConfiguration().getBooleanParameter("conductors")) {
-                    conductorContributors = getContributorsForTag(tags.get(TagData.CONDUCTOR), Contributor.CONDUCTOR);
+                    conductorContributors = getContributorsForTag(tags.get(TagData.CONDUCTOR), TagData.ARTIST+":", sortTags, Contributor.CONDUCTOR);
                 }
                 Set<Contributor> recordingContributors = new HashSet<Contributor>();
 
@@ -439,13 +456,13 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
 
                 // Add GENRE, STYLE and MOOD Classification entities and related them to the created Recording entity
                 if (tags.containsKey(TagData.GENRE) && getConfiguration().getBooleanParameter("genres")) {
-                    createClassificationsForTag(tags.get(TagData.GENRE), Classification.GENRE, recording.getReference());
+                    createClassificationsForTag(tags.get(TagData.GENRE), TagData.GENRE+":", sortTags, Classification.GENRE, recording.getReference());
                 }
                 if (tags.containsKey(TagData.STYLE) && getConfiguration().getBooleanParameter("styles")) {
-                    createClassificationsForTag(tags.get(TagData.STYLE), Classification.STYLE, recording.getReference());
+                    createClassificationsForTag(tags.get(TagData.STYLE), TagData.STYLE+":", sortTags, Classification.STYLE, recording.getReference());
                 }
                 if (tags.containsKey(TagData.MOOD) && getConfiguration().getBooleanParameter("moods")) {
-                    createClassificationsForTag(tags.get(TagData.MOOD), Classification.MOOD, recording.getReference());
+                    createClassificationsForTag(tags.get(TagData.MOOD), TagData.MOOD+":", sortTags, Classification.MOOD, recording.getReference());
                 }
 
                 // Create a Release entity based on the ALBUM tag
@@ -471,6 +488,9 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                     if (releases.size() == 0) {
                         release = new ReleaseEntity();
                         release.setName(albumName);
+                        if(sortTags.containsKey(TagData.ALBUM+":"+albumName)) {
+                            release.setSortAs(sortTags.get(TagData.ALBUM+":"+albumName));
+                        }
                         release.setLastUpdated(new Date());
                         release.setLastUpdatedBy(getId());
                         if (year != null) {
@@ -492,6 +512,9 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                     } else {
                         // We use the first Release entity found if it already existsted
                         release = releases.iterator().next();
+                        if(release.getLastUpdatedBy().equals(getId()) && sortTags.containsKey(TagData.ALBUM+":"+albumName)) {
+                            release.setSortAs(sortTags.get(TagData.ALBUM+":"+albumName));
+                        }
                     }
 
                     if (tags.containsKey(TagData.MUSICBRAINZ_ALBUM_ID)) {
@@ -642,10 +665,12 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
      * store them manually after this call
      *
      * @param artistNames     The list of artist names to search contributors for
+     * @param sortPrefix      A prefix string which is used as prefix in the key of the sortValues input parameter
+     * @param sortValues      A map with sort values which should be used for respective artist name
      * @param contributorType The type of contributors to create
      * @return A list of contributors representing the specified artist names and contributor type, empty list if no contributors are returned
      */
-    private Set<Contributor> getContributorsForTag(Collection<String> artistNames, String contributorType) {
+    private Set<Contributor> getContributorsForTag(Collection<String> artistNames, String sortPrefix, Map<String, String> sortValues, String contributorType) {
         Set<Contributor> contributors = new HashSet<Contributor>();
         if (artistNames != null) {
             Collection<Artist> artists = new ArrayList<Artist>();
@@ -655,11 +680,19 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                     existingArtists = artistRepository.findByName(artistName);
                     if (existingArtists.size() > 0) {
                         this.artistCache.put(artistName.toLowerCase(), idList(existingArtists));
+                        for (ArtistEntity existingArtist : existingArtists) {
+                            if(existingArtist.getLastUpdatedBy().equals(getId()) && sortValues.containsKey(sortPrefix+artistName)) {
+                                existingArtist.setSortAs(sortValues.get(sortPrefix+artistName));
+                            }
+                        }
                     }
                 }
                 if (existingArtists.size() == 0) {
                     ArtistEntity artist = new ArtistEntity();
                     artist.setName(artistName);
+                    if(sortValues.containsKey(sortPrefix+artistName)) {
+                        artist.setSortAs(sortValues.get(sortPrefix+artistName));
+                    }
                     artist.setLastUpdated(new Date());
                     artist.setLastUpdatedBy(getId());
                     artistRepository.create(artist);
@@ -722,10 +755,12 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
      * If a Classification entity of the same name and type already exists, it is reused.
      *
      * @param classificationNames The list of classification names to create entities for
+     * @param sortPrefix          The prefix which is used as prefix in key value in sortValues map
+     * @param sortValues          A map with sort values for each classification
      * @param classificationType  Type of classification to create
      * @param reference           The reference to relate the created Classification entities to
      */
-    private void createClassificationsForTag(Collection<String> classificationNames, String classificationType, SMDIdentityReference reference) {
+    private void createClassificationsForTag(Collection<String> classificationNames, String sortPrefix, Map<String, String> sortValues, String classificationType, SMDIdentityReference reference) {
         if (classificationNames != null) {
             for (String classificationName : classificationNames) {
                 TypeIdentity classificationId = new TypeIdentity(classificationType.toLowerCase(), classificationName.toLowerCase());
@@ -734,6 +769,12 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                     existingClassifications = classificationRepository.findByNameAndType(classificationName, classificationType);
                     if (existingClassifications.size() > 0) {
                         this.classificationCache.put(classificationId, idList(existingClassifications));
+                        for (ClassificationEntity existingClassification : existingClassifications) {
+                            if(existingClassification.getLastUpdatedBy().equals(getId()) && sortValues.containsKey(sortPrefix+classificationName)) {
+                                existingClassification.setSortAs(sortValues.get(sortPrefix+classificationName));
+                            }
+
+                        }
                     }
                 }
                 ClassificationReferenceEntity classificationReference = new ClassificationReferenceEntity();
@@ -743,6 +784,9 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                 if (existingClassifications.size() == 0) {
                     ClassificationEntity classification = new ClassificationEntity();
                     classification.setName(classificationName);
+                    if(sortValues.containsKey(sortPrefix+classificationName)) {
+                        classification.setSortAs(sortValues.get(sortPrefix+classificationName));
+                    }
                     classification.setType(classificationType);
                     classification.setLastUpdated(new Date());
                     classification.setLastUpdatedBy(getId());

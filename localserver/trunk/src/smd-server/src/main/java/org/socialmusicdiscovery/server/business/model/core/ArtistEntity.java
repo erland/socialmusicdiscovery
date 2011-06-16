@@ -44,6 +44,9 @@ public class ArtistEntity extends AbstractSMDIdentityEntity implements Artist {
     @Column(nullable = false)
     @Expose
     private String name;
+    @Column(name="sort_as", nullable = false)
+    @Expose
+    private String sortAs;
 
     @OneToMany(targetEntity = ArtistEntity.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "alias_artist_id")
@@ -77,5 +80,17 @@ public class ArtistEntity extends AbstractSMDIdentityEntity implements Artist {
 
     public void setAliases(Set<Artist> aliases) {
         this.aliases = aliases;
+    }
+
+    public String getSortAs() {
+        return sortAs;
+    }
+
+    public void setSortAs(String sortAs) {
+        this.sortAs = sortAs;
+    }
+
+    public void setSortAsAutomatically() {
+        setSortAs(getName());
     }
 }

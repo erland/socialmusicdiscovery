@@ -47,6 +47,9 @@ import java.util.Set;
 public class RecordingEntity extends AbstractSMDIdentityEntity implements Recording, ContributorOwner {
     @Expose
     private String name;
+    @Column(name="sort_as")
+    @Expose
+    private String sortAs;
     @Expose
     private Date date;
     @ManyToOne(targetEntity = RecordingEntity.class, fetch = FetchType.LAZY)
@@ -190,6 +193,20 @@ public class RecordingEntity extends AbstractSMDIdentityEntity implements Record
 
     public void setRecordingSession(RecordingSession recordingSession) {
         this.recordingSession = recordingSession;
+    }
+
+    public String getSortAs() {
+        return sortAs;
+    }
+
+    public void setSortAs(String sortAs) {
+        this.sortAs = sortAs;
+    }
+
+    public void setSortAsAutomatically() {
+        if(getName()!=null) {
+            setSortAs(getName());
+        }
     }
 
     public void addContributor(ContributorEntity contributor) {

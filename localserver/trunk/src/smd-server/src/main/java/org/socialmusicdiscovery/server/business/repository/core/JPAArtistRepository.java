@@ -28,7 +28,9 @@
 package org.socialmusicdiscovery.server.business.repository.core;
 
 import com.google.inject.Inject;
-import org.socialmusicdiscovery.server.business.model.core.*;
+import org.socialmusicdiscovery.server.business.model.core.ArtistEntity;
+import org.socialmusicdiscovery.server.business.model.core.Contributor;
+import org.socialmusicdiscovery.server.business.model.core.ContributorEntity;
 import org.socialmusicdiscovery.server.business.repository.AbstractJPASMDIdentityRepository;
 
 import javax.persistence.EntityManager;
@@ -67,6 +69,9 @@ public class JPAArtistRepository extends AbstractJPASMDIdentityRepository<Artist
         if (entity.getPerson() != null && !entityManager.contains(entity.getPerson())) {
             entity.setPerson(personRepository.findById(entity.getPerson().getId()));
         }
+        if(entity.getSortAs()==null) {
+            entity.setSortAsAutomatically();
+        }
         super.create(entity);
     }
 
@@ -74,6 +79,9 @@ public class JPAArtistRepository extends AbstractJPASMDIdentityRepository<Artist
     public ArtistEntity merge(ArtistEntity entity) {
         if (entity.getPerson() != null && !entityManager.contains(entity.getPerson())) {
             entity.setPerson(personRepository.findById(entity.getPerson().getId()));
+        }
+        if(entity.getSortAs()==null) {
+            entity.setSortAsAutomatically();
         }
         return super.merge(entity);
     }

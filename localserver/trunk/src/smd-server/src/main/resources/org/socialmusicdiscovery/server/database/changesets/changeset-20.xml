@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+	<changeSet author="erland" id="20">
+		<addColumn tableName="releases">
+			<column name="sort_as" type="VARCHAR(255)"/>
+		</addColumn>
+        <addColumn tableName="labels">
+            <column name="sort_as" type="VARCHAR(255)"/>
+        </addColumn>
+        <addColumn tableName="recordings">
+            <column name="sort_as" type="VARCHAR(255)"/>
+        </addColumn>
+        <addColumn tableName="works">
+            <column name="sort_as" type="VARCHAR(255)"/>
+        </addColumn>
+        <addColumn tableName="persons">
+            <column name="sort_as" type="VARCHAR(255)"/>
+        </addColumn>
+        <addColumn tableName="artists">
+            <column name="sort_as" type="VARCHAR(255)"/>
+        </addColumn>
+        <addColumn tableName="mediums">
+            <column name="sort_as" type="VARCHAR(255)"/>
+        </addColumn>
+        <addColumn tableName="classifications">
+            <column name="sort_as" type="VARCHAR(255)"/>
+        </addColumn>
+
+        <sql>update artists set sort_as=name where sort_as is null</sql>
+        <sql>update labels set sort_as=name where sort_as is null</sql>
+        <sql>update works set sort_as=name where sort_as is null</sql>
+        <sql>update persons set sort_as=name where sort_as is null</sql>
+        <sql>update artists set sort_as=name where sort_as is null</sql>
+        <sql>update classifications set sort_as=name where sort_as is null</sql>
+        <sql>update mediums set sort_as=name where sort_as is null and name is not null</sql>
+        <sql>update mediums set sort_as=number where sort_as is null and name is null</sql>
+        <sql>update recordings set sort_as=name where sort_as is null and name is not null</sql>
+
+        <addNotNullConstraint tableName="artists" columnName="sort_as" columnDataType="VARCHAR(255)"/>
+        <addNotNullConstraint tableName="labels" columnName="sort_as" columnDataType="VARCHAR(255)"/>
+        <addNotNullConstraint tableName="works" columnName="sort_as" columnDataType="VARCHAR(255)"/>
+        <addNotNullConstraint tableName="artists" columnName="sort_as" columnDataType="VARCHAR(255)"/>
+        <addNotNullConstraint tableName="persons" columnName="sort_as" columnDataType="VARCHAR(255)"/>
+        <addNotNullConstraint tableName="mediums" columnName="sort_as" columnDataType="VARCHAR(255)"/>
+        <addNotNullConstraint tableName="classifications" columnName="sort_as" columnDataType="VARCHAR(255)"/>
+	</changeSet>
+</databaseChangeLog>

@@ -78,6 +78,9 @@ public class JPARecordingRepository extends AbstractJPASMDIdentityRepository<Rec
         if (entity.getMixOf() != null && !entityManager.contains(entity.getMixOf())) {
             entity.setMixOf(findById(entity.getMixOf().getId()));
         }
+        if(entity.getSortAs()==null) {
+            entity.setSortAsAutomatically();
+        }
         super.create(entity);
         for (Contributor contributor : entity.getContributors()) {
             if(!entityManager.contains(contributor)) {
@@ -97,6 +100,9 @@ public class JPARecordingRepository extends AbstractJPASMDIdentityRepository<Rec
     public RecordingEntity merge(RecordingEntity entity) {
         if (entity.getMixOf() != null && !entityManager.contains(entity.getMixOf())) {
             entity.setMixOf(findById(entity.getMixOf().getId()));
+        }
+        if(entity.getSortAs()==null) {
+            entity.setSortAsAutomatically();
         }
         for (Contributor contributor : entity.getContributors()) {
             if(!entityManager.contains(contributor)) {
