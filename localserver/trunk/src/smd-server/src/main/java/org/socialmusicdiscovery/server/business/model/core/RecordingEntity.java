@@ -29,6 +29,7 @@ package org.socialmusicdiscovery.server.business.model.core;
 
 import com.google.gson.annotations.Expose;
 import org.hibernate.Hibernate;
+import org.socialmusicdiscovery.server.business.logic.SortAsHelper;
 import org.socialmusicdiscovery.server.business.model.AbstractSMDIdentityEntity;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
 import org.socialmusicdiscovery.server.business.model.search.*;
@@ -205,7 +206,7 @@ public class RecordingEntity extends AbstractSMDIdentityEntity implements Record
 
     public void setSortAsAutomatically() {
         if(getName()!=null) {
-            setSortAs(getName());
+            setSortAs(SortAsHelper.getSortAsForValue(Recording.class.getSimpleName(), getName()));
         }
     }
 
