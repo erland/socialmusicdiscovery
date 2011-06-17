@@ -29,6 +29,7 @@ package org.socialmusicdiscovery.server.business.model.classification;
 
 import com.google.gson.annotations.Expose;
 import org.hibernate.Hibernate;
+import org.socialmusicdiscovery.server.business.logic.SortAsHelper;
 import org.socialmusicdiscovery.server.business.model.AbstractSMDIdentityEntity;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
 
@@ -104,7 +105,7 @@ public class ClassificationEntity extends AbstractSMDIdentityEntity implements C
     }
 
     public void setSortAsAutomatically() {
-        setSortAs(getName());
+        setSortAs(SortAsHelper.getSortAsForValue(Classification.class.getSimpleName(), getName()));
     }
 
     public void addReference(ClassificationReferenceEntity reference) {

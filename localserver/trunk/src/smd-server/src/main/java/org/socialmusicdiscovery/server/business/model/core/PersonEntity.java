@@ -28,6 +28,7 @@
 package org.socialmusicdiscovery.server.business.model.core;
 
 import com.google.gson.annotations.Expose;
+import org.socialmusicdiscovery.server.business.logic.SortAsHelper;
 import org.socialmusicdiscovery.server.business.model.AbstractSMDIdentityEntity;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
 import org.socialmusicdiscovery.server.business.model.search.PersonSearchRelationEntity;
@@ -80,6 +81,6 @@ public class PersonEntity extends AbstractSMDIdentityEntity implements Person {
         this.sortAs = sortAs;
     }
     public void setSortAsAutomatically() {
-        setSortAs(getName());
+        setSortAs(SortAsHelper.getSortAsForValue(Person.class.getSimpleName(), getName()));
     }
 }
