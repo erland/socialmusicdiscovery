@@ -118,10 +118,16 @@ sub uriBase {
 # small cache for browsing to avoid repeat requests to smd-server
 tie my %responseCache, 'Tie::Cache::LRU', 10;
 
-sub get {
-	my ($class, $path, $cb, $ecb, $params) = @_;
+sub get  { shift->request('GET', @_) }
 
-	if ($responseCache{$path}) {
+sub post { shift->request('POST', @_) }
+
+sub request {
+	my ($class, $method, $path, $cb, $ecb, $params) = @_;
+
+	my $cache = !(delete $params->{'nocache'} || $method ne 'GET');
+
+	if ($cache && $responseCache{$path}) {
 		$log->info("using cached response for: $path");
 		$cb->($responseCache{$path});
 		return;
@@ -130,7 +136,7 @@ sub get {
 	my $url = $class->uriBase . $path;
 	$ecb ||= sub {};
 
-	$log->info("fetching from: $url");
+	$log->info("$method: $url");
 
 	my $timeout = Time::HiRes::time() + ($params->{'timeout'} || 35);
 	my $try;
@@ -145,7 +151,7 @@ sub get {
 					$log->warn("$@");
 					$ecb->("$@");
 				} else {
-					$responseCache{$path} = $json;
+					$responseCache{$path} = $json if $cache;
 					$cb->($json);
 				}
 			},
@@ -154,17 +160,17 @@ sub get {
 				my $error = $_[1];
 				my $time = Time::HiRes::time();
 				if ($time < $timeout && $error !~ /^500/) {
-					$log->debug("retrying fetch of: $url");
+					$log->debug("retrying $method: $url");
 					Slim::Utils::Timers::setTimer(undef, $time + 5, $try);
 				} else {
-					$log->warn("error fetching $url: " . $error);
+					$log->warn("error $method $url: " . $error);
 					$ecb->($error);
 				}
 			},
 
 			$params,
 
-		)->get($url);
+		)->_createHTTPRequest($method, $url, @_);
 	};
 
 	$try->();
