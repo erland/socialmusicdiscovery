@@ -80,6 +80,9 @@ sub init {
 
 	# create our own playlist command to allow playlist actions by smd object id
 	Slim::Control::Request::addDispatch(['smdplcmd'], [1, 0, 1, \&plCommand]);
+
+	# command to execute smd-server commands
+	Slim::Control::Request::addDispatch(['smdcmd'], [1, 0, 1, \&smdCommand]);
 }
 
 my @registeredMenus;
@@ -169,7 +172,7 @@ sub updateMenus {
 }
 
 sub level {
-	my ($client, $callback, $args, $path, $flags) = @_;
+	my ($client, $callback, $args, $path, $session) = @_;
 
 	my $query = $path;
 
@@ -180,25 +183,25 @@ sub level {
 		$query .= "?offset=$index&size=$quantity";
 	}
 
-	$flags ||= {};
-	$flags->{'ipeng'} ||= $args->{'params'}->{'userInterfaceIdiom'} && $args->{'params'}->{'userInterfaceIdiom'} =~ /iPeng/;
-	$flags->{'cm_depth'} ||= 0;
+	$session ||= {};
+	$session->{'ipeng'} ||= $args->{'params'}->{'userInterfaceIdiom'} && $args->{'params'}->{'userInterfaceIdiom'} =~ /iPeng/;
+	$session->{'cm_depth'} ||= 0;
 
-	if (!defined $flags->{'playalbum'}) {
+	if (!defined $session->{'playalbum'}) {
 
 		# FIXME: do we want this - makes the web interface only play the selected track?
 		# FIXME: is this offset always correct - better to add something to the params?
 		if (caller(10) =~ /Web/) {
-		#	$flags->{'playalbum'} = 0;
+			$session->{'playalbum'} = 0;
 		}
 
-		if (!defined $flags->{'playalbum'} && $client) {
-			$flags->{'playalbum'} = $sprefs->client($client)->get('playtrackalbum');
+		if (!defined $session->{'playalbum'} && $client) {
+			$session->{'playalbum'} = $sprefs->client($client)->get('playtrackalbum');
 		}
 
 		# if player pref for playtrack album is not set, get the old server pref.
-		if (!defined $flags->{'playalbum'}) {
-			$flags->{'playalbum'} = $sprefs->get('playtrackalbum') ? 1 : 0;
+		if (!defined $session->{'playalbum'}) {
+			$session->{'playalbum'} = $sprefs->get('playtrackalbum') ? 1 : 0;
 		}
 	}
 
@@ -207,7 +210,7 @@ sub level {
 	Plugins::SocialMusicDiscovery::Server->get(
 		$query,
 		sub {
-			_createResponse($client, $callback, $_[0], $path, $flags);
+			_createResponse($client, $callback, $_[0], $path, $session);
 		},
 		sub {
 			$callback->({ type => 'text', name => "Error", items => [ { type => 'text', name => "$_[0]" } ] });
@@ -217,7 +220,7 @@ sub level {
 }
 
 sub _createResponse {
-	my ($client, $callback, $json, $path, $flags) = @_;
+	my ($client, $callback, $json, $path, $session) = @_;
 
 	my $i = 0;
 	my @menu;
@@ -242,7 +245,7 @@ sub _createResponse {
 					infopath => uri_escape($entrypath),
 				};
 		
-				if ($flags->{'playalbum'}) {
+				if ($session->{'playalbum'}) {
 					$menu->{'index'} = $i;
 					$menu->{'playpath'} = uri_escape($playableBase);
 				} else {
@@ -255,11 +258,11 @@ sub _createResponse {
 
 				push @menu, {
 					name     => $entry->{'name'},
-					type     => $flags->{'ipeng'} ? 'opml' : 'playlist',
+					type     => $session->{'ipeng'} ? 'opml' : 'playlist',
 					url      => \&level,
 					infopath => uri_escape($entrypath),
 					playpath => uri_escape($playableBase . $entry->{'playable'}),
-					passthrough => [ $entrypath, $flags ],
+					passthrough => [ $entrypath, $session ],
 				};
 			}
 
@@ -281,7 +284,7 @@ sub _createResponse {
 				type     => 'link',
 				url      => \&level,
 				infopath => uri_escape($entrypath),
-				passthrough => [ $entrypath, $flags ],
+				passthrough => [ $entrypath, $session ],
 			};
 		}
 			
@@ -298,7 +301,7 @@ sub _createResponse {
 
 		my %actions = (
 			commonVariables	=> [ index => 'index', playpath => 'playpath', infopath => 'infopath' ],
-			info => { command => [ "smdinfocmd$flags->{cm_depth}", 'items' ], fixedParams => { playable => $playAction || 0 } },
+			info => { command => [ "smdinfocmd$session->{cm_depth}", 'items' ], fixedParams => { playable => $playAction || 0 } },
 		);
 
 		if ($playAction) {
@@ -371,6 +374,38 @@ sub plCommand {
 		},
 		{ timeout => 35 },
 	);									   
+}
+
+sub smdCommand {
+	my $request = shift;
+
+	my $client  = $request->client;
+	my $cmd     = $request->getParam('cmd');
+
+	$log->info("cmd: $cmd");
+
+	Plugins::SocialMusicDiscovery::Server->post(
+		$cmd,
+		sub {
+			my $json = shift;
+			my $success = $json->{'success'};
+			my $message = $json->{'message'};
+
+			$log->info("cmd success: $success, $message");
+
+			$client->showBriefly({
+				'line' => [ $success ? 'Action Succeeded' : 'Action Failed', $message ],
+				'jive' => {
+					'type'    => 'popupplay',
+					'text'    => [ $message ],
+				},
+			});
+		},
+		sub {
+			$log->warn("error executing command: $cmd " . $_[0]);
+		},
+		{ timeout => 35 },
+	);						
 }
 
 1;

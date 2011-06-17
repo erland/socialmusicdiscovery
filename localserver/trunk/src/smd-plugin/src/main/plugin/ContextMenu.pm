@@ -245,11 +245,37 @@ sub smdContext {
 	my @menu;
 
 	for my $item (@{$contextInfo->{'items'}}) {
-		push @menu, {
-			name => $item->{'name'},
-			url  => \&Plugins::SocialMusicDiscovery::Browse::level, 
-			passthrough => [ $path . "/" . $item->{'id'}, { cm_depth => $cmDepth } ],
-		};
+
+		if ($item->{'type'} eq 'CommandObject') {
+
+			my $action = {
+				player => 0,
+				cmd => [ 'smdcmd' ],
+				params => {
+					cmd => $item->{'command'},
+				},
+				nextWindow => 'parent',
+			};
+
+			push @menu, {
+				name => $item->{'name'},
+				type => 'text',
+				jive => {
+					actions => {
+						go   => $action,
+						play => $action,
+					},
+				},
+			};
+
+		} else {
+
+			push @menu, {
+				name => $item->{'name'},
+				url  => \&Plugins::SocialMusicDiscovery::Browse::level, 
+				passthrough => [ $path . "/" . $item->{'id'}, { cm_depth => $cmDepth } ],
+			};
+		}
 	}
 
 	return \@menu;
