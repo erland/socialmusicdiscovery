@@ -104,33 +104,27 @@ sub startImport {
 
 	Slim::Music::Import->setIsScanning('PLUGIN_SOCIALMUSICDISCOVERY_SCAN_TYPE');
 
-	my $hostname = $prefs->get('hostname');
-	my $port = $prefs->get('port');
+	my $parameters = $dropPreviousContent ? "{squeezeboxserver.deletePrevious:true}" : "{}";
 
-	my $http = Slim::Networking::SimpleAsyncHTTP->new(\&_startImportReply, \&_smdServerError, {
-		'progresses' => {},
-		'items' => {},
-	});
-	my $parameters = "{}";
-	if($dropPreviousContent) {
-		$parameters="{squeezeboxserver.deletePrevious:true}";
-	}
-	$log->debug("Starting SMD import: http://$hostname:$port/mediaimportmodules/squeezeboxserver with: $parameters");
-	$http->post("http://$hostname:$port/mediaimportmodules/squeezeboxserver",'Content-Type' => 'application/json', $parameters);
+	$log->debug("Starting SMD import: /mediaimportmodules/squeezeboxserver with: $parameters");
+
+	Plugins::SocialMusicDiscovery::Server->post(
+		"/mediaimportmodules/squeezeboxserver",
+		sub { _startImportReply($_[0], { progresses => {}, items => {} }) }, 
+		\&_smdServerError,
+		{ timeout => 35 },
+		'Content-Type', 'application/json',
+		$parameters
+	);
 }
 
-
 sub _startImportReply {
-	my $http = shift;
-	my $content = $http->content();
-
-	my $jsonResult = JSON::XS::decode_json($content);
+	my $jsonResult = shift;
+	my $state = shift;
 
 	# Startup monitoring if import was successfully started	
 	if($jsonResult->{'success'}) {
-		_checkStatus(undef, 
-			$http->params()->{'progresses'},
-			$http->params()->{'items'});
+		_checkStatus(undef, $state);
 	}else {
 		$log->warn("Import into SMD failed: Failed to start import");
 		_endMonitoring();
@@ -138,28 +132,27 @@ sub _startImportReply {
 }
 
 sub _checkStatus {
-	my $client = shift; # Just here to make Slim::Utils::Timers happy
-	my $progresses = shift; # Hash with Slim::Utils::Progress objects per import phase
-	my $items = shift; # Hash with total number of items per import phase
-
-	my $hostname = $prefs->get('hostname');
-	my $port = $prefs->get('port');
+	my $obj = shift;
+	my $state = shift;
 
 	# If not aborted
 	if(_stillScanning() eq 'PLUGIN_SOCIALMUSICDISCOVERY_SCAN_TYPE') {
-		my $http = Slim::Networking::SimpleAsyncHTTP->new(\&_checkStatusReply, \&_smdServerError, {
-			'progresses' => $progresses,
-			'items' => $items,
-		});
-		$log->debug("Check status of import: http://$hostname:$port/mediaimportmodules/squeezeboxserver");
-		$http->get("http://$hostname:$port/mediaimportmodules/squeezeboxserver");
+		$log->debug("checking import status");
+		Plugins::SocialMusicDiscovery::Server->get(
+			"/mediaimportmodules/squeezeboxserver",
+			sub { _checkStatusReply($_[0], $state) },
+			\&_smdServerError,
+			{ timeout => 35, nocache => 1 },
+		);
 	}else {
-		my $http = Slim::Networking::SimpleAsyncHTTP->new(\&_abortReply, \&_smdServerError, {
-			'progresses' => $progresses,
-			'items' => $items,
-		});
 		$log->info("Aborting scanning...");
-		$http->_createHTTPRequest( DELETE => "http://$hostname:$port/mediaimportmodules/squeezeboxserver");
+		Plugins::SocialMusicDiscovery::Server->request(
+			'DELETE',
+			"/mediaimportmodules/squeezeboxserver",
+			\&_abortReply,
+			\&_smdServerError,
+			{ timeout => 35 },
+		);
 	}
 
 	return 0;
@@ -175,23 +168,17 @@ sub _stillScanning {
 
 sub _endMonitoring {
 	# Make sure timers have been removed and scanner status reset
-	Slim::Utils::Timers::killTimers(0, \&_checkStatus);
+	Slim::Utils::Timers::killTimers(undef, \&_checkStatus);
 	Slim::Music::Import->setIsScanning(0);
 }
 
 sub _checkStatusReply {
-	my $http = shift;
-	my $content = $http->content();
+	my $jsonResult = shift;
+	my $state = shift;
 
-	my $jsonResult = JSON::XS::decode_json($content);
-
-	my $progresses = $http->params()->{'progresses'};
-	my $items = $http->params()->{'items'};
-	if(!_handleStatus($progresses,$items,$jsonResult)) {
+	if(!_handleStatus($jsonResult, $state)) {
 		# Setup a timer which will trigger a new status check a bit later
-		Slim::Utils::Timers::setTimer(0, Time::HiRes::time() + $STATUS_CHECK_INTERVAL, \&_checkStatus, 
-			$http->params()->{'progresses'},
-			$http->params()->{'items'});
+		Slim::Utils::Timers::setTimer(undef, Time::HiRes::time() + $STATUS_CHECK_INTERVAL, \&_checkStatus, $state);
 	}else {
 		# Import finished or failed, lets end the monitoring
 		_endMonitoring();
@@ -200,16 +187,12 @@ sub _checkStatusReply {
 }
 
 sub _abortReply {
-	my $http = shift;
-
 	$log->warn("Aborted scanning before it was completed");
 	_endMonitoring();
 	$log->info("Finished importing into SMD");
 }
 
 sub _smdServerError {
-	my $http = shift;
-
 	# Let's end the monitoring if an error occurs
 	_endMonitoring();
 
@@ -217,14 +200,16 @@ sub _smdServerError {
 }
 
 sub _handleStatus {
-	# Hash with Slim::Utils::Progress entries of current states in each phase in the import process
-	my $progresses = shift; 
-
-	# Hash with total items in each phase of current import process
-	my $items = shift;
-
 	# JSON status reply from SMD server 
 	my $status = shift; 
+
+	my $state = shift;
+
+	# Hash with Slim::Utils::Progress entries of current states in each phase in the import process
+	my $progresses = $state->{'progresses'}; 
+
+	# Hash with total items in each phase of current import process
+	my $items = $state->{'items'};
 
 	my $currentPhase = $status->{'currentPhaseNo'};
 	my $totalPhase = $status->{'totalPhaseNo'};
