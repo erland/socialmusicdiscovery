@@ -123,7 +123,7 @@ sub get  { shift->request('GET', @_) }
 sub post { shift->request('POST', @_) }
 
 sub request {
-	my ($class, $method, $path, $cb, $ecb, $params) = @_;
+	my ($class, $method, $path, $cb, $ecb, $params, @extraArgs) = @_;
 
 	my $cache = !(delete $params->{'nocache'} || $method ne 'GET');
 
@@ -170,7 +170,7 @@ sub request {
 
 			$params,
 
-		)->_createHTTPRequest($method, $url, @_);
+		)->_createHTTPRequest($method, $url, @extraArgs);
 	};
 
 	$try->();
