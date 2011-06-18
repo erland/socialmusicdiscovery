@@ -154,7 +154,7 @@ sub menu {
 }
 
 sub _entry {
-	my ($cmd, $playpath, $path, $index) = @_;
+	my ($cmd, $playpath, $path, $ind) = @_;
 	return {
 		player => 0,
 		cmd => [ 'smdplcmd' ],
@@ -162,7 +162,7 @@ sub _entry {
 			cmd      => $cmd,
 			playpath => $playpath,
 			infopath => $path,
-			index_cm => $index,
+			ind_cm   => $ind,
 		},
 		nextWindow => $cmd eq 'load' ? 'nowPlaying' :'parent',
 	}
@@ -173,7 +173,7 @@ sub addItemEnd {
 
 	return if !$tags->{'playable'};
 
-	my $action = _entry('add', $playpath, $path, $tags->{'index'});
+	my $action = _entry('add', $playpath, $path, $tags->{'ind'});
 
 	return { 
 		name => cstring($client, 'ADD'),
@@ -194,7 +194,7 @@ sub addItemNext {
 
 	return if !$tags->{'playable'};
 
-	my $action = _entry('insert', $playpath, $path, $tags->{'index'});
+	my $action = _entry('insert', $playpath, $path, $tags->{'ind'});
 
 	return { 
 		name => cstring($client, 'PLAY_NEXT'),
@@ -215,7 +215,7 @@ sub playItem {
 
 	return if !$tags->{'playable'};
 
-	my $action = _entry('load', $playpath, $path, $tags->{'index'});
+	my $action = _entry('load', $playpath, $path, $tags->{'ind'});
 
 	return { 
 		name => cstring($client, 'PLAY'),
@@ -298,7 +298,7 @@ sub infoCommand {
 	my $menuMode    = $request->getParam('menu') || 0;
 	my $menuContext = $request->getParam('context') || 'normal';
 	my $playable    = $request->getParam('playable');
-	my $index       = $request->getParam('index');
+	my $ind         = $request->getParam('ind');
 
 	my $connectionId = $request->connectionID || 0;
 
@@ -313,7 +313,7 @@ sub infoCommand {
 		menuMode    => $menuMode,
 		menuContext => $menuContext,
 		playable    => $playable,
-		index       => $index,
+		ind         => $ind,
 		cmDepth     => $cmDepth,
 	};
 
