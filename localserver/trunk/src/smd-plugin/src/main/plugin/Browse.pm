@@ -30,6 +30,7 @@ use warnings;
 use Tie::Cache::LRU;
 use Tie::RegexpHash;
 use URI::Escape;
+use JSON::XS::VersionOneAndTwo;
 
 use Slim::Utils::Log;
 use Slim::Utils::Prefs;
@@ -227,6 +228,8 @@ sub _createResponse {
 	my $playAction; my $infoAction;
 
 	my $playableBase = $json->{'playableBaseURL'};
+	my $cm_depth = $session->{'cm_depth'} || 0;
+	my $uriBase = Plugins::SocialMusicDiscovery::Server->uriBase;
 
 	for my $entry (@{$json->{'items'}}) {
 		
@@ -246,7 +249,7 @@ sub _createResponse {
 				};
 		
 				if ($session->{'playalbum'}) {
-					$menu->{'index'} = $i;
+					$menu->{'ind'} = $i;
 					$menu->{'playpath'} = uri_escape($playableBase);
 				} else {
 					$menu->{'playpath'} = uri_escape($playableBase . $entry->{'playable'});
@@ -263,6 +266,10 @@ sub _createResponse {
 					infopath => uri_escape($entrypath),
 					playpath => uri_escape($playableBase . $entry->{'playable'}),
 					passthrough => [ $entrypath, $session ],
+					# following are used for favorites only
+					favorites_url => $uriBase . $entrypath,
+					favorites_type=> 'link',
+					parser   => __PACKAGE__,
 				};
 			}
 
@@ -285,6 +292,9 @@ sub _createResponse {
 				url      => \&level,
 				infopath => uri_escape($entrypath),
 				passthrough => [ $entrypath, $session ],
+				# following are used for favorites only
+				favorites_url => $uriBase . $entrypath,
+				parser   => __PACKAGE__,
 			};
 		}
 			
@@ -300,8 +310,8 @@ sub _createResponse {
 	if ($playAction || $infoAction) {
 
 		my %actions = (
-			commonVariables	=> [ index => 'index', playpath => 'playpath', infopath => 'infopath' ],
-			info => { command => [ "smdinfocmd$session->{cm_depth}", 'items' ], fixedParams => { playable => $playAction || 0 } },
+			commonVariables	=> [ ind => 'ind', playpath => 'playpath', infopath => 'infopath' ],
+			info => { command => [ "smdinfocmd$cm_depth", 'items' ], fixedParams => { playable => $playAction || 0 } },
 		);
 
 		if ($playAction) {
@@ -315,7 +325,35 @@ sub _createResponse {
 		$ret->{'actions'} = \%actions;
 	}
 
-	$callback->($ret);
+	if ($callback) {
+
+		$callback->($ret);
+
+	} else {
+
+		return $ret;
+	}
+}
+
+# this is called from xmlbrowser entries which have parser set to this model - used for favorite entries
+sub parse {
+    my ($class, $http) = @_;
+
+    my $params = $http->params('params');
+    my $url    = $params->{'url'};
+	my $client = $params->{'client'};
+
+	my ($path) = $url =~ /http:\/\/.*:\d+(\/.*)/;
+
+	$log->info("parsing favorite for: $path");
+
+	my $json   = eval { from_json($http->content) };
+
+	if ($@) {
+		$log->warn("$@");
+	}
+
+	return _createResponse($client, undef, $json, $path);
 }
 
 sub plCommand {
@@ -324,8 +362,8 @@ sub plCommand {
 	my $client   = $request->client;
 	my $cmd      = $request->getParam('cmd');
 	my $playpath = $request->getParam('playpath');
-	my $index    = $request->getParam('index');
-	my $index_cm = $request->getParam('index_cm');
+	my $ind      = $request->getParam('ind');
+	my $ind_cm   = $request->getParam('ind_cm');
 
 	$playpath = uri_unescape($playpath);
 
@@ -350,19 +388,19 @@ sub plCommand {
 				}
 			}
 
-			if (defined $index_cm) {
-				$log->debug("context menu - ${cmd}ing single track at index: $index_cm");
-				@tracks = ( $tracks[$index_cm] );
+			if (defined $ind_cm) {
+				$log->debug("context menu - ${cmd}ing single track at index: $ind_cm");
+				@tracks = ( $tracks[$ind_cm] );
 			}
 			
 			if (scalar @tracks) {
-				$log->info("${cmd}ing " . scalar @tracks . " tracks" . ($index ? " starting at $index" : ""));
+				$log->info("${cmd}ing " . scalar @tracks . " tracks" . ($ind ? " starting at $ind" : ""));
 				if (!$compat) {
-					$client->execute([ 'playlist', "${cmd}tracks", 'listref', \@tracks, undef, $index ]);
+					$client->execute([ 'playlist', "${cmd}tracks", 'listref', \@tracks, undef, $ind ]);
 				} else {
 					$client->execute([ 'playlist', "${cmd}tracks", 'listref', \@tracks ]);
-					if ($cmd eq 'load' && $index) {
-						$client->execute([ 'playlist', 'jump', $index ]);
+					if ($cmd eq 'load' && $ind) {
+						$client->execute([ 'playlist', 'jump', $ind ]);
 					}
 				}
 			} else {
