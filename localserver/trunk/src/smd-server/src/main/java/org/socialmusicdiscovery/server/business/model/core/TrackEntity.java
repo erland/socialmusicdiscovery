@@ -64,6 +64,11 @@ public class TrackEntity extends AbstractSMDIdentityEntity implements Track {
     @Expose
     private Release release;
 
+    @Expose
+    @ManyToOne(targetEntity = ImageEntity.class)
+    @JoinColumn(name = "default_image_id")
+    private Image defaultImage;
+
     public Integer getNumber() {
         return number;
     }
@@ -102,5 +107,13 @@ public class TrackEntity extends AbstractSMDIdentityEntity implements Track {
 
     public void setRelease(Release release) {
         this.release = release;
+    }
+
+    public Image getDefaultImage() {
+        return defaultImage;
+    }
+
+    public void setDefaultImage(Image defaultImage) {
+        this.defaultImage = defaultImage;
     }
 }

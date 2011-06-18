@@ -28,6 +28,10 @@
 package org.socialmusicdiscovery.server.business.logic;
 
 import org.socialmusicdiscovery.server.api.mediaimport.AbstractImageProvider;
+import org.socialmusicdiscovery.server.business.model.core.Image;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 /**
  * Image provider that provides images based on a full URL which is public and available on internet
@@ -43,15 +47,22 @@ public class InternetImageProvider extends AbstractImageProvider {
      * @inheritDoc
      */
     @Override
-    public String getImageURL(String id) {
-        return "http://www.mysqueezebox.com/public/imageproxy?u=" + id;
+    public String getImageURL(Image image) {
+        return image.getUri();
+        // TODO: Do we want all images to go through mysqueezebox.com image proxy ?
+        //return "http://www.mysqueezebox.com/public/imageproxy?u=" + image.getUri();
     }
 
     /**
      * @inheritDoc
      */
     @Override
-    public String getImageURL(String id, Integer maxWidth, Integer maxHeight) {
-        return "http://www.mysqueezebox.com/public/imageproxy?u=" + id + "&w=" + maxWidth + "&h=" + maxHeight;
+    public String getImageURL(Image image, Integer maxWidth, Integer maxHeight) {
+        try {
+            return "http://www.mysqueezebox.com/public/imageproxy?u=" + URLEncoder.encode(image.getUri(),"utf8") + "&w=" + maxWidth + "&h=" + maxHeight;
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

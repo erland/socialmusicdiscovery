@@ -31,6 +31,8 @@ import com.sun.jersey.api.client.Client;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.socialmusicdiscovery.server.business.logic.InternetImageProvider;
+import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.model.core.TrackEntity;
 import org.socialmusicdiscovery.server.business.service.browse.BrowseService;
 import org.socialmusicdiscovery.server.business.service.browse.Result;
@@ -71,7 +73,7 @@ public class LastFMTrackBrowseService extends AbstractLastFMBrowseService implem
                 result.setCount((long)array.length());
                 for (int i = 0; i < array.length(); i++) {
                     if((firstItem==null || i>=firstItem) && (maxItems==null || maxItems>tracks.size())) {
-                        tracks.add(createFromJSON(array.getJSONObject(i)));
+                        tracks.add(createFromJSON(array.getJSONObject(i), null));
                     }
                 }
                 result.setItems(tracks);
@@ -90,7 +92,7 @@ public class LastFMTrackBrowseService extends AbstractLastFMBrowseService implem
                     result.setCount((long)array.length());
                     for (int i = 0; i < array.length(); i++) {
                         if((firstItem==null || i>=firstItem) && (maxItems==null || maxItems>tracks.size())) {
-                            tracks.add(createFromJSON(array.getJSONObject(i)));
+                            tracks.add(createFromJSON(array.getJSONObject(i),object.getJSONObject("album")));
                         }
                     }
                 }
@@ -107,14 +109,14 @@ public class LastFMTrackBrowseService extends AbstractLastFMBrowseService implem
     public ResultItem<LastFMTrack> findById(String id) {
         try {
             JSONObject object = Client.create().resource(getLastFmUrl("track.getinfo" + createQueryFromId(id))).accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
-            return createFromJSON(object.getJSONObject("track"));
+            return createFromJSON(object.getJSONObject("track"), null);
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    private ResultItem<LastFMTrack> createFromJSON(JSONObject json) throws JSONException {
+    private ResultItem<LastFMTrack> createFromJSON(JSONObject json, JSONObject jsonAlbum) throws JSONException {
         try {
             String id;
             if (json.has("mbid") && json.getString("mbid").length() > 0) {
@@ -129,8 +131,20 @@ public class LastFMTrackBrowseService extends AbstractLastFMBrowseService implem
                 id = "artist:" + urlEncode(artist) + ":track:" + urlEncode(json.getString("name"));
             }
             String name = json.getString("name");
-            LastFMTrack track = new LastFMTrack(id, null, name);
+            String image = null;
+            JSONArray images = json.optJSONArray("image");
+            if(images!=null && images.length()>0) {
+                image = images.getJSONObject(images.length()-1).getString("#text");
+            }else if(json.optJSONObject("album")!=null && json.getJSONObject("album").optJSONArray("image")!=null) {
+                images = json.getJSONObject("album").getJSONArray("image");
+                image = images.getJSONObject(images.length()-1).getString("#text");
+            }else if(jsonAlbum!=null && jsonAlbum.optJSONArray("image")!=null) {
+                images = jsonAlbum.getJSONArray("image");
+                image = images.getJSONObject(images.length()-1).getString("#text");
+            }
+            LastFMTrack track = new LastFMTrack(id, null, name, image);
             ResultItem<LastFMTrack> item = new ResultItem<LastFMTrack>(track, false, false);
+            item.setImage(getImage(track));
             item.setType(track.getClass().getSimpleName());
             return item;
         } catch (UnsupportedEncodingException e) {
@@ -141,5 +155,13 @@ public class LastFMTrackBrowseService extends AbstractLastFMBrowseService implem
     @Override
     public String getObjectType() {
         return LastFMTrack.class.getSimpleName();
+    }
+
+    @Override
+    protected <T extends SMDIdentity> ResultItem.ResultItemImage getImage(T item) {
+        if(((LastFMTrack)item).getImage()!=null) {
+            return new ResultItem.ResultItemImage(InternetImageProvider.PROVIDER_ID, null, ((LastFMTrack)item).getImage());
+        }
+        return null;
     }
 }

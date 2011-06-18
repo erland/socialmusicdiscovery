@@ -28,6 +28,7 @@
 package org.socialmusicdiscovery.server.business.logic;
 
 import org.socialmusicdiscovery.server.api.mediaimport.ImageProvider;
+import org.socialmusicdiscovery.server.business.model.core.Image;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -55,13 +56,12 @@ public class ImageProviderManager {
 
     /**
      * Get image URL for the specified image source and uri
-     * @param source Identity of the image source to get a URL for
-     * @param id Identity of the image to get
+     * @param image The image to get url for
      * @return The image provider or null if no provider exists for this source
      */
-    public URL getImageURL(String source, String id) {
+    public URL getImageURL(Image image) {
         try {
-            return new URL(imageProviders.get(source).getImageURL(id));
+            return new URL(imageProviders.get(image.getProviderId()).getImageURL(image));
         } catch (MalformedURLException e) {
             e.printStackTrace();
             return null;
@@ -70,15 +70,14 @@ public class ImageProviderManager {
 
     /**
      * Get image URL for the specified image source and uri and rescale it to the specified size
-     * @param source Identity of the image source to get a URL for
-     * @param id Identity of the image to get
+     * @param image The image to get url for
      * @param maxWidth Maximum width of image
      * @param maxHeight Maximum height of image
      * @return The URL of the image or null if no provider exists for this source
      */
-    public URL getImageURL(String source, String id, Integer maxWidth, Integer maxHeight) {
+    public URL getImageURL(Image image, Integer maxWidth, Integer maxHeight) {
         try {
-            return new URL(imageProviders.get(source).getImageURL(id, maxWidth, maxHeight));
+            return new URL(imageProviders.get(image.getProviderId()).getImageURL(image, maxWidth, maxHeight));
         } catch (MalformedURLException e) {
             e.printStackTrace();
             return null;

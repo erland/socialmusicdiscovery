@@ -183,6 +183,8 @@ public class BrowseServiceTest extends BaseTestCase {
 
         assert result.getItems().iterator().next().getItem().getRecording().getWorks().iterator().next().getName().equals("I Will Always Love You");
         for (ResultItem<TrackEntity> releaseResultItem : result.getItems()) {
+            assert releaseResultItem.getImage()!=null;
+            assert releaseResultItem.getImage().getUrl()!=null;
             assert releaseResultItem.getChildItems() != null;
             assert releaseResultItem.getChildItems().size() > 0;
             boolean foundWork = false;
@@ -216,6 +218,9 @@ public class BrowseServiceTest extends BaseTestCase {
         for (ResultItem<TrackEntity> releaseResultItem : result.getItems()) {
             assert releaseResultItem.getChildItems() != null;
             assert releaseResultItem.getChildItems().size() > 0;
+            assert releaseResultItem.getImage()!=null;
+            assert releaseResultItem.getImage().getUrl()!=null;
+            assert releaseResultItem.getImage().getProviderId()!=null;
             boolean foundWork = false;
             boolean foundOneWork = false;
             boolean foundRelease = false;
@@ -339,9 +344,13 @@ public class BrowseServiceTest extends BaseTestCase {
         assert result.getItems().size() == 5;
         assert result.getCount() == 5;
 
+        int images = 0;
         for (ResultItem<ReleaseEntity> releaseResultItem : result.getItems()) {
             assert releaseResultItem.getChildItems() != null;
             assert releaseResultItem.getChildItems().size() > 0;
+            if(releaseResultItem.getImage()!=null && releaseResultItem.getImage().getUrl()!=null && releaseResultItem.getImage().getProviderId()!=null) {
+                images++;
+            }
             boolean foundClassification = false;
             boolean foundArtist = false;
             boolean foundWork = false;
@@ -368,6 +377,7 @@ public class BrowseServiceTest extends BaseTestCase {
             assert foundTrack;
             assert foundLabel;
         }
+        assert images==4;
 
         result = browseService.findChildren(new ArrayList<String>(), new ArrayList<String>(), 0, 2, true);
         assert result.getItems().size() == 2;

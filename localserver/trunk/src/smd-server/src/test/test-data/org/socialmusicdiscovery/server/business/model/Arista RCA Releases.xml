@@ -305,15 +305,20 @@
     <recording_works recording_id="bc23d83f-d4d2-4f78-ab65-d4f860af3fd0" work_id="1fa5aeef-014f-4469-b31d-c83eab55e771" />
     <recording_works recording_id="b8155f8f-ba75-4bf6-8f2a-92315f7feee2" work_id="9d2535bb-dc3a-4fa8-91dc-367c48590c0b" />
 
-    <releases id="d972b0fa-42f5-45f9-ba56-2cede7666446" name="The Bodyguard (Original Soundtrack Album)" sort_as="The Bodyguard (Original Soundtrack Album)" label_id="bf88a696-0cc5-4cfa-b690-85ddb25835cc"  last_updated="2010-08-01" last_updated_by="JUnit" />
-    <releases id="a4888557-1674-43b6-b2ab-000336637736" name="My Love Is Your Love" sort_as="My Love Is Your Love" label_id="bf88a696-0cc5-4cfa-b690-85ddb25835cc"  last_updated="2010-08-01" last_updated_by="JUnit" />
+    <releases id="d972b0fa-42f5-45f9-ba56-2cede7666446" name="The Bodyguard (Original Soundtrack Album)" sort_as="The Bodyguard (Original Soundtrack Album)" label_id="bf88a696-0cc5-4cfa-b690-85ddb25835cc" default_image_id="a509c029-ce92-42cb-ab97-b00e95bbf52f" last_updated="2010-08-01" last_updated_by="JUnit" />
+    <releases id="a4888557-1674-43b6-b2ab-000336637736" name="My Love Is Your Love" sort_as="My Love Is Your Love" label_id="bf88a696-0cc5-4cfa-b690-85ddb25835cc" default_image_id="d51938eb-2059-426c-922e-a84e050b3b06" last_updated="2010-08-01" last_updated_by="JUnit" />
     <releases id="bb348240-8d6d-4a22-8b92-ab8446d54235" name="Affection" sort_as="Affection" label_id="bf88a696-0cc5-4cfa-b690-85ddb25835cc"  last_updated="2010-08-01" last_updated_by="JUnit" />
-    <releases id="a97dc149-67d5-4c68-967c-1dd75e83eff1" name="I Look To You (Remixes)" sort_as="I Look To You (Remixes)" label_id="16dd05b2-ae97-412a-b5d7-6f4104eb9fce"  last_updated="2010-08-01" last_updated_by="JUnit" />
-    <releases id="09c8ed71-427f-4cd2-97d1-281d9a1b06e9" name="The Essential Dolly Parton" sort_as="The Essential Dolly Parton" label_id="121f2bf3-35c1-4f25-b742-a4f1637049ab"  last_updated="2010-08-01" last_updated_by="JUnit" />
+    <releases id="a97dc149-67d5-4c68-967c-1dd75e83eff1" name="I Look To You (Remixes)" sort_as="I Look To You (Remixes)" label_id="16dd05b2-ae97-412a-b5d7-6f4104eb9fce" default_image_id="ccdc7cc4-287c-463d-87c0-9f19b4d835c3" last_updated="2010-08-01" last_updated_by="JUnit" />
+    <releases id="09c8ed71-427f-4cd2-97d1-281d9a1b06e9" name="The Essential Dolly Parton" sort_as="The Essential Dolly Parton" label_id="121f2bf3-35c1-4f25-b742-a4f1637049ab" default_image_id="4c30b316-93cf-450d-a2be-15d04e91e3c1" last_updated="2010-08-01" last_updated_by="JUnit" />
 
     <labels id="bf88a696-0cc5-4cfa-b690-85ddb25835cc" name="Arista" sort_as="Arista"  last_updated="2010-08-01" last_updated_by="JUnit" />
     <labels id="16dd05b2-ae97-412a-b5d7-6f4104eb9fce" name="RCA" sort_as="RCA"  last_updated="2010-08-01" last_updated_by="JUnit" />
     <labels id="121f2bf3-35c1-4f25-b742-a4f1637049ab" name="Sony BMG Music Entertainment" sort_as="Sony BMG Music Entertainment"  last_updated="2010-08-01" last_updated_by="JUnit" />
+
+    <images id="a509c029-ce92-42cb-ab97-b00e95bbf52f" uri="http://s.dsimg.com/image/R-1794218-1260432856.jpeg" provider_id="internet" related_to_id="d972b0fa-42f5-45f9-ba56-2cede7666446" last_updated="2010-08-01" last_updated_by="JUnit"/>
+    <images id="d51938eb-2059-426c-922e-a84e050b3b06" uri="http://s.dsimg.com/image/R-389486-1242741334.jpeg" provider_id="internet" related_to_id="a4888557-1674-43b6-b2ab-000336637736" last_updated="2010-08-01" last_updated_by="JUnit"/>
+    <images id="ccdc7cc4-287c-463d-87c0-9f19b4d835c3" uri="http://s.dsimg.com/image/R-2012327-1261610727.jpeg" provider_id="internet" related_to_id="a97dc149-67d5-4c68-967c-1dd75e83eff1" last_updated="2010-08-01" last_updated_by="JUnit"/>
+    <images id="4c30b316-93cf-450d-a2be-15d04e91e3c1" uri="http://s.dsimg.com/image/R-2575167-1291242680.jpeg" provider_id="internet" related_to_id="09c8ed71-427f-4cd2-97d1-281d9a1b06e9" last_updated="2010-08-01" last_updated_by="JUnit"/>
 
     <smdidentity_references id="bf88a696-0cc5-4cfa-b690-85ddb25835cc" type="org.socialmusicdiscovery.server.business.model.core.LabelEntity" />
     <smdidentity_references id="d972b0fa-42f5-45f9-ba56-2cede7666446" type="org.socialmusicdiscovery.server.business.model.core.ReleaseEntity" />
@@ -774,6 +779,10 @@
     <smdidentity_references id="6dc7df42-1b7b-4518-8397-a26efbb8fbd3" type="org.socialmusicdiscovery.server.business.model.classification.ClassificationReferenceEntity" />
     <smdidentity_references id="5a2805a0-0712-4e26-bd91-7ba16e4ee27b" type="org.socialmusicdiscovery.server.business.model.classification.ClassificationReferenceEntity" />
     <smdidentity_references id="938b3c86-5ee8-4d4d-a33c-337f302f6e32" type="org.socialmusicdiscovery.server.business.model.classification.ClassificationReferenceEntity" />
+    <smdidentity_references id="a509c029-ce92-42cb-ab97-b00e95bbf52f" type="org.socialmusicdiscovery.server.business.model.core.ImageEntity"/>
+    <smdidentity_references id="d51938eb-2059-426c-922e-a84e050b3b06" type="org.socialmusicdiscovery.server.business.model.core.ImageEntity"/>
+    <smdidentity_references id="ccdc7cc4-287c-463d-87c0-9f19b4d835c3" type="org.socialmusicdiscovery.server.business.model.core.ImageEntity"/>
+    <smdidentity_references id="4c30b316-93cf-450d-a2be-15d04e91e3c1" type="org.socialmusicdiscovery.server.business.model.core.ImageEntity"/>
 
     <classification_references id="c4c869f7-cc3f-4555-b4ef-ef6d1d0e7a2b" classification_id="10f91ec9-2b90-4460-b6ae-4534cddd4cdb" reference_to_id="d972b0fa-42f5-45f9-ba56-2cede7666446"  last_updated="2010-08-01" last_updated_by="JUnit"/>
     <classification_references id="8a2a0509-780e-4585-8a31-a38c7e950dc7" classification_id="819a598c-8d46-4391-ba90-2815f2690b72" reference_to_id="d972b0fa-42f5-45f9-ba56-2cede7666446"  last_updated="2010-08-01" last_updated_by="JUnit"/>

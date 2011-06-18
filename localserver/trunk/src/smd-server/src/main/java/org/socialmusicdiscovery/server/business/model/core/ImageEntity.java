@@ -6,13 +6,17 @@ import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReference;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 /**
  * See {@link Image}
  */
 @javax.persistence.Entity
 @Table(name = "images")
+@org.hibernate.annotations.Cache(usage = org.hibernate.annotations.CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @SMDIdentityReferenceEntity.ReferenceType(type = Image.class)
 public class ImageEntity extends AbstractSMDIdentityEntity implements Image {
 

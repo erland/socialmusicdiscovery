@@ -27,6 +27,9 @@
 
 package org.socialmusicdiscovery.server.business.service.browse;
 
+import org.socialmusicdiscovery.server.business.model.SMDIdentity;
+import org.socialmusicdiscovery.server.business.model.core.Image;
+import org.socialmusicdiscovery.server.business.model.core.ReleaseEntity;
 import org.socialmusicdiscovery.server.business.model.core.TrackEntity;
 
 import javax.persistence.Query;
@@ -57,5 +60,14 @@ public class TrackBrowseService extends AbstractBrowseService implements BrowseS
     @Override
     public String getObjectType() {
         return "Track";
+    }
+
+    @Override
+    protected <T extends SMDIdentity> Image getPersistentImage(T item) {
+        Image image = ((TrackEntity)item).getDefaultImage();
+        if(image==null && ((TrackEntity) item).getRelease()!=null) {
+            image = ((ReleaseEntity)((TrackEntity) item).getRelease()).getDefaultImage();
+        }
+        return image;
     }
 }

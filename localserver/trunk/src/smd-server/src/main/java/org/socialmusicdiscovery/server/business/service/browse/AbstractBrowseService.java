@@ -29,8 +29,10 @@ package org.socialmusicdiscovery.server.business.service.browse;
 
 import com.google.inject.Inject;
 import org.socialmusicdiscovery.server.api.ConfigurationContext;
+import org.socialmusicdiscovery.server.business.logic.ImageProviderManager;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
+import org.socialmusicdiscovery.server.business.model.core.Image;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -42,6 +44,9 @@ public abstract class AbstractBrowseService {
 
     @Inject
     protected BrowseServiceManager browseServiceManager;
+
+    @Inject
+    protected ImageProviderManager imageProviderManager;
 
     protected ConfigurationContext configurationContext;
 
@@ -198,6 +203,7 @@ public abstract class AbstractBrowseService {
     protected <T extends SMDIdentity> ResultItem<T> findById(Class<T> entity, String objectType, String id) {
         T instance = entityManager.find(entity, id);
         ResultItem item = new ResultItem<T>(instance, getPlayable(), false);
+        item.setImage(getImage(instance));
         item.setId(objectType + ":" + instance.getId());
         item.setType(objectType);
         return item;
@@ -270,14 +276,29 @@ public abstract class AbstractBrowseService {
                     }
 
                     ResultItem<T> resultItem = new ResultItem<T>(item, getPlayable(), childCounters);
+                    resultItem.setImage(getImage(item));
                     resultItems.add(resultItem);
                 } else {
                     ResultItem<T> resultItem = new ResultItem<T>(item, getPlayable(), false);
+                    resultItem.setImage(getImage(item));
                     resultItems.add(resultItem);
                 }
             }
         }
         return result;
+    }
+
+    protected <T extends SMDIdentity> ResultItem.ResultItemImage getImage(T item) {
+        Image image = getPersistentImage(item);
+        if(image!=null) {
+            String url = imageProviderManager.getProvider(image.getProviderId()).getImageURL(image);
+            return new ResultItem.ResultItemImage(image.getProviderId(), image.getProviderImageId(), url);
+        }
+        return null;
+    }
+
+    protected <T extends SMDIdentity> Image getPersistentImage(T item) {
+        return null;
     }
 
     protected Boolean getPlayable() {

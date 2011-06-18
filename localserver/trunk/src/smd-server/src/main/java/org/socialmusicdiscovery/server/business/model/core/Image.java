@@ -8,7 +8,9 @@ import org.socialmusicdiscovery.server.business.model.SMDIdentityReference;
  * Represents a link to a local image file or a online image
  */
 public interface Image extends SMDIdentity {
-	
+    final static String TYPE_COVER_FRONT = "frontcover";
+    final static String TYPE_COVER_BACK = "backcover";
+
     String getUri();
     
     void setUri(String uri);

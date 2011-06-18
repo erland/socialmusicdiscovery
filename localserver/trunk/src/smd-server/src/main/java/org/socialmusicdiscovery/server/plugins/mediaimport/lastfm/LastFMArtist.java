@@ -27,16 +27,29 @@
 
 package org.socialmusicdiscovery.server.plugins.mediaimport.lastfm;
 
+import com.google.gson.annotations.Expose;
 import org.socialmusicdiscovery.server.business.service.browse.AbstractBrowseObject;
 
 /**
  * Represent a LastFM artist
  */
 public class LastFMArtist extends AbstractBrowseObject {
+    @Expose
+    private String image;
+
     public LastFMArtist() {
     }
 
-    public LastFMArtist(String id, String name) {
+    public LastFMArtist(String id, String name, String image) {
         super(id, name);
+        this.image = image;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

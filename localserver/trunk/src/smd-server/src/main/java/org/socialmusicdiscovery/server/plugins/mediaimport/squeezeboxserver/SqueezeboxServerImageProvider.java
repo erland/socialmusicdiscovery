@@ -30,6 +30,7 @@ package org.socialmusicdiscovery.server.plugins.mediaimport.squeezeboxserver;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import org.socialmusicdiscovery.server.api.mediaimport.AbstractImageProvider;
+import org.socialmusicdiscovery.server.business.model.core.Image;
 
 /**
  * Image provider that resolve image urls for Squeezebox Server album covers
@@ -53,15 +54,15 @@ public class SqueezeboxServerImageProvider extends AbstractImageProvider {
      * @inheritDoc
      */
     @Override
-    public String getImageURL(String id) {
-        return "http://"+squeezeboxServerHost+":"+squeezeboxServerPort+"/music/" + id + "/cover";
+    public String getImageURL(Image image) {
+        return "http://"+squeezeboxServerHost+":"+squeezeboxServerPort+"/music/" + image.getProviderImageId() + "/cover";
     }
 
     /**
      * @inheritDoc
      */
     @Override
-    public String getImageURL(String id, Integer maxWidth, Integer maxHeight) {
-        return "http://"+squeezeboxServerHost+":"+squeezeboxServerPort+"/music/" + id + "/cover_"+maxWidth+"x"+maxHeight;
+    public String getImageURL(Image image, Integer maxWidth, Integer maxHeight) {
+        return "http://"+squeezeboxServerHost+":"+squeezeboxServerPort+"/music/" + image.getProviderImageId() + "/cover_"+maxWidth+"x"+maxHeight;
     }
 }
