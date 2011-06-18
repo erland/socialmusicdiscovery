@@ -71,6 +71,11 @@ public class ReleaseEntity extends AbstractSMDIdentityEntity implements Release,
     @OneToMany(targetEntity = ContributorEntity.class, mappedBy = "release", cascade = {CascadeType.REMOVE}, orphanRemoval = true)
     private Set<Contributor> contributors = new HashSet<Contributor>();
 
+    @Expose
+    @ManyToOne(targetEntity = ImageEntity.class)
+    @JoinColumn(name = "default_image_id")
+    private Image defaultImage;
+
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "id")
     private Set<ReleaseSearchRelationEntity> searchRelations = new HashSet<ReleaseSearchRelationEntity>();
 
@@ -148,6 +153,14 @@ public class ReleaseEntity extends AbstractSMDIdentityEntity implements Release,
 
     public void setSortAsAutomatically() {
         setSortAs(SortAsHelper.getSortAsForValue(Release.class.getSimpleName(), getName()));
+    }
+
+    public Image getDefaultImage() {
+        return defaultImage;
+    }
+
+    public void setDefaultImage(Image defaultImage) {
+        this.defaultImage = defaultImage;
     }
 
     public void addTrack(TrackEntity track) {

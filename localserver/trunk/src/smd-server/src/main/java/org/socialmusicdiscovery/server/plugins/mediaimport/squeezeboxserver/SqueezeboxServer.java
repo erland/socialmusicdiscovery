@@ -44,12 +44,10 @@ import org.codehaus.jettison.json.JSONObject;
 import org.socialmusicdiscovery.server.api.mediaimport.AbstractProcessingModule;
 import org.socialmusicdiscovery.server.api.mediaimport.MediaImporter;
 import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
+import org.socialmusicdiscovery.server.business.logic.ImageProviderManager;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
 import org.socialmusicdiscovery.server.business.logic.injections.database.DatabaseProvider;
-import org.socialmusicdiscovery.server.business.model.GlobalIdentity;
-import org.socialmusicdiscovery.server.business.model.GlobalIdentityEntity;
-import org.socialmusicdiscovery.server.business.model.SMDIdentity;
-import org.socialmusicdiscovery.server.business.model.SMDIdentityReference;
+import org.socialmusicdiscovery.server.business.model.*;
 import org.socialmusicdiscovery.server.business.model.classification.Classification;
 import org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity;
 import org.socialmusicdiscovery.server.business.model.classification.ClassificationReferenceEntity;
@@ -136,6 +134,12 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
 
     @Inject
     private GlobalIdentityRepository globalIdentityRepository;
+
+    @Inject
+    private ImageRepository imageRepository;
+
+    @Inject
+    private ImageProviderManager imageProviderManager;
 
     @Inject
     @Named("squeezeboxserver.username")
@@ -509,6 +513,11 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                             saveContributors(release, albumArtistContributors);
                         }
                         this.releaseCache.put(albumName.toLowerCase(), Arrays.asList(release.getId()));
+
+                        if(tags.containsKey(TagData.SBS_COVER_ID)) {
+                            ImageEntity defaultImage = createImage(release, tags.get(TagData.SBS_COVER_ID).iterator().next());
+                            release.setDefaultImage(defaultImage);
+                        }
                     } else {
                         // We use the first Release entity found if it already existsted
                         release = releases.iterator().next();
@@ -632,6 +641,18 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
         }
     }
 
+    private <T extends AbstractSMDIdentityEntity> ImageEntity createImage(T relatedObject, String sbsCoverId) {
+        ImageEntity defaultImage= new ImageEntity();
+        defaultImage.setLastUpdated(new Date());
+        defaultImage.setLastUpdatedBy(getId());
+        defaultImage.setProviderId(SqueezeboxServerImageProvider.PROVIDER_ID);
+        defaultImage.setProviderImageId(sbsCoverId);
+        defaultImage.setType(Image.TYPE_COVER_FRONT);
+        defaultImage.setRelatedTo(relatedObject.getReference());
+        defaultImage.setUri(imageProviderManager.getProvider(SqueezeboxServerImageProvider.PROVIDER_ID).getImageURL(defaultImage));
+        imageRepository.create(defaultImage);
+        return defaultImage;
+    }
     /**
      * Checks if two sets of Contributor contains the same artists/role combinations
      *

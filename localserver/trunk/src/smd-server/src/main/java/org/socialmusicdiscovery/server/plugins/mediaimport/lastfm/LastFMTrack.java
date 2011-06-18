@@ -37,12 +37,16 @@ public class LastFMTrack extends AbstractBrowseObject {
     @Expose
     private Integer number;
 
+    @Expose
+    private String image;
+
     public LastFMTrack() {
     }
 
-    public LastFMTrack(String id, Integer number, String name) {
+    public LastFMTrack(String id, Integer number, String name, String image) {
         super(id, name);
         this.number = number;
+        this.image = image;
     }
 
     public Integer getNumber() {
@@ -51,5 +55,13 @@ public class LastFMTrack extends AbstractBrowseObject {
 
     public void setNumber(Integer number) {
         this.number = number;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

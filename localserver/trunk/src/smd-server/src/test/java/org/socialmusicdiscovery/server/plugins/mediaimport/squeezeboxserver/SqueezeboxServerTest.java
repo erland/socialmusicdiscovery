@@ -104,7 +104,8 @@ public class SqueezeboxServerTest extends BaseTestCase {
                     new TagData(TagData.MUSICBRAINZ_ARTIST_ID, "0307edfc-437c-4b48-8700-80680e66a228"),
                     new TagData(TagData.GENRE, "Soundtrack"),
                     new TagData(TagData.CONDUCTOR, "Ricky Minor", "Minor, Ricky"),
-                    new TagData(TagData.COMPOSER, "Dolly Parton", "Dolly, Parton")
+                    new TagData(TagData.COMPOSER, "Dolly Parton", "Dolly, Parton"),
+                    new TagData(TagData.SBS_COVER_ID, "1234")
             ));
             squeezeboxServer.importNewPlayableElement(trackData);
 
@@ -129,7 +130,8 @@ public class SqueezeboxServerTest extends BaseTestCase {
                     new TagData(TagData.COMPOSER, "Babyface"),
                     new TagData(TagData.COMPOSER, "Daryl Simmons"),
                     new TagData(TagData.COMPOSER, "L.A. Reid"),
-                    new TagData(TagData.COMPOSER, "Whitney Houston")
+                    new TagData(TagData.COMPOSER, "Whitney Houston"),
+                    new TagData(TagData.SBS_COVER_ID, "1234")
             ));
             squeezeboxServer.importNewPlayableElement(trackData);
 
@@ -155,7 +157,8 @@ public class SqueezeboxServerTest extends BaseTestCase {
                     new TagData(TagData.COMPOSER, "David Cole"),
                     new TagData(TagData.COMPOSER, "Robert Clivilles"),
                     new TagData(TagData.COMPOSER, "Skip Scarborough"),
-                    new TagData(TagData.COMPOSER, "Tommy Never")
+                    new TagData(TagData.COMPOSER, "Tommy Never"),
+                    new TagData(TagData.SBS_COVER_ID, "1234")
             ));
             squeezeboxServer.importNewPlayableElement(trackData);
 
@@ -178,7 +181,8 @@ public class SqueezeboxServerTest extends BaseTestCase {
                     new TagData(TagData.STYLE, "Instrumental"),
                     new TagData(TagData.COMPOSER, "Alan Silverstri"),
                     new TagData(TagData.CONDUCTOR, "William Ross"),
-                    new TagData(TagData.PERFORMER, "Gary Grant")
+                    new TagData(TagData.PERFORMER, "Gary Grant"),
+                    new TagData(TagData.SBS_COVER_ID, "1234")
             ));
             squeezeboxServer.importNewPlayableElement(trackData);
 
@@ -266,6 +270,7 @@ public class SqueezeboxServerTest extends BaseTestCase {
         assert release.getMediums() != null;
         assert release.getMediums().size() == 2;
         assert release.getContributors().size() == 0;
+        assert ((ReleaseEntity)release).getDefaultImage() == null;
         assert release.getTracks().size() == 3;
         for (Track track : release.getTracks()) {
             assert track.getRecording()!=null;
@@ -281,6 +286,9 @@ public class SqueezeboxServerTest extends BaseTestCase {
         assert release.getTracks().size() == 4;
         assert release.getContributors().size() == 1;
         assert ((ArtistEntity)release.getContributors().iterator().next().getArtist()).getSortAs().equals("Houston, Whitney");
+        assert ((ReleaseEntity)release).getDefaultImage() != null;
+        assert ((ReleaseEntity)release).getDefaultImage().getProviderId().equals(SqueezeboxServerImageProvider.PROVIDER_ID);
+        assert ((ReleaseEntity)release).getDefaultImage().getProviderImageId().equals("1234");
 
         for (Track track : release.getTracks()) {
             assert track.getNumber() != null;

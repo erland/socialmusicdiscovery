@@ -28,6 +28,7 @@
 package org.socialmusicdiscovery.server.api.mediaimport;
 
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
+import org.socialmusicdiscovery.server.business.model.core.Image;
 
 /**
  * Abstract class which provides common functionality used by several image provideres
@@ -52,8 +53,8 @@ public abstract class AbstractImageProvider implements ImageProvider {
      * @inheritDoc
      */
     @Override
-    public String getImageURL(String id, Integer maxWidth, Integer maxHeight) {
+    public String getImageURL(Image image, Integer maxWidth, Integer maxHeight) {
         // TODO: Should we have this in base class, doesn't all providers have to implement it ?
-        return getImageURL(id);
+        return getImageURL(image);
     }
 }

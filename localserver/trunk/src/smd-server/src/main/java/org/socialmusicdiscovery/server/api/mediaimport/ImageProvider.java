@@ -27,6 +27,8 @@
 
 package org.socialmusicdiscovery.server.api.mediaimport;
 
+import org.socialmusicdiscovery.server.business.model.core.Image;
+
 /**
  * Represents an image provider that provides image urls based on
  */
@@ -41,18 +43,18 @@ public interface ImageProvider {
     /**
      * Get an resolved URL for the specified image URI
      *
-     * @param id Image uri to resolve
+     * @param image Image to resolve
      * @return The resolved URL for this image uri
      */
-    String getImageURL(String id);
+    String getImageURL(Image image);
 
     /**
      * Get an resolved URL for the specified image URI rescaled to the specified size
      *
-     * @param id Image uri to resolve
+     * @param image Image to resolve
      * @param maxWidth Maximum width of the image
      * @param maxHeight Maximum height of the image
      * @return The resolved URL for this image uri
      */
-    String getImageURL(String id, Integer maxWidth, Integer maxHeight);
+    String getImageURL(Image image, Integer maxWidth, Integer maxHeight);
 }

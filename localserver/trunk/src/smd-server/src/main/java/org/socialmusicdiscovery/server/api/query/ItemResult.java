@@ -21,6 +21,8 @@ public class ItemResult extends Result {
         @Expose
         private String type;
         @Expose
+        private ItemImage image;
+        @Expose
         private Object item;
         @Expose
         private String playable;
@@ -32,20 +34,23 @@ public class ItemResult extends Result {
         public Item() {
         }
 
-        public Item(Object item) {
+        public Item(Object item, ItemImage image) {
             this.item = item;
+            this.image = image;
         }
 
-        public Item(Object item, Boolean playable, String playableElementsURL, Boolean leaf) {
+        public Item(Object item, ItemImage image, Boolean playable, String playableElementsURL, Boolean leaf) {
             this.item = item;
+            this.image = image;
             if (playable) {
                 this.playable = playableElementsURL;
             }
             this.leaf = leaf;
         }
 
-        public Item(Object item, String type, String id, String name, Boolean playable, String playableElementsURL, String command, Boolean leaf) {
+        public Item(Object item, String type, String id, String name, ItemImage image, Boolean playable, String playableElementsURL, String command, Boolean leaf) {
             this.item = item;
+            this.image = image;
             this.type = type;
             this.id = id;
             this.name = name;
@@ -56,8 +61,9 @@ public class ItemResult extends Result {
             this.leaf = leaf;
         }
 
-        public Item(Object item, Boolean playable, String playableElementsURL, Map<String, Long> childCounters) {
+        public Item(Object item, ItemImage image, Boolean playable, String playableElementsURL, Map<String, Long> childCounters) {
             this.item = item;
+            this.image = image;
             if (playable) {
                 this.playable = playableElementsURL;
             }
@@ -68,8 +74,9 @@ public class ItemResult extends Result {
             }
         }
 
-        public Item(Object item, String type, String id, String name, Boolean playable, String playableElementsURL, String command, Map<String, Long> childCounters) {
+        public Item(Object item, String type, String id, String name, ItemImage image, Boolean playable, String playableElementsURL, String command, Map<String, Long> childCounters) {
             this.item = item;
+            this.image = image;
             this.type = type;
             this.id = id;
             this.name = name;
@@ -93,6 +100,25 @@ public class ItemResult extends Result {
         }
     }
 
+    /**
+     * Represent and image for an {@link Item}
+     */
+    public static class ItemImage {
+        @Expose
+        private String providerId;
+        @Expose
+        private String providerImageId;
+        @Expose
+        private String url;
+
+        public ItemImage() {
+        }
+        public ItemImage(String providerId, String providerImageId, String url) {
+            this.providerId = providerId;
+            this.providerImageId = providerImageId;
+            this.url = url;
+        }
+    }
     @Expose
     private List<Item> items;
 

@@ -27,6 +27,8 @@
 
 package org.socialmusicdiscovery.server.business.service.browse;
 
+import org.socialmusicdiscovery.server.business.model.SMDIdentity;
+import org.socialmusicdiscovery.server.business.model.core.Image;
 import org.socialmusicdiscovery.server.business.model.core.ReleaseEntity;
 
 import java.util.Collection;
@@ -44,5 +46,10 @@ public class ReleaseBrowseService extends AbstractBrowseService implements Brows
     @Override
     public String getObjectType() {
         return "Release";
+    }
+
+    @Override
+    protected <T extends SMDIdentity> Image getPersistentImage(T item) {
+        return ((ReleaseEntity)item).getDefaultImage();
     }
 }

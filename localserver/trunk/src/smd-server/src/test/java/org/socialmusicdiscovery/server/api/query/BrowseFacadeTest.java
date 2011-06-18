@@ -87,6 +87,7 @@ public class BrowseFacadeTest extends BaseTestCase {
             converters.put(Relation.class, SMDIdentityReferenceEntity.class);
             converters.put(Credit.class, CreditEntity.class);
             converters.put(Series.class, SeriesEntity.class);
+            converters.put(Image.class, ImageEntity.class);
 
             return converters;
         }
@@ -209,6 +210,7 @@ public class BrowseFacadeTest extends BaseTestCase {
         assert result.getLong("totalSize") == 5;
         JSONArray resultItems = result.getJSONArray("items");
 
+        int images = 0;
         for (int i = 0; i < resultItems.length(); i++) {
             JSONObject item = ((JSONObject) resultItems.get(i)).getJSONObject("item");
             Release release = jsonProvider.fromJson(item.toString(), Release.class);
@@ -216,7 +218,11 @@ public class BrowseFacadeTest extends BaseTestCase {
             assert release.getName() != null;
             JSONArray childItems = ((JSONObject) resultItems.get(i)).optJSONArray("childItems");
             assert childItems == null;
+            if(resultItems.getJSONObject(i).optJSONObject("image")!=null && resultItems.getJSONObject(i).getJSONObject("image").getString("providerId")!=null && resultItems.getJSONObject(i).getJSONObject("image").getString("url")!=null) {
+                images++;
+            }
         }
+        assert images==4;
 
         result = Client.create().resource(HOSTURL + "/browse/Release?offset=2&size=10&childs=true").accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
         assert result.getLong("size") == 3;
@@ -242,6 +248,8 @@ public class BrowseFacadeTest extends BaseTestCase {
         assert result.getLong("totalSize") == 79;
         JSONArray resultItems = result.getJSONArray("items");
 
+        boolean foundWithImage = false;
+        boolean foundWithoutImage = false;
         for (int i = 0; i < resultItems.length(); i++) {
             JSONObject item = ((JSONObject) resultItems.get(i)).getJSONObject("item");
             Track track = jsonProvider.fromJson(item.toString(), Track.class);
@@ -249,7 +257,15 @@ public class BrowseFacadeTest extends BaseTestCase {
             assert track.getNumber() != null;
             JSONArray childItems = ((JSONObject) resultItems.get(i)).optJSONArray("childItems");
             assert childItems == null;
+            if(resultItems.getJSONObject(i).optJSONObject("image")!=null && resultItems.getJSONObject(i).getJSONObject("image").getString("providerId")!=null && resultItems.getJSONObject(i).getJSONObject("image").getString("url")!=null) {
+                foundWithImage = true;
+            }else if(resultItems.getJSONObject(i).optJSONObject("image")==null) {
+                foundWithoutImage = true;
+            }
+
         }
+        assert foundWithImage;
+        assert foundWithoutImage;
 
         result = Client.create().resource(HOSTURL + "/browse/Track?offset=5&size=10&childs=true").accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
         assert result.getLong("size") == 10;

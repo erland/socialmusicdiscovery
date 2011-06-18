@@ -35,12 +35,48 @@ public class ResultItem<T> {
     private String type;
     private String id;
     private String name;
+    private ResultItemImage image;
     private Boolean playable;
     private String playableElementsURL;
     private String commandURL;
     private Boolean leaf;
     private T item;
 
+    public static class ResultItemImage {
+        private String providerId;
+        private String providerImageId;
+        private String url;
+        public ResultItemImage() {}
+        public ResultItemImage(String providerId, String providerImageId, String url) {
+            this.providerId = providerId;
+            this.providerImageId = providerImageId;
+            this.url = url;
+        }
+
+        public String getProviderId() {
+            return providerId;
+        }
+
+        public void setProviderId(String providerId) {
+            this.providerId = providerId;
+        }
+
+        public String getProviderImageId() {
+            return providerImageId;
+        }
+
+        public void setProviderImageId(String providerImageId) {
+            this.providerImageId = providerImageId;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+    }
     public ResultItem() {
     }
 
@@ -76,6 +112,14 @@ public class ResultItem<T> {
         this.playable = playable;
         this.leaf = childCounters.size()==0;
         childItems = new HashMap<String, Long>(childCounters);
+    }
+
+    public ResultItemImage getImage() {
+        return image;
+    }
+
+    public void setImage(ResultItemImage image) {
+        this.image = image;
     }
 
     public Map<String, Long> getChildItems() {

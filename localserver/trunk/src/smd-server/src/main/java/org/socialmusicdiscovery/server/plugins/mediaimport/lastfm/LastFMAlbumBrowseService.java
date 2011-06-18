@@ -31,6 +31,8 @@ import com.sun.jersey.api.client.Client;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.socialmusicdiscovery.server.business.logic.InternetImageProvider;
+import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.model.core.ReleaseEntity;
 import org.socialmusicdiscovery.server.business.service.browse.BrowseService;
 import org.socialmusicdiscovery.server.business.service.browse.Result;
@@ -128,9 +130,15 @@ public class LastFMAlbumBrowseService extends AbstractLastFMBrowseService implem
                 }
                 id = "artist:" + urlEncode(artist) + ":album:" + urlEncode(json.getString("name"));
             }
+            String image = null;
+            JSONArray images = json.optJSONArray("image");
+            if(images!=null && images.length()>0) {
+                image = images.getJSONObject(images.length()-1).getString("#text");
+            }
             String name = json.getString("name");
-            LastFMAlbum album = new LastFMAlbum(id, name);
+            LastFMAlbum album = new LastFMAlbum(id, name, image);
             ResultItem<LastFMAlbum> item = new ResultItem<LastFMAlbum>(album, false, false);
+            item.setImage(getImage(album));
             item.setType(album.getClass().getSimpleName());
             return item;
         } catch (UnsupportedEncodingException e) {
@@ -141,5 +149,13 @@ public class LastFMAlbumBrowseService extends AbstractLastFMBrowseService implem
     @Override
     public String getObjectType() {
         return LastFMAlbum.class.getSimpleName();
+    }
+
+    @Override
+    protected <T extends SMDIdentity> ResultItem.ResultItemImage getImage(T item) {
+        if(((LastFMAlbum)item).getImage()!=null) {
+            return new ResultItem.ResultItemImage(InternetImageProvider.PROVIDER_ID, null, ((LastFMAlbum)item).getImage());
+        }
+        return null;
     }
 }
