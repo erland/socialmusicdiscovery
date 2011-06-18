@@ -233,6 +233,8 @@ sub _createResponse {
 
 	for my $entry (@{$json->{'items'}}) {
 		
+		my $menu; my $noArtwork;
+
 		if ($entry->{'playable'}) {
 
 			my $entrypath = $path . "/" . $entry->{'id'};
@@ -241,7 +243,7 @@ sub _createResponse {
 
 			if ($entry->{'leaf'}) {
 
-				my $menu = {
+				$menu = {
 					name     => $entry->{'name'},
 					type     => 'audio',
 					url      => 'someurl', # needed to make button mode context menu appear
@@ -255,11 +257,12 @@ sub _createResponse {
 					$menu->{'playpath'} = uri_escape($playableBase . $entry->{'playable'});
 				}
 
-				push @menu, $menu;
+				# don't add artwork for track entries
+				$noArtwork = 1;
 
 			} else {
 
-				push @menu, {
+				$menu = {
 					name     => $entry->{'name'},
 					type     => $session->{'ipeng'} ? 'opml' : 'playlist',
 					url      => \&level,
@@ -275,7 +278,7 @@ sub _createResponse {
 
 		} elsif ($entry->{'leaf'}) {
 
-			push @menu, {
+			$menu = {
 				name => $entry->{'name'},
 				type => 'text',
 			};
@@ -286,7 +289,7 @@ sub _createResponse {
 
 			my $entrypath = $path . "/" . $entry->{'id'};
 
-			push @menu, {
+			$menu = {
 				name     => $entry->{'name'},
 				type     => 'link',
 				url      => \&level,
@@ -297,6 +300,21 @@ sub _createResponse {
 				parser   => __PACKAGE__,
 			};
 		}
+
+		if (!$noArtwork && (my $image = $entry->{'image'})) {
+
+			if ($image->{'providerId'} eq 'squeezeboxserver') {
+
+			   $menu->{'artwork_track_id'} = $image->{'providerImageId'};
+			   $menu->{'image'}            = "music/$image->{providerImageId}/cover";
+
+		   } else {
+
+			   $menu->{'image'} = $image->{'url'};
+		   }
+		}
+
+		push @menu, $menu;
 			
 		$i++;
 	}
