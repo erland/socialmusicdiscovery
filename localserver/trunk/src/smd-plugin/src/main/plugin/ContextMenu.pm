@@ -74,6 +74,10 @@ sub registerDefaultInfoProviders {
 		after    => 'addsmditemnext',
 		func      => \&playItem,
 	) );
+	$class->registerInfoProvider( smdfav => (
+		after    => 'playsmditem',
+		func      => \&smdFavorite,
+	) );
 	$class->registerInfoProvider( smdcontext => (
 		after    => 'middle',
 		func      => \&smdContext,
@@ -248,24 +252,35 @@ sub smdContext {
 
 		if ($item->{'type'} eq 'CommandObject') {
 
-			my $action = {
-				player => 0,
-				cmd => [ 'smdcmd' ],
-				params => {
-					cmd => $item->{'command'},
-				},
-				nextWindow => 'parent',
-			};
-
 			push @menu, {
+				type => 'link',
 				name => $item->{'name'},
-				type => 'text',
-				jive => {
-					actions => {
-						go   => $action,
-						play => $action,
-					},
+				url  => sub {
+					my ($client, $callback) = @_;
+					$log->info("cmd: $item->{command}");
+					Plugins::SocialMusicDiscovery::Server->post(
+						$item->{'command'},
+						sub {
+							my $json = shift;
+							$log->info("cmd success: $json->{success}, $json->{message}");
+							$callback->([{
+ 								type        => 'text',
+								name        => $json->{'message'},
+								showBriefly => 1,
+								popback     => 2,
+								refresh     => 1,
+								favorites   => 0,
+							}]);
+						},
+						sub {
+							$log->warn("error executing command: $item->{command} " . $_[0]);
+						},
+						{ timeout => 35 },
+					);
 				},
+				favorites => 0,
+				nextWindow  => $tags->{'menuMode'} ? 'refresh' : undef,
+				isContextMenu => $tags->{'menuMode'} ? 1 : undef,
 			};
 
 		} else {
@@ -279,6 +294,87 @@ sub smdContext {
 	}
 
 	return \@menu;
+}
+
+sub smdFavorite {
+	my ($client, $playpath, $path, $tags, $contextInfo) = @_;
+
+	my $infopath = $tags->{'infopath'} || return;
+	my $favs = Slim::Utils::Favorites->new($client) || return;
+	my $url = Plugins::SocialMusicDiscovery::Server->uriBase . $infopath;
+
+	if (!defined $favs->findUrl($url)) {
+
+		return {
+			name => cstring($client, 'PLUGIN_FAVORITES_SAVE'),
+			url  => sub {
+				my ($client, $callback) = @_;
+				$log->info("favs add: $infopath");
+				
+				#FIXME: find the title via a query?
+				$favs->add($url, 'Unknown Title', 'link', 'Plugins::SocialMusicDiscovery::Browse');
+				$callback->([{
+					type        => 'text',
+					name        => cstring($client, 'FAVORITES_ADDING'),
+					showBriefly => 1,
+					popback     => 2,
+					refresh     => 1,
+					favorites   => 0,
+				}]);
+			},
+			type => 'link',
+			favorites => 0,
+			nextWindow    => $tags->{'menuMode'} ? 'refresh' : undef,
+			isContextMenu => $tags->{'menuMode'} ? 1 : undef,
+		}
+
+	} else {
+
+		return {
+			name => cstring($client, 'PLUGIN_FAVORITES_REMOVE'),
+			isContextMenu => $tags->{'menuMode'} ? 1 : undef,
+			items => [
+				{
+					name => cstring($client, 'PLUGIN_FAVORITES_CANCEL'),
+					url  => sub {
+						my ($client, $callback) = @_;
+						$callback->( [{
+							type        => 'text',
+							name        => cstring($client, 'PLUGIN_FAVORITES_CANCELLING'),
+							popback     => 2,
+							refresh     => 1,
+							showBriefly => 1,
+							favorites   => 0,
+						}] );
+					},
+					type => 'link',
+					favorites => 0,
+					nextWindow  => $tags->{'menuMode'} ? 'parent' : undef,
+					isContextMenu => $tags->{'menuMode'} ? 1 : undef,
+				},
+				{
+					name      => cstring($client, 'FAVORITES_RIGHT_TO_DELETE'),
+					url       => sub {
+						my ($client, $callback) = @_;
+						$log->info("favs delete: $infopath");
+						$favs->deleteUrl($url);
+						$callback->([{
+							type        => 'text',
+							name        => cstring($client, 'FAVORITES_DELETING'),
+							showBriefly => 1,
+							popback     => 2,
+							refresh     => 1,
+							favorites   => 0,
+						}]);
+					},
+					type      => 'link',
+					favorites => 0,
+					nextWindow  => $tags->{'menuMode'} ? 'parent' : undef,
+					isContextMenu => $tags->{'menuMode'} ? 1 : undef,
+				}
+			],
+		};
+	}
 }
 
 # keep a small cache of feeds params to allow browsing into feeds
@@ -313,6 +409,7 @@ sub infoCommand {
 		menuMode    => $menuMode,
 		menuContext => $menuContext,
 		playable    => $playable,
+		infopath    => $infopath,
 		ind         => $ind,
 		cmDepth     => $cmDepth,
 	};
