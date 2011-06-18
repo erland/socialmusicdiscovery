@@ -81,9 +81,6 @@ sub init {
 
 	# create our own playlist command to allow playlist actions by smd object id
 	Slim::Control::Request::addDispatch(['smdplcmd'], [1, 0, 1, \&plCommand]);
-
-	# command to execute smd-server commands
-	Slim::Control::Request::addDispatch(['smdcmd'], [1, 0, 1, \&smdCommand]);
 }
 
 my @registeredMenus;
@@ -353,7 +350,7 @@ sub _createResponse {
 	}
 }
 
-# this is called from xmlbrowser entries which have parser set to this model - used for favorite entries
+# this is called from xmlbrowser entries which have parser set to this module - used for favorite entries
 sub parse {
     my ($class, $http) = @_;
 
@@ -430,38 +427,6 @@ sub plCommand {
 		},
 		{ timeout => 35 },
 	);									   
-}
-
-sub smdCommand {
-	my $request = shift;
-
-	my $client  = $request->client;
-	my $cmd     = $request->getParam('cmd');
-
-	$log->info("cmd: $cmd");
-
-	Plugins::SocialMusicDiscovery::Server->post(
-		$cmd,
-		sub {
-			my $json = shift;
-			my $success = $json->{'success'};
-			my $message = $json->{'message'};
-
-			$log->info("cmd success: $success, $message");
-
-			$client->showBriefly({
-				'line' => [ $success ? 'Action Succeeded' : 'Action Failed', $message ],
-				'jive' => {
-					'type'    => 'popupplay',
-					'text'    => [ $message ],
-				},
-			});
-		},
-		sub {
-			$log->warn("error executing command: $cmd " . $_[0]);
-		},
-		{ timeout => 35 },
-	);						
 }
 
 1;
