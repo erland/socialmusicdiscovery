@@ -361,9 +361,9 @@ public class BrowseFacade {
                 image = new ItemResult.ItemImage(resultItem.getImage().getProviderId(), resultItem.getImage().getProviderImageId(), resultItem.getImage().getUrl());
             }
             if (resultItem.getChildItems() != null) {
-                genericResultItems.add(new ItemResult.Item(item, resultItem.getType(), resultItem.getId(), resultItem.getName(), resultItem.getName(), image, resultItem.getPlayable(), getPlayableElementsURL(null, resultItem.getId()), getCommandURL(resultItem, objectId), new HashMap<String, Long>(resultItem.getChildItems())));
+                genericResultItems.add(new ItemResult.Item(item, resultItem.getType(), resultItem.getId(), resultItem.getName(), resultItem.getSortKey(), image, resultItem.getPlayable(), getPlayableElementsURL(null, resultItem.getId()), getCommandURL(resultItem, objectId), new HashMap<String, Long>(resultItem.getChildItems())));
             } else {
-                genericResultItems.add(new ItemResult.Item(item, resultItem.getType(), resultItem.getId(), resultItem.getName(), resultItem.getName(), image, resultItem.getPlayable(), getPlayableElementsURL(null, resultItem.getId()), getCommandURL(resultItem, objectId), resultItem.getLeaf()));
+                genericResultItems.add(new ItemResult.Item(item, resultItem.getType(), resultItem.getId(), resultItem.getName(), resultItem.getSortKey(), image, resultItem.getPlayable(), getPlayableElementsURL(null, resultItem.getId()), getCommandURL(resultItem, objectId), resultItem.getLeaf()));
             }
         }
         ItemResult.Item context = null;
