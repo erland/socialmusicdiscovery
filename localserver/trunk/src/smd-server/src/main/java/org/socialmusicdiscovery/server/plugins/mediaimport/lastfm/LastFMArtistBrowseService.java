@@ -110,6 +110,9 @@ public class LastFMArtistBrowseService extends AbstractLastFMBrowseService imple
             JSONArray images = json.optJSONArray("image");
             if(images!=null && images.length()>0) {
                 image = images.getJSONObject(images.length()-1).getString("#text");
+                if(image.length()==0) {
+                    image = null;
+                }
             }
             LastFMArtist artist = new LastFMArtist(id, name, image);
             ResultItem<LastFMArtist> item = new ResultItem<LastFMArtist>(artist, false, false);
