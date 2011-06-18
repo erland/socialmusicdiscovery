@@ -34,6 +34,7 @@ import java.util.List;
 public class Result<T> {
     private Long count;
     private ResultItem context;
+    private Boolean alphabetic;
     private List<ResultItem<T>> items;
 
     public Result() {
@@ -70,5 +71,13 @@ public class Result<T> {
 
     public void setItems(List<ResultItem<T>> items) {
         this.items = items;
+    }
+
+    public Boolean getAlphabetic() {
+        return alphabetic;
+    }
+
+    public void setAlphabetic(Boolean alphabetic) {
+        this.alphabetic = alphabetic;
     }
 }

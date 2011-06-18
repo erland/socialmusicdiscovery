@@ -38,13 +38,13 @@ public class ContextItemResult extends ItemResult {
     @Expose
     private Item context;
 
-    public ContextItemResult(Item context, List<Item> items, Long totalSize, Long offset, Long size) {
-        super(items, totalSize, offset, size);
+    public ContextItemResult(Item context, List<Item> items, Boolean alphabetic, Long totalSize, Long offset, Long size) {
+        super(items, alphabetic, totalSize, offset, size);
         this.context = context;
     }
 
-    public ContextItemResult(Item context, List<Item> items, String playableElementsBaseURL, Long totalSize, Long offset, Long size) {
-        super(items, playableElementsBaseURL, totalSize, offset, size);
+    public ContextItemResult(Item context, List<Item> items, Boolean alphabetic, String playableElementsBaseURL, Long totalSize, Long offset, Long size) {
+        super(items, alphabetic, playableElementsBaseURL, totalSize, offset, size);
         this.context = context;
     }
 

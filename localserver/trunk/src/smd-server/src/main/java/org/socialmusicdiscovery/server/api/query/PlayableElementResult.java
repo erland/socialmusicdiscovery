@@ -45,7 +45,7 @@ public class PlayableElementResult extends Result {
     }
 
     public PlayableElementResult(List<OnlinePlayableElement> items, Long totalSize, Long offset, Long size) {
-        super(totalSize, offset, size);
+        super(null, totalSize, offset, size);
         this.items = items;
     }
 

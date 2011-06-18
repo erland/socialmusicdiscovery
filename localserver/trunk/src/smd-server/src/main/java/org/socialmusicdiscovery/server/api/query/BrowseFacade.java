@@ -102,9 +102,9 @@ public class BrowseFacade {
         }
 
         if (size != null) {
-            return new ItemResult(genericResultItems, result.getCount(), offset.longValue(), (long) result.getItems().size());
+            return new ItemResult(genericResultItems, result.getAlphabetic(), result.getCount(), offset.longValue(), (long) result.getItems().size());
         } else {
-            return new ItemResult(genericResultItems, result.getCount(), 0L, (long) result.getItems().size());
+            return new ItemResult(genericResultItems, result.getAlphabetic(), result.getCount(), 0L, (long) result.getItems().size());
         }
     }
 
@@ -288,16 +288,16 @@ public class BrowseFacade {
                 image = new ItemResult.ItemImage(resultItem.getImage().getProviderId(), resultItem.getImage().getProviderImageId(), resultItem.getImage().getUrl());
             }
             if (resultItem.getChildItems() != null) {
-                genericResultItems.add(new ItemResult.Item(item, resultItem.getType(), resultItem.getId(), resultItem.getName(), image, resultItem.getPlayable(), getPlayableElementsURL(null, resultItem.getId()), null, new HashMap<String, Long>(resultItem.getChildItems())));
+                genericResultItems.add(new ItemResult.Item(item, resultItem.getType(), resultItem.getId(), resultItem.getName(), resultItem.getSortKey(), image, resultItem.getPlayable(), getPlayableElementsURL(null, resultItem.getId()), null, new HashMap<String, Long>(resultItem.getChildItems())));
             } else {
-                genericResultItems.add(new ItemResult.Item(item, resultItem.getType(), resultItem.getId(), resultItem.getName(), image, resultItem.getPlayable(), getPlayableElementsURL(null, resultItem.getId()), null, resultItem.getLeaf()));
+                genericResultItems.add(new ItemResult.Item(item, resultItem.getType(), resultItem.getId(), resultItem.getName(), resultItem.getSortKey(), image, resultItem.getPlayable(), getPlayableElementsURL(null, resultItem.getId()), null, resultItem.getLeaf()));
             }
         }
 
         if (size != null) {
-            return new ItemResult(genericResultItems, getPlayableElementsURL(parentObjects, null), result.getCount(), offset.longValue(), (long) result.getItems().size());
+            return new ItemResult(genericResultItems, result.getAlphabetic(), getPlayableElementsURL(parentObjects, null), result.getCount(), offset.longValue(), (long) result.getItems().size());
         } else {
-            return new ItemResult(genericResultItems, getPlayableElementsURL(parentObjects, null), result.getCount(), 0L, (long) result.getItems().size());
+            return new ItemResult(genericResultItems, result.getAlphabetic(), getPlayableElementsURL(parentObjects, null), result.getCount(), 0L, (long) result.getItems().size());
         }
     }
 
@@ -361,9 +361,9 @@ public class BrowseFacade {
                 image = new ItemResult.ItemImage(resultItem.getImage().getProviderId(), resultItem.getImage().getProviderImageId(), resultItem.getImage().getUrl());
             }
             if (resultItem.getChildItems() != null) {
-                genericResultItems.add(new ItemResult.Item(item, resultItem.getType(), resultItem.getId(), resultItem.getName(), image, resultItem.getPlayable(), getPlayableElementsURL(null, resultItem.getId()), getCommandURL(resultItem, objectId), new HashMap<String, Long>(resultItem.getChildItems())));
+                genericResultItems.add(new ItemResult.Item(item, resultItem.getType(), resultItem.getId(), resultItem.getName(), resultItem.getName(), image, resultItem.getPlayable(), getPlayableElementsURL(null, resultItem.getId()), getCommandURL(resultItem, objectId), new HashMap<String, Long>(resultItem.getChildItems())));
             } else {
-                genericResultItems.add(new ItemResult.Item(item, resultItem.getType(), resultItem.getId(), resultItem.getName(), image, resultItem.getPlayable(), getPlayableElementsURL(null, resultItem.getId()), getCommandURL(resultItem, objectId), resultItem.getLeaf()));
+                genericResultItems.add(new ItemResult.Item(item, resultItem.getType(), resultItem.getId(), resultItem.getName(), resultItem.getName(), image, resultItem.getPlayable(), getPlayableElementsURL(null, resultItem.getId()), getCommandURL(resultItem, objectId), resultItem.getLeaf()));
             }
         }
         ItemResult.Item context = null;
@@ -377,15 +377,15 @@ public class BrowseFacade {
                 image = new ItemResult.ItemImage(result.getContext().getImage().getProviderId(), result.getContext().getImage().getProviderImageId(), result.getContext().getImage().getUrl());
             }
             if (result.getItems().size() > 0) {
-                context = new ItemResult.Item(item, result.getContext().getType(), result.getContext().getId(), result.getContext().getName(), image, result.getContext().getPlayable(), getPlayableElementsURL(parentObjects, null), null, false);
+                context = new ItemResult.Item(item, result.getContext().getType(), result.getContext().getId(), result.getContext().getName(), result.getContext().getSortKey(), image, result.getContext().getPlayable(), getPlayableElementsURL(parentObjects, null), null, false);
             } else {
-                context = new ItemResult.Item(item, result.getContext().getType(), result.getContext().getId(), result.getContext().getName(), image, result.getContext().getPlayable(), getPlayableElementsURL(parentObjects, null), null, true);
+                context = new ItemResult.Item(item, result.getContext().getType(), result.getContext().getId(), result.getContext().getName(), result.getContext().getSortKey(), image, result.getContext().getPlayable(), getPlayableElementsURL(parentObjects, null), null, true);
             }
         }
         if (size != null) {
-            return new ContextItemResult(context, genericResultItems, getPlayableElementsURL(parentObjects, null), result.getCount(), offset.longValue(), (long) result.getItems().size());
+            return new ContextItemResult(context, genericResultItems, result.getAlphabetic(), getPlayableElementsURL(parentObjects, null), result.getCount(), offset.longValue(), (long) result.getItems().size());
         } else {
-            return new ContextItemResult(context, genericResultItems, getPlayableElementsURL(parentObjects, null), result.getCount(), 0L, (long) result.getItems().size());
+            return new ContextItemResult(context, genericResultItems, result.getAlphabetic(), getPlayableElementsURL(parentObjects, null), result.getCount(), 0L, (long) result.getItems().size());
         }
     }
 }
