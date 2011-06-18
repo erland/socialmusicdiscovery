@@ -135,12 +135,23 @@ public class LastFMTrackBrowseService extends AbstractLastFMBrowseService implem
             JSONArray images = json.optJSONArray("image");
             if(images!=null && images.length()>0) {
                 image = images.getJSONObject(images.length()-1).getString("#text");
-            }else if(json.optJSONObject("album")!=null && json.getJSONObject("album").optJSONArray("image")!=null) {
+                if(image.length()==0) {
+                    image = null;
+                }
+            }
+            if(image==null && json.optJSONObject("album")!=null && json.getJSONObject("album").optJSONArray("image")!=null) {
                 images = json.getJSONObject("album").getJSONArray("image");
                 image = images.getJSONObject(images.length()-1).getString("#text");
-            }else if(jsonAlbum!=null && jsonAlbum.optJSONArray("image")!=null) {
+                if(image.length()==0) {
+                    image = null;
+                }
+            }
+            if(image==null && jsonAlbum!=null && jsonAlbum.optJSONArray("image")!=null) {
                 images = jsonAlbum.getJSONArray("image");
                 image = images.getJSONObject(images.length()-1).getString("#text");
+                if(image.length()==0) {
+                    image = null;
+                }
             }
             LastFMTrack track = new LastFMTrack(id, null, name, image);
             ResultItem<LastFMTrack> item = new ResultItem<LastFMTrack>(track, false, false);

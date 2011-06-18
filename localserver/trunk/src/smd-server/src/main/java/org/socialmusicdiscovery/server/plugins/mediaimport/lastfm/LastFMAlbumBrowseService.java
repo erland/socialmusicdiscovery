@@ -134,6 +134,9 @@ public class LastFMAlbumBrowseService extends AbstractLastFMBrowseService implem
             JSONArray images = json.optJSONArray("image");
             if(images!=null && images.length()>0) {
                 image = images.getJSONObject(images.length()-1).getString("#text");
+                if(image.length()==0) {
+                    image = null;
+                }
             }
             String name = json.getString("name");
             LastFMAlbum album = new LastFMAlbum(id, name, image);
