@@ -70,6 +70,8 @@ public abstract class Result {
     @Expose
     private String playableBaseURL;
     @Expose
+    private Boolean alphabetic;
+    @Expose
     private Long totalSize;
     @Expose
     private Long offset;
@@ -79,17 +81,19 @@ public abstract class Result {
     public Result() {
     }
 
-    public Result(Long totalSize, Long offset, Long size) {
+    public Result(Boolean alphabetic, Long totalSize, Long offset, Long size) {
         this.totalSize = totalSize;
         this.offset = offset;
         this.size = size;
+        this.alphabetic = alphabetic;
     }
 
-    public Result(String playableBaseURL, Long totalSize, Long offset, Long size) {
+    public Result(Boolean alphabetic, String playableBaseURL, Long totalSize, Long offset, Long size) {
         this.totalSize = totalSize;
         this.offset = offset;
         this.size = size;
         this.playableBaseURL = playableBaseURL;
+        this.alphabetic = alphabetic;
     }
 
     public Long getTotalSize() {

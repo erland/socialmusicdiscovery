@@ -54,6 +54,9 @@ public abstract class AbstractBrowseService {
         InjectHelper.injectMembers(this);
     }
 
+    protected static interface SortKeyProvider {
+        public String getSortKey(Object item);
+    }
     /**
      * Set configuration context for this browse service
      *
@@ -209,7 +212,7 @@ public abstract class AbstractBrowseService {
         return item;
     }
 
-    protected <T extends SMDIdentity, E extends T> Result<T> findChildren(Class<T> entity, String objectType, String relationType, String orderBy, Collection<String> criteriaList, Collection<String> sortCriteriaList, Integer firstItem, Integer maxItems, Boolean returnChildCounters) {
+    protected <T extends SMDIdentity, E extends T> Result<T> findChildren(Class<T> entity, String objectType, String relationType, String orderBy, Collection<String> criteriaList, Collection<String> sortCriteriaList, SortKeyProvider sortKeyProvider, Integer firstItem, Integer maxItems, Boolean returnChildCounters) {
         String joinString = buildResultJoinString(objectType, "r", criteriaList);
         String whereString = buildResultWhereString(objectType, "searchRelations", criteriaList);
 
@@ -276,10 +279,16 @@ public abstract class AbstractBrowseService {
                     }
 
                     ResultItem<T> resultItem = new ResultItem<T>(item, getPlayable(), childCounters);
+                    if(sortKeyProvider !=null) {
+                        resultItem.setSortKey(sortKeyProvider.getSortKey(item));
+                    }
                     resultItem.setImage(getImage(item));
                     resultItems.add(resultItem);
                 } else {
                     ResultItem<T> resultItem = new ResultItem<T>(item, getPlayable(), false);
+                    if(sortKeyProvider !=null) {
+                        resultItem.setSortKey(sortKeyProvider.getSortKey(item));
+                    }
                     resultItem.setImage(getImage(item));
                     resultItems.add(resultItem);
                 }

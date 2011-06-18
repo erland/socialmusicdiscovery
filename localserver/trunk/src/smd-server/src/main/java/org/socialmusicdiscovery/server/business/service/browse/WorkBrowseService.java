@@ -38,7 +38,16 @@ public class WorkBrowseService extends AbstractBrowseService implements BrowseSe
     }
 
     public Result<WorkEntity> findChildren(Collection<String> criteriaList, Collection<String> sortCriteriaList, Integer firstItem, Integer maxItems, Boolean returnChildCounters) {
-        return super.findChildren(WorkEntity.class, "Work", "work", "e.sortAs", criteriaList, sortCriteriaList, firstItem, maxItems, returnChildCounters);
+        Result<WorkEntity> result = super.findChildren(WorkEntity.class, "Work", "work", "e.sortAs", criteriaList, sortCriteriaList,
+                new SortKeyProvider() {
+                    @Override
+                    public String getSortKey(Object item) {
+                        return ((WorkEntity) item).getSortAs().substring(0, 1);
+                    }
+                },
+                firstItem, maxItems, returnChildCounters);
+        result.setAlphabetic(true);
+        return result;
     }
 
     @Override

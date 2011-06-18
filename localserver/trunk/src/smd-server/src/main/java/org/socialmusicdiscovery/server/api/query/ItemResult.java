@@ -19,6 +19,8 @@ public class ItemResult extends Result {
         @Expose
         private String name;
         @Expose
+        private String sortKey;
+        @Expose
         private String type;
         @Expose
         private ItemImage image;
@@ -48,12 +50,13 @@ public class ItemResult extends Result {
             this.leaf = leaf;
         }
 
-        public Item(Object item, String type, String id, String name, ItemImage image, Boolean playable, String playableElementsURL, String command, Boolean leaf) {
+        public Item(Object item, String type, String id, String name, String sortKey, ItemImage image, Boolean playable, String playableElementsURL, String command, Boolean leaf) {
             this.item = item;
             this.image = image;
             this.type = type;
             this.id = id;
             this.name = name;
+            this.sortKey = sortKey;
             if (playable) {
                 this.playable = playableElementsURL;
             }
@@ -74,12 +77,13 @@ public class ItemResult extends Result {
             }
         }
 
-        public Item(Object item, String type, String id, String name, ItemImage image, Boolean playable, String playableElementsURL, String command, Map<String, Long> childCounters) {
+        public Item(Object item, String type, String id, String name, String sortKey, ItemImage image, Boolean playable, String playableElementsURL, String command, Map<String, Long> childCounters) {
             this.item = item;
             this.image = image;
             this.type = type;
             this.id = id;
             this.name = name;
+            this.sortKey = sortKey;
             if (playable) {
                 this.playable = playableElementsURL;
             }
@@ -122,13 +126,13 @@ public class ItemResult extends Result {
     @Expose
     private List<Item> items;
 
-    public ItemResult(List<Item> items, Long totalSize, Long offset, Long size) {
-        super(totalSize, offset, size);
+    public ItemResult(List<Item> items, Boolean alphabetic, Long totalSize, Long offset, Long size) {
+        super(alphabetic, totalSize, offset, size);
         this.items = items;
     }
 
-    public ItemResult(List<Item> items, String playableElementsBaseURL, Long totalSize, Long offset, Long size) {
-        super(playableElementsBaseURL, totalSize, offset, size);
+    public ItemResult(List<Item> items, Boolean alphabetic, String playableElementsBaseURL, Long totalSize, Long offset, Long size) {
+        super(alphabetic, playableElementsBaseURL, totalSize, offset, size);
         this.items = items;
     }
 

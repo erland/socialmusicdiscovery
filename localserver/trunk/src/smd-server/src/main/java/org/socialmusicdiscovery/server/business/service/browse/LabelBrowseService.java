@@ -38,7 +38,16 @@ public class LabelBrowseService extends AbstractBrowseService implements BrowseS
     }
 
     public Result<LabelEntity> findChildren(Collection<String> criteriaList, Collection<String> sortCriteriaList, Integer firstItem, Integer maxItems, Boolean returnChildCounters) {
-        return super.findChildren(LabelEntity.class, "Label", "label", "e.sortAs", criteriaList, sortCriteriaList, firstItem, maxItems, returnChildCounters);
+        Result<LabelEntity> result = super.findChildren(LabelEntity.class, "Label", "label", "e.sortAs", criteriaList, sortCriteriaList,
+                new SortKeyProvider() {
+                    @Override
+                    public String getSortKey(Object item) {
+                        return ((LabelEntity) item).getSortAs().substring(0, 1);
+                    }
+                },
+                firstItem, maxItems, returnChildCounters);
+        result.setAlphabetic(true);
+        return result;
     }
 
     @Override

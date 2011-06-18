@@ -35,6 +35,7 @@ public class ResultItem<T> {
     private String type;
     private String id;
     private String name;
+    private String sortKey;
     private ResultItemImage image;
     private Boolean playable;
     private String playableElementsURL;
@@ -188,5 +189,13 @@ public class ResultItem<T> {
 
     public void setCommandURL(String commandURL) {
         this.commandURL = commandURL;
+    }
+
+    public String getSortKey() {
+        return sortKey;
+    }
+
+    public void setSortKey(String sortKey) {
+        this.sortKey = sortKey;
     }
 }

@@ -39,7 +39,16 @@ public class ArtistBrowseService extends AbstractBrowseService implements Browse
     }
 
     public Result<ArtistEntity> findChildren(Collection<String> criteriaList, Collection<String> sortCriteriaList, Integer firstItem, Integer maxItems, Boolean returnChildCounters) {
-        return findChildren(ArtistEntity.class, "Artist","artist", "e.sortAs", criteriaList, sortCriteriaList, firstItem, maxItems, returnChildCounters);
+        Result<ArtistEntity> result = findChildren(ArtistEntity.class, "Artist", "artist", "e.sortAs", criteriaList, sortCriteriaList,
+                new SortKeyProvider() {
+                    @Override
+                    public String getSortKey(Object item) {
+                        return ((ArtistEntity) item).getSortAs().substring(0, 1);
+                    }
+                },
+                firstItem, maxItems, returnChildCounters);
+        result.setAlphabetic(true);
+        return result;
     }
 
     @Override
