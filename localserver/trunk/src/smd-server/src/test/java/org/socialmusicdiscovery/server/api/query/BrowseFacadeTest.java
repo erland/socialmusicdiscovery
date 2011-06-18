@@ -137,7 +137,7 @@ public class BrowseFacadeTest extends BaseTestCase {
             assert count!=null;
             assert count>0;
 
-            JSONObject result = Client.create().resource(HOSTURL + "/browse/"+id+"?criteria="+release+"&childs=true").accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
+            JSONObject result = Client.create().resource(HOSTURL + "/browse/"+id+"?criteria="+release+"&itemInfo=true&childs=true").accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
             assert result.getLong("size") == count;
 
             JSONArray childResultItems = result.getJSONArray("items");
@@ -171,7 +171,7 @@ public class BrowseFacadeTest extends BaseTestCase {
 
     @Test
     public void testBrowseArtists() throws Exception {
-        JSONObject result = Client.create().resource(HOSTURL + "/browse/Artist").accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
+        JSONObject result = Client.create().resource(HOSTURL + "/browse/Artist?itemInfo=true").accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
         assert result.getLong("size") == 50;
         assert result.getLong("offset") == 0;
         assert result.getLong("totalSize") == 50;
@@ -186,7 +186,7 @@ public class BrowseFacadeTest extends BaseTestCase {
             assert childItems == null;
         }
 
-        result = Client.create().resource(HOSTURL + "/browse/Artist?offset=5&size=10&childs=true").accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
+        result = Client.create().resource(HOSTURL + "/browse/Artist?itemInfo=true&offset=5&size=10&childs=true").accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
         assert result.getLong("size") == 10;
         assert result.getLong("offset") == 5;
         assert result.getLong("totalSize") == 50;
@@ -204,7 +204,7 @@ public class BrowseFacadeTest extends BaseTestCase {
 
     @Test
     public void testBrowseReleases() throws Exception {
-        JSONObject result = Client.create().resource(HOSTURL + "/browse/Release").accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
+        JSONObject result = Client.create().resource(HOSTURL + "/browse/Release?itemInfo=true").accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
         assert result.getLong("size") == 5;
         assert result.getLong("offset") == 0;
         assert result.getLong("totalSize") == 5;
@@ -224,7 +224,7 @@ public class BrowseFacadeTest extends BaseTestCase {
         }
         assert images==4;
 
-        result = Client.create().resource(HOSTURL + "/browse/Release?offset=2&size=10&childs=true").accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
+        result = Client.create().resource(HOSTURL + "/browse/Release?itemInfo=true&offset=2&size=10&childs=true").accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
         assert result.getLong("size") == 3;
         assert result.getLong("offset") == 2;
         assert result.getLong("totalSize") == 5;
@@ -242,7 +242,7 @@ public class BrowseFacadeTest extends BaseTestCase {
 
     @Test
     public void testBrowseTracks() throws Exception {
-        JSONObject result = Client.create().resource(HOSTURL + "/browse/Track").accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
+        JSONObject result = Client.create().resource(HOSTURL + "/browse/Track?itemInfo=true").accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
         assert result.getLong("size") == 79;
         assert result.getLong("offset") == 0;
         assert result.getLong("totalSize") == 79;
@@ -267,7 +267,7 @@ public class BrowseFacadeTest extends BaseTestCase {
         assert foundWithImage;
         assert foundWithoutImage;
 
-        result = Client.create().resource(HOSTURL + "/browse/Track?offset=5&size=10&childs=true").accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
+        result = Client.create().resource(HOSTURL + "/browse/Track?itemInfo=true&offset=5&size=10&childs=true").accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
         assert result.getLong("size") == 10;
         assert result.getLong("offset") == 5;
         assert result.getLong("totalSize") == 79;
@@ -285,7 +285,7 @@ public class BrowseFacadeTest extends BaseTestCase {
 
     @Test
     public void testBrowseWorks() throws Exception {
-        JSONObject result = Client.create().resource(HOSTURL + "/browse/Work").accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
+        JSONObject result = Client.create().resource(HOSTURL + "/browse/Work?itemInfo=true").accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
         assert result.getLong("size") == 79;
         assert result.getLong("offset") == 0;
         assert result.getLong("totalSize") == 79;
@@ -300,7 +300,7 @@ public class BrowseFacadeTest extends BaseTestCase {
             assert childItems == null;
         }
 
-        result = Client.create().resource(HOSTURL + "/browse/Work?offset=5&size=10&childs=true").accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
+        result = Client.create().resource(HOSTURL + "/browse/Work?itemInfo=true&offset=5&size=10&childs=true").accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
         assert result.getLong("size") == 10;
         assert result.getLong("offset") == 5;
         assert result.getLong("totalSize") == 79;
@@ -318,7 +318,7 @@ public class BrowseFacadeTest extends BaseTestCase {
 
     @Test
     public void testBrowseClassifications() throws Exception {
-        JSONObject result = Client.create().resource(HOSTURL + "/browse/Classification").accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
+        JSONObject result = Client.create().resource(HOSTURL + "/browse/Classification?itemInfo=true").accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
         assert result.getLong("size") == 17;
         assert result.getLong("offset") == 0;
         assert result.getLong("totalSize") == 17;
@@ -333,7 +333,7 @@ public class BrowseFacadeTest extends BaseTestCase {
             assert childItems == null;
         }
 
-        result = Client.create().resource(HOSTURL + "/browse/Classification?offset=5&size=10&childs=true").accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
+        result = Client.create().resource(HOSTURL + "/browse/Classification?itemInfo=true&offset=5&size=10&childs=true").accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
         assert result.getLong("size") == 10;
         assert result.getLong("offset") == 5;
         assert result.getLong("totalSize") == 17;
