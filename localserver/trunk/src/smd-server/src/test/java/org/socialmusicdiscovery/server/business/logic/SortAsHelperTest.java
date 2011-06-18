@@ -20,7 +20,6 @@ public class SortAsHelperTest extends BaseTestCase {
     @AfterMethod
     @BeforeMethod
     public void cleanUpConfiguration() {
-        System.out.println("Running cleanup");
         Collection<ConfigurationParameterEntity> entities = configurationParameterRepository.findByPath(PREFIX);
         for (ConfigurationParameterEntity entity : entities) {
             configurationParameterRepository.remove(entity);
