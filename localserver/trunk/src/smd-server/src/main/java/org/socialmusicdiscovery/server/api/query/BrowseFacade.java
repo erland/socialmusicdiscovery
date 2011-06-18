@@ -87,7 +87,7 @@ public class BrowseFacade {
         for (Object o : result.getItems()) {
             ResultItem resultItem = (ResultItem) o;
             Object item = null;
-            if (itemInfo == null || itemInfo) {
+            if (itemInfo != null && itemInfo) {
                 item = resultItem.getItem();
             }
             ItemResult.ItemImage image = null;
@@ -280,7 +280,7 @@ public class BrowseFacade {
         for (Object o : result.getItems()) {
             ResultItem resultItem = (ResultItem) o;
             Object item = null;
-            if (itemInfo == null || itemInfo) {
+            if (itemInfo != null && itemInfo) {
                 item = resultItem.getItem();
             }
             ItemResult.ItemImage image = null;
@@ -353,7 +353,7 @@ public class BrowseFacade {
         for (Object o : result.getItems()) {
             ResultItem resultItem = (ResultItem) o;
             Object item = null;
-            if (itemInfo == null || itemInfo) {
+            if (itemInfo != null && itemInfo) {
                 item = resultItem.getItem();
             }
             ItemResult.ItemImage image = null;
@@ -369,7 +369,7 @@ public class BrowseFacade {
         ItemResult.Item context = null;
         if (result.getContext() != null) {
             Object item = null;
-            if (itemInfo == null || itemInfo) {
+            if (itemInfo != null && itemInfo) {
                 item = result.getContext().getItem();
             }
             ItemResult.ItemImage image = null;
