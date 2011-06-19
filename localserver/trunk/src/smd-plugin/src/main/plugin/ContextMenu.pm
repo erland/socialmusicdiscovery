@@ -396,6 +396,9 @@ sub infoCommand {
 	my $playable    = $request->getParam('playable');
 	my $ind         = $request->getParam('ind');
 
+	# undef if set to 'none' as this is a workaround for web CM
+	$ind = undef if defined $ind && $ind eq 'none';
+
 	my $connectionId = $request->connectionID || 0;
 
 	my $command = $request->getRequest(0);
