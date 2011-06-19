@@ -251,6 +251,7 @@ sub _createResponse {
 					$menu->{'ind'} = $i;
 					$menu->{'playpath'} = uri_escape($playableBase);
 				} else {
+					$menu->{'ind'} = 'none'; # define so all commonVariables are set, otherwise CM not available on web interface
 					$menu->{'playpath'} = uri_escape($playableBase . $entry->{'playable'});
 				}
 
@@ -265,6 +266,7 @@ sub _createResponse {
 					url      => \&level,
 					infopath => uri_escape($entrypath),
 					playpath => uri_escape($playableBase . $entry->{'playable'}),
+					ind      => 'none', # define so all commonVariables are set, otherwise CM not available on web interface
 					passthrough => [ $entrypath, $session ],
 					# following are used for favorites only
 					favorites_url => $uriBase . $entrypath,
@@ -379,6 +381,9 @@ sub plCommand {
 	my $playpath = $request->getParam('playpath');
 	my $ind      = $request->getParam('ind');
 	my $ind_cm   = $request->getParam('ind_cm');
+
+	# undef if set to 'none' as this is a workaround for web CM
+	$ind = undef if defined $ind && $ind eq 'none';
 
 	$playpath = uri_unescape($playpath);
 
