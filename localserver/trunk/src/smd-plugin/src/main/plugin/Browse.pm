@@ -245,6 +245,7 @@ sub _createResponse {
 					type     => 'audio',
 					url      => 'someurl', # needed to make button mode context menu appear
 					infopath => uri_escape($entrypath),
+					textkey  => $entry->{'sortKey'},
 				};
 		
 				if ($session->{'playalbum'}) {
@@ -268,6 +269,7 @@ sub _createResponse {
 					playpath => uri_escape($playableBase . $entry->{'playable'}),
 					ind      => 'none', # define so all commonVariables are set, otherwise CM not available on web interface
 					passthrough => [ $entrypath, $session ],
+					textkey  => $entry->{'sortKey'},
 					# following are used for favorites only
 					favorites_url => $uriBase . $entrypath,
 					favorites_type=> 'link',
@@ -294,6 +296,7 @@ sub _createResponse {
 				url      => \&level,
 				infopath => uri_escape($entrypath),
 				passthrough => [ $entrypath, $session ],
+				textkey  => $entry->{'sortKey'},
 				# following are used for favorites only
 				favorites_url => $uriBase . $entrypath,
 				parser   => __PACKAGE__,
@@ -323,6 +326,10 @@ sub _createResponse {
 		offset => $json->{'offset'},
 		total  => $json->{'totalSize'},
 	};
+
+	if ($json->{'alphabetic'}) {
+		$ret->{'sorted'} = 1;
+	}
 
 	if ($playAction || $infoAction) {
 
