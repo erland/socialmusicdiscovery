@@ -303,6 +303,8 @@ sub smdFavorite {
 	my $favs = Slim::Utils::Favorites->new($client) || return;
 	my $url = Plugins::SocialMusicDiscovery::Server->uriBase . $infopath;
 
+	my $title = ($contextInfo && $contextInfo->{'context'} && $contextInfo->{'context'}->{'name'}) || 'Unknown';
+
 	if (!defined $favs->findUrl($url)) {
 
 		return {
@@ -312,7 +314,7 @@ sub smdFavorite {
 				$log->info("favs add: $infopath");
 				
 				#FIXME: find the title via a query?
-				$favs->add($url, 'Unknown Title', 'link', 'Plugins::SocialMusicDiscovery::Browse');
+				$favs->add($url, $title, 'link', 'Plugins::SocialMusicDiscovery::Browse');
 				$callback->([{
 					type        => 'text',
 					name        => cstring($client, 'FAVORITES_ADDING'),
