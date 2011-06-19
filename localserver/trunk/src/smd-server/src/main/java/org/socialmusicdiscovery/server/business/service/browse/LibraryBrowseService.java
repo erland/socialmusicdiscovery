@@ -30,7 +30,6 @@ package org.socialmusicdiscovery.server.business.service.browse;
 import com.google.inject.Inject;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
 import org.socialmusicdiscovery.server.business.logic.config.ConfigurationManager;
-import org.socialmusicdiscovery.server.business.logic.config.MappedConfigurationContext;
 import org.socialmusicdiscovery.server.business.logic.config.MergedConfigurationManager;
 import org.socialmusicdiscovery.server.business.logic.config.PersistentConfigurationManager;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
@@ -230,8 +229,7 @@ public class LibraryBrowseService {
                 ResultItem currentItem = browseService.findById(currentId.substring(currentId.indexOf(":") + 1));
                 if (currentItem != null) {
                     if (currentItem.getName() == null) {
-                        MappedConfigurationContext config = new MappedConfigurationContext(getClass().getName() + ".formats.", configurationManager);
-                        String format = config.getStringParameter(currentItem.getType());
+                        String format = browseMenuManager.getDefaultItemFormat(BrowseMenuManager.MenuType.CONTEXT, currentItem.getType());
                         if (format != null) {
                             currentItem.setName(new TitleFormat(format).format(currentItem.getItem()));
                         }
