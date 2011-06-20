@@ -88,7 +88,24 @@ public class SpotifyPlugin extends AbstractPlugin {
                         )));
 
         browseMenuManager.addMenu(BrowseMenuManager.MenuType.CONTEXT,
+                new Menu(SpotifyArtist.class.getSimpleName(), "spotifyalbums", "Albums", Menu.BOTTOM_WEIGHT,
+                        Arrays.asList(
+                                new MenuLevel(SpotifyAlbum.class.getSimpleName(),
+                                        true),
+                                new MenuLevel(SpotifyTrack.class.getSimpleName(),
+                                        true,
+                                        1L)
+                        )));
+
+        browseMenuManager.addMenu(BrowseMenuManager.MenuType.CONTEXT,
                 new Menu("Track", "spotifytracks", "On Spotify", Menu.BOTTOM_WEIGHT,
+                        Arrays.asList(
+                                new MenuLevel(SpotifyTrack.class.getSimpleName(),
+                                        true)
+                        )));
+
+        browseMenuManager.addMenu(BrowseMenuManager.MenuType.CONTEXT,
+                new Menu(SpotifyAlbum.class.getSimpleName(), "spotifytracks", "Tracks", Menu.BOTTOM_WEIGHT,
                         Arrays.asList(
                                 new MenuLevel(SpotifyTrack.class.getSimpleName(),
                                         true)

@@ -81,7 +81,24 @@ public class LastFMPlugin extends AbstractPlugin {
                         )));
 
         browseMenuManager.addMenu(BrowseMenuManager.MenuType.CONTEXT,
+                new Menu(LastFMArtist.class.getSimpleName(), "lastfmalbums", "Albums", Menu.BOTTOM_WEIGHT,
+                        Arrays.asList(
+                                new MenuLevel(LastFMAlbum.class.getSimpleName(),
+                                        false),
+                                new MenuLevel(LastFMTrack.class.getSimpleName(),
+                                        false,
+                                        1L)
+                        )));
+
+        browseMenuManager.addMenu(BrowseMenuManager.MenuType.CONTEXT,
                 new Menu("Track", "lastfmtracks", "On LastFM", Menu.BOTTOM_WEIGHT,
+                        Arrays.asList(
+                                new MenuLevel(LastFMTrack.class.getSimpleName(),
+                                        false)
+                        )));
+
+        browseMenuManager.addMenu(BrowseMenuManager.MenuType.CONTEXT,
+                new Menu(LastFMAlbum.class.getSimpleName(), "lastfmtracks", "Tracks", Menu.BOTTOM_WEIGHT,
                         Arrays.asList(
                                 new MenuLevel(LastFMTrack.class.getSimpleName(),
                                         false)
