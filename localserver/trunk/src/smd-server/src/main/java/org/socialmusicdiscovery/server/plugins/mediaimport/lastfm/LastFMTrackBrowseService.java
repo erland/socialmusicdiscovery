@@ -52,7 +52,9 @@ public class LastFMTrackBrowseService extends AbstractLastFMBrowseService implem
     public Result<LastFMTrack> findChildren(Collection<String> criteriaList, Collection<String> sortCriteriaList, Integer firstItem, Integer maxItems, Boolean childCounters) {
         String currentId = "";
         for (String criteria : criteriaList) {
-            currentId = criteria;
+            if(criteria.contains(":")) {
+                currentId = criteria;
+            }
         }
 
         TrackEntity entity = null;

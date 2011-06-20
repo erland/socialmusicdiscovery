@@ -52,7 +52,9 @@ public class LastFMAlbumBrowseService extends AbstractLastFMBrowseService implem
     public Result<LastFMAlbum> findChildren(Collection<String> criteriaList, Collection<String> sortCriteriaList, Integer firstItem, Integer maxItems, Boolean childCounters) {
         String currentId = "";
         for (String criteria : criteriaList) {
-            currentId = criteria;
+            if(criteria.contains(":")) {
+                currentId = criteria;
+            }
         }
 
         ReleaseEntity entity = null;
