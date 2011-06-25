@@ -51,6 +51,35 @@ public class LastFMPlugin extends AbstractPlugin {
         browseMenuManager.addDefaultItemFormat(BrowseMenuManager.MenuType.CONTEXT, LastFMArtist.class.getSimpleName(), "%object.name");
         browseMenuManager.addDefaultItemFormat(BrowseMenuManager.MenuType.CONTEXT, LastFMAlbum.class.getSimpleName(), "%object.name");
         browseMenuManager.addDefaultItemFormat(BrowseMenuManager.MenuType.CONTEXT, LastFMTrack.class.getSimpleName(), "%object.number||[%object.number,. ]||%object.name");
+        browseMenuManager.addDefaultItemFormat(BrowseMenuManager.MenuType.CONTEXT, LastFMImage.class.getSimpleName(), "%object.name");
+
+        browseMenuManager.addMenu(BrowseMenuManager.MenuType.CONTEXT,
+                                new MenuLevelFolder("Artist","manageartist","Manage",MenuLevel.BOTTOM_WEIGHT,
+                                    new MenuLevelFolder("FromLastFM","From LastFM",
+                                        new MenuLevelDynamic(LastFMArtist.class.getSimpleName(),
+                                            null,
+                                            false,
+                                            new MenuLevelFolder("Album","Albums",
+                                                new MenuLevelDynamic(LastFMAlbum.class.getSimpleName(),
+                                                    null,
+                                                    false,
+                                                    2L,
+                                                    new MenuLevelDynamic(LastFMTrack.class.getSimpleName(),
+                                                            null,
+                                                            false,
+                                                            3L)))))));
+
+        browseMenuManager.addMenu(BrowseMenuManager.MenuType.CONTEXT,
+                                new MenuLevelFolder("Artist","manageartist","Manage",MenuLevel.BOTTOM_WEIGHT,
+                                    new MenuLevelFolder("FromLastFM","From LastFM",
+                                        new MenuLevelDynamic(LastFMArtist.class.getSimpleName(),
+                                            null,
+                                            false,
+                                            new MenuLevelFolder("Images","Images",
+                                                new MenuLevelDynamic(LastFMImage.class.getSimpleName(),
+                                                    null,
+                                                    false,
+                                                    2L))))));
 
         browseMenuManager.addMenu(BrowseMenuManager.MenuType.CONTEXT,
                                 new MenuLevelFolder("Artist","lastfmartists","On LastFM",MenuLevel.BOTTOM_WEIGHT,
@@ -101,6 +130,7 @@ public class LastFMPlugin extends AbstractPlugin {
         browseServiceManager.addBrowseService(LastFMArtist.class.getSimpleName(), LastFMArtistBrowseService.class, getConfiguration());
         browseServiceManager.addBrowseService(LastFMAlbum.class.getSimpleName(), LastFMAlbumBrowseService.class, getConfiguration());
         browseServiceManager.addBrowseService(LastFMTrack.class.getSimpleName(), LastFMTrackBrowseService.class, getConfiguration());
+        browseServiceManager.addBrowseService(LastFMImage.class.getSimpleName(), LastFMImageBrowseService.class, getConfiguration());
         return true;
     }
 
