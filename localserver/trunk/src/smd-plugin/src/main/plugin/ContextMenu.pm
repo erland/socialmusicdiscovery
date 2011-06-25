@@ -250,7 +250,7 @@ sub smdContext {
 
 	for my $item (@{$contextInfo->{'items'}}) {
 
-		if ($item->{'type'} eq 'CommandObject') {
+		if (exists $item->{'command'}) {
 
 			push @menu, {
 				type => 'link',
