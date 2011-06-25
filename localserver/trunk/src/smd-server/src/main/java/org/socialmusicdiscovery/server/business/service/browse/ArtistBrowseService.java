@@ -38,6 +38,10 @@ public class ArtistBrowseService extends AbstractBrowseService implements Browse
         return findById(ArtistEntity.class, "Artist", id);
     }
 
+    public Integer findChildrenCount(Collection<String> criteriaList) {
+        return findChildrenCount(ArtistEntity.class, "Artist", "artist", criteriaList);
+    }
+
     public Result<ArtistEntity> findChildren(Collection<String> criteriaList, Collection<String> sortCriteriaList, Integer firstItem, Integer maxItems, Boolean returnChildCounters) {
         Result<ArtistEntity> result = findChildren(ArtistEntity.class, "Artist", "artist", "e.sortAs", criteriaList, sortCriteriaList,
                 new SortKeyProvider() {

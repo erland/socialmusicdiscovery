@@ -32,6 +32,7 @@ import org.socialmusicdiscovery.server.business.logic.config.MappedConfiguration
 import org.socialmusicdiscovery.server.business.logic.config.MergedConfigurationManager;
 import org.socialmusicdiscovery.server.business.logic.config.PersistentConfigurationManager;
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameterEntity;
+import org.socialmusicdiscovery.server.support.copy.CopyHelper;
 
 import java.util.*;
 
@@ -55,7 +56,7 @@ public class BrowseMenuManager {
         CONTEXT
     }
 
-    private Map<MenuType, Map<String, Menu>> menus = new HashMap<MenuType, Map<String, Menu>>();
+    private Map<MenuType, List<MenuLevel>> menus = new HashMap<MenuType, List<MenuLevel>>();
     private Map<String, Class<? extends Command>> commands = new HashMap<String, Class<? extends Command>>();
     private Map<String, String> formats = new HashMap<String, String>();
 
@@ -73,7 +74,7 @@ public class BrowseMenuManager {
      * @param menuType Menu type to load
      */
     private void loadMenu(MenuType menuType) {
-        Map<String, Menu> menus = new HashMap<String, Menu>();
+        List<MenuLevel> menus = new ArrayList<MenuLevel>();
 
         MappedConfigurationContext config = new MappedConfigurationContext(getClass().getName() + "." + menuType + ".", configurationManager);
 
@@ -88,11 +89,13 @@ public class BrowseMenuManager {
 
         for (String menuId : menuKeys) {
             if (config.getBooleanParameter(menuId + ".enabled", true)) {
-                String menuName = config.getStringParameter(menuId + ".name");
-                List<MenuLevel> levels = new ArrayList<MenuLevel>();
+                MenuLevel topLevel = null;
+                MenuLevel lastLevel = null;
                 int i = 1;
                 while (configurationManager.getParametersByPath(getClass().getName() + "." + menuType + "." + menuId + "." + i).size() > 0) {
                     String objectType = config.getStringParameter(menuId + "." + i + ".type");
+                    String objectId = config.getStringParameter(menuId + "." + i + ".id",menuId);
+                    String objectName = config.getStringParameter(menuId + "." + i + ".name");
                     String format = config.getStringParameter(menuId + "." + i + ".format");
                     if (format == null) {
                         format = getDefaultItemFormat(menuType, objectType);
@@ -100,26 +103,42 @@ public class BrowseMenuManager {
 
                     Boolean playable = config.getBooleanParameter(menuId + "." + i + ".playable", false);
                     Integer criteriaDepth = config.getIntegerParameter(menuId + "." + i + ".criteriaDepth");
+                    Integer weight = config.getIntegerParameter(menuId + "." + i + ".weight", MenuLevel.MIDDLE_WEIGHT);
 
-                    if (objectType != null && format != null && playable != null) {
-                        if (criteriaDepth != null) {
-                            levels.add(new MenuLevel(objectType, format, playable, criteriaDepth.longValue()));
+                    if (objectType != null && (format != null || objectName != null)) {
+                        MenuLevel thisLevel;
+                        if(objectType.equals(MenuLevelFolder.TYPE)) {
+                            thisLevel = new MenuLevelFolder(objectId, objectName, (List<MenuLevel>) null);
+                        }else if(objectType.equals(MenuLevelCommand.TYPE)) {
+                            thisLevel = new MenuLevelCommand(objectId, objectName);
+                        }else if (criteriaDepth != null) {
+                            thisLevel = new MenuLevelDynamic(objectType, format, playable, criteriaDepth.longValue());
                         } else {
-                            levels.add(new MenuLevel(objectType, format, playable));
+                            thisLevel = new MenuLevelDynamic(objectType, format, playable);
+                        }
+                        thisLevel.setWeight(weight);
+                        if(lastLevel!=null) {
+                            lastLevel.setChildLevels(new ArrayList<MenuLevel>(Arrays.asList(thisLevel)));
+                        }
+                        lastLevel = thisLevel;
+                        if(topLevel==null) {
+                            topLevel = lastLevel;
                         }
                     }
                     i++;
                 }
-                if (levels.size() > 0 && menuId != null && menuName != null) {
-                    Integer weight = config.getIntegerParameter(menuId + ".weight", Menu.MIDDLE_WEIGHT);
+                if (topLevel!=null && menuId != null) {
+                    Integer weight = config.getIntegerParameter(menuId + ".weight", MenuLevel.MIDDLE_WEIGHT);
                     String contextConfig = config.getStringParameter(menuId + ".context");
                     if (contextConfig != null) {
                         String[] contexts = contextConfig.split(",");
                         for (String context : contexts) {
-                            menus.put(context + "." + menuId, new Menu(context, menuId, menuName, weight, levels));
+                            MenuLevel contextLevel = new CopyHelper().copy(topLevel);
+                            contextLevel.setContext(context);
+                            menus.add(contextLevel);
                         }
                     } else {
-                        menus.put(menuId, new Menu(menuId, menuName, weight, levels));
+                        menus.add(topLevel);
                     }
                 }
             }
@@ -170,22 +189,53 @@ public class BrowseMenuManager {
         return this.formats.get(menuType + "." + objectType);
     }
 
+    private void addDefaultFormat(MenuType menuType, MenuLevel level) {
+        if (level instanceof MenuLevelDynamic && ((MenuLevelDynamic)level).getFormat() == null) {
+            ((MenuLevelDynamic)level).setFormat(getDefaultItemFormat(menuType, level.getType()));
+        }
+        if(level.getChildLevels()!=null) {
+            for (MenuLevel childLevel : level.getChildLevels()) {
+                addDefaultFormat(menuType, childLevel);
+            }
+        }
+    }
     /**
      * Add a new menu for the specified menu type
      *
      * @param menuType Menu type to add menu in
      * @param menu     Menu to add
      */
-    public void addMenu(MenuType menuType, Menu menu) {
-        for (MenuLevel level : menu.getHierarchy()) {
-            if (level.getFormat() == null) {
-                level.setFormat(getDefaultItemFormat(menuType, level.getType()));
-            }
+    public void addMenu(MenuType menuType, MenuLevel menu) {
+        addDefaultFormat(menuType, menu);
+        if(this.menus.get(menuType)!=null) {
+            addToHierarchy(this.menus.get(menuType), Arrays.asList(menu));
+        }else {
+            this.menus.put(menuType, Arrays.asList(menu));
         }
-        if (menu.getContext() != null) {
-            this.menus.get(menuType).put(menu.getContext() + "." + menu.getId(), menu);
-        } else {
-            this.menus.get(menuType).put(menu.getId(), menu);
+    }
+
+    private void addToHierarchy(List<MenuLevel> existingLevels, List<MenuLevel> newLevels) {
+        for (MenuLevel newLevel : newLevels) {
+            MenuLevel matchingLevel = null;
+            for (MenuLevel existingLevel : existingLevels) {
+                if(newLevel.getId().equals(existingLevel.getId()) &&
+                        ((newLevel.getContext()==null && existingLevel.getContext()==null) ||
+                         (newLevel.getContext()!=null && newLevel.getContext().equals(existingLevel.getContext())))) {
+
+                    matchingLevel = existingLevel;
+                    break;
+                }
+            }
+            if(matchingLevel==null) {
+                existingLevels.add(newLevel);
+            }else {
+                if(matchingLevel.getChildLevels()==null && newLevel.getChildLevels()!=null) {
+                    matchingLevel.setChildLevels(new ArrayList<MenuLevel>());
+                }
+                if(newLevel.getChildLevels()!=null) {
+                    addToHierarchy(matchingLevel.getChildLevels(), newLevel.getChildLevels());
+                }
+            }
         }
     }
 
@@ -193,7 +243,7 @@ public class BrowseMenuManager {
      * Remove a previously added menu
      *
      * @param menuType The menu type the menu was registered for
-     * @param id       The id of the menu, see {@link Menu#id}
+     * @param id       The id of the menu, see {@link org.socialmusicdiscovery.server.business.service.browse.MenuLevel#getId()}
      */
     public void removeMenu(MenuType menuType, String id) {
         this.menus.get(menuType).remove(id);
@@ -203,8 +253,8 @@ public class BrowseMenuManager {
      * Remove a previously added menu
      *
      * @param menuType The menu type the menu was registered for
-     * @param context  The context the menu was registered in, see {@link Menu#context}
-     * @param id       The id of the menu, see {@link Menu#id}
+     * @param context  The context the menu was registered in, see {@link org.socialmusicdiscovery.server.business.service.browse.MenuLevel#getContext()}
+     * @param id       The id of the menu, see {@link org.socialmusicdiscovery.server.business.service.browse.MenuLevel#getId()}
      */
     public void removeMenu(MenuType menuType, String context, String id) {
         this.menus.get(menuType).remove(context + "." + id);
@@ -216,20 +266,44 @@ public class BrowseMenuManager {
      * @param menuType The typ of menus to get
      * @return A sorted list of menus which are available for the specified item type
      */
-    public Collection<Menu> getAllMenus(MenuType menuType) {
-        List<Menu> menus = new ArrayList<Menu>(this.menus.get(menuType).values());
-        Collections.sort(menus, new Comparator<Menu>() {
+    public List<MenuLevel> getAllMenus(MenuType menuType) {
+        return getAllMenus(menuType, null);
+    }
+
+    /**
+     * Get all menus for the specified menu type
+     *
+     * @param menuType The typ of menus to get
+     * @param context The context which the menu items has to be related to
+     * @return A sorted list of menus which are available for the specified item type
+     */
+    public List<MenuLevel> getAllMenus(MenuType menuType, String context) {
+        List<MenuLevel> result = new ArrayList<MenuLevel>(this.menus.get(menuType).size());
+
+        String baseContext = context;
+        if (context != null && context.contains(".")) {
+            baseContext = context.substring(0, context.indexOf("."));
+        }
+        for (MenuLevel level : this.menus.get(menuType)) {
+            if((context==null && level.getContext()==null) ||
+              (level.getContext()!=null &&
+                      (level.getContext().equals(context) || level.getContext().equals(baseContext)))) {
+
+                result.add(level);
+            }
+        }
+        Collections.sort(result, new Comparator<MenuLevel>() {
             @Override
-            public int compare(Menu m1, Menu m2) {
+            public int compare(MenuLevel m1, MenuLevel m2) {
                 int weight = m1.getWeight().compareTo(m2.getWeight());
                 if (weight == 0) {
-                    return m1.getName().compareTo(m2.getName());
+                    return m1.getDisplayName().compareTo(m2.getDisplayName());
                 } else {
                     return weight;
                 }
             }
         });
-        return menus;
+        return result;
     }
 
     public void addCommand(String commandId, Class<? extends Command> browseCommandService) {

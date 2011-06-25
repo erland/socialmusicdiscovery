@@ -49,10 +49,16 @@ import java.util.List;
  */
 public class LastFMTrackBrowseService extends AbstractLastFMBrowseService implements BrowseService<LastFMTrack> {
     @Override
+    public Integer findChildrenCount(Collection<String> criteriaList) {
+        Result<LastFMTrack> result = findChildren(criteriaList,new ArrayList<String>(), null, null, false);
+        return result.getCount();
+    }
+
+    @Override
     public Result<LastFMTrack> findChildren(Collection<String> criteriaList, Collection<String> sortCriteriaList, Integer firstItem, Integer maxItems, Boolean childCounters) {
         String currentId = "";
         for (String criteria : criteriaList) {
-            if(criteria.contains(":")) {
+            if(criteria.contains(":") && !criteria.startsWith("Folder:")) {
                 currentId = criteria;
             }
         }
@@ -72,7 +78,7 @@ public class LastFMTrackBrowseService extends AbstractLastFMBrowseService implem
                 JSONObject object = Client.create().resource(getLastFmUrl("track.search&track=" + urlEncode(entity.getRecording().getWorks().iterator().next().getName()))).accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
                 List<ResultItem<LastFMTrack>> tracks = new ArrayList<ResultItem<LastFMTrack>>();
                 JSONArray array = object.getJSONObject("results").getJSONObject("trackmatches").getJSONArray("track");
-                result.setCount((long)array.length());
+                result.setCount(array.length());
                 for (int i = 0; i < array.length(); i++) {
                     if((firstItem==null || i>=firstItem) && (maxItems==null || maxItems>tracks.size())) {
                         tracks.add(createFromJSON(array.getJSONObject(i), null));
@@ -91,14 +97,14 @@ public class LastFMTrackBrowseService extends AbstractLastFMBrowseService implem
                 List<ResultItem<LastFMTrack>> tracks = new ArrayList<ResultItem<LastFMTrack>>();
                 if (object.getJSONObject("album").optJSONObject("tracks")!=null && object.getJSONObject("album").getJSONObject("tracks").has("track")) {
                     JSONArray array = object.getJSONObject("album").getJSONObject("tracks").getJSONArray("track");
-                    result.setCount((long)array.length());
+                    result.setCount(array.length());
                     for (int i = 0; i < array.length(); i++) {
                         if((firstItem==null || i>=firstItem) && (maxItems==null || maxItems>tracks.size())) {
                             tracks.add(createFromJSON(array.getJSONObject(i),object.getJSONObject("album")));
                         }
                     }
                 }
-                result.setCount((long) tracks.size());
+                result.setCount(tracks.size());
                 result.setItems(tracks);
             } catch (JSONException e) {
                 e.printStackTrace();

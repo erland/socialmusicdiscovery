@@ -46,10 +46,16 @@ import java.util.List;
  */
 public class SpotifyAlbumBrowseService extends AbstractBrowseService implements BrowseService<SpotifyAlbum>, OnlinePlayableElementService {
     @Override
+    public Integer findChildrenCount(Collection<String> criteriaList) {
+        Result<SpotifyAlbum> result = findChildren(criteriaList,new ArrayList<String>(), null, null, false);
+        return result.getCount();
+    }
+
+    @Override
     public Result<SpotifyAlbum> findChildren(Collection<String> criteriaList, Collection<String> sortCriteriaList, Integer firstItem, Integer maxItems, Boolean childCounters) {
         String currentId = "";
         for (String criteria : criteriaList) {
-            if(criteria.contains(":")) {
+            if(criteria.contains(":") && !criteria.startsWith("Folder:")) {
                 currentId = criteria;
             }
         }
@@ -67,7 +73,7 @@ public class SpotifyAlbumBrowseService extends AbstractBrowseService implements 
         if (entity != null) {
             try {
                 JSONObject object = Client.create().resource("http://ws.spotify.com/search/1/album.json?q=album:" + URLEncoder.encode(entity.getName(), "utf8")).accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
-                result.setCount(object.getJSONObject("info").getLong("num_results"));
+                result.setCount(object.getJSONObject("info").getInt("num_results"));
                 List<ResultItem<SpotifyAlbum>> albums = new ArrayList<ResultItem<SpotifyAlbum>>();
                 JSONArray array = object.getJSONArray("albums");
                 for (int i = 0; i < array.length(); i++) {

@@ -49,10 +49,16 @@ import java.util.List;
  */
 public class LastFMAlbumBrowseService extends AbstractLastFMBrowseService implements BrowseService<LastFMAlbum> {
     @Override
+    public Integer findChildrenCount(Collection<String> criteriaList) {
+        Result<LastFMAlbum> result = findChildren(criteriaList,new ArrayList<String>(), null, null, false);
+        return result.getCount();
+    }
+
+    @Override
     public Result<LastFMAlbum> findChildren(Collection<String> criteriaList, Collection<String> sortCriteriaList, Integer firstItem, Integer maxItems, Boolean childCounters) {
         String currentId = "";
         for (String criteria : criteriaList) {
-            if(criteria.contains(":")) {
+            if(criteria.contains(":") && !criteria.startsWith("Folder:")) {
                 currentId = criteria;
             }
         }
@@ -72,13 +78,13 @@ public class LastFMAlbumBrowseService extends AbstractLastFMBrowseService implem
                 JSONObject object = Client.create().resource(getLastFmUrl("album.search&album=" + urlEncode(entity.getName()))).accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
                 List<ResultItem<LastFMAlbum>> albums = new ArrayList<ResultItem<LastFMAlbum>>();
                 JSONArray array = object.getJSONObject("results").getJSONObject("albummatches").getJSONArray("album");
-                result.setCount((long)array.length());
+                result.setCount(array.length());
                 for (int i = 0; i < array.length(); i++) {
                     if((firstItem==null || i>=firstItem) && (maxItems==null || maxItems>albums.size())) {
                         albums.add(createFromJSON(array.getJSONObject(i)));
                     }
                 }
-                result.setCount((long) albums.size());
+                result.setCount(albums.size());
                 result.setItems(albums);
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
@@ -92,7 +98,7 @@ public class LastFMAlbumBrowseService extends AbstractLastFMBrowseService implem
                 List<ResultItem<LastFMAlbum>> albums = new ArrayList<ResultItem<LastFMAlbum>>();
                 if (object.getJSONObject("topalbums").has("album")) {
                     JSONArray array = object.getJSONObject("topalbums").getJSONArray("album");
-                    result.setCount((long)array.length());
+                    result.setCount(array.length());
                     for (int i = 0; i < array.length(); i++) {
                         if((firstItem==null || i>=firstItem) && (maxItems==null || maxItems>albums.size())) {
                             albums.add(createFromJSON(array.getJSONObject(i)));

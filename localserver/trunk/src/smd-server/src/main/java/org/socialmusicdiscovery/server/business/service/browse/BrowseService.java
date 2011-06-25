@@ -59,6 +59,14 @@ public interface BrowseService<T> {
     Result<T> findChildren(Collection<String> criteriaList, Collection<String> sortCriteriaList, Integer firstItem, Integer maxItems, Boolean childCounters);
 
     /**
+     * Find total number of children immediately matching the specified browse criterias
+     *
+     * @param criteriaList     The list of browse criteria the children has to match
+     * @return The list of matching child object instances
+     */
+    Integer findChildrenCount(Collection<String> criteriaList);
+
+    /**
      * Find the object with the specified identity
      *
      * @param id The identity of the object to find

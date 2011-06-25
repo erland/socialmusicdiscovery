@@ -126,12 +126,12 @@ public class ItemResult extends Result {
     @Expose
     private List<Item> items;
 
-    public ItemResult(List<Item> items, Boolean alphabetic, Long totalSize, Long offset, Long size) {
+    public ItemResult(List<Item> items, Boolean alphabetic, Integer totalSize, Integer offset, Integer size) {
         super(alphabetic, totalSize, offset, size);
         this.items = items;
     }
 
-    public ItemResult(List<Item> items, Boolean alphabetic, String playableElementsBaseURL, Long totalSize, Long offset, Long size) {
+    public ItemResult(List<Item> items, Boolean alphabetic, String playableElementsBaseURL, Integer totalSize, Integer offset, Integer size) {
         super(alphabetic, playableElementsBaseURL, totalSize, offset, size);
         this.items = items;
     }

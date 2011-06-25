@@ -98,31 +98,34 @@ public class LibraryBrowseServiceTest extends BaseTestCase {
             return " ("+sb.toString()+")";
         }
     }
+
     private void queryAndPrintMenuLevel(String parentId, String prefix, ResultItem item, boolean childs, Long noOfChilds) {
-        LibraryBrowseService browseService= new LibraryBrowseService();
-        String id = parentId;
-        if(parentId.length()>0) {
-            id = parentId+"/";
-        }
-        id=id+item.getId();
-        Result result = browseService.findChildren(id,null,null,childs);
-        Collection<ResultItem> childItems = result.getItems();
-        if(childs) {
-            assert noOfChilds==childItems.size();
-        }
-        for (ResultItem childItem : childItems) {
-            if(logging) System.out.println(prefix+childItem.getName());
-            if(childs) {
-                assert childItem.getChildItems()!=null;
-                if(childItem.getChildItems().size()>0) {
-                    assert childItem.getChildItems().size()==1;
-                    queryAndPrintMenuLevel(id,prefix+"  ",childItem, childs, (Long)childItem.getChildItems().values().iterator().next());
-                }else {
-                    queryAndPrintMenuLevel(id,prefix+"  ",childItem, childs, 0L);
+        if (true) {
+            LibraryBrowseService browseService = new LibraryBrowseService();
+            String id = parentId;
+            if (parentId.length() > 0) {
+                id = parentId + "/";
+            }
+            id = id + item.getId();
+            Result result = browseService.findChildren(id, null, null, childs);
+            Collection<ResultItem> childItems = result.getItems();
+            if (childs) {
+                assert noOfChilds == childItems.size();
+            }
+            for (ResultItem childItem : childItems) {
+                if (logging) System.out.println(prefix + childItem.getName());
+                if (childs) {
+                    assert childItem.getChildItems() != null;
+                    if (childItem.getChildItems().size() > 0) {
+                        assert childItem.getChildItems().size() == 1;
+                        queryAndPrintMenuLevel(id, prefix + "  ", childItem, childs, (Long) childItem.getChildItems().values().iterator().next());
+                    } else {
+                        queryAndPrintMenuLevel(id, prefix + "  ", childItem, childs, 0L);
+                    }
+                } else {
+                    assert childItem.getChildItems() == null;
+                    queryAndPrintMenuLevel(id, prefix + "  ", childItem, childs, 0L);
                 }
-            }else {
-                assert childItem.getChildItems()==null;
-                queryAndPrintMenuLevel(id,prefix+"  ",childItem, childs, 0L);
             }
         }
     }

@@ -102,9 +102,9 @@ public class BrowseFacade {
         }
 
         if (size != null) {
-            return new ItemResult(genericResultItems, result.getAlphabetic(), result.getCount(), offset.longValue(), (long) result.getItems().size());
+            return new ItemResult(genericResultItems, result.getAlphabetic(), result.getCount(), offset.intValue(), result.getItems().size());
         } else {
-            return new ItemResult(genericResultItems, result.getAlphabetic(), result.getCount(), 0L, (long) result.getItems().size());
+            return new ItemResult(genericResultItems, result.getAlphabetic(), result.getCount(), 0, result.getItems().size());
         }
     }
 
@@ -189,7 +189,7 @@ public class BrowseFacade {
                 // Special case for track since it's not supported to look for Track objects in TrackBrowseService
                 ResultItem<TrackEntity> track = browseService.findById(trackId);
                 if (track != null) {
-                    result = new CopyHelper().detachedCopy(new org.socialmusicdiscovery.server.business.service.browse.Result<TrackEntity>(1L, new ArrayList<ResultItem<TrackEntity>>(Arrays.asList(track))));
+                    result = new CopyHelper().detachedCopy(new org.socialmusicdiscovery.server.business.service.browse.Result<TrackEntity>(1, new ArrayList<ResultItem<TrackEntity>>(Arrays.asList(track))));
                 } else {
                     result = new org.socialmusicdiscovery.server.business.service.browse.Result<TrackEntity>();
                 }
@@ -207,14 +207,14 @@ public class BrowseFacade {
             }
 
             if (size != null) {
-                return new PlayableElementResult(genericResultItems, result.getCount(), offset.longValue(), (long) result.getItems().size());
+                return new PlayableElementResult(genericResultItems, result.getCount(), offset.intValue(), result.getItems().size());
             } else {
-                return new PlayableElementResult(genericResultItems, result.getCount(), 0L, (long) result.getItems().size());
+                return new PlayableElementResult(genericResultItems, result.getCount(), 0, result.getItems().size());
             }
         } else {
             // Retrieve playable elements from service supporting the specified criteria type
             genericResultItems = onlinePlayableElementService.find(criteriaList);
-            return new PlayableElementResult(genericResultItems, (long) genericResultItems.size(), 0L, (long) genericResultItems.size());
+            return new PlayableElementResult(genericResultItems, genericResultItems.size(), 0, genericResultItems.size());
         }
     }
 
@@ -295,9 +295,9 @@ public class BrowseFacade {
         }
 
         if (size != null) {
-            return new ItemResult(genericResultItems, result.getAlphabetic(), getPlayableElementsURL(parentObjects, null), result.getCount(), offset.longValue(), (long) result.getItems().size());
+            return new ItemResult(genericResultItems, result.getAlphabetic(), getPlayableElementsURL(parentObjects, null), result.getCount(), offset.intValue(), result.getItems().size());
         } else {
-            return new ItemResult(genericResultItems, result.getAlphabetic(), getPlayableElementsURL(parentObjects, null), result.getCount(), 0L, (long) result.getItems().size());
+            return new ItemResult(genericResultItems, result.getAlphabetic(), getPlayableElementsURL(parentObjects, null), result.getCount(), 0, result.getItems().size());
         }
     }
 
@@ -306,7 +306,7 @@ public class BrowseFacade {
         if (parentHierarchy != null) {
             sb.append("/browse/PlayableElement?");
             for (String object : parentHierarchy) {
-                if (object.contains(":")) {
+                if (!object.startsWith(MenuLevelFolder.TYPE+":") && object.contains(":")) {
                     sb.append("&criteria=");
                     sb.append(object);
                 }
@@ -320,8 +320,12 @@ public class BrowseFacade {
     }
 
     private String getCommandURL(ResultItem item, String objectId) {
-        if (item.getType().equals(CommandObject.class.getSimpleName())) {
-            return "/browse/command/" + item.getId() + "/" + objectId;
+        if (item.getType().equals(Command.class.getSimpleName())) {
+            String id = item.getId();
+            if(id.startsWith(item.getType()+":")) {
+                id = id.substring((item.getType()+":").length());
+            }
+            return "/browse/command/" + id + "/" + objectId;
         }
         return null;
     }
@@ -383,9 +387,9 @@ public class BrowseFacade {
             }
         }
         if (size != null) {
-            return new ContextItemResult(context, genericResultItems, result.getAlphabetic(), getPlayableElementsURL(parentObjects, null), result.getCount(), offset.longValue(), (long) result.getItems().size());
+            return new ContextItemResult(context, genericResultItems, result.getAlphabetic(), getPlayableElementsURL(parentObjects, null), result.getCount(), offset.intValue(), result.getItems().size());
         } else {
-            return new ContextItemResult(context, genericResultItems, result.getAlphabetic(), getPlayableElementsURL(parentObjects, null), result.getCount(), 0L, (long) result.getItems().size());
+            return new ContextItemResult(context, genericResultItems, result.getAlphabetic(), getPlayableElementsURL(parentObjects, null), result.getCount(), 0, result.getItems().size());
         }
     }
 }
