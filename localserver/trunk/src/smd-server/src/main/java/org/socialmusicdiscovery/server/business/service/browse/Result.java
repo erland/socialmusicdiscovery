@@ -32,28 +32,28 @@ import java.util.Collection;
 import java.util.List;
 
 public class Result<T> {
-    private Long count;
+    private Integer count;
     private ResultItem context;
     private Boolean alphabetic;
     private List<ResultItem<T>> items;
 
     public Result() {
-        count = 0L;
+        count = 0;
         context = null;
         items = new ArrayList<ResultItem<T>>();
     }
 
-    public Result(Long count, List<ResultItem<T>> items) {
+    public Result(Integer count, List<ResultItem<T>> items) {
         this.count = count;
         this.context = null;
         this.items = items;
     }
 
-    public Long getCount() {
+    public Integer getCount() {
         return count;
     }
 
-    public void setCount(Long count) {
+    public void setCount(Integer count) {
         this.count = count;
     }
 

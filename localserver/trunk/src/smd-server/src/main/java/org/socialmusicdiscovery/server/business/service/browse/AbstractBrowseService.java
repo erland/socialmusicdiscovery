@@ -179,7 +179,7 @@ public abstract class AbstractBrowseService {
         return exclusions.toString();
     }
 
-    protected Query createCountQuery(Class entity, String objectType, String relationType, String orderBy, Collection<String> criteriaList, Collection<String> sortCriteriaList, String joinString, String whereString) {
+    protected Query createCountQuery(Class entity, String objectType, String relationType, Collection<String> criteriaList, String joinString, String whereString) {
         Query query;
         if (criteriaList.size() > 0) {
             query = entityManager.createQuery("SELECT count(distinct e.id) from RecordingEntity as r JOIN r." + relationType + "SearchRelations as searchRelations JOIN searchRelations." + relationType + " as e " + joinString + " WHERE " + whereString + buildExclusionString("searchRelations", criteriaList));
@@ -212,20 +212,31 @@ public abstract class AbstractBrowseService {
         return item;
     }
 
+    protected <T extends SMDIdentity, E extends T> Integer findChildrenCount(Class<T> entity, String objectType, String relationType, Collection<String> criteriaList) {
+        String joinString = buildResultJoinString(objectType, "r", criteriaList);
+        String whereString = buildResultWhereString(objectType, "searchRelations", criteriaList);
+
+        return findChildrenCount(entity, joinString, whereString, objectType, relationType, criteriaList);
+    }
+
+    protected <T extends SMDIdentity, E extends T> Integer findChildrenCount(Class<T> entity, String joinString, String whereString, String objectType, String relationType, Collection<String> criteriaList) {
+        Query countQuery = createCountQuery(entity, objectType, relationType, criteriaList, joinString, whereString);
+        List<Long> countList = countQuery.getResultList();
+        return countList.iterator().next().intValue();
+    }
+
     protected <T extends SMDIdentity, E extends T> Result<T> findChildren(Class<T> entity, String objectType, String relationType, String orderBy, Collection<String> criteriaList, Collection<String> sortCriteriaList, SortKeyProvider sortKeyProvider, Integer firstItem, Integer maxItems, Boolean returnChildCounters) {
         String joinString = buildResultJoinString(objectType, "r", criteriaList);
         String whereString = buildResultWhereString(objectType, "searchRelations", criteriaList);
 
-        Long count = null;
+        Integer count = null;
         if (maxItems != null) {
-            Query countQuery = createCountQuery(entity, objectType, relationType, orderBy, criteriaList, sortCriteriaList, joinString, whereString);
-            List<Long> countList = countQuery.getResultList();
-            count = countList.iterator().next();
+            count = findChildrenCount(entity, joinString, whereString, objectType, relationType, criteriaList);
         }
 
         Result<T> result = new Result<T>();
         result.setCount(count);
-        if (maxItems == null || count > 0L) {
+        if (maxItems == null || count > 0) {
             Query query = createFindQuery(entity, objectType, relationType, orderBy, criteriaList, sortCriteriaList, joinString, whereString);
             if (firstItem != null) {
                 query.setFirstResult(firstItem);
@@ -237,7 +248,7 @@ public abstract class AbstractBrowseService {
             List<ResultItem<T>> resultItems = new ArrayList<ResultItem<T>>(items.size());
             result.setItems(resultItems);
             if (maxItems == null) {
-                result.setCount((long) items.size());
+                result.setCount(items.size());
             }
 
             for (T item : items) {

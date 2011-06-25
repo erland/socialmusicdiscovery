@@ -49,10 +49,16 @@ import java.util.List;
  */
 public class LastFMArtistBrowseService extends AbstractLastFMBrowseService implements BrowseService<LastFMArtist> {
     @Override
+    public Integer findChildrenCount(Collection<String> criteriaList) {
+        Result<LastFMArtist> result = findChildren(criteriaList,new ArrayList<String>(), null, null, false);
+        return result.getCount();
+    }
+
+    @Override
     public Result<LastFMArtist> findChildren(Collection<String> criteriaList, Collection<String> sortCriteriaList, Integer firstItem, Integer maxItems, Boolean childCounters) {
         String currentId = "";
         for (String criteria : criteriaList) {
-            if(criteria.contains(":")) {
+            if(criteria.contains(":") && !criteria.startsWith("Folder:")) {
                 currentId = criteria;
             }
         }
@@ -72,7 +78,7 @@ public class LastFMArtistBrowseService extends AbstractLastFMBrowseService imple
                 JSONObject object = Client.create().resource(getLastFmUrl("artist.search&artist=" + urlEncode(entity.getName()))).accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
                 List<ResultItem<LastFMArtist>> artists = new ArrayList<ResultItem<LastFMArtist>>();
                 JSONArray array = object.getJSONObject("results").getJSONObject("artistmatches").getJSONArray("artist");
-                result.setCount((long)array.length());
+                result.setCount(array.length());
                 for (int i = 0; i < array.length(); i++) {
                     if((firstItem==null || i>=firstItem) && (maxItems==null || maxItems>artists.size())) {
                         artists.add(createFromJSON(array.getJSONObject(i)));

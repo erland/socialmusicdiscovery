@@ -45,11 +45,18 @@ import java.util.List;
  * Browse service that browses Spotify tracks
  */
 public class SpotifyTrackBrowseService extends AbstractBrowseService implements BrowseService<SpotifyTrack>, OnlinePlayableElementService {
+
+    @Override
+    public Integer findChildrenCount(Collection<String> criteriaList) {
+        Result<SpotifyTrack> result = findChildren(criteriaList,new ArrayList<String>(), null, null, false);
+        return result.getCount();
+    }
+
     @Override
     public Result<SpotifyTrack> findChildren(Collection<String> criteriaList, Collection<String> sortCriteriaList, Integer firstItem, Integer maxItems, Boolean childCounters) {
         String currentId = "";
         for (String criteria : criteriaList) {
-            if(criteria.contains(":")) {
+            if(criteria.contains(":") && !criteria.startsWith("Folder:")) {
                 currentId = criteria;
             }
         }
@@ -67,10 +74,10 @@ public class SpotifyTrackBrowseService extends AbstractBrowseService implements 
         if (entity != null) {
             try {
                 JSONObject object = Client.create().resource("http://ws.spotify.com/search/1/track.json?q=track:" + URLEncoder.encode(entity.getRecording().getWorks().iterator().next().getName(), "utf8")).accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
-                result.setCount(object.getJSONObject("info").getLong("num_results"));
+                result.setCount(object.getJSONObject("info").getInt("num_results"));
                 List<ResultItem<SpotifyTrack>> tracks = new ArrayList<ResultItem<SpotifyTrack>>();
                 JSONArray array = object.getJSONArray("tracks");
-                result.setCount((long)array.length());
+                result.setCount(array.length());
                 for (int i = 0; i < array.length(); i++) {
                     if((firstItem==null || i>=firstItem) && (maxItems==null || maxItems>tracks.size())) {
                         tracks.add(createFromJSON(array.getJSONObject(i)));
@@ -87,7 +94,7 @@ public class SpotifyTrackBrowseService extends AbstractBrowseService implements 
                 JSONObject object = Client.create().resource("http://ws.spotify.com/lookup/1/.json?uri=" + currentId.substring(13) + "&extras=track").accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
                 List<ResultItem<SpotifyTrack>> tracks = new ArrayList<ResultItem<SpotifyTrack>>();
                 JSONArray array = object.getJSONObject("album").getJSONArray("tracks");
-                result.setCount((long)array.length());
+                result.setCount(array.length());
                 for (int i = 0; i < array.length(); i++) {
                     if((firstItem==null || i>=firstItem) && (maxItems==null || maxItems>tracks.size())) {
                         tracks.add(createFromJSON(array.getJSONObject(i)));

@@ -72,23 +72,23 @@ public abstract class Result {
     @Expose
     private Boolean alphabetic;
     @Expose
-    private Long totalSize;
+    private Integer totalSize;
     @Expose
-    private Long offset;
+    private Integer offset;
     @Expose
-    private Long size;
+    private Integer size;
 
     public Result() {
     }
 
-    public Result(Boolean alphabetic, Long totalSize, Long offset, Long size) {
+    public Result(Boolean alphabetic, Integer totalSize, Integer offset, Integer size) {
         this.totalSize = totalSize;
         this.offset = offset;
         this.size = size;
         this.alphabetic = alphabetic;
     }
 
-    public Result(Boolean alphabetic, String playableBaseURL, Long totalSize, Long offset, Long size) {
+    public Result(Boolean alphabetic, String playableBaseURL, Integer totalSize, Integer offset, Integer size) {
         this.totalSize = totalSize;
         this.offset = offset;
         this.size = size;
@@ -96,15 +96,15 @@ public abstract class Result {
         this.alphabetic = alphabetic;
     }
 
-    public Long getTotalSize() {
+    public Integer getTotalSize() {
         return totalSize;
     }
 
-    public Long getOffset() {
+    public Integer getOffset() {
         return offset;
     }
 
-    public Long getSize() {
+    public Integer getSize() {
         return size;
     }
 }

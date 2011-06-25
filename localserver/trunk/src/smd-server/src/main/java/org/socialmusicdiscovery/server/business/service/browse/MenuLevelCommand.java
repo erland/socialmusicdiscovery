@@ -27,31 +27,69 @@
 
 package org.socialmusicdiscovery.server.business.service.browse;
 
-import java.util.Collection;
+/**
+ * Represents a command/action shown as a menu item
+ */
+public class MenuLevelCommand extends AbstractMenuLevel {
+    public static final String TYPE = Command.class.getSimpleName();
 
-public class ContextBrowseService extends LibraryBrowseService {
-    @Override
-    protected Collection<MenuLevel> getMenus(String context) {
-        return browseMenuManager.getAllMenus(BrowseMenuManager.MenuType.CONTEXT,context);
+    /**
+     * Identity of the command related to this menu item
+     */
+    private String id;
+
+    /**
+     * The text that should be shown to the user for this menu item
+     */
+    private String name;
+
+    public MenuLevelCommand() {
     }
 
-    public Result<Object> findChildren(String parentPath, Integer firstItem, Integer maxItems, Boolean counts) {
-        if (counts == null) {
-            counts = false;
-        }
+    /**
+     * Constructs a new instance
+     *
+     * @param id   Identity of the command
+     * @param name The text to display to user
+     */
+    public MenuLevelCommand(String id, String name) {
+        super(TYPE, null);
+        this.id = id;
+        this.name = name;
+    }
 
-        String currentId;
-        if(parentPath.contains("/")) {
-            currentId = parentPath.substring(0,parentPath.indexOf("/"));
-            parentPath = parentPath.substring(currentId.length()+1);
-            if(parentPath.length()==0) {
-                parentPath = null;
-            }
-        }else {
-            currentId = parentPath;
-            parentPath = null;
-        }
+    /**
+     * Constructs a new instance
+     *
+     * @param context The context in which this menu item should be available
+     * @param id      Identity of the command
+     * @param name    The text to display to user
+     */
+    public MenuLevelCommand(String context, String id, String name) {
+        this(id, name);
+        setContext(context);
+    }
 
-        return findChildren(currentId,parentPath, firstItem, maxItems, counts);
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String getId() {
+        return getType() + ":" + id;
+    }
+
+    @Override
+    public String getDisplayName() {
+        return getName();
+    }
+
+    @Override
+    public Boolean isPlayable() {
+        return false;
     }
 }

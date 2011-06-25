@@ -49,10 +49,16 @@ import java.util.List;
  */
 public class SpotifyArtistBrowseService extends AbstractBrowseService implements BrowseService<SpotifyArtist> {
     @Override
+    public Integer findChildrenCount(Collection<String> criteriaList) {
+        Result<SpotifyArtist> result = findChildren(criteriaList,new ArrayList<String>(), null, null, false);
+        return result.getCount();
+    }
+
+    @Override
     public Result<SpotifyArtist> findChildren(Collection<String> criteriaList, Collection<String> sortCriteriaList, Integer firstItem, Integer maxItems, Boolean childCounters) {
         String currentId = "";
         for (String criteria : criteriaList) {
-            if(criteria.contains(":")) {
+            if(criteria.contains(":") && !criteria.startsWith("Folder:")) {
                 currentId = criteria;
             }
         }
@@ -70,10 +76,10 @@ public class SpotifyArtistBrowseService extends AbstractBrowseService implements
         if (entity != null) {
             try {
                 JSONObject object = Client.create().resource("http://ws.spotify.com/search/1/artist.json?q=artist:" + URLEncoder.encode(entity.getName(), "utf8")).accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
-                result.setCount(object.getJSONObject("info").getLong("num_results"));
+                result.setCount(object.getJSONObject("info").getInt("num_results"));
                 List<ResultItem<SpotifyArtist>> artists = new ArrayList<ResultItem<SpotifyArtist>>();
                 JSONArray array = object.getJSONArray("artists");
-                result.setCount((long)array.length());
+                result.setCount(array.length());
                 for (int i = 0; i < array.length(); i++) {
                     if((firstItem==null || i>=firstItem) && (maxItems==null || maxItems>artists.size())) {
                         artists.add(createFromJSON(array.getJSONObject(i)));

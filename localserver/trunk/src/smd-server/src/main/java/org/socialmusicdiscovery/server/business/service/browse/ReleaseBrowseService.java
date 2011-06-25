@@ -39,6 +39,10 @@ public class ReleaseBrowseService extends AbstractBrowseService implements Brows
         return findById(ReleaseEntity.class, "Release", id);
     }
 
+    public Integer findChildrenCount(Collection<String> criteriaList) {
+        return findChildrenCount(ReleaseEntity.class, "Release", "release", criteriaList);
+    }
+
     public Result<ReleaseEntity> findChildren(Collection<String> criteriaList, Collection<String> sortCriteriaList, Integer firstItem, Integer maxItems, Boolean returnChildCounters) {
         Result<ReleaseEntity> result = super.findChildren(ReleaseEntity.class, "Release", "release", "e.sortAs", criteriaList, sortCriteriaList,
                 new SortKeyProvider() {

@@ -37,6 +37,10 @@ public class WorkBrowseService extends AbstractBrowseService implements BrowseSe
         return findById(WorkEntity.class, "Work", id);
     }
 
+    public Integer findChildrenCount(Collection<String> criteriaList) {
+        return findChildrenCount(WorkEntity.class, "Work", "work", criteriaList);
+    }
+
     public Result<WorkEntity> findChildren(Collection<String> criteriaList, Collection<String> sortCriteriaList, Integer firstItem, Integer maxItems, Boolean returnChildCounters) {
         Result<WorkEntity> result = super.findChildren(WorkEntity.class, "Work", "work", "e.sortAs", criteriaList, sortCriteriaList,
                 new SortKeyProvider() {

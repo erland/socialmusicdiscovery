@@ -37,6 +37,10 @@ public class ClassificationBrowseService extends AbstractBrowseService implement
         return findById(ClassificationEntity.class, "Classification", id);
     }
 
+    public Integer findChildrenCount(Collection<String> criteriaList) {
+        return findChildrenCount(ClassificationEntity.class, "Classification", "classification", criteriaList);
+    }
+
     public Result<ClassificationEntity> findChildren(Collection<String> criteriaList, Collection<String> sortCriteriaList, Integer firstItem, Integer maxItems, Boolean returnChildCounters) {
         Result<ClassificationEntity> result = super.findChildren(ClassificationEntity.class, "Classification", "classification", "e.sortAs", criteriaList, sortCriteriaList,
                 new SortKeyProvider() {
