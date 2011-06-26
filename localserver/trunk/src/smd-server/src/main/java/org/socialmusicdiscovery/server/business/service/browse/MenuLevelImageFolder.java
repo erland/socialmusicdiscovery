@@ -27,26 +27,15 @@
 
 package org.socialmusicdiscovery.server.business.service.browse;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
  * Represents a static browse menu level which have child levels
  */
-public class MenuLevelFolder extends AbstractMenuLevel {
-    public static final String TYPE = "Folder";
+public class MenuLevelImageFolder extends MenuLevelFolder {
+    public static final String TYPE = "ImageFolder";
 
-    /**
-     * The identity of this menu level item
-     */
-    private String id;
-
-    /**
-     * The name of this menu level which should be displayed to user
-     */
-    private String name;
-
-    public MenuLevelFolder() {
+    public MenuLevelImageFolder() {
     }
 
     /**
@@ -56,10 +45,9 @@ public class MenuLevelFolder extends AbstractMenuLevel {
      * @param name        The text that should be displayed to the user for this menu item
      * @param childLevels The child levels below this menu level
      */
-    public MenuLevelFolder(String id, String name, List<MenuLevel> childLevels) {
-        super(TYPE, childLevels);
-        this.id = id;
-        this.name = name;
+    public MenuLevelImageFolder(String id, String name, List<MenuLevel> childLevels) {
+        super(id, name, childLevels);
+        setType(TYPE);
     }
 
     /**
@@ -69,8 +57,9 @@ public class MenuLevelFolder extends AbstractMenuLevel {
      * @param name       The text that should be displayed to the user for this menu item
      * @param childLevel The child level below this menu level
      */
-    public MenuLevelFolder(String id, String name, MenuLevel childLevel) {
-        this(id, name, Arrays.asList(childLevel));
+    public MenuLevelImageFolder(String id, String name, MenuLevel childLevel) {
+        super(id, name, childLevel);
+        setType(TYPE);
     }
 
     /**
@@ -81,9 +70,9 @@ public class MenuLevelFolder extends AbstractMenuLevel {
      * @param weight     The sorting weight of this menu item
      * @param childLevel The child levels below this menu level
      */
-    public MenuLevelFolder(String id, String name, Integer weight, MenuLevel childLevel) {
-        this(id, name, childLevel);
-        setWeight(weight);
+    public MenuLevelImageFolder(String id, String name, Integer weight, MenuLevel childLevel) {
+        super(id, name, weight, childLevel);
+        setType(TYPE);
     }
 
     /**
@@ -95,32 +84,8 @@ public class MenuLevelFolder extends AbstractMenuLevel {
      * @param weight     The sorting weight of this menu item
      * @param childLevel The child levels below this menu level
      */
-    public MenuLevelFolder(String context, String id, String name, Integer weight, MenuLevel childLevel) {
-        this(id, name, childLevel);
-        setContext(context);
-        setWeight(weight);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String getId() {
-        return getType() + ":" + id;
-    }
-
-    @Override
-    public String getDisplayName() {
-        return getName();
-    }
-
-    @Override
-    public Boolean isPlayable() {
-        return false;
+    public MenuLevelImageFolder(String context, String id, String name, Integer weight, MenuLevel childLevel) {
+        super(context, id, name, weight, childLevel);
+        setType(TYPE);
     }
 }

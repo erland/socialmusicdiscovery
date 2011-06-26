@@ -120,16 +120,14 @@ public class BrowseFacade {
     @Path("/command/{command}/{object:.*}")
     public CommandResult executeCommand(@PathParam("command") String command, @PathParam("object") String object) {
 
-        String objectType = object;
-        String objectId = null;
-        if (objectType.contains(":")) {
-            objectId = objectType.substring(objectType.indexOf(":") + 1);
-            objectType = objectType.substring(0, objectType.indexOf(":"));
+        List<String> objects = new ArrayList<String>();
+        if (object!=null) {
+            objects.addAll(Arrays.asList(object.split("/")));
         }
         Command cmd = browseMenuManager.getCommand(command);
         org.socialmusicdiscovery.server.business.service.browse.CommandResult result;
         if (cmd != null) {
-            result = cmd.executeCommand(objectType, objectId);
+            result = cmd.executeCommand(objects);
             if (result == null) {
                 result = new org.socialmusicdiscovery.server.business.service.browse.CommandResult(false, "Error executing command \"" + command + "\" on object " + object);
             }
@@ -288,14 +286,14 @@ public class BrowseFacade {
                 image = new ItemResult.ItemImage(resultItem.getImage().getProviderId(), resultItem.getImage().getProviderImageId(), resultItem.getImage().getUrl());
             }
             if (resultItem.getChildItems() != null) {
-                genericResultItems.add(new ItemResult.Item(item, resultItem.getType(), resultItem.getId(), resultItem.getName(), resultItem.getSortKey(), image, resultItem.getPlayable(), getPlayableElementsURL(null, resultItem.getId()), null, new HashMap<String, Long>(resultItem.getChildItems())));
+                genericResultItems.add(new ItemResult.Item(item, resultItem.getType(), resultItem.getId(), resultItem.getName(), resultItem.getSortKey(), image, resultItem.getPlayable(), getPlayableElementsURL(null, resultItem.getId()), getCommandURL(resultItem), new HashMap<String, Long>(resultItem.getChildItems())));
             } else {
-                genericResultItems.add(new ItemResult.Item(item, resultItem.getType(), resultItem.getId(), resultItem.getName(), resultItem.getSortKey(), image, resultItem.getPlayable(), getPlayableElementsURL(null, resultItem.getId()), null, resultItem.getLeaf()));
+                genericResultItems.add(new ItemResult.Item(item, resultItem.getType(), resultItem.getId(), resultItem.getName(), resultItem.getSortKey(), image, resultItem.getPlayable(), getPlayableElementsURL(null, resultItem.getId()), getCommandURL(resultItem), resultItem.getLeaf()));
             }
         }
 
         if (size != null) {
-            return new ItemResult(genericResultItems, result.getAlphabetic(), getPlayableElementsURL(parentObjects, null), result.getCount(), offset.intValue(), result.getItems().size());
+            return new ItemResult(genericResultItems, result.getAlphabetic(), getPlayableElementsURL(parentObjects, null), result.getCount(), offset, result.getItems().size());
         } else {
             return new ItemResult(genericResultItems, result.getAlphabetic(), getPlayableElementsURL(parentObjects, null), result.getCount(), 0, result.getItems().size());
         }
@@ -306,7 +304,9 @@ public class BrowseFacade {
         if (parentHierarchy != null) {
             sb.append("/browse/PlayableElement?");
             for (String object : parentHierarchy) {
-                if (!object.startsWith(MenuLevelFolder.TYPE+":") && object.contains(":")) {
+                if (!object.startsWith(MenuLevelFolder.TYPE+":") &&
+                        !object.startsWith(MenuLevelImageFolder.TYPE+":") &&
+                        object.contains(":")) {
                     sb.append("&criteria=");
                     sb.append(object);
                 }
@@ -319,13 +319,20 @@ public class BrowseFacade {
         return sb.toString();
     }
 
-    private String getCommandURL(ResultItem item, String objectId) {
+    private String getCommandURL(ResultItem item) {
         if (item.getType().equals(Command.class.getSimpleName())) {
             String id = item.getId();
             if(id.startsWith(item.getType()+":")) {
                 id = id.substring((item.getType()+":").length());
             }
-            return "/browse/command/" + id + "/" + objectId;
+            String parameters = "";
+            if(item.getParameters()!=null) {
+                for (Object value : item.getParameters()) {
+                    parameters+="/"+value;
+                }
+            }
+
+            return "/browse/command/" + id +parameters;
         }
         return null;
     }
@@ -365,9 +372,9 @@ public class BrowseFacade {
                 image = new ItemResult.ItemImage(resultItem.getImage().getProviderId(), resultItem.getImage().getProviderImageId(), resultItem.getImage().getUrl());
             }
             if (resultItem.getChildItems() != null) {
-                genericResultItems.add(new ItemResult.Item(item, resultItem.getType(), resultItem.getId(), resultItem.getName(), resultItem.getSortKey(), image, resultItem.getPlayable(), getPlayableElementsURL(null, resultItem.getId()), getCommandURL(resultItem, objectId), new HashMap<String, Long>(resultItem.getChildItems())));
+                genericResultItems.add(new ItemResult.Item(item, resultItem.getType(), resultItem.getId(), resultItem.getName(), resultItem.getSortKey(), image, resultItem.getPlayable(), getPlayableElementsURL(null, resultItem.getId()), getCommandURL(resultItem), new HashMap<String, Long>(resultItem.getChildItems())));
             } else {
-                genericResultItems.add(new ItemResult.Item(item, resultItem.getType(), resultItem.getId(), resultItem.getName(), resultItem.getSortKey(), image, resultItem.getPlayable(), getPlayableElementsURL(null, resultItem.getId()), getCommandURL(resultItem, objectId), resultItem.getLeaf()));
+                genericResultItems.add(new ItemResult.Item(item, resultItem.getType(), resultItem.getId(), resultItem.getName(), resultItem.getSortKey(), image, resultItem.getPlayable(), getPlayableElementsURL(null, resultItem.getId()), getCommandURL(resultItem), resultItem.getLeaf()));
             }
         }
         ItemResult.Item context = null;

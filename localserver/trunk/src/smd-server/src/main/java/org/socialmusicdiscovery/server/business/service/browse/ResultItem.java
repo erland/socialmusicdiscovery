@@ -28,6 +28,7 @@
 package org.socialmusicdiscovery.server.business.service.browse;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ResultItem<T> {
@@ -41,6 +42,7 @@ public class ResultItem<T> {
     private String playableElementsURL;
     private String commandURL;
     private Boolean leaf;
+    private List<String> parameters;
     private T item;
 
     public static class ResultItemImage {
@@ -173,6 +175,14 @@ public class ResultItem<T> {
 
     public void setLeaf(Boolean leaf) {
         this.leaf = leaf;
+    }
+
+    public List<String> getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(List<String> parameters) {
+        this.parameters = parameters;
     }
 
     public String getPlayableElementsURL() {

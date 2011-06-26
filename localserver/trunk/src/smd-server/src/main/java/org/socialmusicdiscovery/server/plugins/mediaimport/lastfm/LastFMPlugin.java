@@ -33,6 +33,8 @@ import org.socialmusicdiscovery.server.api.plugin.PluginException;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
 import org.socialmusicdiscovery.server.business.service.browse.*;
 
+import java.util.Arrays;
+
 /**
  * LastFM plugin that provides context menus for artists, releases and tracks which can be used to
  * find the matching LastFM artist, release, track
@@ -52,6 +54,7 @@ public class LastFMPlugin extends AbstractPlugin {
         browseMenuManager.addDefaultItemFormat(BrowseMenuManager.MenuType.CONTEXT, LastFMAlbum.class.getSimpleName(), "%object.name");
         browseMenuManager.addDefaultItemFormat(BrowseMenuManager.MenuType.CONTEXT, LastFMTrack.class.getSimpleName(), "%object.number||[%object.number,. ]||%object.name");
         browseMenuManager.addDefaultItemFormat(BrowseMenuManager.MenuType.CONTEXT, LastFMImage.class.getSimpleName(), "%object.name");
+        browseMenuManager.addDefaultItemFormat(BrowseMenuManager.MenuType.LIBRARY, LastFMImage.class.getSimpleName(), "%object.name");
 
         browseMenuManager.addMenu(BrowseMenuManager.MenuType.CONTEXT,
                                 new MenuLevelFolder("Artist","manageartist","Manage",MenuLevel.BOTTOM_WEIGHT,
@@ -79,7 +82,15 @@ public class LastFMPlugin extends AbstractPlugin {
                                                 new MenuLevelDynamic(LastFMImage.class.getSimpleName(),
                                                     null,
                                                     false,
-                                                    2L))))));
+                                                    2L,
+                                                    Arrays.asList((MenuLevel)
+                                                            new MenuLevelImageFolder("ViewLarge", "View Large",
+                                                                new MenuLevelDynamic(LastFMImage.class.getSimpleName(),
+                                                                    null,
+                                                                    false,
+                                                                    1L)),
+                                                            new MenuLevelCommand("lastfmimportimage", "Import Image", Arrays.asList("Artist", "LastFMImage"))
+                                                    )))))));
 
         browseMenuManager.addMenu(BrowseMenuManager.MenuType.CONTEXT,
                                 new MenuLevelFolder("Artist","lastfmartists","On LastFM",MenuLevel.BOTTOM_WEIGHT,
@@ -126,6 +137,34 @@ public class LastFMPlugin extends AbstractPlugin {
                                     new MenuLevelDynamic(LastFMTrack.class.getSimpleName(),
                                             null,
                                             false)));
+
+        browseMenuManager.addMenu(BrowseMenuManager.MenuType.LIBRARY,
+                new MenuLevelFolder("artists","Artists",
+                        new MenuLevelDynamic("Artist", null, true,
+                                new MenuLevelFolder("lastfmimages", "LastFM Images", MenuLevel.TOP_WEIGHT,
+                                    new MenuLevelDynamic(LastFMImage.class.getSimpleName(),
+                                        null,
+                                        false,
+                                        2L,
+                                        Arrays.asList((MenuLevel)
+                                                new MenuLevelImageFolder("ViewLarge", "View Large",
+                                                    new MenuLevelDynamic(LastFMImage.class.getSimpleName(),
+                                                        null,
+                                                        false,
+                                                        1L)),
+                                                new MenuLevelCommand("lastfmimportimage", "Import Image", Arrays.asList("Artist", "LastFMImage"))
+                                        ))))));
+
+        browseMenuManager.addMenu(BrowseMenuManager.MenuType.LIBRARY,
+                new MenuLevelFolder("artists","Artists",
+                        new MenuLevelDynamic("Artist", null, true,
+                                new MenuLevelImageFolder("lastfmimageslideshow", "LastFM Image Slideshow", MenuLevel.TOP_WEIGHT+1,
+                                    new MenuLevelDynamic(LastFMImage.class.getSimpleName(),
+                                        null,
+                                        false,
+                                        1L)))));
+
+        browseMenuManager.addCommand("lastfmimportimage", LastFMImport.class);
 
         browseServiceManager.addBrowseService(LastFMArtist.class.getSimpleName(), LastFMArtistBrowseService.class, getConfiguration());
         browseServiceManager.addBrowseService(LastFMAlbum.class.getSimpleName(), LastFMAlbumBrowseService.class, getConfiguration());

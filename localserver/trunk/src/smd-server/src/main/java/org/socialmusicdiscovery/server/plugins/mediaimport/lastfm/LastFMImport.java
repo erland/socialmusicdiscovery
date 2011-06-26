@@ -25,16 +25,16 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.server.plugins.mediaimport.spotify;
+package org.socialmusicdiscovery.server.plugins.mediaimport.lastfm;
 
 import org.socialmusicdiscovery.server.business.service.browse.Command;
 import org.socialmusicdiscovery.server.business.service.browse.CommandResult;
 
 import java.util.List;
 
-public class SpotifyImport implements Command {
+public class LastFMImport implements Command {
     @Override
     public CommandResult executeCommand(List<String> parameters) {
-        return new CommandResult(true, "Dummy import of " + parameters.get(0));
+        return new CommandResult(true, "Dummy import of " + parameters.get(1));
     }
 }

@@ -34,9 +34,7 @@ import org.codehaus.jettison.json.JSONObject;
 import org.socialmusicdiscovery.server.business.logic.InternetImageProvider;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.model.core.TrackEntity;
-import org.socialmusicdiscovery.server.business.service.browse.BrowseService;
-import org.socialmusicdiscovery.server.business.service.browse.Result;
-import org.socialmusicdiscovery.server.business.service.browse.ResultItem;
+import org.socialmusicdiscovery.server.business.service.browse.*;
 
 import javax.ws.rs.core.MediaType;
 import java.io.UnsupportedEncodingException;
@@ -58,7 +56,7 @@ public class LastFMTrackBrowseService extends AbstractLastFMBrowseService implem
     public Result<LastFMTrack> findChildren(Collection<String> criteriaList, Collection<String> sortCriteriaList, Integer firstItem, Integer maxItems, Boolean childCounters) {
         String currentId = "";
         for (String criteria : criteriaList) {
-            if(criteria.contains(":") && !criteria.startsWith("Folder:")) {
+            if(criteria.contains(":") && !criteria.startsWith(MenuLevelFolder.TYPE+":") && !criteria.startsWith(MenuLevelImageFolder.TYPE+":")) {
                 currentId = criteria;
             }
         }
