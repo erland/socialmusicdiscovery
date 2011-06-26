@@ -301,9 +301,22 @@ sub _createResponse {
 				favorites_url => $uriBase . $entrypath,
 				parser   => __PACKAGE__,
 			};
+
+			# special case - browse ImageFolder in slideshow
+			if ($entry->{'type'} eq 'ImageFolder') {
+				$menu->{'type'} = 'slideshow';
+				$session->{'slideshow'} = 1;
+			}
+
 		}
 
 		if (!$noArtwork && (my $image = $entry->{'image'})) {
+
+			if ($session->{'slideshow'}) {
+				$menu->{'type'} = 'slideshow';
+				$menu->{'date'} = '';
+				$menu->{'owner'} = '';
+			}
 
 			if ($image->{'providerId'} eq 'squeezeboxserver') {
 
