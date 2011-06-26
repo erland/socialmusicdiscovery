@@ -217,6 +217,32 @@ sub level {
 	);
 }
 
+sub cmdLevel {
+	my ($client, $callback, $args, $command) = @_;
+
+	$log->info("sending smd-server command: $command");
+
+	Plugins::SocialMusicDiscovery::Server->post(
+		$command,
+		sub {
+			my $json = shift;
+			$log->info("cmd success: $json->{success}, $json->{message}");
+			$callback->([{
+				type        => 'text',
+				name        => $json->{'message'},
+				showBriefly => 1,
+				popback     => 2,
+				refresh     => 1,
+				favorites   => 0,
+			}]);
+		},
+		sub {
+			$log->warn("error executing command: $command " . $_[0]);
+		},
+		{ timeout => 35 },
+	);
+}
+
 sub _createResponse {
 	my ($client, $callback, $json, $path, $session) = @_;
 
@@ -276,6 +302,17 @@ sub _createResponse {
 					parser   => __PACKAGE__,
 				};
 			}
+			
+		} elsif ($entry->{'command'}) {
+
+			$menu = {
+				name => $entry->{'name'},
+				type => 'link',
+				url  => \&cmdLevel,
+				passthrough => [ $entry->{'command'} ],
+				nextWindow => 'refresh',
+				favorites => 0,
+			};
 
 		} elsif ($entry->{'leaf'}) {
 
