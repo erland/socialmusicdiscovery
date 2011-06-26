@@ -250,34 +250,13 @@ sub smdContext {
 
 	for my $item (@{$contextInfo->{'items'}}) {
 
-		if (exists $item->{'command'}) {
+		if ($item->{'command'}) {
 
 			push @menu, {
-				type => 'link',
 				name => $item->{'name'},
-				url  => sub {
-					my ($client, $callback) = @_;
-					$log->info("cmd: $item->{command}");
-					Plugins::SocialMusicDiscovery::Server->post(
-						$item->{'command'},
-						sub {
-							my $json = shift;
-							$log->info("cmd success: $json->{success}, $json->{message}");
-							$callback->([{
- 								type        => 'text',
-								name        => $json->{'message'},
-								showBriefly => 1,
-								popback     => 2,
-								refresh     => 1,
-								favorites   => 0,
-							}]);
-						},
-						sub {
-							$log->warn("error executing command: $item->{command} " . $_[0]);
-						},
-						{ timeout => 35 },
-					);
-				},
+				type => 'link',
+				url  => \&Plugins::SocialMusicDiscovery::Browse::cmdLevel,
+				passthrough => [ $item->{'command'} ],
 				favorites => 0,
 				nextWindow  => $tags->{'menuMode'} ? 'refresh' : undef,
 				isContextMenu => $tags->{'menuMode'} ? 1 : undef,
