@@ -55,7 +55,7 @@ public class SpotifyAlbumBrowseService extends AbstractBrowseService implements 
     public Result<SpotifyAlbum> findChildren(Collection<String> criteriaList, Collection<String> sortCriteriaList, Integer firstItem, Integer maxItems, Boolean childCounters) {
         String currentId = "";
         for (String criteria : criteriaList) {
-            if(criteria.contains(":") && !criteria.startsWith("Folder:")) {
+            if(criteria.contains(":") && !criteria.startsWith(MenuLevelFolder.TYPE+":") && !criteria.startsWith(MenuLevelImageFolder.TYPE+":")) {
                 currentId = criteria;
             }
         }

@@ -32,10 +32,7 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.socialmusicdiscovery.server.business.model.core.ArtistEntity;
-import org.socialmusicdiscovery.server.business.service.browse.AbstractBrowseService;
-import org.socialmusicdiscovery.server.business.service.browse.BrowseService;
-import org.socialmusicdiscovery.server.business.service.browse.Result;
-import org.socialmusicdiscovery.server.business.service.browse.ResultItem;
+import org.socialmusicdiscovery.server.business.service.browse.*;
 
 import javax.ws.rs.core.MediaType;
 import java.io.UnsupportedEncodingException;
@@ -58,7 +55,7 @@ public class SpotifyArtistBrowseService extends AbstractBrowseService implements
     public Result<SpotifyArtist> findChildren(Collection<String> criteriaList, Collection<String> sortCriteriaList, Integer firstItem, Integer maxItems, Boolean childCounters) {
         String currentId = "";
         for (String criteria : criteriaList) {
-            if(criteria.contains(":") && !criteria.startsWith("Folder:")) {
+            if(criteria.contains(":") && !criteria.startsWith(MenuLevelFolder.TYPE+":") && !criteria.startsWith(MenuLevelImageFolder.TYPE+":")) {
                 currentId = criteria;
             }
         }

@@ -107,6 +107,9 @@ public class LibraryBrowseService {
             if (token.startsWith(MenuLevelFolder.TYPE+":")) {
                 // We need to make folder items unique
                 criteriaMap.put(token,null);
+            }else if (token.startsWith(MenuLevelImageFolder.TYPE + ":")) {
+                // We need to make folder items unique
+                criteriaMap.put(token,null);
             }else if(token.startsWith(MenuLevelCommand.TYPE+":")) {
                 // We need to make command items unique
                 criteriaMap.put(token,null);
@@ -125,21 +128,28 @@ public class LibraryBrowseService {
             criteriaOffset = 1;
         }
 
+        Map<String, String> remainingCriteria = new HashMap<String, String>(criteriaMap);
         // Find the next menu level which we should return data for
         boolean found = true;
         while (found && possibleLevels != null) {
             found = false;
             for (MenuLevel level : possibleLevels) {
-                if (criteriaMap.containsKey(level.getId())) {
-                    String value = criteriaMap.get(level.getId());
+                if (remainingCriteria.containsKey(level.getId())) {
+                    String value = remainingCriteria.get(level.getId());
                     if (value != null) {
                         criterias.add(level.getType() + ":" + value);
                     }
+                    remainingCriteria.remove(level.getId());
                     possibleLevels = level.getChildLevels();
                     found = true;
                     break;
                 }
             }
+        }
+
+        // Add context to criteria map
+        if(currentId!=null && currentId.contains(":")) {
+            criteriaMap.put(currentId.substring(0,currentId.indexOf(":")), currentId.substring(currentId.indexOf(":")+1));
         }
 
         // If a matching level was found which have childs
@@ -155,6 +165,16 @@ public class LibraryBrowseService {
                 if (!(requestedObjectType instanceof MenuLevelDynamic)) {
                     if ((firstItem == null || firstItem == 0) && (maxItems==null||maxItems>0)) {
                         ResultItem<Object> item = new ResultItem<Object>(null, requestedObjectType.getType(), requestedObjectType.getId(), requestedObjectType.getDisplayName(), requestedObjectType.isPlayable(), requestedObjectType.getChildLevels() == null);
+                        if(requestedObjectType instanceof MenuLevelCommand && ((MenuLevelCommand)requestedObjectType).getParameters()!=null) {
+                            List<String> parameters = new ArrayList<String>();
+                            for (String name : ((MenuLevelCommand)requestedObjectType).getParameters()) {
+                                String value = criteriaMap.get(name);
+                                if(value!=null) {
+                                    parameters.add(name+":"+value);
+                                }
+                            }
+                            item.setParameters(parameters);
+                        }
                         browseResult = new Result<Object>(1, new ArrayList<ResultItem<Object>>(Arrays.asList(item)));
                         if(counts) {
                             Map<String, Long> childCounters = new HashMap<String, Long>();
@@ -252,8 +272,8 @@ public class LibraryBrowseService {
                             }
                         }
                     }else {
-                        result = new Result<Object>();
-                        result.setCount(browseResult.getCount());
+                        browseResult = new Result<Object>();
+                        browseResult.setCount(browseResult.getCount());
                     }
                 }
 

@@ -105,6 +105,20 @@ public class MenuLevelDynamic extends AbstractMenuLevel {
     }
 
     /**
+     * Constructs a new instance with default format based on the specified type
+     *
+     * @param type          Type of menu item, see {@link #type}
+     * @param format        Title format that should be used, use null for default format based on {@link #type}
+     * @param playable      Indicates if menu is playable
+     * @param criteriaDepth Number of parent levels that should be included when filtering this level
+     * @param childLevels    Child levels below this menu level
+     */
+    public MenuLevelDynamic(String type, String format, Boolean playable, Long criteriaDepth, List<MenuLevel> childLevels) {
+        this(type, format, playable, childLevels);
+        setCriteriaDepth(criteriaDepth);
+    }
+
+    /**
      * Constructs a new instance
      *
      * @param type          Type of menu item, see {@link #type}

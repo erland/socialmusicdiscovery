@@ -111,13 +111,13 @@ public class SpotifyPlugin extends AbstractPlugin {
                                         true)));
 
         browseMenuManager.addMenu(BrowseMenuManager.MenuType.CONTEXT,
-                            new MenuLevelCommand(SpotifyArtist.class.getSimpleName(), "spotifyimportartist", "Import From Spotify"));
+                            new MenuLevelCommand(SpotifyArtist.class.getSimpleName(), "spotifyimportartist", "Import From Spotify", Arrays.asList("SpotifyArtist")));
 
         browseMenuManager.addMenu(BrowseMenuManager.MenuType.CONTEXT,
-                            new MenuLevelCommand(SpotifyAlbum.class.getSimpleName(), "spotifyimportalbum", "Import from Spotify"));
+                            new MenuLevelCommand(SpotifyAlbum.class.getSimpleName(), "spotifyimportalbum", "Import from Spotify", Arrays.asList("SpotifyAlbum")));
 
         browseMenuManager.addMenu(BrowseMenuManager.MenuType.CONTEXT,
-                            new MenuLevelCommand(SpotifyTrack.class.getSimpleName(), "spotifyimporttrack", "Import from Spotify"));
+                            new MenuLevelCommand(SpotifyTrack.class.getSimpleName(), "spotifyimporttrack", "Import from Spotify", Arrays.asList("SpotifyTrack")));
 
         browseMenuManager.addCommand("spotifyimportartist", SpotifyImport.class);
         browseMenuManager.addCommand("spotifyimportalbum", SpotifyImport.class);

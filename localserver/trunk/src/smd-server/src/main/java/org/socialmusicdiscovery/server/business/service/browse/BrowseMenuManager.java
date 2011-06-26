@@ -109,6 +109,8 @@ public class BrowseMenuManager {
                         MenuLevel thisLevel;
                         if(objectType.equals(MenuLevelFolder.TYPE)) {
                             thisLevel = new MenuLevelFolder(objectId, objectName, (List<MenuLevel>) null);
+                        }else if(objectType.equals(MenuLevelImageFolder.TYPE)) {
+                            thisLevel = new MenuLevelImageFolder(objectId, objectName, (List<MenuLevel>) null);
                         }else if(objectType.equals(MenuLevelCommand.TYPE)) {
                             thisLevel = new MenuLevelCommand(objectId, objectName);
                         }else if (criteriaDepth != null) {
@@ -228,6 +230,7 @@ public class BrowseMenuManager {
             }
             if(matchingLevel==null) {
                 existingLevels.add(newLevel);
+                sortMenuLevels(existingLevels);
             }else {
                 if(matchingLevel.getChildLevels()==null && newLevel.getChildLevels()!=null) {
                     matchingLevel.setChildLevels(new ArrayList<MenuLevel>());
@@ -292,7 +295,12 @@ public class BrowseMenuManager {
                 result.add(level);
             }
         }
-        Collections.sort(result, new Comparator<MenuLevel>() {
+        sortMenuLevels(result);
+        return result;
+    }
+
+    private void sortMenuLevels(List<MenuLevel> levels) {
+        Collections.sort(levels, new Comparator<MenuLevel>() {
             @Override
             public int compare(MenuLevel m1, MenuLevel m2) {
                 int weight = m1.getWeight().compareTo(m2.getWeight());
@@ -303,9 +311,7 @@ public class BrowseMenuManager {
                 }
             }
         });
-        return result;
     }
-
     public void addCommand(String commandId, Class<? extends Command> browseCommandService) {
         this.commands.put(commandId, browseCommandService);
 

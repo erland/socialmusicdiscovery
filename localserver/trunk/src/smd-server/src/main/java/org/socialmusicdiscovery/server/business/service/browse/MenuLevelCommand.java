@@ -27,6 +27,8 @@
 
 package org.socialmusicdiscovery.server.business.service.browse;
 
+import java.util.List;
+
 /**
  * Represents a command/action shown as a menu item
  */
@@ -42,6 +44,11 @@ public class MenuLevelCommand extends AbstractMenuLevel {
      * The text that should be shown to the user for this menu item
      */
     private String name;
+
+    /**
+     * The parameters which should be passed to the command
+     */
+    private List<String> parameters;
 
     public MenuLevelCommand() {
     }
@@ -61,6 +68,19 @@ public class MenuLevelCommand extends AbstractMenuLevel {
     /**
      * Constructs a new instance
      *
+     * @param id   Identity of the command
+     * @param name The text to display to user
+     */
+    public MenuLevelCommand(String id, String name, List<String> parameters) {
+        super(TYPE, null);
+        this.id = id;
+        this.name = name;
+        this.parameters = parameters;
+    }
+
+    /**
+     * Constructs a new instance
+     *
      * @param context The context in which this menu item should be available
      * @param id      Identity of the command
      * @param name    The text to display to user
@@ -70,12 +90,33 @@ public class MenuLevelCommand extends AbstractMenuLevel {
         setContext(context);
     }
 
+    /**
+     * Constructs a new instance
+     *
+     * @param context The context in which this menu item should be available
+     * @param id      Identity of the command
+     * @param name    The text to display to user
+     */
+    public MenuLevelCommand(String context, String id, String name, List<String> parameters) {
+        this(id, name);
+        setContext(context);
+        this.parameters = parameters;
+    }
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<String> getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(List<String> parameters) {
+        this.parameters = parameters;
     }
 
     @Override
