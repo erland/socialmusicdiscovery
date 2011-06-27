@@ -342,7 +342,10 @@ sub _createResponse {
 			# special case - browse ImageFolder in slideshow
 			if ($entry->{'type'} eq 'ImageFolder') {
 				$menu->{'type'} = 'slideshow';
-				$session->{'slideshow'} = 1;
+				# add to session hash in passthrough only, clone first
+				my %sess = %$session;
+				$sess{'slideshow'} = 1;
+				$menu->{'passthrough'}->[1] = \%sess;
 			}
 
 		}
