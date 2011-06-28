@@ -3,18 +3,33 @@
 <menus xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="menus.xsd">
 
-    <menu type="Folder" id="artists" weight="10">
+    <menu type="Artist.performer" weight="20">
         <contexts>
             <context>Artist</context>
             <context>Release</context>
-            <context>Classification</context>
             <context>Track</context>
         </contexts>
         <labels>
-            <label language="EN">Artists</label>
+            <label language="EN">Performer: </label>
         </labels>
         <menus>
-            <menu type="Artist">
+            <menu type="Release" criteriaDepth="1">
+                <menus>
+                    <menu type="Track" criteriaDepth="2"/>
+                </menus>
+            </menu>
+        </menus>
+    </menu>
+
+    <menu type="Folder" id="performers" weight="20">
+        <contexts>
+            <context>Classification</context>
+        </contexts>
+        <labels>
+            <label language="EN">Performers</label>
+        </labels>
+        <menus>
+            <menu type="Artist.performer">
                 <menus>
                     <menu type="Release" criteriaDepth="1">
                         <menus>
@@ -26,12 +41,27 @@
         </menus>
     </menu>
 
-    <menu type="Folder" id="composers" weight="25">
+    <menu type="Artist.composer" weight="25">
         <contexts>
             <context>Artist</context>
             <context>Release</context>
-            <context>Classification</context>
             <context>Track</context>
+        </contexts>
+        <labels>
+            <label language="EN">Composer: </label>
+        </labels>
+        <menus>
+            <menu type="Release" criteriaDepth="1">
+                <menus>
+                    <menu type="Track" criteriaDepth="2"/>
+                </menus>
+            </menu>
+        </menus>
+    </menu>
+
+    <menu type="Folder" id="composers" weight="25">
+        <contexts>
+            <context>Classification</context>
         </contexts>
         <labels>
             <label language="EN">Composers</label>
@@ -49,12 +79,27 @@
         </menus>
     </menu>
 
-    <menu type="Folder" id="conductors" weight="25">
+    <menu type="Artist.conductor" weight="25">
         <contexts>
             <context>Artist</context>
             <context>Release</context>
-            <context>Classification</context>
             <context>Track</context>
+        </contexts>
+        <labels>
+            <label language="EN">Conductor: </label>
+        </labels>
+        <menus>
+            <menu type="Release" criteriaDepth="1">
+                <menus>
+                    <menu type="Track" criteriaDepth="2"/>
+                </menus>
+            </menu>
+        </menus>
+    </menu>
+
+    <menu type="Folder" id="conductors" weight="25">
+        <contexts>
+            <context>Classification</context>
         </contexts>
         <labels>
             <label language="EN">Conductors</label>
@@ -72,11 +117,22 @@
         </menus>
     </menu>
 
+    <menu type="Release" weight="50">
+        <contexts>
+            <context>Track</context>
+        </contexts>
+        <labels>
+            <label language="EN">Release: </label>
+        </labels>
+        <menus>
+            <menu type="Track" criteriaDepth="1"/>
+        </menus>
+    </menu>
+
     <menu type="Folder" id="releases" weight="50">
         <contexts>
             <context>Artist</context>
             <context>Classification</context>
-            <context>Track</context>
         </contexts>
         <labels>
             <label language="EN">Releases</label>
@@ -90,25 +146,21 @@
         </menus>
     </menu>
 
-    <menu type="Folder" id="genres" weight="75">
+    <menu type="Classification.genre" weight="75" playable="false">
         <contexts>
             <context>Artist</context>
             <context>Release</context>
             <context>Track</context>
         </contexts>
         <labels>
-            <label language="EN">Genres</label>
+            <label language="EN">Genre: </label>
         </labels>
         <menus>
-            <menu type="Classification.genre" playable="false">
+            <menu type="Artist" criteriaDepth="1">
                 <menus>
-                    <menu type="Artist" criteriaDepth="1">
+                    <menu type="Release" criteriaDepth="2">
                         <menus>
-                            <menu type="Release" criteriaDepth="2">
-                                <menus>
-                                    <menu type="Track" criteriaDepth="3"/>
-                                </menus>
-                            </menu>
+                            <menu type="Track" criteriaDepth="3"/>
                         </menus>
                     </menu>
                 </menus>

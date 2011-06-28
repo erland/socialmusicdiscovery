@@ -50,6 +50,7 @@ public class BrowseMenuManagerTest extends BaseTestCase {
         browseMenuManager = new BrowseMenuManager();
         List<MenuLevel> menus = browseMenuManager.getAllMenus(BrowseMenuManager.MenuType.LIBRARY);
         findMenu(Arrays.asList("Folder:artists", "Artist", "Release", "Track"), menus);
+        findMenu(Arrays.asList("Folder:performers", "Artist.performer", "Release", "Track"), menus);
         findMenu(Arrays.asList("Folder:composers", "Artist.composer", "Release", "Track"), menus);
         findMenu(Arrays.asList("Folder:conductors", "Artist.conductor", "Release", "Track"), menus);
         findMenu(Arrays.asList("Folder:releases", "Release", "Track"), menus);
@@ -62,9 +63,9 @@ public class BrowseMenuManagerTest extends BaseTestCase {
     public void testAddSingle() {
         browseMenuManager.addMenu(BrowseMenuManager.MenuType.LIBRARY,
                 new MenuLevelFolder("addSingle", "AddSingle",
-                        new MenuLevelDynamic("Artist", null, true,
-                                new MenuLevelDynamic("Release", null, true,
-                                        new MenuLevelDynamic("Track", null, true)))));
+                        new MenuLevelDynamic("Artist", null, null, true,
+                                new MenuLevelDynamic("Release", null, null, true,
+                                        new MenuLevelDynamic("Track", null, null, true)))));
         findMenu(Arrays.asList("Folder:addSingle", "Artist", "Release", "Track"), browseMenuManager.getAllMenus(BrowseMenuManager.MenuType.LIBRARY));
     }
 
@@ -72,8 +73,8 @@ public class BrowseMenuManagerTest extends BaseTestCase {
     public void testAddSingleCommand() {
         browseMenuManager.addMenu(BrowseMenuManager.MenuType.LIBRARY,
                 new MenuLevelFolder("addSingleCommand", "AddSingleCommand",
-                        new MenuLevelDynamic("Artist", null, true,
-                                new MenuLevelDynamic("Release", null, true,
+                        new MenuLevelDynamic("Artist", null, null, true,
+                                new MenuLevelDynamic("Release", null, null, true,
                                         new MenuLevelCommand("play", "Play")))));
         findMenu(Arrays.asList("Folder:addSingleCommand", "Artist", "Release", "Command:play"), browseMenuManager.getAllMenus(BrowseMenuManager.MenuType.LIBRARY));
     }
@@ -82,16 +83,16 @@ public class BrowseMenuManagerTest extends BaseTestCase {
     public void testAddSingleFolder() {
         browseMenuManager.addMenu(BrowseMenuManager.MenuType.LIBRARY,
                 new MenuLevelFolder("firstFolder", "First Folder",
-                        new MenuLevelDynamic("Artist", null, true,
+                        new MenuLevelDynamic("Artist", null, null, true,
                                 new MenuLevelFolder("releases", "Releases",
-                                        new MenuLevelDynamic("Release", null, true,
-                                                new MenuLevelDynamic("Track", null, true))))));
+                                        new MenuLevelDynamic("Release", null, null, true,
+                                                new MenuLevelDynamic("Track", null, null, true))))));
 
         browseMenuManager.addMenu(BrowseMenuManager.MenuType.LIBRARY,
                 new MenuLevelFolder("secondFolder", "Second Folder",
                         new MenuLevelFolder("specialReleases", "Special Releases",
-                                new MenuLevelDynamic("Release", null, true,
-                                        new MenuLevelDynamic("Track", null, true)))));
+                                new MenuLevelDynamic("Release", null, null, true,
+                                        new MenuLevelDynamic("Track", null, null, true)))));
 
         findMenu(Arrays.asList("Folder:firstFolder", "Artist", "Folder:releases", "Release", "Track"), browseMenuManager.getAllMenus(BrowseMenuManager.MenuType.LIBRARY));
         findMenu(Arrays.asList("Folder:secondFolder", "Folder:specialReleases", "Release", "Track"), browseMenuManager.getAllMenus(BrowseMenuManager.MenuType.LIBRARY));
@@ -101,27 +102,27 @@ public class BrowseMenuManagerTest extends BaseTestCase {
     public void testAddMultipleCommands() {
         browseMenuManager.addMenu(BrowseMenuManager.MenuType.LIBRARY,
                 new MenuLevelFolder("commandMenu", "CommandMenu",
-                        new MenuLevelDynamic("Artist", null, true,
-                                new MenuLevelDynamic("Release", null, true,
-                                        new MenuLevelDynamic("Track", null, true,
+                        new MenuLevelDynamic("Artist", null, null, true,
+                                new MenuLevelDynamic("Release", null, null, true,
+                                        new MenuLevelDynamic("Track", null, null, true,
                                                 new MenuLevelCommand("play", "Play"))))));
 
         browseMenuManager.addMenu(BrowseMenuManager.MenuType.LIBRARY,
                 new MenuLevelFolder("commandMenu", "CommandMenu",
-                        new MenuLevelDynamic("Artist", null, true,
-                                new MenuLevelDynamic("Release", null, true,
-                                        new MenuLevelDynamic("Track", null, true,
+                        new MenuLevelDynamic("Artist", null, null, true,
+                                new MenuLevelDynamic("Release", null, null, true,
+                                        new MenuLevelDynamic("Track", null, null, true,
                                                 new MenuLevelCommand("add", "Add"))))));
 
         browseMenuManager.addMenu(BrowseMenuManager.MenuType.LIBRARY,
                 new MenuLevelFolder("commandMenu", "CommandMenu",
-                        new MenuLevelDynamic("Artist", null, true,
-                                new MenuLevelDynamic("Release", null, true,
+                        new MenuLevelDynamic("Artist", null, null, true,
+                                new MenuLevelDynamic("Release", null, null, true,
                                         new MenuLevelCommand("play", "Play")))));
 
         browseMenuManager.addMenu(BrowseMenuManager.MenuType.LIBRARY,
                 new MenuLevelFolder("commandMenu", "CommandMenu",
-                        new MenuLevelDynamic("Artist", null, true,
+                        new MenuLevelDynamic("Artist", null, null, true,
                                 new MenuLevelCommand("play", "Play"))));
 
         findMenu(Arrays.asList("Folder:commandMenu", "Artist", "Release", "Track", "Command:play"), browseMenuManager.getAllMenus(BrowseMenuManager.MenuType.LIBRARY));
@@ -134,27 +135,27 @@ public class BrowseMenuManagerTest extends BaseTestCase {
     public void testAddContextMultipleCommands() {
         browseMenuManager.addMenu(BrowseMenuManager.MenuType.CONTEXT,
                 new MenuLevelFolder("MyObject", "commandMenu", "CommandMenu", MenuLevel.MIDDLE_WEIGHT,
-                        new MenuLevelDynamic("Artist", null, true,
-                                new MenuLevelDynamic("Release", null, true,
-                                        new MenuLevelDynamic("Track", null, true,
+                        new MenuLevelDynamic("Artist", null, null, true,
+                                new MenuLevelDynamic("Release", null, null, true,
+                                        new MenuLevelDynamic("Track", null, null, true,
                                                 new MenuLevelCommand("play", "Play"))))));
 
         browseMenuManager.addMenu(BrowseMenuManager.MenuType.CONTEXT,
                 new MenuLevelFolder("MyObject", "commandMenu", "CommandMenu", MenuLevel.MIDDLE_WEIGHT,
-                        new MenuLevelDynamic("Artist", null, true,
-                                new MenuLevelDynamic("Release", null, true,
-                                        new MenuLevelDynamic("Track", null, true,
+                        new MenuLevelDynamic("Artist", null, null, true,
+                                new MenuLevelDynamic("Release", null, null, true,
+                                        new MenuLevelDynamic("Track", null, null, true,
                                                 new MenuLevelCommand("add", "Add"))))));
 
         browseMenuManager.addMenu(BrowseMenuManager.MenuType.CONTEXT,
                 new MenuLevelFolder("MyObject", "commandMenu", "CommandMenu", MenuLevel.MIDDLE_WEIGHT,
-                        new MenuLevelDynamic("Artist", null, true,
-                                new MenuLevelDynamic("Release", null, true,
+                        new MenuLevelDynamic("Artist", null, null, true,
+                                new MenuLevelDynamic("Release", null, null, true,
                                         new MenuLevelCommand("play", "Play")))));
 
         browseMenuManager.addMenu(BrowseMenuManager.MenuType.CONTEXT,
                 new MenuLevelFolder("MyObject", "commandMenu", "CommandMenu", MenuLevel.MIDDLE_WEIGHT,
-                        new MenuLevelDynamic("Artist", null, true,
+                        new MenuLevelDynamic("Artist", null, null, true,
                                 new MenuLevelCommand("play", "Play"))));
 
         browseMenuManager.addMenu(BrowseMenuManager.MenuType.CONTEXT,
@@ -207,9 +208,9 @@ public class BrowseMenuManagerTest extends BaseTestCase {
                 System.out.print(" ");
             }
             if (level instanceof MenuLevelCommand) {
-                System.out.println(level.getType() + ":" + ((MenuLevelCommand) level).getName());
+                System.out.println(level.getType() + ":" + ((MenuLevelCommand) level).getLabel());
             } else if (level instanceof MenuLevelFolder) {
-                System.out.println(level.getType() + ":" + ((MenuLevelFolder) level).getName());
+                System.out.println(level.getType() + ":" + ((MenuLevelFolder) level).getLabel());
             } else {
                 System.out.println(level.getType());
             }

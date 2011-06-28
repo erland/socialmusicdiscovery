@@ -20,6 +20,23 @@
         </menus>
     </menu>
 
+    <menu type="Folder" id="performers" weight="20">
+        <labels>
+            <label language="EN">Performers</label>
+        </labels>
+        <menus>
+            <menu type="Artist.performer">
+                <menus>
+                    <menu type="Release">
+                        <menus>
+                            <menu type="Track"/>
+                        </menus>
+                    </menu>
+                </menus>
+            </menu>
+        </menus>
+    </menu>
+
     <menu type="Folder" id="composers" weight="25">
         <labels>
             <label language="EN">Composers</label>

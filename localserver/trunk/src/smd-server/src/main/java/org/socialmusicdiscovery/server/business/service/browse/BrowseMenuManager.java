@@ -188,7 +188,7 @@ public class BrowseMenuManager {
             if(menuNode.getAttributeValue("criteriaDepth")!=null) {
                 criteriaDepth = Long.valueOf(menuNode.getAttributeValue("criteriaDepth"));
             }
-            level = new MenuLevelDynamic(type, format, Boolean.valueOf(playable), criteriaDepth);
+            level = new MenuLevelDynamic(type, getMenuName(menuNode.getChildElements("labels")), format, Boolean.valueOf(playable), criteriaDepth);
         }
 
         if(menuNode.getAttributeValue("weight")!=null) {

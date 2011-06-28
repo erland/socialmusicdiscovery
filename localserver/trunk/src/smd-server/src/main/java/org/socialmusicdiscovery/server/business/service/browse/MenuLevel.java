@@ -55,6 +55,10 @@ public interface MenuLevel {
 
     public void setContext(String context);
 
+    public String getLabel();
+
+    public void setLabel(String label);
+
     public String getId();
 
     /**

@@ -40,6 +40,11 @@ public abstract class AbstractMenuLevel implements MenuLevel {
     private String type;
 
     /**
+     * The text that should be shown to the user for this menu item
+     */
+    private String label;
+
+    /**
      * Weight which affect sorting, lower value means that it's placed on the top and higher value on the bottom.
      */
     private Integer weight;
@@ -60,11 +65,13 @@ public abstract class AbstractMenuLevel implements MenuLevel {
      * Constructs a new instance with default format based on the specified type
      *
      * @param type        Type of menu item, see {@link #type}
+     * @param label The label which should be displayed as a prefix in front of this menu item
      * @param childLevels Child levels below this menu level
      */
-    public AbstractMenuLevel(String type, List<MenuLevel> childLevels) {
+    public AbstractMenuLevel(String type, String label, List<MenuLevel> childLevels) {
         this.weight = MIDDLE_WEIGHT;
         this.type = type;
+        this.label = label;
         if (childLevels != null) {
             this.childLevels = new ArrayList<MenuLevel>(childLevels);
         } else {
@@ -103,5 +110,13 @@ public abstract class AbstractMenuLevel implements MenuLevel {
 
     public void setContext(String context) {
         this.context = context;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 }
