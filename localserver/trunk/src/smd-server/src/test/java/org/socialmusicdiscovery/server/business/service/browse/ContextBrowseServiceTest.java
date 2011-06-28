@@ -60,6 +60,8 @@ public class ContextBrowseServiceTest extends BaseTestCase {
         ContextBrowseService browseService= new ContextBrowseService();
         Result result = browseService.findChildren("Artist:231424b6-b3a9-45b8-bce2-77e694e67319",null,null,false);
 
+        assert result.getCount()>0;
+        assert result.getItems().size()>0;
         Collection<ResultItem> items = result.getItems();
         for (ResultItem item : items) {
             assert item.getChildItems()==null;
@@ -73,6 +75,8 @@ public class ContextBrowseServiceTest extends BaseTestCase {
         ContextBrowseService browseService= new ContextBrowseService();
         Result result = browseService.findChildren("Release:d972b0fa-42f5-45f9-ba56-2cede7666446",null,null,false);
 
+        assert result.getCount()>0;
+        assert result.getItems().size()>0;
         Collection<ResultItem> items = result.getItems();
         for (ResultItem item : items) {
             assert item.getChildItems()==null;
@@ -86,6 +90,8 @@ public class ContextBrowseServiceTest extends BaseTestCase {
         ContextBrowseService browseService= new ContextBrowseService();
         Result result = browseService.findChildren("Track:1cbb8105-7732-4dfc-a423-def548b0a927",null,null,false);
 
+        assert result.getCount()>0;
+        assert result.getItems().size()>0;
         Collection<ResultItem> items = result.getItems();
         for (ResultItem item : items) {
             assert item.getChildItems()==null;
@@ -99,6 +105,8 @@ public class ContextBrowseServiceTest extends BaseTestCase {
         ContextBrowseService browseService= new ContextBrowseService();
         Result result = browseService.findChildren("Classification:819a598c-8d46-4391-ba90-2815f2690b72",null,null,false);
 
+        assert result.getCount()>0;
+        assert result.getItems().size()>0;
         Collection<ResultItem> items = result.getItems();
         for (ResultItem item : items) {
             assert item.getChildItems()==null;
@@ -112,12 +120,14 @@ public class ContextBrowseServiceTest extends BaseTestCase {
         ContextBrowseService browseService= new ContextBrowseService();
         Result result = browseService.findChildren("Artist:231424b6-b3a9-45b8-bce2-77e694e67319",1,1,true);
 
+        assert result.getCount()>0;
+        assert result.getItems().size()==1;
         Collection<ResultItem> items = result.getItems();
         for (ResultItem item : items) {
             assert item.getChildItems()!=null;
             assert item.getChildItems().size()>0;
             if(logging) System.out.println(item.getItem().toString()+getChildString(item.getChildItems()));
-            queryAndPrintMenuLevel("","  ",item, true, (Long)item.getChildItems().values().iterator().next());
+            queryAndPrintMenuLevel("Artist:231424b6-b3a9-45b8-bce2-77e694e67319","  ",item, true, (Long)item.getChildItems().values().iterator().next());
         }
     }
 
@@ -138,7 +148,7 @@ public class ContextBrowseServiceTest extends BaseTestCase {
         }
     }
     private void queryAndPrintMenuLevel(String parentId, String prefix, ResultItem item, boolean childs, Long noOfChilds) {
-        LibraryBrowseService browseService= new LibraryBrowseService();
+        ContextBrowseService browseService= new ContextBrowseService();
         String id = parentId;
         if(parentId.length()>0) {
             id = parentId+"/";

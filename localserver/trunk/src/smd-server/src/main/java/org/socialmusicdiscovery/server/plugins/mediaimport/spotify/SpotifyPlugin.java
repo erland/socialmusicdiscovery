@@ -28,13 +28,16 @@
 package org.socialmusicdiscovery.server.plugins.mediaimport.spotify;
 
 import com.google.inject.Inject;
+import nu.xom.ParsingException;
 import org.socialmusicdiscovery.server.api.plugin.AbstractPlugin;
 import org.socialmusicdiscovery.server.api.plugin.PluginException;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameter;
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameterEntity;
-import org.socialmusicdiscovery.server.business.service.browse.*;
+import org.socialmusicdiscovery.server.business.service.browse.BrowseMenuManager;
+import org.socialmusicdiscovery.server.business.service.browse.BrowseServiceManager;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -64,61 +67,6 @@ public class SpotifyPlugin extends AbstractPlugin {
         browseMenuManager.addDefaultItemFormat(BrowseMenuManager.MenuType.CONTEXT, SpotifyAlbum.class.getSimpleName(), "%object.name");
         browseMenuManager.addDefaultItemFormat(BrowseMenuManager.MenuType.CONTEXT, SpotifyTrack.class.getSimpleName(), "%object.number||[%object.number,. ]||%object.name");
 
-        browseMenuManager.addMenu(BrowseMenuManager.MenuType.CONTEXT,
-                            new MenuLevelFolder("Artist","spotifyartists","On Spotify", MenuLevel.BOTTOM_WEIGHT,
-                                new MenuLevelDynamic(SpotifyArtist.class.getSimpleName(),
-                                        null,
-                                        false,
-                                    new MenuLevelDynamic(SpotifyAlbum.class.getSimpleName(),
-                                            null,
-                                            true,
-                                            1L,
-                                        new MenuLevelDynamic(SpotifyTrack.class.getSimpleName(),
-                                                null,
-                                                true,
-                                                2L)))));
-
-        browseMenuManager.addMenu(BrowseMenuManager.MenuType.CONTEXT,
-                            new MenuLevelFolder("Release","spotifyalbums","On Spotify", MenuLevel.BOTTOM_WEIGHT,
-                                new MenuLevelDynamic(SpotifyAlbum.class.getSimpleName(),
-                                        null,
-                                        true,
-                                    new MenuLevelDynamic(SpotifyTrack.class.getSimpleName(),
-                                            null,
-                                            true,
-                                            1L))));
-
-        browseMenuManager.addMenu(BrowseMenuManager.MenuType.CONTEXT,
-                            new MenuLevelFolder(SpotifyArtist.class.getSimpleName(), "spotifyalbums","Albums", MenuLevel.MIDDLE_WEIGHT,
-                                new MenuLevelDynamic(SpotifyAlbum.class.getSimpleName(),
-                                        null,
-                                        true,
-                                    new MenuLevelDynamic(SpotifyTrack.class.getSimpleName(),
-                                            null,
-                                            true,
-                                            1L))));
-
-        browseMenuManager.addMenu(BrowseMenuManager.MenuType.CONTEXT,
-                            new MenuLevelFolder("Track","spotifytracks","On Spotify", MenuLevel.BOTTOM_WEIGHT,
-                                new MenuLevelDynamic(SpotifyTrack.class.getSimpleName(),
-                                        null,
-                                        true)));
-
-        browseMenuManager.addMenu(BrowseMenuManager.MenuType.CONTEXT,
-                            new MenuLevelFolder(SpotifyAlbum.class.getSimpleName(), "spotifytracks","Tracks", MenuLevel.MIDDLE_WEIGHT,
-                                new MenuLevelDynamic(SpotifyTrack.class.getSimpleName(),
-                                        null,
-                                        true)));
-
-        browseMenuManager.addMenu(BrowseMenuManager.MenuType.CONTEXT,
-                            new MenuLevelCommand(SpotifyArtist.class.getSimpleName(), "spotifyimportartist", "Import From Spotify", Arrays.asList("SpotifyArtist")));
-
-        browseMenuManager.addMenu(BrowseMenuManager.MenuType.CONTEXT,
-                            new MenuLevelCommand(SpotifyAlbum.class.getSimpleName(), "spotifyimportalbum", "Import from Spotify", Arrays.asList("SpotifyAlbum")));
-
-        browseMenuManager.addMenu(BrowseMenuManager.MenuType.CONTEXT,
-                            new MenuLevelCommand(SpotifyTrack.class.getSimpleName(), "spotifyimporttrack", "Import from Spotify", Arrays.asList("SpotifyTrack")));
-
         browseMenuManager.addCommand("spotifyimportartist", SpotifyImport.class);
         browseMenuManager.addCommand("spotifyimportalbum", SpotifyImport.class);
         browseMenuManager.addCommand("spotifyimporttrack", SpotifyImport.class);
@@ -126,15 +74,20 @@ public class SpotifyPlugin extends AbstractPlugin {
         browseServiceManager.addBrowseService(SpotifyArtist.class.getSimpleName(), SpotifyArtistBrowseService.class, getConfiguration());
         browseServiceManager.addBrowseService(SpotifyAlbum.class.getSimpleName(), SpotifyAlbumBrowseService.class, getConfiguration());
         browseServiceManager.addBrowseService(SpotifyTrack.class.getSimpleName(), SpotifyTrackBrowseService.class, getConfiguration());
+
+        try {
+            browseMenuManager.loadMenusFromXml(getClass().getResourceAsStream("/org/socialmusicdiscovery/server/plugins/mediaimport/spotify/spotify-menus.xml"));
+        } catch (IOException e) {
+            throw new PluginException(e);
+        } catch (ParsingException e) {
+            throw new PluginException(e);
+        }
+
         return true;
     }
 
     @Override
     public void stop() throws PluginException {
-        browseMenuManager.removeMenu(BrowseMenuManager.MenuType.CONTEXT, "Artist", "spotifyartists");
-        browseMenuManager.removeMenu(BrowseMenuManager.MenuType.CONTEXT, "Release", "spotifyalbums");
-        browseMenuManager.removeMenu(BrowseMenuManager.MenuType.CONTEXT, "Track", "spotifytracks");
-
         browseMenuManager.removeDefaultItemFormat(BrowseMenuManager.MenuType.CONTEXT, SpotifyArtist.class.getSimpleName());
         browseMenuManager.removeDefaultItemFormat(BrowseMenuManager.MenuType.CONTEXT, SpotifyAlbum.class.getSimpleName());
         browseMenuManager.removeDefaultItemFormat(BrowseMenuManager.MenuType.CONTEXT, SpotifyTrack.class.getSimpleName());

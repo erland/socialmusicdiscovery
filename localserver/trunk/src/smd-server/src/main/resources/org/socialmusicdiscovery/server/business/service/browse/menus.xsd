@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <xs:element name="menus" type="menusType"/>
+
+    <xs:simpleType name="nonEmptyString">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="menusType">
+        <xs:sequence>
+            <xs:element type="menuType" name="menu" maxOccurs="unbounded" minOccurs="1">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">Definition of this menu</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="contextsType">
+        <xs:sequence>
+            <xs:element type="nonEmptyString" name="context" maxOccurs="unbounded" minOccurs="1">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">Context name, for example "Artist", "Release" or "Artist.performer"
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="labelsType">
+        <xs:sequence>
+            <xs:element type="labelType" name="label" maxOccurs="unbounded" minOccurs="1">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">Static text to display for this menu item</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="parametersType">
+        <xs:sequence>
+            <xs:element type="nonEmptyString" name="parameter" maxOccurs="unbounded" minOccurs="1">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">Parameter "name" or parameter "name:value"</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="labelType">
+        <xs:simpleContent>
+            <xs:extension base="nonEmptyString">
+                <xs:attribute type="xs:string" name="language" use="required">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="en">Language code for this label</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="menuType" mixed="true">
+        <xs:sequence>
+            <xs:element type="contextsType" name="contexts" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">List of contexts for which this context menu should be included
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+
+            <xs:element type="labelsType" name="labels" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">Text that should be displayed to the user for this menu item, this
+                        is typically only used for static menu types like "Folder", "ImageFolder" and "Command"
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+
+            <xs:element type="parametersType" name="parameters" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">List of parameters which should be included when filtering this menu
+                        or executing the command related to this menu
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+
+            <xs:element type="menusType" name="menus" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">Sub menus below this menu</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+
+        <xs:attribute type="nonEmptyString" name="type" use="required">
+            <xs:annotation>
+                <xs:documentation xml:lang="en">Type of menu, should either match a type for which a browse service
+                    exists or one of "Folder", "ImageFolder" or "Command"
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+
+        <xs:attribute type="nonEmptyString" name="id" use="optional">
+            <xs:annotation>
+                <xs:documentation xml:lang="en">Identity for static menu items such as those with type set to "Folder",
+                    "ImageFolder" and "Command"
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+
+        <xs:attribute type="xs:integer" name="weight" use="optional" default="50">
+            <xs:annotation>
+                <xs:documentation xml:lang="en">Sort weight use when ordering this menu compared with other menus on
+                    same level
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+
+        <xs:attribute type="xs:integer" name="criteriaDepth" use="optional">
+            <xs:annotation>
+                <xs:documentation xml:lang="en">Number of previously selected object so use when filtering this menu
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+
+        <xs:attribute type="nonEmptyString" name="format" use="optional">
+            <xs:annotation>
+                <xs:documentation xml:lang="en">Specific format for this menu item, default format based on type will be
+                    used if no format element is specified
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+
+        <xs:attribute type="xs:boolean" name="playable" use="optional" default="true">
+            <xs:annotation>
+                <xs:documentation xml:lang="en">Indicates if this item is possible to play</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+
+        <xs:attribute type="xs:boolean" name="enabled" use="optional" default="true">
+            <xs:annotation>
+                <xs:documentation xml:lang="en">Indicates if this item is enabled and visible</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+</xs:schema>

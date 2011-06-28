@@ -263,9 +263,11 @@ public class LibraryBrowseService {
 
                             if (counts) {
                                 Map<String, Long> childCounters = new HashMap<String, Long>();
-                                for (MenuLevel childLevel : requestedObjectType.getChildLevels()) {
-                                    if (item.getChildItems()!=null && item.getChildItems().containsKey(childLevel.getType())) {
-                                        childCounters.put(childLevel.getType(), (Long) item.getChildItems().get(childLevel.getType()));
+                                if(requestedObjectType.getChildLevels()!=null) {
+                                    for (MenuLevel childLevel : requestedObjectType.getChildLevels()) {
+                                        if (item.getChildItems()!=null && item.getChildItems().containsKey(childLevel.getType())) {
+                                            childCounters.put(childLevel.getType(), (Long) item.getChildItems().get(childLevel.getType()));
+                                        }
                                     }
                                 }
                                 item.setChildItems(childCounters);
@@ -310,17 +312,22 @@ public class LibraryBrowseService {
 
     private void fillContext(Result result, String currentBaseType, String currentId) {
         if (currentId != null && currentId.contains(":") && currentBaseType != null) {
-            BrowseService browseService = browseServiceManager.getBrowseService(currentBaseType);
-            if (browseService != null) {
-                ResultItem currentItem = browseService.findById(currentId.substring(currentId.indexOf(":") + 1));
-                if (currentItem != null) {
-                    if (currentItem.getName() == null) {
-                        String format = browseMenuManager.getDefaultItemFormat(BrowseMenuManager.MenuType.CONTEXT, currentItem.getType());
-                        if (format != null) {
-                            currentItem.setName(new TitleFormat(format).format(currentItem.getItem()));
+            if(!currentBaseType.equals(MenuLevelFolder.TYPE) &&
+                    !currentBaseType.equals(MenuLevelImageFolder.TYPE) &&
+                    !currentBaseType.equals(MenuLevelCommand.TYPE)) {
+
+                BrowseService browseService = browseServiceManager.getBrowseService(currentBaseType);
+                if (browseService != null) {
+                    ResultItem currentItem = browseService.findById(currentId.substring(currentId.indexOf(":") + 1));
+                    if (currentItem != null) {
+                        if (currentItem.getName() == null) {
+                            String format = browseMenuManager.getDefaultItemFormat(BrowseMenuManager.MenuType.CONTEXT, currentItem.getType());
+                            if (format != null) {
+                                currentItem.setName(new TitleFormat(format).format(currentItem.getItem()));
+                            }
                         }
+                        result.setContext(currentItem);
                     }
-                    result.setContext(currentItem);
                 }
             }
         }

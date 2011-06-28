@@ -152,6 +152,13 @@
             <artifactId>antlr-runtime</artifactId>
             <version>3.3</version>
         </dependency>
+
+        <!-- XML parsing -->
+        <dependency>
+            <groupId>xom</groupId>
+            <artifactId>xom</artifactId>
+            <version>1.2.5</version>
+        </dependency>
     </dependencies>
 
     <pluginRepositories>

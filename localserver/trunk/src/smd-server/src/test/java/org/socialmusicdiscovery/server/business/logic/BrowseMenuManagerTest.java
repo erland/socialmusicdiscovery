@@ -45,6 +45,7 @@ public class BrowseMenuManagerTest extends BaseTestCase {
         browseMenuManager = new BrowseMenuManager();
     }
 
+    @Test
     public void testDefaultLibrary() {
         browseMenuManager = new BrowseMenuManager();
         List<MenuLevel> menus = browseMenuManager.getAllMenus(BrowseMenuManager.MenuType.LIBRARY);

@@ -28,12 +28,14 @@
 package org.socialmusicdiscovery.server.plugins.mediaimport.lastfm;
 
 import com.google.inject.Inject;
+import nu.xom.ParsingException;
 import org.socialmusicdiscovery.server.api.plugin.AbstractPlugin;
 import org.socialmusicdiscovery.server.api.plugin.PluginException;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
-import org.socialmusicdiscovery.server.business.service.browse.*;
+import org.socialmusicdiscovery.server.business.service.browse.BrowseMenuManager;
+import org.socialmusicdiscovery.server.business.service.browse.BrowseServiceManager;
 
-import java.util.Arrays;
+import java.io.IOException;
 
 /**
  * LastFM plugin that provides context menus for artists, releases and tracks which can be used to
@@ -56,136 +58,39 @@ public class LastFMPlugin extends AbstractPlugin {
         browseMenuManager.addDefaultItemFormat(BrowseMenuManager.MenuType.CONTEXT, LastFMImage.class.getSimpleName(), "%object.name");
         browseMenuManager.addDefaultItemFormat(BrowseMenuManager.MenuType.LIBRARY, LastFMImage.class.getSimpleName(), "%object.name");
 
-        browseMenuManager.addMenu(BrowseMenuManager.MenuType.CONTEXT,
-                                new MenuLevelFolder("Artist","manageartist","Manage",MenuLevel.BOTTOM_WEIGHT,
-                                    new MenuLevelFolder("FromLastFM","From LastFM",
-                                        new MenuLevelDynamic(LastFMArtist.class.getSimpleName(),
-                                            null,
-                                            false,
-                                            new MenuLevelFolder("Album","Albums",
-                                                new MenuLevelDynamic(LastFMAlbum.class.getSimpleName(),
-                                                    null,
-                                                    false,
-                                                    2L,
-                                                    new MenuLevelDynamic(LastFMTrack.class.getSimpleName(),
-                                                            null,
-                                                            false,
-                                                            3L)))))));
-
-        browseMenuManager.addMenu(BrowseMenuManager.MenuType.CONTEXT,
-                                new MenuLevelFolder("Artist","manageartist","Manage",MenuLevel.BOTTOM_WEIGHT,
-                                    new MenuLevelFolder("FromLastFM","From LastFM",
-                                        new MenuLevelDynamic(LastFMArtist.class.getSimpleName(),
-                                            null,
-                                            false,
-                                            new MenuLevelFolder("Images","Images",
-                                                new MenuLevelDynamic(LastFMImage.class.getSimpleName(),
-                                                    null,
-                                                    false,
-                                                    2L,
-                                                    Arrays.asList((MenuLevel)
-                                                            new MenuLevelImageFolder("ViewLarge", "View Large",
-                                                                new MenuLevelDynamic(LastFMImage.class.getSimpleName(),
-                                                                    null,
-                                                                    false,
-                                                                    1L)),
-                                                            new MenuLevelCommand("lastfmimportimage", "Import Image", Arrays.asList("Artist", "LastFMImage"))
-                                                    )))))));
-
-        browseMenuManager.addMenu(BrowseMenuManager.MenuType.CONTEXT,
-                                new MenuLevelFolder("Artist","lastfmartists","On LastFM",MenuLevel.BOTTOM_WEIGHT,
-                                    new MenuLevelDynamic(LastFMArtist.class.getSimpleName(),
-                                            null,
-                                            false,
-                                        new MenuLevelDynamic(LastFMAlbum.class.getSimpleName(),
-                                                null,
-                                                true,
-                                                1L,
-                                            new MenuLevelDynamic(LastFMTrack.class.getSimpleName(),
-                                                    null,
-                                                    true,
-                                                    2L)))));
-
-        browseMenuManager.addMenu(BrowseMenuManager.MenuType.CONTEXT,
-                                new MenuLevelFolder("Release","lastfmalbums","On LastFM",MenuLevel.BOTTOM_WEIGHT,
-                                    new MenuLevelDynamic(LastFMAlbum.class.getSimpleName(),
-                                            null,
-                                            false,
-                                        new MenuLevelDynamic(LastFMTrack.class.getSimpleName(),
-                                                null,
-                                                false,
-                                                1L))));
-
-        browseMenuManager.addMenu(BrowseMenuManager.MenuType.CONTEXT,
-                                new MenuLevelFolder(LastFMArtist.class.getSimpleName(), "lastfmalbums","Albums",MenuLevel.MIDDLE_WEIGHT,
-                                    new MenuLevelDynamic(LastFMAlbum.class.getSimpleName(),
-                                            null,
-                                            false,
-                                        new MenuLevelDynamic(LastFMTrack.class.getSimpleName(),
-                                                null,
-                                                false,
-                                                1L))));
-
-        browseMenuManager.addMenu(BrowseMenuManager.MenuType.CONTEXT,
-                                new MenuLevelFolder("Track","lastfmtracks","On LastFM",MenuLevel.BOTTOM_WEIGHT,
-                                    new MenuLevelDynamic(LastFMTrack.class.getSimpleName(),
-                                            null,
-                                            false)));
-
-        browseMenuManager.addMenu(BrowseMenuManager.MenuType.CONTEXT,
-                                new MenuLevelFolder(LastFMAlbum.class.getSimpleName(), "lastfmtracks","Tracks",MenuLevel.MIDDLE_WEIGHT,
-                                    new MenuLevelDynamic(LastFMTrack.class.getSimpleName(),
-                                            null,
-                                            false)));
-
-        browseMenuManager.addMenu(BrowseMenuManager.MenuType.LIBRARY,
-                new MenuLevelFolder("artists","Artists",
-                        new MenuLevelDynamic("Artist", null, true,
-                                new MenuLevelFolder("lastfmimages", "LastFM Images", MenuLevel.TOP_WEIGHT,
-                                    new MenuLevelDynamic(LastFMImage.class.getSimpleName(),
-                                        null,
-                                        false,
-                                        2L,
-                                        Arrays.asList((MenuLevel)
-                                                new MenuLevelImageFolder("ViewLarge", "View Large",
-                                                    new MenuLevelDynamic(LastFMImage.class.getSimpleName(),
-                                                        null,
-                                                        false,
-                                                        1L)),
-                                                new MenuLevelCommand("lastfmimportimage", "Import Image", Arrays.asList("Artist", "LastFMImage"))
-                                        ))))));
-
-        browseMenuManager.addMenu(BrowseMenuManager.MenuType.LIBRARY,
-                new MenuLevelFolder("artists","Artists",
-                        new MenuLevelDynamic("Artist", null, true,
-                                new MenuLevelImageFolder("lastfmimageslideshow", "LastFM Image Slideshow", MenuLevel.TOP_WEIGHT+1,
-                                    new MenuLevelDynamic(LastFMImage.class.getSimpleName(),
-                                        null,
-                                        false,
-                                        1L)))));
-
         browseMenuManager.addCommand("lastfmimportimage", LastFMImport.class);
 
         browseServiceManager.addBrowseService(LastFMArtist.class.getSimpleName(), LastFMArtistBrowseService.class, getConfiguration());
         browseServiceManager.addBrowseService(LastFMAlbum.class.getSimpleName(), LastFMAlbumBrowseService.class, getConfiguration());
         browseServiceManager.addBrowseService(LastFMTrack.class.getSimpleName(), LastFMTrackBrowseService.class, getConfiguration());
         browseServiceManager.addBrowseService(LastFMImage.class.getSimpleName(), LastFMImageBrowseService.class, getConfiguration());
+
+        try {
+            browseMenuManager.loadMenusFromXml(getClass().getResourceAsStream("/org/socialmusicdiscovery/server/plugins/mediaimport/lastfm/lastfm-menus.xml"));
+            browseMenuManager.loadMenusFromXml(getClass().getResourceAsStream("/org/socialmusicdiscovery/server/plugins/mediaimport/lastfm/lastfm-experimental-menus.xml"));
+        } catch (IOException e) {
+            throw new PluginException(e);
+        } catch (ParsingException e) {
+            throw new PluginException(e);
+        }
         return true;
     }
 
     @Override
     public void stop() throws PluginException {
-        browseMenuManager.removeMenu(BrowseMenuManager.MenuType.CONTEXT, "Artist", "lastfmartists");
-        browseMenuManager.removeMenu(BrowseMenuManager.MenuType.CONTEXT, "Release", "lastfmalbums");
-        browseMenuManager.removeMenu(BrowseMenuManager.MenuType.CONTEXT, "Track", "lastfmtracks");
 
         browseMenuManager.removeDefaultItemFormat(BrowseMenuManager.MenuType.CONTEXT, LastFMArtist.class.getSimpleName());
         browseMenuManager.removeDefaultItemFormat(BrowseMenuManager.MenuType.CONTEXT, LastFMAlbum.class.getSimpleName());
         browseMenuManager.removeDefaultItemFormat(BrowseMenuManager.MenuType.CONTEXT, LastFMTrack.class.getSimpleName());
+        browseMenuManager.removeDefaultItemFormat(BrowseMenuManager.MenuType.CONTEXT, LastFMImage.class.getSimpleName());
+        browseMenuManager.removeDefaultItemFormat(BrowseMenuManager.MenuType.LIBRARY, LastFMImage.class.getSimpleName());
+
+        browseMenuManager.removeCommand("lastfmimportimage");
 
         browseServiceManager.removeBrowseService(LastFMArtist.class.getSimpleName());
         browseServiceManager.removeBrowseService(LastFMAlbum.class.getSimpleName());
         browseServiceManager.removeBrowseService(LastFMTrack.class.getSimpleName());
+        browseServiceManager.removeBrowseService(LastFMImage.class.getSimpleName());
         super.stop();
     }
 }

@@ -60,6 +60,8 @@ public class LibraryBrowseServiceTest extends BaseTestCase {
         LibraryBrowseService browseService= new LibraryBrowseService();
         Result result = browseService.findChildren(null,null,null,false);
 
+        assert result.getCount()>0;
+        assert result.getItems().size()>0;
         Collection<ResultItem> items = result.getItems();
         for (ResultItem item : items) {
             assert item.getChildItems()==null;
@@ -73,6 +75,8 @@ public class LibraryBrowseServiceTest extends BaseTestCase {
         LibraryBrowseService browseService= new LibraryBrowseService();
         Result result = browseService.findChildren(null,1,1,true);
 
+        assert result.getCount()>0;
+        assert result.getItems().size()>0;
         Collection<ResultItem> items = result.getItems();
         for (ResultItem item : items) {
             assert item.getChildItems()!=null;

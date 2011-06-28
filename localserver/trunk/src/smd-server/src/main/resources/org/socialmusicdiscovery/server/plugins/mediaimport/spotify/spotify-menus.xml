@@ -1,0 +1,115 @@
+<menus xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="../../../service/browse/menus.xsd">
+
+    <menu type="Folder" id="spotifytracks" weight="100">
+        <contexts>
+            <context>Track</context>
+        </contexts>
+        <labels>
+            <label language="EN">On Spotify</label>
+        </labels>
+        <menus>
+            <menu type="SpotifyTrack"/>
+        </menus>
+    </menu>
+
+    <menu type="Folder" id="spotifyalbums" weight="100">
+        <contexts>
+            <context>Album</context>
+        </contexts>
+        <labels>
+            <label language="EN">On Spotify</label>
+        </labels>
+        <menus>
+            <menu type="SpotifyAlbum">
+                <menus>
+                    <menu type="SpotifyTrack" criteriaDepth="1"/>
+                </menus>
+            </menu>
+        </menus>
+    </menu>
+
+    <menu type="Folder" id="spotifyartists" weight="100">
+        <contexts>
+            <context>Artist</context>
+        </contexts>
+        <labels>
+            <label language="EN">On Spotify</label>
+        </labels>
+        <menus>
+            <menu type="SpotifyArtist" playable="false">
+                <menus>
+                    <menu type="SpotifyAlbum" criteriaDepth="1">
+                        <menus>
+                            <menu type="SpotifyTrack" criteriaDepth="2"/>
+                        </menus>
+                    </menu>
+                </menus>
+            </menu>
+        </menus>
+    </menu>
+
+    <menu type="Folder" id="spotifyalbums">
+        <contexts>
+            <context>SpotifyArtist</context>
+        </contexts>
+        <labels>
+            <label language="EN">Albums</label>
+        </labels>
+        <menus>
+            <menu type="SpotifyAlbum">
+                <menus>
+                    <menu type="SpotifyTrack" criteriaDepth="1"/>
+                </menus>
+            </menu>
+        </menus>
+    </menu>
+
+    <menu type="Folder" id="spotifytracks">
+        <contexts>
+            <context>SpotifyAlbum</context>
+        </contexts>
+        <labels>
+            <label language="EN">Tracks</label>
+        </labels>
+        <menus>
+            <menu type="SpotifyTrack"/>
+        </menus>
+    </menu>
+
+    <menu type="Command" id="spotifyimportartist" weight="100">
+        <contexts>
+            <context>SpotifyArtist</context>
+        </contexts>
+        <labels>
+            <label language="EN">Import from Spotify</label>
+        </labels>
+        <parameters>
+            <parameter>SpotifyArtist</parameter>
+        </parameters>
+    </menu>
+
+    <menu type="Command" id="spotifyimportalbum" weight="100">
+        <contexts>
+            <context>SpotifyAlbum</context>
+        </contexts>
+        <labels>
+            <label language="EN">Import from Spotify</label>
+        </labels>
+        <parameters>
+            <parameter>SpotifyAlbum</parameter>
+        </parameters>
+    </menu>
+
+    <menu type="Command" id="spotifyimporttrack" weight="100">
+        <contexts>
+            <context>SpotifyTrack</context>
+        </contexts>
+        <labels>
+            <label language="EN">Import from Spotify</label>
+        </labels>
+        <parameters>
+            <parameter>SpotifyTrack</parameter>
+        </parameters>
+    </menu>
+</menus>
