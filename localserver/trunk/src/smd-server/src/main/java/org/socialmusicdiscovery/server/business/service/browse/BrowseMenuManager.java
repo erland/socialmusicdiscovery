@@ -27,13 +27,17 @@
 
 package org.socialmusicdiscovery.server.business.service.browse;
 
-import org.socialmusicdiscovery.server.business.logic.config.ConfigurationManager;
-import org.socialmusicdiscovery.server.business.logic.config.MappedConfigurationContext;
-import org.socialmusicdiscovery.server.business.logic.config.MergedConfigurationManager;
-import org.socialmusicdiscovery.server.business.logic.config.PersistentConfigurationManager;
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
+import nu.xom.*;
+import org.socialmusicdiscovery.server.business.logic.InjectHelper;
+import org.socialmusicdiscovery.server.business.logic.config.*;
+import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameter;
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameterEntity;
 import org.socialmusicdiscovery.server.support.copy.CopyHelper;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -56,6 +60,13 @@ public class BrowseMenuManager {
         CONTEXT
     }
 
+    /**
+     * Default value in-memory configuration manager
+     */
+    @Inject
+    @Named("default-value")
+    MemoryConfigurationManager defaultValueConfigurationManager;
+
     private Map<MenuType, List<MenuLevel>> menus = new HashMap<MenuType, List<MenuLevel>>();
     private Map<String, Class<? extends Command>> commands = new HashMap<String, Class<? extends Command>>();
     private Map<String, String> formats = new HashMap<String, String>();
@@ -63,89 +74,127 @@ public class BrowseMenuManager {
     private ConfigurationManager configurationManager;
 
     public BrowseMenuManager() {
+        InjectHelper.injectMembers(this);
         configurationManager = new MergedConfigurationManager(new PersistentConfigurationManager());
-        loadMenu(MenuType.LIBRARY);
-        loadMenu(MenuType.CONTEXT);
+        this.menus.put(MenuType.CONTEXT,new ArrayList<MenuLevel>());
+        this.menus.put(MenuType.LIBRARY,new ArrayList<MenuLevel>());
+        try {
+            loadMenusFromXml(getClass().getResourceAsStream("/org/socialmusicdiscovery/server/business/service/browse/menus.xml"));
+            loadMenusFromXml(getClass().getResourceAsStream("/org/socialmusicdiscovery/server/business/service/browse/contextmenus.xml"));
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (ParsingException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
     /**
-     * Loads all menus from configuration for the specified menu type
+     * Loads all menus from configuration from the specified menu configuration file
      *
-     * @param menuType Menu type to load
+     * @param inputStream input stream to load menu from
      */
-    private void loadMenu(MenuType menuType) {
-        List<MenuLevel> menus = new ArrayList<MenuLevel>();
-
-        MappedConfigurationContext config = new MappedConfigurationContext(getClass().getName() + "." + menuType + ".", configurationManager);
-
-        Collection<ConfigurationParameterEntity> parametersEntities = configurationManager.getParametersByPath(getClass().getName() + "." + menuType + ".");
-        Set<String> menuKeys = new HashSet<String>();
-        for (ConfigurationParameterEntity entity : parametersEntities) {
-            String id = entity.getId().substring((getClass().getName() + "." + menuType + ".").length());
-            if (id.contains(".") && !id.startsWith("formats.")) {
-                menuKeys.add(id.substring(0, id.indexOf(".")));
-            }
-        }
-
-        for (String menuId : menuKeys) {
-            if (config.getBooleanParameter(menuId + ".enabled", true)) {
-                MenuLevel topLevel = null;
-                MenuLevel lastLevel = null;
-                int i = 1;
-                while (configurationManager.getParametersByPath(getClass().getName() + "." + menuType + "." + menuId + "." + i).size() > 0) {
-                    String objectType = config.getStringParameter(menuId + "." + i + ".type");
-                    String objectId = config.getStringParameter(menuId + "." + i + ".id",menuId);
-                    String objectName = config.getStringParameter(menuId + "." + i + ".name");
-                    String format = config.getStringParameter(menuId + "." + i + ".format");
-                    if (format == null) {
-                        format = getDefaultItemFormat(menuType, objectType);
-                    }
-
-                    Boolean playable = config.getBooleanParameter(menuId + "." + i + ".playable", false);
-                    Integer criteriaDepth = config.getIntegerParameter(menuId + "." + i + ".criteriaDepth");
-                    Integer weight = config.getIntegerParameter(menuId + "." + i + ".weight", MenuLevel.MIDDLE_WEIGHT);
-
-                    if (objectType != null && (format != null || objectName != null)) {
-                        MenuLevel thisLevel;
-                        if(objectType.equals(MenuLevelFolder.TYPE)) {
-                            thisLevel = new MenuLevelFolder(objectId, objectName, (List<MenuLevel>) null);
-                        }else if(objectType.equals(MenuLevelImageFolder.TYPE)) {
-                            thisLevel = new MenuLevelImageFolder(objectId, objectName, (List<MenuLevel>) null);
-                        }else if(objectType.equals(MenuLevelCommand.TYPE)) {
-                            thisLevel = new MenuLevelCommand(objectId, objectName);
-                        }else if (criteriaDepth != null) {
-                            thisLevel = new MenuLevelDynamic(objectType, format, playable, criteriaDepth.longValue());
-                        } else {
-                            thisLevel = new MenuLevelDynamic(objectType, format, playable);
-                        }
-                        thisLevel.setWeight(weight);
-                        if(lastLevel!=null) {
-                            lastLevel.setChildLevels(new ArrayList<MenuLevel>(Arrays.asList(thisLevel)));
-                        }
-                        lastLevel = thisLevel;
-                        if(topLevel==null) {
-                            topLevel = lastLevel;
-                        }
-                    }
-                    i++;
-                }
-                if (topLevel!=null && menuId != null) {
-                    Integer weight = config.getIntegerParameter(menuId + ".weight", MenuLevel.MIDDLE_WEIGHT);
-                    String contextConfig = config.getStringParameter(menuId + ".context");
-                    if (contextConfig != null) {
-                        String[] contexts = contextConfig.split(",");
-                        for (String context : contexts) {
-                            MenuLevel contextLevel = new CopyHelper().copy(topLevel);
-                            contextLevel.setContext(context);
-                            menus.add(contextLevel);
-                        }
-                    } else {
-                        menus.add(topLevel);
-                    }
+    public void loadMenusFromXml(InputStream inputStream) throws IOException, ParsingException {
+        Builder builder = new Builder();
+        Document document = builder.build(inputStream);
+        Element menusNode = document.getRootElement();
+        if(menusNode!=null) {
+            List<MenuLevel> menus = getMenusFromElement(null, menusNode);
+            for (MenuLevel menu : menus) {
+                if(menu.getContext()!=null) {
+                    addMenu(MenuType.CONTEXT, menu);
+                }else {
+                    addMenu(MenuType.LIBRARY, menu);
                 }
             }
         }
-        this.menus.put(menuType, menus);
+    }
+
+    private List<MenuLevel> getMenusFromElement(MenuLevel parent, Element menusNode) {
+        Elements menuNodes = menusNode.getChildElements("menu");
+        List<MenuLevel> result = new ArrayList<MenuLevel>();
+        for(int i=0;i<menuNodes.size();i++) {
+            Element menu = menuNodes.get(i);
+            MenuLevel level = getMenuFromElement(menu);
+            Elements childMenus = menu.getChildElements("menus");
+            if(childMenus.size()>0) {
+                getMenusFromElement(level, childMenus.get(0));
+            }
+            if(parent!=null) {
+                if(parent.getChildLevels()==null) {
+                    parent.setChildLevels(new ArrayList<MenuLevel>());
+                }
+                parent.getChildLevels().add(level);
+            }else {
+                Nodes contexts = menu.query("contexts/context");
+                if(contexts.size()>0) {
+                    for(int j=0;j<contexts.size();j++) {
+                        MenuLevel copy = new CopyHelper().copy(level);
+                        copy.setContext((contexts.get(j)).getValue());
+                        result.add(copy);
+                    }
+                }else {
+                    result.add(level);
+                }
+            }
+        }
+        return result;
+    }
+
+    private String getMenuName(Elements labelsNode) {
+        if (labelsNode == null || labelsNode.size() == 0) {
+            return null;
+        }
+
+        Nodes labelNodes = labelsNode.get(0).query("label[@language='EN']");
+        if (labelNodes.size() > 0) {
+            return labelNodes.get(0).getValue();
+        }
+        return null;
+    }
+
+    private MenuLevel getMenuFromElement(Element menuNode) {
+        String type = menuNode.getAttributeValue("type");
+        MenuLevel level;
+        if(MenuLevelCommand.TYPE.equals(type)) {
+            String id = menuNode.getAttributeValue("id");
+            level = new MenuLevelCommand(id,getMenuName(menuNode.getChildElements("labels")));
+
+            List<String> parameters = null;
+            Nodes parametersNode = menuNode.query("parameters/parameter");
+            for(int i=0;i<parametersNode.size();i++) {
+                Node parameter = parametersNode.get(i);
+                if(parameters == null) {
+                    parameters = new ArrayList<String>();
+                }
+                parameters.add(parameter.getValue());
+            }
+            ((MenuLevelCommand)level).setParameters(parameters);
+        }else if(MenuLevelFolder.TYPE.equals(type)) {
+            String id = menuNode.getAttributeValue("id");
+            level = new MenuLevelFolder(id,getMenuName(menuNode.getChildElements("labels")), (List<MenuLevel>)null);
+        }else if(MenuLevelImageFolder.TYPE.equals(type)) {
+            String id = menuNode.getAttributeValue("id");
+            level = new MenuLevelImageFolder(id,getMenuName(menuNode.getChildElements("labels")), (List<MenuLevel>)null);
+        }else {
+            String format = null;
+            if(menuNode.getAttributeValue("format")!=null) {
+                format = menuNode.getAttributeValue("format");
+            }
+            String playable = "true";
+            if(menuNode.getAttributeValue("playable")!=null) {
+                playable = menuNode.getAttributeValue("playable");
+            }
+            Long criteriaDepth = null;
+            if(menuNode.getAttributeValue("criteriaDepth")!=null) {
+                criteriaDepth = Long.valueOf(menuNode.getAttributeValue("criteriaDepth"));
+            }
+            level = new MenuLevelDynamic(type, format, Boolean.valueOf(playable), criteriaDepth);
+        }
+
+        if(menuNode.getAttributeValue("weight")!=null) {
+            level.setWeight(Integer.valueOf(menuNode.getAttributeValue("weight")));
+        }
+        return level;
     }
 
     /**
@@ -156,7 +205,7 @@ public class BrowseMenuManager {
      * @param format     The format to use, see {@link org.socialmusicdiscovery.server.support.format.TitleFormat} for more information
      */
     public void addDefaultItemFormat(MenuType menuType, String objectType, String format) {
-        formats.put(menuType + "." + objectType, format);
+        defaultValueConfigurationManager.setParameter(new ConfigurationParameterEntity(getClass().getName() + "." + menuType + ".formats."+objectType, ConfigurationParameter.Type.STRING,format));
     }
 
     /**

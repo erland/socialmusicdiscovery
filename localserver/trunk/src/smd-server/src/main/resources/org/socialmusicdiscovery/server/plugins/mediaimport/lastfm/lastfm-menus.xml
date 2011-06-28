@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<menus xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="../../../service/browse/menus.xsd">
+
+    <menu type="Folder" id="lastfmtracks" weight="100">
+        <contexts>
+            <context>Track</context>
+        </contexts>
+        <labels>
+            <label language="EN">On LastFM</label>
+        </labels>
+        <menus>
+            <menu type="LastFMTrack" playable="false"/>
+        </menus>
+    </menu>
+
+    <menu type="Folder" id="lastfmalbums" weight="100">
+        <contexts>
+            <context>Album</context>
+        </contexts>
+        <labels>
+            <label language="EN">On LastFM</label>
+        </labels>
+        <menus>
+            <menu type="LastFMAlbum" playable="false">
+                <menus>
+                    <menu type="LastFMTrack" criteriaDepth="1" playable="false"/>
+                </menus>
+            </menu>
+        </menus>
+    </menu>
+
+    <menu type="Folder" id="lastfmartists" weight="100">
+        <contexts>
+            <context>Artist</context>
+        </contexts>
+        <labels>
+            <label language="EN">On LastFM</label>
+        </labels>
+        <menus>
+            <menu type="LastFMArtist" playable="false">
+                <menus>
+                    <menu type="LastFMAlbum" criteriaDepth="1" playable="false">
+                        <menus>
+                            <menu type="LastFMTrack" criteriaDepth="2" playable="false"/>
+                        </menus>
+                    </menu>
+                </menus>
+            </menu>
+        </menus>
+    </menu>
+
+    <menu type="Folder" id="lastfmtracks">
+        <contexts>
+            <context>LastFMAlbum</context>
+        </contexts>
+        <labels>
+            <label language="EN">Tracks</label>
+        </labels>
+        <menus>
+            <menu type="LastFMTrack" playable="false"/>
+        </menus>
+    </menu>
+
+    <menu type="Folder" id="lastfmalbums">
+        <contexts>
+            <context>LastFMArtist</context>
+        </contexts>
+        <labels>
+            <label language="EN">Albums</label>
+        </labels>
+        <menus>
+            <menu type="LastFMAlbum" playable="false">
+                <menus>
+                    <menu type="LastFMTrack" criteriaDepth="1" playable="false"/>
+                </menus>
+            </menu>
+        </menus>
+    </menu>
+
+</menus>

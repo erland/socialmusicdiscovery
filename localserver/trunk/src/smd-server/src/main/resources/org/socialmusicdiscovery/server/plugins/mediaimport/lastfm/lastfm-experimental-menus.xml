@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<menus xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="../../../service/browse/menus.xsd">
+
+    <menu type="Folder" id="manageartist" weight="100">
+        <contexts>
+            <context>Artist</context>
+        </contexts>
+        <labels>
+            <label language="EN">Manage</label>
+        </labels>
+        <menus>
+            <menu type="Folder" id="FromLastFM">
+                <labels>
+                    <label language="EN">From LastFM</label>
+                </labels>
+                <menus>
+                    <menu type="LastFMArtist" playable="false">
+                        <menus>
+                            <menu type="Folder" id="albums">
+                                <labels>
+                                    <label language="EN">Albums</label>
+                                </labels>
+                                <menus>
+                                    <menu type="LastFMAlbum" playable="false">
+                                        <menus>
+                                            <menu type="LastFMTrack" playable="false"/>
+                                        </menus>
+                                    </menu>
+                                </menus>
+                            </menu>
+                            <menu type="Folder" id="images">
+                                <labels>
+                                    <label language="EN">Images</label>
+                                </labels>
+                                <menus>
+                                    <menu type="LastFMImage" playable="false">
+                                        <menus>
+                                            <menu type="ImageFolder" id="ViewLarge">
+                                                <labels>
+                                                    <label language="EN">View Large</label>
+                                                </labels>
+                                                <menus>
+                                                    <menu type="LastFMImage" playable="false"/>
+                                                </menus>
+                                            </menu>
+                                            <menu id="lastfmimportimage" type="Command">
+                                                <labels>
+                                                    <label language="EN">Import Image</label>
+                                                </labels>
+                                                <parameters>
+                                                    <parameter>Artist</parameter>
+                                                    <parameter>LastFMImage</parameter>
+                                                </parameters>
+                                            </menu>
+                                        </menus>
+                                    </menu>
+                                </menus>
+                            </menu>
+                        </menus>
+                    </menu>
+                </menus>
+            </menu>
+        </menus>
+    </menu>
+
+    <menu type="Folder" id="artists">
+        <menus>
+            <menu type="Artist">
+                <menus>
+                    <menu type="Folder" id="images" weight="1">
+                        <labels>
+                            <label language="EN">LastFM Images</label>
+                        </labels>
+                        <menus>
+                            <menu type="LastFMImage" playable="false">
+                                <menus>
+                                    <menu type="ImageFolder" id="ViewLarge">
+                                        <labels>
+                                            <label language="EN">View Large</label>
+                                        </labels>
+                                        <menus>
+                                            <menu type="LastFMImage" playable="false"/>
+                                        </menus>
+                                    </menu>
+                                    <menu id="lastfmimportimage" type="Command">
+                                        <labels>
+                                            <label language="EN">Import Image</label>
+                                        </labels>
+                                        <parameters>
+                                            <parameter>Artist</parameter>
+                                            <parameter>LastFMImage</parameter>
+                                        </parameters>
+                                    </menu>
+                                </menus>
+                            </menu>
+                        </menus>
+                    </menu>
+                </menus>
+            </menu>
+        </menus>
+    </menu>
+
+    <menu type="Folder" id="artists">
+        <menus>
+            <menu type="Artist">
+                <menus>
+                    <menu id="images" type="ImageFolder" weight="2">
+                        <labels>
+                            <label language="EN">LastFM Image Slideshow</label>
+                        </labels>
+                        <menus>
+                            <menu type="LastFMImage" playable="false"/>
+                        </menus>
+                    </menu>
+                </menus>
+            </menu>
+        </menus>
+    </menu>
+
+</menus>

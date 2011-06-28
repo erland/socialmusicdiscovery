@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<menus xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="menus.xsd">
+
+    <menu type="Folder" id="artists" weight="10">
+        <contexts>
+            <context>Artist</context>
+            <context>Release</context>
+            <context>Classification</context>
+            <context>Track</context>
+        </contexts>
+        <labels>
+            <label language="EN">Artists</label>
+        </labels>
+        <menus>
+            <menu type="Artist">
+                <menus>
+                    <menu type="Release" criteriaDepth="1">
+                        <menus>
+                            <menu type="Track" criteriaDepth="2"/>
+                        </menus>
+                    </menu>
+                </menus>
+            </menu>
+        </menus>
+    </menu>
+
+    <menu type="Folder" id="composers" weight="25">
+        <contexts>
+            <context>Artist</context>
+            <context>Release</context>
+            <context>Classification</context>
+            <context>Track</context>
+        </contexts>
+        <labels>
+            <label language="EN">Composers</label>
+        </labels>
+        <menus>
+            <menu type="Artist.composer">
+                <menus>
+                    <menu type="Release" criteriaDepth="1">
+                        <menus>
+                            <menu type="Track" criteriaDepth="2"/>
+                        </menus>
+                    </menu>
+                </menus>
+            </menu>
+        </menus>
+    </menu>
+
+    <menu type="Folder" id="conductors" weight="25">
+        <contexts>
+            <context>Artist</context>
+            <context>Release</context>
+            <context>Classification</context>
+            <context>Track</context>
+        </contexts>
+        <labels>
+            <label language="EN">Conductors</label>
+        </labels>
+        <menus>
+            <menu type="Artist.conductor">
+                <menus>
+                    <menu type="Release" criteriaDepth="1">
+                        <menus>
+                            <menu type="Track" criteriaDepth="2"/>
+                        </menus>
+                    </menu>
+                </menus>
+            </menu>
+        </menus>
+    </menu>
+
+    <menu type="Folder" id="releases" weight="50">
+        <contexts>
+            <context>Artist</context>
+            <context>Classification</context>
+            <context>Track</context>
+        </contexts>
+        <labels>
+            <label language="EN">Releases</label>
+        </labels>
+        <menus>
+            <menu type="Release">
+                <menus>
+                    <menu type="Track" criteriaDepth="1"/>
+                </menus>
+            </menu>
+        </menus>
+    </menu>
+
+    <menu type="Folder" id="genres" weight="75">
+        <contexts>
+            <context>Artist</context>
+            <context>Release</context>
+            <context>Track</context>
+        </contexts>
+        <labels>
+            <label language="EN">Genres</label>
+        </labels>
+        <menus>
+            <menu type="Classification.genre" playable="false">
+                <menus>
+                    <menu type="Artist" criteriaDepth="1">
+                        <menus>
+                            <menu type="Release" criteriaDepth="2">
+                                <menus>
+                                    <menu type="Track" criteriaDepth="3"/>
+                                </menus>
+                            </menu>
+                        </menus>
+                    </menu>
+                </menus>
+            </menu>
+        </menus>
+    </menu>
+
+    <menu type="Folder" id="moods" weight="75">
+        <contexts>
+            <context>Artist</context>
+            <context>Release</context>
+            <context>Track</context>
+        </contexts>
+        <labels>
+            <label language="EN">Moods</label>
+        </labels>
+        <menus>
+            <menu type="Classification.mood" playable="false">
+                <menus>
+                    <menu type="Artist" criteriaDepth="1">
+                        <menus>
+                            <menu type="Release" criteriaDepth="2">
+                                <menus>
+                                    <menu type="Track" criteriaDepth="3"/>
+                                </menus>
+                            </menu>
+                        </menus>
+                    </menu>
+                </menus>
+            </menu>
+        </menus>
+    </menu>
+
+    <menu type="Folder" id="style" weight="75">
+        <contexts>
+            <context>Artist</context>
+            <context>Release</context>
+            <context>Track</context>
+        </contexts>
+        <labels>
+            <label language="EN">Styles</label>
+        </labels>
+        <menus>
+            <menu type="Classification.style" playable="false">
+                <menus>
+                    <menu type="Artist" criteriaDepth="1">
+                        <menus>
+                            <menu type="Release" criteriaDepth="2">
+                                <menus>
+                                    <menu type="Track" criteriaDepth="3"/>
+                                </menus>
+                            </menu>
+                        </menus>
+                    </menu>
+                </menus>
+            </menu>
+        </menus>
+    </menu>
+</menus>
