@@ -254,9 +254,9 @@ public class LibraryBrowseService {
                             item.setId(id);
                             item.setType(requestedMainObjectType);
                             if(parser != null) {
-                                item.setName(parser.format(item.getItem()));
+                                item.setName(requestedObjectType.getDisplayName()+parser.format(item.getItem()));
                             }else {
-                                item.setName(item.getItem().toString());
+                                item.setName(requestedObjectType.getDisplayName()+item.getItem().toString());
                             }
                             item.setPlayable(requestedObjectType.isPlayable());
                             item.setLeaf(requestedObjectType.getChildLevels() == null);

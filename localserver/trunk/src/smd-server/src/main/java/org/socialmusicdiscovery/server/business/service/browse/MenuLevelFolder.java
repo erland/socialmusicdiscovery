@@ -41,11 +41,6 @@ public class MenuLevelFolder extends AbstractMenuLevel {
      */
     private String id;
 
-    /**
-     * The name of this menu level which should be displayed to user
-     */
-    private String name;
-
     public MenuLevelFolder() {
     }
 
@@ -53,36 +48,35 @@ public class MenuLevelFolder extends AbstractMenuLevel {
      * Constructs a new instance
      *
      * @param id          Unique identity of this folder in the scope of this level in the menu hierarchy
-     * @param name        The text that should be displayed to the user for this menu item
+     * @param label        The text that should be displayed to the user for this menu item
      * @param childLevels The child levels below this menu level
      */
-    public MenuLevelFolder(String id, String name, List<MenuLevel> childLevels) {
-        super(TYPE, childLevels);
+    public MenuLevelFolder(String id, String label, List<MenuLevel> childLevels) {
+        super(TYPE, label, childLevels);
         this.id = id;
-        this.name = name;
     }
 
     /**
      * Constructs a new instance
      *
      * @param id         Unique identity of this folder in the scope of this level in the menu hierarchy
-     * @param name       The text that should be displayed to the user for this menu item
+     * @param label       The text that should be displayed to the user for this menu item
      * @param childLevel The child level below this menu level
      */
-    public MenuLevelFolder(String id, String name, MenuLevel childLevel) {
-        this(id, name, Arrays.asList(childLevel));
+    public MenuLevelFolder(String id, String label, MenuLevel childLevel) {
+        this(id, label, Arrays.asList(childLevel));
     }
 
     /**
      * Constructs a new instance
      *
      * @param id         Unique identity of this folder in the scope of this level in the menu hierarchy
-     * @param name       The text that should be displayed to the user for this menu item
+     * @param label       The text that should be displayed to the user for this menu item
      * @param weight     The sorting weight of this menu item
      * @param childLevel The child levels below this menu level
      */
-    public MenuLevelFolder(String id, String name, Integer weight, MenuLevel childLevel) {
-        this(id, name, childLevel);
+    public MenuLevelFolder(String id, String label, Integer weight, MenuLevel childLevel) {
+        this(id, label, childLevel);
         setWeight(weight);
     }
 
@@ -91,22 +85,14 @@ public class MenuLevelFolder extends AbstractMenuLevel {
      *
      * @param context    The context in which this menu item should be available
      * @param id         Unique identity of this folder in the scope of this level in the menu hierarchy
-     * @param name       The text that should be displayed to the user for this menu item
+     * @param label       The text that should be displayed to the user for this menu item
      * @param weight     The sorting weight of this menu item
      * @param childLevel The child levels below this menu level
      */
-    public MenuLevelFolder(String context, String id, String name, Integer weight, MenuLevel childLevel) {
-        this(id, name, childLevel);
+    public MenuLevelFolder(String context, String id, String label, Integer weight, MenuLevel childLevel) {
+        this(id, label, childLevel);
         setContext(context);
         setWeight(weight);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     @Override
@@ -116,7 +102,7 @@ public class MenuLevelFolder extends AbstractMenuLevel {
 
     @Override
     public String getDisplayName() {
-        return getName();
+        return getLabel();
     }
 
     @Override

@@ -41,11 +41,6 @@ public class MenuLevelCommand extends AbstractMenuLevel {
     private String id;
 
     /**
-     * The text that should be shown to the user for this menu item
-     */
-    private String name;
-
-    /**
      * The parameters which should be passed to the command
      */
     private List<String> parameters;
@@ -57,24 +52,22 @@ public class MenuLevelCommand extends AbstractMenuLevel {
      * Constructs a new instance
      *
      * @param id   Identity of the command
-     * @param name The text to display to user
+     * @param label The text to display to user
      */
-    public MenuLevelCommand(String id, String name) {
-        super(TYPE, null);
+    public MenuLevelCommand(String id, String label) {
+        super(TYPE, label, null);
         this.id = id;
-        this.name = name;
     }
 
     /**
      * Constructs a new instance
      *
      * @param id   Identity of the command
-     * @param name The text to display to user
+     * @param label The text to display to user
      */
-    public MenuLevelCommand(String id, String name, List<String> parameters) {
-        super(TYPE, null);
+    public MenuLevelCommand(String id, String label, List<String> parameters) {
+        super(TYPE, label, null);
         this.id = id;
-        this.name = name;
         this.parameters = parameters;
     }
 
@@ -83,10 +76,10 @@ public class MenuLevelCommand extends AbstractMenuLevel {
      *
      * @param context The context in which this menu item should be available
      * @param id      Identity of the command
-     * @param name    The text to display to user
+     * @param label    The text to display to user
      */
-    public MenuLevelCommand(String context, String id, String name) {
-        this(id, name);
+    public MenuLevelCommand(String context, String id, String label) {
+        this(id, label);
         setContext(context);
     }
 
@@ -95,20 +88,12 @@ public class MenuLevelCommand extends AbstractMenuLevel {
      *
      * @param context The context in which this menu item should be available
      * @param id      Identity of the command
-     * @param name    The text to display to user
+     * @param label    The text to display to user
      */
-    public MenuLevelCommand(String context, String id, String name, List<String> parameters) {
-        this(id, name);
+    public MenuLevelCommand(String context, String id, String label, List<String> parameters) {
+        this(id, label);
         setContext(context);
         this.parameters = parameters;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public List<String> getParameters() {
@@ -126,7 +111,7 @@ public class MenuLevelCommand extends AbstractMenuLevel {
 
     @Override
     public String getDisplayName() {
-        return getName();
+        return getLabel();
     }
 
     @Override

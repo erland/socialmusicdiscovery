@@ -61,8 +61,8 @@ public class MenuLevelDynamic extends AbstractMenuLevel {
      * @param playable    Indicates if menu is playable
      * @param childLevels Child levels below this menu level
      */
-    public MenuLevelDynamic(String type, String format, Boolean playable, List<MenuLevel> childLevels) {
-        super(type, childLevels);
+    public MenuLevelDynamic(String type, String label, String format, Boolean playable, List<MenuLevel> childLevels) {
+        super(type, label, childLevels);
         this.playable = playable;
         this.format = format;
     }
@@ -75,8 +75,8 @@ public class MenuLevelDynamic extends AbstractMenuLevel {
      * @param playable   Indicates if menu is playable
      * @param childLevel Child level below this menu level
      */
-    public MenuLevelDynamic(String type, String format, Boolean playable, MenuLevel childLevel) {
-        this(type, format, playable, Arrays.asList(childLevel));
+    public MenuLevelDynamic(String type, String label, String format, Boolean playable, MenuLevel childLevel) {
+        this(type, label, format, playable, Arrays.asList(childLevel));
     }
 
     /**
@@ -86,8 +86,8 @@ public class MenuLevelDynamic extends AbstractMenuLevel {
      * @param format   The title format string to use when formatting this menu item, see {@link org.socialmusicdiscovery.server.support.format.TitleFormat}
      * @param playable Indicates if menu is playable
      */
-    public MenuLevelDynamic(String type, String format, Boolean playable) {
-        this(type, format, playable, (List<MenuLevel>) null);
+    public MenuLevelDynamic(String type, String label, String format, Boolean playable) {
+        this(type, label, format, playable, (List<MenuLevel>) null);
     }
 
     /**
@@ -99,8 +99,8 @@ public class MenuLevelDynamic extends AbstractMenuLevel {
      * @param criteriaDepth Number of parent levels that should be included when filtering this level
      * @param childLevel    Child level below this menu level
      */
-    public MenuLevelDynamic(String type, String format, Boolean playable, Long criteriaDepth, MenuLevel childLevel) {
-        this(type, format, playable, Arrays.asList(childLevel));
+    public MenuLevelDynamic(String type, String label, String format, Boolean playable, Long criteriaDepth, MenuLevel childLevel) {
+        this(type, label, format, playable, Arrays.asList(childLevel));
         setCriteriaDepth(criteriaDepth);
     }
 
@@ -113,8 +113,8 @@ public class MenuLevelDynamic extends AbstractMenuLevel {
      * @param criteriaDepth Number of parent levels that should be included when filtering this level
      * @param childLevels    Child levels below this menu level
      */
-    public MenuLevelDynamic(String type, String format, Boolean playable, Long criteriaDepth, List<MenuLevel> childLevels) {
-        this(type, format, playable, childLevels);
+    public MenuLevelDynamic(String type, String label, String format, Boolean playable, Long criteriaDepth, List<MenuLevel> childLevels) {
+        this(type, label, format, playable, childLevels);
         setCriteriaDepth(criteriaDepth);
     }
 
@@ -126,8 +126,8 @@ public class MenuLevelDynamic extends AbstractMenuLevel {
      * @param playable      Indicates if menu is playable
      * @param criteriaDepth Number of parent levels that should be included when filtering this level
      */
-    public MenuLevelDynamic(String type, String format, Boolean playable, Long criteriaDepth) {
-        this(type, format, playable);
+    public MenuLevelDynamic(String type, String label, String format, Boolean playable, Long criteriaDepth) {
+        this(type, label, format, playable);
         setCriteriaDepth(criteriaDepth);
     }
 
@@ -156,6 +156,11 @@ public class MenuLevelDynamic extends AbstractMenuLevel {
     }
 
     public String getDisplayName() {
-        return getType();
+        String label = getLabel();
+        if(label!=null) {
+            return label;
+        }else {
+            return "";
+        }
     }
 }
