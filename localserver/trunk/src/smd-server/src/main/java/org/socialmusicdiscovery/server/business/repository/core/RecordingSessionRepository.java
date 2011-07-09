@@ -36,4 +36,10 @@ import java.util.Collection;
 @ImplementedBy(JPARecordingSessionRepository.class)
 public interface RecordingSessionRepository extends SMDIdentityRepository<RecordingSessionEntity> {
     Collection<RecordingSessionEntity> findByReleaseWithRelations(String releaseId, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
+
+    /**
+     * Refresh search relations for the specified entity, this method should be called after all modifications has been done on the entity
+     * @param entity The entity that has been changed that might affect search relations
+     */
+    void refresh(RecordingSessionEntity entity);
 }

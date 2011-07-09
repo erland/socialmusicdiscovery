@@ -33,4 +33,5 @@ import org.socialmusicdiscovery.server.business.repository.SMDIdentityRepository
 
 @ImplementedBy(JPAClassificationReferenceRepository.class)
 public interface ClassificationReferenceRepository extends SMDIdentityRepository<ClassificationReferenceEntity> {
+    void refresh(ClassificationReferenceEntity entity);
 }

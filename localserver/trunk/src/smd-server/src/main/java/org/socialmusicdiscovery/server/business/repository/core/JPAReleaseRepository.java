@@ -35,6 +35,8 @@ import org.socialmusicdiscovery.server.business.repository.AbstractJPASMDIdentit
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class JPAReleaseRepository extends AbstractJPASMDIdentityRepository<ReleaseEntity> implements ReleaseRepository {
     private ContributorRepository contributorRepository;
@@ -42,16 +44,18 @@ public class JPAReleaseRepository extends AbstractJPASMDIdentityRepository<Relea
     private MediumRepository mediumRepository;
     private LabelRepository labelRepository;
     private ImageRepository imageRepository;
+    private RecordingRepository recordingRepository;
 
     @Inject
     public JPAReleaseRepository(EntityManager em, ContributorRepository contributorRepository, TrackRepository trackRepository, 
-    		MediumRepository mediumRepository, LabelRepository labelRepository, ImageRepository imageRepository ) {
+    		MediumRepository mediumRepository, LabelRepository labelRepository, ImageRepository imageRepository, RecordingRepository recordingRepository ) {
         super(em);
         this.contributorRepository = contributorRepository;
         this.trackRepository = trackRepository;
         this.mediumRepository = mediumRepository;
         this.labelRepository = labelRepository;
         this.imageRepository = imageRepository;
+        this.recordingRepository = recordingRepository;
     }
 
     public Collection<ReleaseEntity> findByName(String name) {
@@ -79,6 +83,12 @@ public class JPAReleaseRepository extends AbstractJPASMDIdentityRepository<Relea
     public Collection<ReleaseEntity> findByWorkWithRelations(String workId, Collection<String> mandatoryRelations, Collection<String> optionalRelations) {
         Query query = entityManager.createQuery(recordingQueryStringFor("e", "release", "work", "relation", "searchRelation", mandatoryRelations, optionalRelations, true) + " WHERE searchRelation.reference=:work order by e.name");
         query.setParameter("work", workId);
+        return query.getResultList();
+    }
+
+    public Collection<ReleaseEntity> findByLabelWithRelations(String labelId, Collection<String> mandatoryRelations, Collection<String> optionalRelations) {
+        Query query = entityManager.createQuery(queryStringFor("e", mandatoryRelations, optionalRelations)+" JOIN e.label as label WHERE label.id=:label");
+        query.setParameter("label",labelId);
         return query.getResultList();
     }
 
@@ -159,7 +169,9 @@ public class JPAReleaseRepository extends AbstractJPASMDIdentityRepository<Relea
 
     @Override
     public void remove(ReleaseEntity entity) {
+        entityManager.flush();
         entityManager.refresh(entity);
+        Collection<RecordingEntity> recordings = recordingRepository.findBySearchRelation(entity);
         for (Track track : entity.getTracks()) {
             track.setRelease(null);
             trackRepository.remove((TrackEntity)track);
@@ -175,6 +187,25 @@ public class JPAReleaseRepository extends AbstractJPASMDIdentityRepository<Relea
 
         
         super.remove(entity);
+        for (RecordingEntity recording : recordings) {
+            recordingRepository.refresh(recording);
+        }
     }
 
+    public void refresh(ReleaseEntity entity) {
+        Set<RecordingEntity> recordings = new HashSet<RecordingEntity>();
+        for (Track track : entity.getTracks()) {
+            if(track.getRecording()!=null) {
+                recordings.add((RecordingEntity) track.getRecording());
+            }
+        }
+        for (RecordingSession session : entity.getRecordingSessions()) {
+            for (Recording recording : session.getRecordings()) {
+                recordings.add((RecordingEntity) recording);
+            }
+        }
+        for (RecordingEntity recording : recordings) {
+            recordingRepository.refresh(recording);
+        }
+    }
 }

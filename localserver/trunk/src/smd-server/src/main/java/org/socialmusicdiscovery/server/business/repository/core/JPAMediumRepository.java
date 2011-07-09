@@ -29,13 +29,20 @@ package org.socialmusicdiscovery.server.business.repository.core;
 
 import com.google.inject.Inject;
 import org.socialmusicdiscovery.server.business.model.core.MediumEntity;
+import org.socialmusicdiscovery.server.business.model.core.RecordingEntity;
 import org.socialmusicdiscovery.server.business.repository.AbstractJPASMDIdentityRepository;
 
 import javax.persistence.EntityManager;
+import java.util.Collection;
 
 public class JPAMediumRepository extends AbstractJPASMDIdentityRepository<MediumEntity> implements MediumRepository {
+    RecordingRepository recordingRepository;
+
     @Inject
-    public JPAMediumRepository(EntityManager em) {super(em);}
+    public JPAMediumRepository(EntityManager em, RecordingRepository recordingRepository) {
+        super(em);
+        this.recordingRepository = recordingRepository;
+    }
 
     @Override
     public void create(MediumEntity entity) {
@@ -51,5 +58,14 @@ public class JPAMediumRepository extends AbstractJPASMDIdentityRepository<Medium
             entity.setSortAsAutomatically();
         }
         return super.merge(entity);
+    }
+
+    @Override
+    public void remove(MediumEntity entity) {
+        Collection<RecordingEntity> recordings = recordingRepository.findBySearchRelation(entity);
+        super.remove(entity);
+        for (RecordingEntity recording : recordings) {
+            recordingRepository.refresh(recording);
+        }
     }
 }

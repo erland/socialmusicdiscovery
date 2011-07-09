@@ -28,6 +28,7 @@
 package org.socialmusicdiscovery.server.business.repository.core;
 
 import com.google.inject.ImplementedBy;
+import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.model.core.RecordingEntity;
 import org.socialmusicdiscovery.server.business.repository.SMDIdentityRepository;
 
@@ -38,4 +39,18 @@ public interface RecordingRepository extends SMDIdentityRepository<RecordingEnti
     Collection<RecordingEntity> findByName(String name);
     Collection<RecordingEntity> findByNameWithRelations(String name, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
     Collection<RecordingEntity> findByPartialNameWithRelations(String name, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
+    Collection<RecordingEntity> findByWorkWithRelations(String workId, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
+
+    /**
+     * Refresh search relations for the specified entity, this method should be called after all modifications has been done on the entity
+     * @param entity The entity that has been changed that might affect search relations
+     */
+    void refresh(RecordingEntity entity);
+
+    /**
+     * Get all recordings related to the specified entity through search relations
+     * @param entity The entity to search for relations towards
+     * @return The list of matching entities
+     */
+    Collection<RecordingEntity> findBySearchRelation(SMDIdentity entity);
 }

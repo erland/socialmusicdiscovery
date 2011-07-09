@@ -106,7 +106,9 @@ public class WorkFacade extends AbstractSMDIdentityCRUDFacade<WorkEntity, WorkRe
             transactionManager.begin();
             work.setLastUpdated(new Date());
             work.setLastUpdatedBy(super.CHANGED_BY);
-            return new CopyHelper().copy(super.createEntity(work), Expose.class);
+            WorkEntity createdEntity = super.createEntity(work);
+            getRepository().refresh(createdEntity);
+            return new CopyHelper().copy(createdEntity, Expose.class);
         }catch (RuntimeException e) {
             transactionManager.setRollbackOnly();
             throw e;
@@ -131,7 +133,9 @@ public class WorkFacade extends AbstractSMDIdentityCRUDFacade<WorkEntity, WorkRe
             transactionManager.begin();
             work.setLastUpdated(new Date());
             work.setLastUpdatedBy(super.CHANGED_BY);
-            return new CopyHelper().copy(super.updateEntity(id, work), Expose.class);
+            WorkEntity updatedEntity = super.updateEntity(id, work);
+            getRepository().refresh(updatedEntity);
+            return new CopyHelper().copy(updatedEntity, Expose.class);
         }catch (RuntimeException e) {
             transactionManager.setRollbackOnly();
             throw e;

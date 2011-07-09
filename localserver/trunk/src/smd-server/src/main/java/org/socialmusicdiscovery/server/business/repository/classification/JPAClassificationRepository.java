@@ -113,4 +113,10 @@ public class JPAClassificationRepository extends AbstractJPASMDIdentityRepositor
 
         super.remove(entity);
     }
+
+    public void refresh(ClassificationEntity entity) {
+        for (ClassificationReference reference : entity.getReferences()) {
+            classificationReferenceRepository.refresh((ClassificationReferenceEntity) reference);
+        }
+    }
 }

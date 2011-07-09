@@ -92,7 +92,9 @@ public class RecordingSessionFacade extends AbstractSMDIdentityCRUDFacade<Record
             transactionManager.begin();
             recordingSession.setLastUpdated(new Date());
             recordingSession.setLastUpdatedBy(super.CHANGED_BY);
-            return new CopyHelper().copy(super.createEntity(recordingSession), Expose.class);
+            RecordingSessionEntity createdEntity = super.createEntity(recordingSession);
+            getRepository().refresh(createdEntity);
+            return new CopyHelper().copy(createdEntity, Expose.class);
         }catch (RuntimeException e) {
             transactionManager.setRollbackOnly();
             throw e;
@@ -117,7 +119,9 @@ public class RecordingSessionFacade extends AbstractSMDIdentityCRUDFacade<Record
             transactionManager.begin();
             recordingSession.setLastUpdated(new Date());
             recordingSession.setLastUpdatedBy(super.CHANGED_BY);
-            return new CopyHelper().copy(super.updateEntity(id, recordingSession), Expose.class);
+            RecordingSessionEntity updatedEntity = super.updateEntity(id, recordingSession);
+            getRepository().refresh(updatedEntity);
+            return new CopyHelper().copy(updatedEntity, Expose.class);
         }catch (RuntimeException e) {
             transactionManager.setRollbackOnly();
             throw e;

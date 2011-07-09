@@ -33,7 +33,7 @@ import org.socialmusicdiscovery.server.business.repository.AbstractJPASMDIdentit
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import java.util.*;
+import java.util.Collection;
 
 public class JPATrackRepository extends AbstractJPASMDIdentityRepository<TrackEntity> implements TrackRepository {
     private ReleaseRepository releaseRepository;
@@ -154,6 +154,9 @@ public class JPATrackRepository extends AbstractJPASMDIdentityRepository<TrackEn
 
     @Override
     public void remove(TrackEntity entity) {
+        entityManager.flush();
+        entityManager.refresh(entity);
+        Collection<RecordingEntity> recordings = recordingRepository.findBySearchRelation(entity);
         if(entity.getMedium() != null) {
             ((MediumEntity)entity.getMedium()).getTracks().remove(entity);
         }
@@ -168,5 +171,14 @@ public class JPATrackRepository extends AbstractJPASMDIdentityRepository<TrackEn
         entityManager.createQuery("DELETE from RecordingTrackSearchRelationEntity where reference=:id").setParameter("id",entity.getId()).executeUpdate();
         entityManager.createQuery("DELETE from ReleaseSearchRelationEntity where reference=:id").setParameter("id",entity.getId()).executeUpdate();
         super.remove(entity);
+        for (RecordingEntity recording : recordings) {
+            recordingRepository.refresh(recording);
+        }
+    }
+
+    public void refresh(TrackEntity entity) {
+        if(entity.getRecording()!=null) {
+            recordingRepository.refresh((RecordingEntity) entity.getRecording());
+        }
     }
 }

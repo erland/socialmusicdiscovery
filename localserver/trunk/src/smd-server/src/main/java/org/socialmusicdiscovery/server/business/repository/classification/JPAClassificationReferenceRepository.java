@@ -28,12 +28,57 @@
 package org.socialmusicdiscovery.server.business.repository.classification;
 
 import com.google.inject.Inject;
+import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
 import org.socialmusicdiscovery.server.business.model.classification.ClassificationReferenceEntity;
+import org.socialmusicdiscovery.server.business.model.core.*;
 import org.socialmusicdiscovery.server.business.repository.AbstractJPASMDIdentityRepository;
+import org.socialmusicdiscovery.server.business.repository.core.*;
 
 import javax.persistence.EntityManager;
 
 public class JPAClassificationReferenceRepository extends AbstractJPASMDIdentityRepository<ClassificationReferenceEntity> implements ClassificationReferenceRepository {
+    private LabelRepository labelRepository;
+    private ReleaseRepository releaseRepository;
+    private TrackRepository trackRepository;
+    private RecordingRepository recordingRepository;
+    private RecordingSessionRepository recordingSessionRepository;
+    private WorkRepository workRepository;
+    private ArtistRepository artistRepository;
+    private PersonRepository personRepository;
+
     @Inject
-    public JPAClassificationReferenceRepository(EntityManager em) {super(em);}
+    public JPAClassificationReferenceRepository(EntityManager em, LabelRepository labelRepository, ReleaseRepository releaseRepository, TrackRepository trackRepository,
+    RecordingRepository recordingRepository, RecordingSessionRepository recordingSessionRepository, WorkRepository workRepository, ArtistRepository artistRepository, PersonRepository personRepository) {
+        super(em);
+        this.labelRepository = labelRepository;
+        this.releaseRepository = releaseRepository;
+        this.trackRepository = trackRepository;
+        this.recordingRepository = recordingRepository;
+        this.recordingSessionRepository = recordingSessionRepository;
+        this.workRepository = workRepository;
+        this.artistRepository = artistRepository;
+        this.personRepository = personRepository;
+    }
+
+    public void refresh(ClassificationReferenceEntity entity) {
+
+        if(entity.getReferenceTo().getType().equals(SMDIdentityReferenceEntity.typeForClass(LabelEntity.class))) {
+            labelRepository.refresh(labelRepository.findById(entity.getReferenceTo().getId()));
+        }else if(entity.getReferenceTo().getType().equals(SMDIdentityReferenceEntity.typeForClass(ReleaseEntity.class))) {
+            releaseRepository.refresh(releaseRepository.findById(entity.getReferenceTo().getId()));
+        }else if(entity.getReferenceTo().getType().equals(SMDIdentityReferenceEntity.typeForClass(TrackEntity.class))) {
+            trackRepository.refresh(trackRepository.findById(entity.getReferenceTo().getId()));
+        }else if(entity.getReferenceTo().getType().equals(SMDIdentityReferenceEntity.typeForClass(RecordingEntity.class))) {
+            recordingRepository.refresh(recordingRepository.findById(entity.getReferenceTo().getId()));
+        }else if(entity.getReferenceTo().getType().equals(SMDIdentityReferenceEntity.typeForClass(RecordingSessionEntity.class))) {
+            recordingSessionRepository.refresh(recordingSessionRepository.findById(entity.getReferenceTo().getId()));
+        }else if(entity.getReferenceTo().getType().equals(SMDIdentityReferenceEntity.typeForClass(WorkEntity.class))) {
+            workRepository.refresh(workRepository.findById(entity.getReferenceTo().getId()));
+        }else if(entity.getReferenceTo().getType().equals(SMDIdentityReferenceEntity.typeForClass(ArtistEntity.class))) {
+            artistRepository.refresh(artistRepository.findById(entity.getReferenceTo().getId()));
+        }else if(entity.getReferenceTo().getType().equals(SMDIdentityReferenceEntity.typeForClass(PersonEntity.class))) {
+            personRepository.refresh(personRepository.findById(entity.getReferenceTo().getId()));
+        }
+
+    }
 }

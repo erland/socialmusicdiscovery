@@ -30,6 +30,7 @@ package org.socialmusicdiscovery.server.business.repository.core;
 import com.google.inject.Inject;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
 import org.socialmusicdiscovery.server.business.model.core.ContributorEntity;
+import org.socialmusicdiscovery.server.business.model.core.RecordingEntity;
 import org.socialmusicdiscovery.server.business.model.core.WorkEntity;
 import org.socialmusicdiscovery.server.business.repository.AbstractJPASMDIdentityRepository;
 
@@ -39,11 +40,13 @@ import java.util.Collection;
 
 public class JPAWorkRepository extends AbstractJPASMDIdentityRepository<WorkEntity> implements WorkRepository {
     ContributorRepository contributorRepository;
+    RecordingRepository recordingRepository;
 
     @Inject
-    public JPAWorkRepository(EntityManager em, ContributorRepository contributorRepository) {
+    public JPAWorkRepository(EntityManager em, ContributorRepository contributorRepository, RecordingRepository recordingRepository) {
         super(em);
         this.contributorRepository = contributorRepository;
+        this.recordingRepository = recordingRepository;
     }
 
     public Collection<WorkEntity> findByName(String name) {
@@ -122,10 +125,21 @@ public class JPAWorkRepository extends AbstractJPASMDIdentityRepository<WorkEnti
 
     @Override
     public void remove(WorkEntity entity) {
+        Collection<RecordingEntity> recordings = recordingRepository.findBySearchRelation(entity);
         entityManager.createQuery("DELETE from RecordingWorkSearchRelationEntity where reference=:id").setParameter("id",entity.getId()).executeUpdate();
         entityManager.createQuery("DELETE from ReleaseSearchRelationEntity where reference=:id").setParameter("id",entity.getId()).executeUpdate();
 
         entityManager.createNativeQuery("DELETE from classification_references where reference_to_id=:id").setParameter("id",entity.getId()).executeUpdate();
         super.remove(entity);
+        for (RecordingEntity recording : recordings) {
+            recordingRepository.refresh(recording);
+        }
+    }
+
+    public void refresh(WorkEntity entity) {
+        Collection<RecordingEntity> recordings = recordingRepository.findByWorkWithRelations(entity.getId(),null,null);
+        for (RecordingEntity recording : recordings) {
+            recordingRepository.refresh(recording);
+        }
     }
 }

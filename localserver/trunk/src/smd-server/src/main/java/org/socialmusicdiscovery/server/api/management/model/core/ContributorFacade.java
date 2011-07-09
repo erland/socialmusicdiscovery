@@ -135,7 +135,9 @@ public class ContributorFacade extends AbstractSMDIdentityCRUDFacade<Contributor
             transactionManager.begin();
             contributor.setLastUpdated(new Date());
             contributor.setLastUpdatedBy(super.CHANGED_BY);
-            return new CopyHelper().copy(super.createEntity(contributor), Expose.class);
+            ContributorEntity createdEntity = super.createEntity(contributor);
+            getRepository().refresh(createdEntity);
+            return new CopyHelper().copy(createdEntity, Expose.class);
         }catch (RuntimeException e) {
             transactionManager.setRollbackOnly();
             throw e;
@@ -160,7 +162,9 @@ public class ContributorFacade extends AbstractSMDIdentityCRUDFacade<Contributor
             transactionManager.begin();
             contributor.setLastUpdated(new Date());
             contributor.setLastUpdatedBy(super.CHANGED_BY);
-            return new CopyHelper().copy(super.updateEntity(id, contributor), Expose.class);
+            ContributorEntity updatedEntity = super.updateEntity(id, contributor);
+            getRepository().refresh(updatedEntity);
+            return new CopyHelper().copy(updatedEntity, Expose.class);
         }catch (RuntimeException e) {
             transactionManager.setRollbackOnly();
             throw e;
