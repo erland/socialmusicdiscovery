@@ -100,7 +100,9 @@ public class PersonFacade extends AbstractSMDIdentityCRUDFacade<PersonEntity, Pe
             transactionManager.begin();
             person.setLastUpdated(new Date());
             person.setLastUpdatedBy(super.CHANGED_BY);
-            return new CopyHelper().copy(super.createEntity(person), Expose.class);
+            PersonEntity createdEntity = super.createEntity(person);
+            getRepository().refresh(createdEntity);
+            return new CopyHelper().copy(createdEntity, Expose.class);
         }catch (RuntimeException e) {
             transactionManager.setRollbackOnly();
             throw e;
@@ -125,7 +127,9 @@ public class PersonFacade extends AbstractSMDIdentityCRUDFacade<PersonEntity, Pe
             transactionManager.begin();
             person.setLastUpdated(new Date());
             person.setLastUpdatedBy(super.CHANGED_BY);
-            return new CopyHelper().copy(super.updateEntity(id, person), Expose.class);
+            PersonEntity updatedEntity = super.updateEntity(id, person);
+            getRepository().refresh(updatedEntity);
+            return new CopyHelper().copy(updatedEntity, Expose.class);
         }catch (RuntimeException e) {
             transactionManager.setRollbackOnly();
             throw e;

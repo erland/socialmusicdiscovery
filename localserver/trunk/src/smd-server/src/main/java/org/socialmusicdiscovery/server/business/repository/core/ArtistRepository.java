@@ -41,4 +41,10 @@ public interface ArtistRepository extends SMDIdentityRepository<ArtistEntity> {
     Collection<ArtistEntity> findByWorkWithRelations(String workId, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
     Collection<ArtistEntity> findByReleaseWithRelations(String releaseId, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
     Collection<ArtistEntity> findByPersonWithRelations(String personId, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
+
+    /**
+     * Refresh search relations for the specified entity, this method should be called after all modifications has been done on the entity
+     * @param entity The entity that has been changed that might affect search relations
+     */
+    void refresh(ArtistEntity entity);
 }

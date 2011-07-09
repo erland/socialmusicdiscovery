@@ -184,6 +184,7 @@ public class JPAContributorRepository extends AbstractJPASMDIdentityRepository<C
 
     @Override
     public void remove(ContributorEntity entity) {
+        Collection<RecordingEntity> recordings = recordingRepository.findBySearchRelation(entity);
         if(Hibernate.isInitialized(entity.getRelease()) && entity.getRelease() != null) {
             ((ContributorOwner)entity.getRelease()).removeContributor(entity);
         }else if(Hibernate.isInitialized(entity.getWork()) && entity.getWork()!=null) {
@@ -194,6 +195,9 @@ public class JPAContributorRepository extends AbstractJPASMDIdentityRepository<C
             ((ContributorOwner)entity.getRecordingSession()).removeContributor(entity);
         }
         super.remove(entity);
+        for (RecordingEntity recording : recordings) {
+            recordingRepository.refresh(recording);
+        }
     }
 
     private void initializeOwner(ContributorEntity entity) {
@@ -207,6 +211,18 @@ public class JPAContributorRepository extends AbstractJPASMDIdentityRepository<C
             }else if(SMDIdentityReferenceEntity.typeForClass(entity.getOwner().getClass()).equals(SMDIdentityReferenceEntity.typeForClass(RecordingSessionEntity.class)) && entity.getRecordingSession()==null) {
                 entity.setRecordingSession(recordingSessionRepository.findById(entity.getOwner().getId()));
             }
+        }
+    }
+
+    public void refresh(ContributorEntity entity) {
+        if(entity.getRecording()!=null) {
+            recordingRepository.refresh((RecordingEntity) entity.getRecording());
+        }else if(entity.getRecordingSession()!=null) {
+            recordingSessionRepository.refresh((RecordingSessionEntity) entity.getRecordingSession());
+        }else if(entity.getRelease()!=null) {
+            releaseRepository.refresh((ReleaseEntity) entity.getRelease());
+        }else if(entity.getWork()!=null) {
+            workRepository.refresh((WorkEntity) entity.getWork());
         }
     }
 }

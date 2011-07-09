@@ -70,17 +70,17 @@ public class RecordingEntity extends AbstractSMDIdentityEntity implements Record
     @JoinColumn(name = "session_id")
     private RecordingSession recordingSession;
 
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "id")
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "id", cascade = {CascadeType.ALL})
     private Set<RecordingLabelSearchRelationEntity> labelSearchRelations = new HashSet<RecordingLabelSearchRelationEntity>();
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "id")
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "id", cascade = {CascadeType.ALL})
     private Set<RecordingReleaseSearchRelationEntity> releaseSearchRelations = new HashSet<RecordingReleaseSearchRelationEntity>();
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "id")
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "id", cascade = {CascadeType.ALL})
     private Set<RecordingTrackSearchRelationEntity> trackSearchRelations = new HashSet<RecordingTrackSearchRelationEntity>();
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "id")
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "id", cascade = {CascadeType.ALL})
     private Set<RecordingWorkSearchRelationEntity> workSearchRelations = new HashSet<RecordingWorkSearchRelationEntity>();
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "id")
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "id", cascade = {CascadeType.ALL})
     private Set<RecordingArtistSearchRelationEntity> artistSearchRelations = new HashSet<RecordingArtistSearchRelationEntity>();
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "id")
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "id", cascade = {CascadeType.ALL})
     private Set<RecordingClassificationSearchRelationEntity> classificationSearchRelations = new HashSet<RecordingClassificationSearchRelationEntity>();
 
     public String getName() {

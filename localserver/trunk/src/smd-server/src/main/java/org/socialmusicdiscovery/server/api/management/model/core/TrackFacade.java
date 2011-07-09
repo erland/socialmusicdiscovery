@@ -111,7 +111,9 @@ public class TrackFacade extends AbstractSMDIdentityCRUDFacade<TrackEntity, Trac
             transactionManager.begin();
             track.setLastUpdated(new Date());
             track.setLastUpdatedBy(super.CHANGED_BY);
-            return new CopyHelper().copy(super.createEntity(track), Expose.class);
+            TrackEntity createdEntity = super.createEntity(track);
+            getRepository().refresh(createdEntity);
+            return new CopyHelper().copy(createdEntity, Expose.class);
         }catch (RuntimeException e) {
             transactionManager.setRollbackOnly();
             throw e;
@@ -136,7 +138,9 @@ public class TrackFacade extends AbstractSMDIdentityCRUDFacade<TrackEntity, Trac
             transactionManager.begin();
             track.setLastUpdated(new Date());
             track.setLastUpdatedBy(super.CHANGED_BY);
-            return new CopyHelper().copy(super.updateEntity(id, track), Expose.class);
+            TrackEntity updatedEntity = super.updateEntity(id, track);
+            getRepository().refresh(updatedEntity);
+            return new CopyHelper().copy(updatedEntity, Expose.class);
         }catch (RuntimeException e) {
             transactionManager.setRollbackOnly();
             throw e;

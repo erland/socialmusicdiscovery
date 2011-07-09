@@ -31,6 +31,7 @@ import com.google.inject.Inject;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
 import org.socialmusicdiscovery.server.business.model.core.ArtistEntity;
 import org.socialmusicdiscovery.server.business.model.core.PersonEntity;
+import org.socialmusicdiscovery.server.business.model.core.RecordingEntity;
 import org.socialmusicdiscovery.server.business.repository.AbstractJPASMDIdentityRepository;
 
 import javax.persistence.EntityManager;
@@ -39,10 +40,13 @@ import java.util.Collection;
 
 public class JPAPersonRepository extends AbstractJPASMDIdentityRepository<PersonEntity> implements PersonRepository {
     ArtistRepository artistRepository;
+    RecordingRepository recordingRepository;
+
     @Inject
-    public JPAPersonRepository(EntityManager em, ArtistRepository artistRepository) {
+    public JPAPersonRepository(EntityManager em, ArtistRepository artistRepository, RecordingRepository recordingRepository) {
         super(em);
         this.artistRepository = artistRepository;
+        this.recordingRepository = recordingRepository;
     }
 
     public Collection<PersonEntity> findByName(String name) {
@@ -78,11 +82,22 @@ public class JPAPersonRepository extends AbstractJPASMDIdentityRepository<Person
     }
 
     public void remove(PersonEntity entity) {
+        Collection<RecordingEntity> recordings = recordingRepository.findBySearchRelation(entity);
         Collection<ArtistEntity> artists = artistRepository.findByPersonWithRelations(entity.getId(), null, null);
         for (Artist artist : artists) {
             artist.setPerson(null);
         }
         entity.getSearchRelations().clear();
         super.remove(entity);
+        for (RecordingEntity recording : recordings) {
+            recordingRepository.refresh(recording);
+        }
+    }
+
+    public void refresh(PersonEntity entity) {
+        Collection<ArtistEntity> artists = artistRepository.findByPersonWithRelations(entity.getId(), null, null);
+        for (ArtistEntity artist : artists) {
+            artistRepository.refresh(artist);
+        }
     }
 }

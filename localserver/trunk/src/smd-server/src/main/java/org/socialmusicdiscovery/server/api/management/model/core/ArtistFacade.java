@@ -106,7 +106,9 @@ public class ArtistFacade extends AbstractSMDIdentityCRUDFacade<ArtistEntity, Ar
             transactionManager.begin();
             artist.setLastUpdated(new Date());
             artist.setLastUpdatedBy(super.CHANGED_BY);
-            return new CopyHelper().copy(super.createEntity(artist), Expose.class);
+            ArtistEntity createdEntity = super.createEntity(artist);
+            getRepository().refresh(createdEntity);
+            return new CopyHelper().copy(createdEntity, Expose.class);
         }catch (RuntimeException e) {
             transactionManager.setRollbackOnly();
             throw e;
@@ -131,7 +133,9 @@ public class ArtistFacade extends AbstractSMDIdentityCRUDFacade<ArtistEntity, Ar
             transactionManager.begin();
             artist.setLastUpdated(new Date());
             artist.setLastUpdatedBy(super.CHANGED_BY);
-            return new CopyHelper().copy(super.updateEntity(id, artist), Expose.class);
+            ArtistEntity updatedEntity = super.updateEntity(id, artist);
+            getRepository().refresh(updatedEntity);
+            return new CopyHelper().copy(updatedEntity, Expose.class);
         }catch (RuntimeException e) {
             transactionManager.setRollbackOnly();
             throw e;

@@ -48,4 +48,10 @@ public interface TrackRepository extends SMDIdentityRepository<TrackEntity> {
     Collection<TrackEntity> findByWorkWithRelations(String workId, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
 
     Collection<TrackEntity> findByRecordingWithRelations(String recordingId, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
+
+    /**
+     * Refresh search relations for the specified entity, this method should be called after all modifications has been done on the entity
+     * @param entity The entity that has been changed that might affect search relations
+     */
+    void refresh(TrackEntity entity);
 }

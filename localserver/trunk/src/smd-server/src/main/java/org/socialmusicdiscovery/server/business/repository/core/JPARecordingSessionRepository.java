@@ -68,6 +68,23 @@ public class JPARecordingSessionRepository extends AbstractJPASMDIdentityReposit
 
     @Override
     public void create(RecordingSessionEntity entity) {
+        for (Recording recording : entity.getRecordings()) {
+            RecordingEntity existingRecording = recordingRepository.findById(recording.getId());
+            if(existingRecording==null) {
+                if(((RecordingEntity)recording).getLastUpdated()==null) {
+                    ((RecordingEntity)recording).setLastUpdated(entity.getLastUpdated());
+                }
+                if(((RecordingEntity)recording).getLastUpdatedBy()==null) {
+                    ((RecordingEntity)recording).setLastUpdatedBy(entity.getLastUpdatedBy());
+                }
+                entity.getRecordings().remove(recording);
+                entity.addRecording((RecordingEntity) recording);
+                recordingRepository.create((RecordingEntity) recording);
+            }else {
+                entity.getRecordings().remove(existingRecording);
+                entity.addRecording(existingRecording);
+            }
+        }
         super.create(entity);
         for (Contributor contributor : entity.getContributors()) {
             if(!entityManager.contains(contributor)) {
@@ -97,6 +114,23 @@ public class JPARecordingSessionRepository extends AbstractJPASMDIdentityReposit
                 contributorRepository.merge((ContributorEntity) contributor);
             }
         }
+        for (Recording recording : entity.getRecordings()) {
+            RecordingEntity existingRecording = recordingRepository.findById(recording.getId());
+            if(existingRecording==null) {
+                if(((RecordingEntity)recording).getLastUpdated()==null) {
+                    ((RecordingEntity)recording).setLastUpdated(entity.getLastUpdated());
+                }
+                if(((RecordingEntity)recording).getLastUpdatedBy()==null) {
+                    ((RecordingEntity)recording).setLastUpdatedBy(entity.getLastUpdatedBy());
+                }
+                entity.getRecordings().remove(recording);
+                entity.addRecording((RecordingEntity) recording);
+                recordingRepository.create((RecordingEntity) recording);
+            }else {
+                entity.getRecordings().remove(existingRecording);
+                entity.addRecording(existingRecording);
+            }
+        }
         return super.merge(entity);
     }
 
@@ -106,5 +140,11 @@ public class JPARecordingSessionRepository extends AbstractJPASMDIdentityReposit
             recordingRepository.remove((RecordingEntity)recording);
         }
         super.remove(entity);
+    }
+
+    public void refresh(RecordingSessionEntity entity) {
+        for (Recording recording : entity.getRecordings()) {
+            recordingRepository.refresh((RecordingEntity) recording);
+        }
     }
 }

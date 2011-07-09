@@ -52,7 +52,7 @@ public class RecordingSessionEntity extends AbstractSMDIdentityEntity implements
     @OneToMany(targetEntity = ContributorEntity.class, mappedBy = "recordingSession", cascade = {CascadeType.REMOVE}, orphanRemoval = true)
     private Set<Contributor> contributors = new HashSet<Contributor>();
 
-    @OneToMany(targetEntity = RecordingEntity.class, orphanRemoval = true)
+    @OneToMany(targetEntity = RecordingEntity.class, orphanRemoval = true, cascade = {CascadeType.ALL})
     @JoinColumn(name = "session_id")
     @Expose
     private Set<Recording> recordings = new HashSet<Recording>();
@@ -94,4 +94,16 @@ public class RecordingSessionEntity extends AbstractSMDIdentityEntity implements
         contributor.setRecordingSession(null);
     }
 
+    public void addRecording(RecordingEntity recording) {
+        if(Hibernate.isInitialized(recordings)) {
+            this.recordings.add(recording);
+        }
+        recording.setRecordingSession(this);
+    }
+    public void removeRecording(RecordingEntity recording) {
+        if(Hibernate.isInitialized(recordings)) {
+            this.recordings.remove(recording);
+        }
+        recording.setRecordingSession(null);
+    }
 }

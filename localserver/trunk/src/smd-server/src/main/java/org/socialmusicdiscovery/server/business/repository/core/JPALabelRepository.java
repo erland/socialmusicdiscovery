@@ -29,6 +29,8 @@ package org.socialmusicdiscovery.server.business.repository.core;
 
 import com.google.inject.Inject;
 import org.socialmusicdiscovery.server.business.model.core.LabelEntity;
+import org.socialmusicdiscovery.server.business.model.core.RecordingEntity;
+import org.socialmusicdiscovery.server.business.model.core.ReleaseEntity;
 import org.socialmusicdiscovery.server.business.repository.AbstractJPASMDIdentityRepository;
 
 import javax.persistence.EntityManager;
@@ -36,8 +38,15 @@ import javax.persistence.Query;
 import java.util.Collection;
 
 public class JPALabelRepository extends AbstractJPASMDIdentityRepository<LabelEntity> implements LabelRepository {
+    private ReleaseRepository releaseRepository;
+    private RecordingRepository recordingRepository;
+
     @Inject
-    public JPALabelRepository(EntityManager em) {super(em);}
+    public JPALabelRepository(EntityManager em, ReleaseRepository releaseRepository, RecordingRepository recordingRepository) {
+        super(em);
+        this.releaseRepository = releaseRepository;
+        this.recordingRepository = recordingRepository;
+    }
 
     public Collection<LabelEntity> findByName(String name) {
         return findByNameWithRelations(name, null, null);
@@ -69,5 +78,21 @@ public class JPALabelRepository extends AbstractJPASMDIdentityRepository<LabelEn
             entity.setSortAsAutomatically();
         }
         return super.merge(entity);
+    }
+
+    @Override
+    public void remove(LabelEntity entity) {
+        Collection<RecordingEntity> recordings = recordingRepository.findBySearchRelation(entity);
+        super.remove(entity);
+        for (RecordingEntity recording : recordings) {
+            recordingRepository.refresh(recording);
+        }
+    }
+
+    public void refresh(LabelEntity entity) {
+        Collection<ReleaseEntity> releases = releaseRepository.findByLabelWithRelations(entity.getId(),null,null);
+        for (ReleaseEntity release : releases) {
+            releaseRepository.refresh(release);
+        }
     }
 }

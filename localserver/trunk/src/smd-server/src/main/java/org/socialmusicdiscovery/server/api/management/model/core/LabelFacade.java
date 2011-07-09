@@ -100,7 +100,9 @@ public class LabelFacade extends AbstractSMDIdentityCRUDFacade<LabelEntity, Labe
             transactionManager.begin();
             label.setLastUpdated(new Date());
             label.setLastUpdatedBy(super.CHANGED_BY);
-            return new CopyHelper().copy(super.createEntity(label), Expose.class);
+            LabelEntity createdEntity = super.createEntity(label);
+            getRepository().refresh(createdEntity);
+            return new CopyHelper().copy(createdEntity, Expose.class);
         }catch (RuntimeException e) {
             transactionManager.setRollbackOnly();
             throw e;
@@ -125,7 +127,9 @@ public class LabelFacade extends AbstractSMDIdentityCRUDFacade<LabelEntity, Labe
             transactionManager.begin();
             label.setLastUpdated(new Date());
             label.setLastUpdatedBy(super.CHANGED_BY);
-            return new CopyHelper().copy(super.updateEntity(id, label), Expose.class);
+            LabelEntity updatedEntity = super.updateEntity(id, label);
+            getRepository().refresh(updatedEntity);
+            return new CopyHelper().copy(updatedEntity, Expose.class);
         }catch (RuntimeException e) {
             transactionManager.setRollbackOnly();
             throw e;

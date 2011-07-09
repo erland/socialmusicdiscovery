@@ -107,7 +107,9 @@ public class ReleaseFacade extends AbstractSMDIdentityCRUDFacade<ReleaseEntity, 
             transactionManager.begin();
             release.setLastUpdated(new Date());
             release.setLastUpdatedBy(super.CHANGED_BY);
-            return new CopyHelper().copy(super.createEntity(release), Expose.class);
+            ReleaseEntity createdEntity = super.createEntity(release);
+            getRepository().refresh(createdEntity);
+            return new CopyHelper().copy(createdEntity, Expose.class);
         }catch (RuntimeException e) {
             transactionManager.setRollbackOnly();
             throw e;
@@ -132,7 +134,9 @@ public class ReleaseFacade extends AbstractSMDIdentityCRUDFacade<ReleaseEntity, 
             transactionManager.begin();
             release.setLastUpdated(new Date());
             release.setLastUpdatedBy(super.CHANGED_BY);
-            return new CopyHelper().copy(super.updateEntity(id, release), Expose.class);
+            ReleaseEntity updatedEntity = super.updateEntity(id, release);
+            getRepository().refresh(updatedEntity);
+            return new CopyHelper().copy(updatedEntity, Expose.class);
         }catch (RuntimeException e) {
             transactionManager.setRollbackOnly();
             throw e;
