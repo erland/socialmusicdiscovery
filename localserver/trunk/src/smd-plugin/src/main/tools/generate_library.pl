@@ -108,7 +108,7 @@ foreach my $line (@files) {
 		print "Creating: $file\n";
 		my $dir = dirname($file);
 		mkpath($dir);
-		system("dd if=/dev/urandom bs=2 count=1 2>/dev/null|sox -t raw -c 1 -s -w -r 44100 - -t wav ./generated.wav");
+		system("dd if=/dev/urandom bs=2 count=100 2>/dev/null|sox -t raw -c 1 -s -w -r 44100 - -t wav ./generated.wav");
 		if( -e "./generated.wav" ) {
 			$file =~ s/\"/\\\"/g;
 			system("flac ./generated.wav -s -f -o \"$file\" $tagString") == 0 or die "Failed to generate: $file";
