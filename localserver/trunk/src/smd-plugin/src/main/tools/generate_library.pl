@@ -75,11 +75,6 @@ if (! -x "/usr/bin/flac") {
 	exit;
 }
 
-if (! -x "/usr/bin/sox") {
-	print "Can't find sox binary at /usr/bin/sox\n";
-	exit;
-}
-
 my $input = $ARGV[0];
 
 if (! -e $input) {
@@ -108,13 +103,7 @@ foreach my $line (@files) {
 		print "Creating: $file\n";
 		my $dir = dirname($file);
 		mkpath($dir);
-		system("dd if=/dev/urandom bs=2 count=100 2>/dev/null|sox -t raw -c 1 -s -w -r 44100 - -t wav ./generated.wav");
-		if( -e "./generated.wav" ) {
-			$file =~ s/\"/\\\"/g;
-			system("flac ./generated.wav -s -f -o \"$file\" $tagString") == 0 or die "Failed to generate: $file";
-			system("rm -f ./generated.wav");
-		}else {
-			print "Failed to generate data for ".$file;
-		}
+		$file =~ s/\"/\\\"/g;
+		system("dd if=/dev/urandom bs=2 count=100 2>/dev/null|flac --endian=big --sign=signed --channels=2 --bps=16 --sample-rate=44100 - -s -f -o \"$file\" $tagString") == 0 or die "Failed to generate: $file";
 	}
 }
