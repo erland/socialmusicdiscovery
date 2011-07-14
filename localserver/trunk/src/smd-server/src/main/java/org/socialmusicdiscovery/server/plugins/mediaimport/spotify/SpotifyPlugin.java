@@ -67,9 +67,7 @@ public class SpotifyPlugin extends AbstractPlugin {
         browseMenuManager.addDefaultItemFormat(BrowseMenuManager.MenuType.CONTEXT, SpotifyAlbum.class.getSimpleName(), "%object.name");
         browseMenuManager.addDefaultItemFormat(BrowseMenuManager.MenuType.CONTEXT, SpotifyTrack.class.getSimpleName(), "%object.number||[%object.number,. ]||%object.name");
 
-        browseMenuManager.addCommand("spotifyimportartist", SpotifyImport.class);
-        browseMenuManager.addCommand("spotifyimportalbum", SpotifyImport.class);
-        browseMenuManager.addCommand("spotifyimporttrack", SpotifyImport.class);
+        browseMenuManager.addCommand("spotifyimportalbum", SpotifyImportAlbum.class);
 
         browseServiceManager.addBrowseService(SpotifyArtist.class.getSimpleName(), SpotifyArtistBrowseService.class, getConfiguration());
         browseServiceManager.addBrowseService(SpotifyAlbum.class.getSimpleName(), SpotifyAlbumBrowseService.class, getConfiguration());

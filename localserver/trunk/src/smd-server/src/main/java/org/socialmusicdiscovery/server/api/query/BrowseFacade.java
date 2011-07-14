@@ -29,6 +29,7 @@ package org.socialmusicdiscovery.server.api.query;
 
 import com.google.inject.Inject;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
+import org.socialmusicdiscovery.server.business.logic.TransactionManager;
 import org.socialmusicdiscovery.server.business.model.core.PlayableElement;
 import org.socialmusicdiscovery.server.business.model.core.TrackEntity;
 import org.socialmusicdiscovery.server.business.service.browse.*;
@@ -43,6 +44,10 @@ import java.util.*;
  */
 @Path("/browse")
 public class BrowseFacade {
+    /** The transaction manager used by this facade */
+    @Inject
+    protected TransactionManager transactionManager;
+
     @Inject
     BrowseServiceManager browseServiceManager;
 
@@ -119,23 +124,31 @@ public class BrowseFacade {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/command/{command}/{object:.*}")
     public CommandResult executeCommand(@PathParam("command") String command, @PathParam("object") String object) {
+        try {
+            transactionManager.begin();
 
-        List<String> objects = new ArrayList<String>();
-        if (object!=null) {
-            objects.addAll(Arrays.asList(object.split("/")));
-        }
-        Command cmd = browseMenuManager.getCommand(command);
-        org.socialmusicdiscovery.server.business.service.browse.CommandResult result;
-        if (cmd != null) {
-            result = cmd.executeCommand(objects);
-            if (result == null) {
+            List<String> objects = new ArrayList<String>();
+            if (object!=null) {
+                objects.addAll(Arrays.asList(object.split("/")));
+            }
+            Command cmd = browseMenuManager.getCommand(command);
+            org.socialmusicdiscovery.server.business.service.browse.CommandResult result;
+            if (cmd != null) {
+                result = cmd.executeCommand(objects);
+                if (result == null) {
+                    result = new org.socialmusicdiscovery.server.business.service.browse.CommandResult(false, "Error executing command \"" + command + "\" on object " + object);
+                }
+            } else {
                 result = new org.socialmusicdiscovery.server.business.service.browse.CommandResult(false, "Error executing command \"" + command + "\" on object " + object);
             }
-        } else {
-            result = new org.socialmusicdiscovery.server.business.service.browse.CommandResult(false, "Error executing command \"" + command + "\" on object " + object);
-        }
 
-        return new CommandResult(result.getSuccess(), result.getMessage());
+            return new CommandResult(result.getSuccess(), result.getMessage());
+        }catch (RuntimeException e) {
+            transactionManager.setRollbackOnly();
+            throw e;
+        }finally {
+            transactionManager.end();
+        }
     }
 
     /**
