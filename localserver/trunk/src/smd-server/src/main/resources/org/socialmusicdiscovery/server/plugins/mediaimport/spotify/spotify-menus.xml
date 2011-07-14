@@ -77,18 +77,6 @@
         </menus>
     </menu>
 
-    <menu type="Command" id="spotifyimportartist" weight="100">
-        <contexts>
-            <context>SpotifyArtist</context>
-        </contexts>
-        <labels>
-            <label language="EN">Import from Spotify</label>
-        </labels>
-        <parameters>
-            <parameter>SpotifyArtist</parameter>
-        </parameters>
-    </menu>
-
     <menu type="Command" id="spotifyimportalbum" weight="100">
         <contexts>
             <context>SpotifyAlbum</context>
@@ -101,15 +89,4 @@
         </parameters>
     </menu>
 
-    <menu type="Command" id="spotifyimporttrack" weight="100">
-        <contexts>
-            <context>SpotifyTrack</context>
-        </contexts>
-        <labels>
-            <label language="EN">Import from Spotify</label>
-        </labels>
-        <parameters>
-            <parameter>SpotifyTrack</parameter>
-        </parameters>
-    </menu>
 </menus>
