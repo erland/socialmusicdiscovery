@@ -104,6 +104,7 @@ foreach my $line (@files) {
 		my $dir = dirname($file);
 		mkpath($dir);
 		$file =~ s/\"/\\\"/g;
+		$file =~ s/\$/\\\$/g;
 		system("dd if=/dev/urandom bs=2 count=100 2>/dev/null|flac --no-padding --endian=big --sign=signed --channels=2 --bps=16 --sample-rate=44100 - -s -f -o \"$file\" $tagString") == 0 or die "Failed to generate: $file";
 	}
 }
