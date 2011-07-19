@@ -132,6 +132,11 @@ public class DiscogsLargeSBSDataSampleCreator {
                 return false;
             }
 
+            String releaseYear = null;
+            if(getChildrenByTagName(release, "released").size()>0) {
+                releaseYear = getChildrenByTagName(release, "released").get(0).getTextContent().substring(0,4);
+            }
+
             List<Element> albumArtistsElement = getChildrenByTagName(release, "artists");
             List<String> albumArtistsList = new ArrayList<String>();
             if (albumArtistsElement.size() > 0) {
@@ -209,6 +214,9 @@ public class DiscogsLargeSBSDataSampleCreator {
                 for (Element track : tracks) {
                     List<String> trackAttributes = new ArrayList<String>();
                     trackAttributes.add("ALBUM="+releaseTitle);
+                    if(releaseYear!=null) {
+                        trackAttributes.add("YEAR="+releaseYear);
+                    }
                     trackAttributes.addAll(genresList);
                     trackAttributes.addAll(stylesList);
                     trackAttributes.addAll(albumArtistsList);
