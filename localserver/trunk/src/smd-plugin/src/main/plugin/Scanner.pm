@@ -411,7 +411,7 @@ sub readTags {
 		$log->error("Unable to get audio offset for: $file, using 0 as fallback");
 		$offset = 0;
 	}
-	$smdID .= "-".sprintf("%08x-%08x", $offset,$size);
+	$smdID .= sprintf("-%08x", $size);
 
 	my $SBStags = Slim::Formats->readTags($track->url);
 	
