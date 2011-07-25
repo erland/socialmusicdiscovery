@@ -246,6 +246,7 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 		firePropertyChange(PROP_name, this.name, this.name = name);
 	}
 
+	@Override
 	public String getTypeName() {
 		return rootType.getSimpleName();
 	}

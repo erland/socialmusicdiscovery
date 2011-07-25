@@ -33,6 +33,7 @@ import org.eclipse.swt.graphics.Image;
 import org.socialmusicdiscovery.rcp.content.ObservableEntity;
 
 public class DefaultObservableMapLabelProvider extends ObservableMapLabelProvider {
+	private final ImageManager imageManager= new ImageManager();
 
 	public DefaultObservableMapLabelProvider(IObservableMap[] observableAttributes) {
 		super(observableAttributes);
@@ -58,8 +59,8 @@ public class DefaultObservableMapLabelProvider extends ObservableMapLabelProvide
 	}
 
 	private Image getEntityImage(ObservableEntity entity) {
-		// TODO images for entities
-		return null;
+		String imageName = entity.getTypeName().toLowerCase();
+		return imageManager.getOrLoad(imageName);
 	}
 
 }
