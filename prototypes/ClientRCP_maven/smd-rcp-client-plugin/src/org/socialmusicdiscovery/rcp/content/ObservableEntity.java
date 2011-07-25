@@ -72,4 +72,13 @@ public interface ObservableEntity<T extends SMDIdentity> extends ModelObject, Co
 	 * @return {@link Set} (possibly empty)
 	 */
 	Set<? extends ObservableEntity> getSaveableDependents();
+
+	/**
+	 * Get the simple (unqualified) name of the root type that this entity implements.
+	 * This string can be used as a key to render strings and icons in label providers etc.
+	 * 
+	 * @return String representing the simple name of an interface that extends {@link SMDIdentity}
+	 * @see Class#getSimpleName()  
+	 */
+	String getTypeName();
 }
