@@ -30,8 +30,6 @@ package org.socialmusicdiscovery.rcp.editors.artist;
 import java.util.Collection;
 import java.util.Set;
 
-import org.eclipse.core.databinding.beans.BeanProperties;
-import org.eclipse.core.databinding.beans.IBeanValueProperty;
 import org.eclipse.core.databinding.observable.set.IObservableSet;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -53,6 +51,7 @@ import org.socialmusicdiscovery.rcp.grid.GridTableColumnLayout;
 import org.socialmusicdiscovery.rcp.util.Debug;
 import org.socialmusicdiscovery.rcp.util.ViewerUtil;
 import org.socialmusicdiscovery.rcp.views.util.AbstractComposite;
+import org.socialmusicdiscovery.rcp.views.util.LabelProviderFactory;
 import org.socialmusicdiscovery.rcp.views.util.OpenListener;
 
 /**
@@ -150,11 +149,13 @@ import org.socialmusicdiscovery.rcp.views.util.OpenListener;
 
 	@Override
 	protected void afterSetModel(ObservableArtist model) {
-		IBeanValueProperty roleProperty = BeanProperties.value("type");
-		IBeanValueProperty classProperty = BeanProperties.value("owner.typeName");
-		IBeanValueProperty entityProperty = BeanProperties.value("owner.name");
 		IObservableSet set = getModel().getContributions();
-		ViewerUtil.bind(gridTableViewer, set, roleProperty, classProperty, entityProperty);
+		
+		ViewerUtil.bind(gridTableViewer, set, 
+				LabelProviderFactory.newContributorTypeDelegate(),
+				LabelProviderFactory.newEntityTypeDelegate("owner"),
+				LabelProviderFactory.newModelObjectDelegate("owner")
+		);
 	}
 
 	public ViewerFilter[] getFilters() {

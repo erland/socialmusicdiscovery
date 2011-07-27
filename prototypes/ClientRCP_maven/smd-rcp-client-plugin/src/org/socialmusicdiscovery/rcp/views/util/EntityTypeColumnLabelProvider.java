@@ -27,46 +27,40 @@
 
 package org.socialmusicdiscovery.rcp.views.util;
 
-import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
-import org.socialmusicdiscovery.rcp.content.ModelObject;
 import org.socialmusicdiscovery.rcp.content.ObservableEntity;
-import org.socialmusicdiscovery.rcp.content.ObservableMedium;
 
 /**
- * Simple, static label provider. Returns a reasonable name for most/all known
- * entity types.
+ * A standard label provider for any kind of {@link ObservableEntity} that needs
+ * its type name and/or image presented in the column. Caller must supply the simple
+ * (NOT nested) property name that will return an instance of
+ * {@link ObservableEntity}.
  * 
  * @author Peer Törngren
- * 
  */
-public class DefaultLabelProvider extends LabelProvider implements ILabelProvider {
+public class EntityTypeColumnLabelProvider extends AbstractColumnLabelProviderDelegate {
 
-	private ImageManager imageManager = new ImageManager();
+	private final String entityPropertyName;
 
-	@Override
-	public Image getImage(Object element) {
-		return element instanceof ObservableEntity ? imageManager.getEntityImage((ObservableEntity) element) : super.getImage(element);
+	public EntityTypeColumnLabelProvider(String entityPropertyName) {
+		super(entityPropertyName);
+		this.entityPropertyName = entityPropertyName;
 	}
 
 	@Override
-	public String getText(Object element) {
-		if (element instanceof ObservableMedium) {
-			ObservableMedium m = (ObservableMedium)element;
-			Integer number = m.getNumber();
-			String name = getName(m);
-			return name==null ? number.toString() : number + " - " + name;
-		}
-		if (element instanceof ModelObject) {
-			return getName((ModelObject)element);
-		} 
-		return super.getText(element);
+	protected String doGetText(Object element) {
+		return safeType(getEntity(element));
 	}
 
-	private String getName(ModelObject mo) {
-		return mo.getName();
+	private ObservableEntity getEntity(Object element) {
+		return (ObservableEntity) getValue(element, entityPropertyName);
+	}
+
+	@Override
+	protected Image doGetImage(Object element) {
+		String imageName = getEntity(element).getTypeName();
+		return imageManager.getOrLoad(imageName);
 	}
 	
-
+	
 }

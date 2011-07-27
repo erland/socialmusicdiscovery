@@ -35,6 +35,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
 import org.socialmusicdiscovery.rcp.Activator;
+import org.socialmusicdiscovery.rcp.content.DataSource.Root;
+import org.socialmusicdiscovery.rcp.content.ObservableEntity;
 
 /**
  * <p>
@@ -56,6 +58,16 @@ public class ImageManager {
 
 	private final ImageRegistry imageRegistry = new ImageRegistry();
 	private final Set<String> knownMissingImageNames = new HashSet<String>();
+
+	public Image getEntityImage(ObservableEntity entity) {
+		String imageName = entity.getTypeName().toLowerCase();
+		return getOrLoad(imageName);
+	}
+	
+	public Image getRootImage(Root root) {
+		String imageName = root.getType().getSimpleName().toLowerCase()+"Root"; //$NON-NLS-1$
+		return getOrLoad(imageName);
+	}
 
 	/**
 	 * <p>Load image based on name. Surround with appropriate prefix (path) and

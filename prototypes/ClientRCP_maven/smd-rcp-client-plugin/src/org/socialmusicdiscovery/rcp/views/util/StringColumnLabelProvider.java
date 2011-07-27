@@ -27,46 +27,26 @@
 
 package org.socialmusicdiscovery.rcp.views.util;
 
-import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.swt.graphics.Image;
-import org.socialmusicdiscovery.rcp.content.ModelObject;
-import org.socialmusicdiscovery.rcp.content.ObservableEntity;
-import org.socialmusicdiscovery.rcp.content.ObservableMedium;
 
 /**
- * Simple, static label provider. Returns a reasonable name for most/all known
- * entity types.
+ * A standard label provider for a regular {@link String} property that can be readily presented as is.
+ * Caller must supply the simple (NOT nested) property name that will return a {@link String}.
  * 
  * @author Peer Törngren
- * 
+ *
  */
-public class DefaultLabelProvider extends LabelProvider implements ILabelProvider {
+public class StringColumnLabelProvider extends AbstractColumnLabelProviderDelegate {
 
-	private ImageManager imageManager = new ImageManager();
+	private final String stringPropertyName;
 
-	@Override
-	public Image getImage(Object element) {
-		return element instanceof ObservableEntity ? imageManager.getEntityImage((ObservableEntity) element) : super.getImage(element);
+	public StringColumnLabelProvider(String stringPropertyName) {
+		super(stringPropertyName);
+		this.stringPropertyName = stringPropertyName;
 	}
 
 	@Override
-	public String getText(Object element) {
-		if (element instanceof ObservableMedium) {
-			ObservableMedium m = (ObservableMedium)element;
-			Integer number = m.getNumber();
-			String name = getName(m);
-			return name==null ? number.toString() : number + " - " + name;
-		}
-		if (element instanceof ModelObject) {
-			return getName((ModelObject)element);
-		} 
-		return super.getText(element);
+	protected String doGetText(Object element) {
+		return (String) getValue(element, stringPropertyName);
 	}
-
-	private String getName(ModelObject mo) {
-		return mo.getName();
-	}
-	
 
 }

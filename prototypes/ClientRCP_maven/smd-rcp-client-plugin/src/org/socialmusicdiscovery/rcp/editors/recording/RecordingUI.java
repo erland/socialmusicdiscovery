@@ -29,11 +29,8 @@ package org.socialmusicdiscovery.rcp.editors.recording;
 
 
 import org.eclipse.core.databinding.DataBindingContext;
-import org.eclipse.core.databinding.beans.BeanProperties;
 import org.eclipse.core.databinding.beans.BeansObservables;
-import org.eclipse.core.databinding.beans.IBeanValueProperty;
 import org.eclipse.core.databinding.observable.list.WritableList;
-import org.eclipse.core.databinding.observable.set.WritableSet;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
@@ -61,11 +58,53 @@ import org.socialmusicdiscovery.rcp.editors.widgets.ContributorPanel;
 import org.socialmusicdiscovery.rcp.editors.widgets.TrackMediumNumberComparator;
 import org.socialmusicdiscovery.rcp.editors.widgets.TrackNumberComparator;
 import org.socialmusicdiscovery.rcp.util.ViewerUtil;
+import org.socialmusicdiscovery.rcp.views.util.AbstractColumnLabelProviderDelegate;
 import org.socialmusicdiscovery.rcp.views.util.AbstractComposite;
+import org.socialmusicdiscovery.rcp.views.util.LabelProviderFactory;
 import org.socialmusicdiscovery.rcp.views.util.OpenListener;
 
 public class RecordingUI extends AbstractComposite<ObservableRecording> {
 
+	private class MyMediumNumberLP extends AbstractColumnLabelProviderDelegate<ObservableTrack> {
+
+		protected MyMediumNumberLP() {
+			super("medium.number");
+		}
+
+		@Override
+		protected String doGetText(ObservableTrack track) {
+			return track.getMedium()==null ? "" : safeNumber(track.getMedium().getNumber());
+		}
+	}
+
+	//	private static class MyTrackLabelProvider extends AbstractTableLabelProvider<ObservableTrack> {
+//
+//		public MyTrackLabelProvider() {
+//			super("medium.number", "number", "release.name");
+//			setColumnProviders()
+//		}
+//
+//		@Override
+//		protected String doGetColumnText(ObservableTrack track, int columnIndex) {
+//			switch (columnIndex) {
+//				case 0:
+//					Medium medium = track.getMedium();
+//					Integer mediaNumber = medium == null ? null : medium.getNumber();
+//					return safeNumber(mediaNumber);
+//	
+//				case 1:
+//					return safeNumber(track.getNumber());
+//	
+//				case 2:
+//					return safeName(track.getRelease());
+//	
+//				default:
+//					throw new IllegalArgumentException("Bad column index: " + columnIndex);
+//			}
+//		}
+//
+//	}
+	
 	private Text nameText;
 	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
 	private ScrolledForm scrldfrmRecording;
@@ -250,18 +289,16 @@ public class RecordingUI extends AbstractComposite<ObservableRecording> {
 	
 	private void bindWorks() {
 		WritableList list = new WritableList(getModel().getWorks(), ObservableWork.class);
-		IBeanValueProperty name = BeanProperties.value(ObservableWork.class, "name");
-		ViewerUtil.bind(worksViewer, list, name);
+		ViewerUtil.bind(worksViewer, list, LabelProviderFactory.newModelObjectDelegate());
 	}
 
 	private void bindTracks() {
-		WritableSet tracks = getModel().getTracks();
-		IBeanValueProperty medium = BeanProperties.value(ObservableTrack.class, "medium.number");
-		IBeanValueProperty track = BeanProperties.value(ObservableTrack.class, "number");
-		IBeanValueProperty release = BeanProperties.value(ObservableTrack.class, "release.name");
-		ViewerUtil.bind(tracksViewer, tracks, release, medium, track);
+		ViewerUtil.bind(tracksViewer, getModel().getTracks(), 
+			new MyMediumNumberLP(), 
+			LabelProviderFactory.newIntegerDelegate("number"), 
+			LabelProviderFactory.newModelObjectDelegate("release")
+		);
 	}
-
 	public ContributorPanel getArtistPanel() {
 		return artistPanel;
 	}

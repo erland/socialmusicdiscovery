@@ -30,8 +30,6 @@ package org.socialmusicdiscovery.rcp.editors.widgets;
 import java.util.Collection;
 import java.util.Set;
 
-import org.eclipse.core.databinding.beans.BeanProperties;
-import org.eclipse.core.databinding.beans.IBeanValueProperty;
 import org.eclipse.core.databinding.observable.set.IObservableSet;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -49,11 +47,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.socialmusicdiscovery.rcp.content.AbstractContributableEntity;
-import org.socialmusicdiscovery.rcp.content.ObservableContributor;
 import org.socialmusicdiscovery.rcp.grid.GridTableColumnLayout;
 import org.socialmusicdiscovery.rcp.util.Debug;
 import org.socialmusicdiscovery.rcp.util.ViewerUtil;
 import org.socialmusicdiscovery.rcp.views.util.AbstractComposite;
+import org.socialmusicdiscovery.rcp.views.util.LabelProviderFactory;
 import org.socialmusicdiscovery.rcp.views.util.OpenListener;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
 
@@ -146,10 +144,8 @@ public class ContributorPanel extends AbstractComposite<AbstractContributableEnt
 
 	@Override
 	protected void afterSetModel(AbstractContributableEntity model) {
-		IBeanValueProperty roleProperty = BeanProperties.value(ObservableContributor.class, "type");
-		IBeanValueProperty artistProperty = BeanProperties.value(ObservableContributor.class, "artist.name");
 		IObservableSet set = getModel().getContributors();
-		ViewerUtil.bind(gridTableViewer, set, roleProperty, artistProperty);
+		ViewerUtil.bind(gridTableViewer, set, LabelProviderFactory.newContributorTypeDelegate(), LabelProviderFactory.newModelObjectDelegate("artist"));
 	}
 
 	public ViewerFilter[] getFilters() {

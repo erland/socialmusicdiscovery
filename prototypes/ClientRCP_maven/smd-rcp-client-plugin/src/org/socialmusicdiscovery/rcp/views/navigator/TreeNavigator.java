@@ -70,7 +70,7 @@ public class TreeNavigator extends Composite {
 	private void bindViewer() {
 		ObservableListTreeContentProvider contentProvider = new ObservableListTreeContentProvider(new NavigatorObservableFactory(), new NavigatorStructureAdvisor());
 		treeViewer.setContentProvider(contentProvider);
-		treeViewer.setLabelProvider(LabelProviderFactory.defaultObservable(contentProvider));
+		treeViewer.setLabelProvider(LabelProviderFactory.forNavigator(contentProvider));
 		treeViewer.setSorter(new ViewerSorter()); // list is initially sorted, but we need to handle additions,removals and name changes
 	}
 
