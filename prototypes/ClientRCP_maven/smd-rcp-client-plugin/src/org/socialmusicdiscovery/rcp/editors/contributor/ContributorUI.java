@@ -123,7 +123,8 @@ public class ContributorUI extends Composite {
 
 	void setOwner(AbstractContributableEntity owner) {
 		template.setOwner(owner);
-		ownerText.setText(owner.getName());
+		String name = owner.getName();
+		ownerText.setText(name==null ? "" : name);
 	}
 	public void setType(String type) {
 		template.setType(type);

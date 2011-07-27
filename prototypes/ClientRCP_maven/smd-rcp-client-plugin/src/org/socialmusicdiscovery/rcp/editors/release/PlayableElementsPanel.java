@@ -28,8 +28,6 @@
 package org.socialmusicdiscovery.rcp.editors.release;
 
 import org.eclipse.core.databinding.DataBindingContext;
-import org.eclipse.core.databinding.beans.BeanProperties;
-import org.eclipse.core.databinding.beans.IBeanValueProperty;
 import org.eclipse.core.databinding.observable.set.IObservableSet;
 import org.eclipse.core.databinding.observable.set.WritableSet;
 import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
@@ -47,6 +45,7 @@ import org.socialmusicdiscovery.rcp.content.ObservablePlayableElement;
 import org.socialmusicdiscovery.rcp.content.ObservableTrack;
 import org.socialmusicdiscovery.rcp.util.ViewerUtil;
 import org.socialmusicdiscovery.rcp.views.util.AbstractComposite;
+import org.socialmusicdiscovery.rcp.views.util.LabelProviderFactory;
 
 /**
  * @author Peer Törngren
@@ -112,11 +111,8 @@ public class PlayableElementsPanel extends AbstractComposite<ObservableTrack> {
 	@Override
 	protected void afterSetModel(ObservableTrack model) {
 		super.afterSetModel(model);
-		IBeanValueProperty uriProperty = BeanProperties.value(ObservablePlayableElement.class, "uri");
-		IBeanValueProperty formatProperty = BeanProperties.value(ObservablePlayableElement.class, "format");
-		IBeanValueProperty bitrateProperty = BeanProperties.value(ObservablePlayableElement.class, "bitrate");
 		IObservableSet set = new WritableSet(getModel().getPlayableElements(), ObservablePlayableElement.class);
-		ViewerUtil.bind(gridTableViewer, set, uriProperty, formatProperty, bitrateProperty);
+		ViewerUtil.bind(gridTableViewer, set, LabelProviderFactory.newStringDelegate("uri"), LabelProviderFactory.newStringDelegate("format"), LabelProviderFactory.newIntegerDelegate("bitrate"));
 	}
 
 	public GridTableViewer getGridTableViewer() {

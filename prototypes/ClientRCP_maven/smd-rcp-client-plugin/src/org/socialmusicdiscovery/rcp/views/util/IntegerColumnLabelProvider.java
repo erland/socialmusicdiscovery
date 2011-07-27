@@ -27,46 +27,23 @@
 
 package org.socialmusicdiscovery.rcp.views.util;
 
-import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.swt.graphics.Image;
-import org.socialmusicdiscovery.rcp.content.ModelObject;
-import org.socialmusicdiscovery.rcp.content.ObservableEntity;
-import org.socialmusicdiscovery.rcp.content.ObservableMedium;
 
 /**
- * Simple, static label provider. Returns a reasonable name for most/all known
- * entity types.
- * 
  * @author Peer Törngren
- * 
+ *
  */
-public class DefaultLabelProvider extends LabelProvider implements ILabelProvider {
+public class IntegerColumnLabelProvider extends AbstractColumnLabelProviderDelegate {
 
-	private ImageManager imageManager = new ImageManager();
+	private final String numberPropertyName;
 
-	@Override
-	public Image getImage(Object element) {
-		return element instanceof ObservableEntity ? imageManager.getEntityImage((ObservableEntity) element) : super.getImage(element);
+	public IntegerColumnLabelProvider(String numberPropertyName) {
+		super(numberPropertyName);
+		this.numberPropertyName = numberPropertyName;
 	}
 
 	@Override
-	public String getText(Object element) {
-		if (element instanceof ObservableMedium) {
-			ObservableMedium m = (ObservableMedium)element;
-			Integer number = m.getNumber();
-			String name = getName(m);
-			return name==null ? number.toString() : number + " - " + name;
-		}
-		if (element instanceof ModelObject) {
-			return getName((ModelObject)element);
-		} 
-		return super.getText(element);
+	protected String doGetText(Object element) {
+		return safeNumber((Integer) getValue(element, numberPropertyName));
 	}
-
-	private String getName(ModelObject mo) {
-		return mo.getName();
-	}
-	
 
 }

@@ -27,46 +27,36 @@
 
 package org.socialmusicdiscovery.rcp.views.util;
 
-import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.swt.graphics.Image;
 import org.socialmusicdiscovery.rcp.content.ModelObject;
-import org.socialmusicdiscovery.rcp.content.ObservableEntity;
-import org.socialmusicdiscovery.rcp.content.ObservableMedium;
 
 /**
- * Simple, static label provider. Returns a reasonable name for most/all known
- * entity types.
+ * A standard label provider for any kind of {@link ModelObject} that only need
+ * its name and/or image presented in the column. Caller must supply the simple
+ * (NOT nested) property name that will return an instance of
+ * {@link ModelObject}. If no property name is supplied, the element itself must
+ * be a {@link ModelObject}, and the label provider will render the name of the
+ * element.
  * 
  * @author Peer Törngren
- * 
  */
-public class DefaultLabelProvider extends LabelProvider implements ILabelProvider {
+public class ModelObjectColumnLabelProvider extends AbstractColumnLabelProviderDelegate {
 
-	private ImageManager imageManager = new ImageManager();
+	private final String modelObjectPropertyName;
 
-	@Override
-	public Image getImage(Object element) {
-		return element instanceof ObservableEntity ? imageManager.getEntityImage((ObservableEntity) element) : super.getImage(element);
+	public ModelObjectColumnLabelProvider(String modelObjectPropertyName) {
+		super(modelObjectPropertyName+"."+ModelObject.PROP_name);
+		this.modelObjectPropertyName = modelObjectPropertyName;
+	}
+
+	public ModelObjectColumnLabelProvider() {
+		super(ModelObject.PROP_name);
+		this.modelObjectPropertyName = null;
 	}
 
 	@Override
-	public String getText(Object element) {
-		if (element instanceof ObservableMedium) {
-			ObservableMedium m = (ObservableMedium)element;
-			Integer number = m.getNumber();
-			String name = getName(m);
-			return name==null ? number.toString() : number + " - " + name;
-		}
-		if (element instanceof ModelObject) {
-			return getName((ModelObject)element);
-		} 
-		return super.getText(element);
+	protected String doGetText(Object element)  {
+		ModelObject modelObject = (ModelObject) (modelObjectPropertyName==null ? element : getValue(element, modelObjectPropertyName));
+		return safeName(modelObject);
 	}
-
-	private String getName(ModelObject mo) {
-		return mo.getName();
-	}
-	
 
 }

@@ -27,46 +27,47 @@
 
 package org.socialmusicdiscovery.rcp.views.util;
 
-import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.core.databinding.observable.map.IObservableMap;
+import org.eclipse.jface.databinding.viewers.ObservableMapLabelProvider;
 import org.eclipse.swt.graphics.Image;
-import org.socialmusicdiscovery.rcp.content.ModelObject;
+import org.socialmusicdiscovery.rcp.content.DataSource.Root;
 import org.socialmusicdiscovery.rcp.content.ObservableEntity;
-import org.socialmusicdiscovery.rcp.content.ObservableMedium;
 
-/**
- * Simple, static label provider. Returns a reasonable name for most/all known
- * entity types.
- * 
- * @author Peer Törngren
- * 
- */
-public class DefaultLabelProvider extends LabelProvider implements ILabelProvider {
+public class ObservableEntityColumnLabelProvider extends ObservableMapLabelProvider {
+	private final ImageManager imageManager= new ImageManager();
 
-	private ImageManager imageManager = new ImageManager();
-
-	@Override
-	public Image getImage(Object element) {
-		return element instanceof ObservableEntity ? imageManager.getEntityImage((ObservableEntity) element) : super.getImage(element);
+	public ObservableEntityColumnLabelProvider(IObservableMap[] observableAttributes) {
+		super(observableAttributes);
 	}
 
 	@Override
-	public String getText(Object element) {
-		if (element instanceof ObservableMedium) {
-			ObservableMedium m = (ObservableMedium)element;
-			Integer number = m.getNumber();
-			String name = getName(m);
-			return name==null ? number.toString() : number + " - " + name;
+	public Image getColumnImage(Object element, int columnIndex) {
+		if (isEntityNameColumn(element, columnIndex)) {
+			return imageManager.getEntityImage((ObservableEntity) element);
 		}
-		if (element instanceof ModelObject) {
-			return getName((ModelObject)element);
-		} 
-		return super.getText(element);
+		if (isRootColumn(element, columnIndex)) {
+			return imageManager.getRootImage((Root) element);
+		}
+		return super.getColumnImage(element, columnIndex);
 	}
 
-	private String getName(ModelObject mo) {
-		return mo.getName();
+	private boolean isRootColumn(Object element, int columnIndex) {
+		return columnIndex==0 && element instanceof Root;
 	}
-	
+
+	@Override
+	public String getColumnText(Object element, int columnIndex) {
+		return isEntityNameColumn(element, columnIndex) ? getEntityName((ObservableEntity) element) : super.getColumnText(element, columnIndex);
+	}
+
+	private boolean isEntityNameColumn(Object element, int columnIndex) {
+		return columnIndex==0 && element instanceof ObservableEntity;
+	}
+
+	private String getEntityName(ObservableEntity entity) {
+		// TODO better rendering, perhaps using color, font, image and/or image decorator? 
+		return entity.isDirty() ? entity.getName()+" *" : entity.getName();
+	}
+
 
 }

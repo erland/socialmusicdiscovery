@@ -33,12 +33,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.core.databinding.beans.IBeanValueProperty;
-import org.eclipse.core.databinding.observable.list.IObservableList;
-import org.eclipse.core.databinding.observable.set.IObservableSet;
+import org.eclipse.core.databinding.observable.IObservableCollection;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.databinding.viewers.ViewerSupport;
+import org.eclipse.jface.databinding.viewers.ObservableMapLabelProvider;
+import org.eclipse.jface.databinding.viewers.ObservableSetContentProvider;
+import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -62,6 +62,8 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.services.IEvaluationService;
 import org.socialmusicdiscovery.rcp.grid.GridViewerColumnComparator;
+import org.socialmusicdiscovery.rcp.views.util.AbstractColumnLabelProviderDelegate;
+import org.socialmusicdiscovery.rcp.views.util.DelegatingObservableMapLabelProvider;
 
 public class ViewerUtil {
 
@@ -252,23 +254,26 @@ public class ViewerUtil {
 	}
 
 	/**
-	 * Convenience method to allow passing properties as varargs.
+	 * Bind to property names using an observable {@link CellLabelProvider} to render elements.
 	 * @param viewer
-	 * @param list
+	 * @param input
+	 * @param releaseProvider 
+	 * @param trackNumberProvider 
 	 * @param properties
 	 */
-	public static void bind(StructuredViewer viewer, IObservableList list, IBeanValueProperty... properties) {
-		ViewerSupport.bind(viewer, list, properties);
-	}
-
-	/**
-	 * Convenience method to allow passing properties as varargs.
-	 * @param viewer
-	 * @param set
-	 * @param properties
-	 */
-	public static void bind(StructuredViewer viewer, IObservableSet set, IBeanValueProperty... properties) {
-		ViewerSupport.bind(viewer, set, properties);
+	public static void bind(StructuredViewer viewer, IObservableCollection input, AbstractColumnLabelProviderDelegate... providers) {
+		if (viewer.getInput() != null) {
+			viewer.setInput(null);
+		}
+		
+		ObservableSetContentProvider contentProvider = new ObservableSetContentProvider();
+		viewer.setContentProvider(contentProvider);
+		
+		ObservableMapLabelProvider labelProvider = new DelegatingObservableMapLabelProvider(contentProvider.getKnownElements(), providers);
+		viewer.setLabelProvider(labelProvider);
+		viewer.setInput(input);
+		
+//		roleGVC.setLabelProvider(LabelProviderFactory.forTable(gridTableViewer));
 	}
 
 	public static int resolveColumnIndex(GridViewerColumn gvc) {

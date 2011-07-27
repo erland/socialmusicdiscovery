@@ -80,7 +80,7 @@ public class SelectionPanel<T extends ModelObject> extends ObservableComposite {
 			ListDialog ld = new ListDialog(getShell());
 			ld.setContentProvider(new ArrayContentProvider());
 			ld.setInput(getElements());
-			ld.setLabelProvider(LabelProviderFactory.defaultStatic());
+			ld.setLabelProvider(LabelProviderFactory.forStaticList());
 			ld.setMessage(button.getToolTipText());
 			ld.setTitle("Select");
 			ld.open();

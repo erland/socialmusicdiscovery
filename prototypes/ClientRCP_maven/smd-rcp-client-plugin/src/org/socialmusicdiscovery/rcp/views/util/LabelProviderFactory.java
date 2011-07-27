@@ -37,7 +37,9 @@ import org.eclipse.jface.databinding.viewers.ObservableMapLabelProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.socialmusicdiscovery.rcp.content.ModelObject;
 import org.socialmusicdiscovery.rcp.content.ObservableEntity;
+import org.socialmusicdiscovery.server.business.model.core.Contributor;
 
 /**
  * A static factory for creating {@link LabelProvider}s for {@link Viewer}s.
@@ -49,30 +51,107 @@ public final class LabelProviderFactory  {
 
 	private LabelProviderFactory() {}
 
-	
-	/**
-	 * Use in dynamic viewers where properties may change as a result of other activity.   
-	 * @param contentProvider
-	 * @return {@link ObservableMapLabelProvider}
-	 */
-	public static ObservableMapLabelProvider defaultObservable(ObservableListTreeContentProvider contentProvider) {
-		return new DefaultObservableMapLabelProvider(createObservableAttributes(contentProvider, ObservableEntity.PROP_name, ObservableEntity.PROP_dirty));
-	}
-	
-	private static IObservableMap[] createObservableAttributes(ObservableListTreeContentProvider contentProvider, String... propertyNames) {
-		IObservableSet listToObserve = contentProvider.getKnownElements();
-		IValueProperty[] propertiesToObserve = BeanProperties.values(propertyNames);
-		return Properties.observeEach(listToObserve, propertiesToObserve);
-	}
-
-
 	/**
 	 * Use in static viewers and/or modal dialogs where properties are stable while viewer is visible.   
 	 * @return {@link ILabelProvider}
 	 */
-	public static ILabelProvider defaultStatic() {
+	public static ILabelProvider forStaticList() {
 		return new DefaultLabelProvider();
 	}
 
+	/**
+	 * Use in dynamic tree viewers where properties may change as a result of other activity.   
+	 * @param contentProvider
+	 * @return {@link ObservableMapLabelProvider}
+	 */
+	public static ObservableMapLabelProvider forNavigator(ObservableListTreeContentProvider contentProvider) {
+		return new ObservableEntityColumnLabelProvider(createObservableAttributes(contentProvider.getKnownElements(), ObservableEntity.PROP_name, ObservableEntity.PROP_dirty));
+	}
+	
+	private static IObservableMap[] createObservableAttributes(IObservableSet setToObserve, String... propertyNames) {
+		IValueProperty[] propertiesToObserve = BeanProperties.values(propertyNames);
+		return Properties.observeEach(setToObserve, propertiesToObserve);
+	}
+
+	/**
+	 * Return a standard label provider for any kind of {@link ModelObject} that
+	 * only need its name and/or image presented in the column. Caller must
+	 * supply the simple (NOT nested) property name that will return an instance
+	 * of {@link ModelObject}.The returned Label provider is expected to be used
+	 * as a delegate by a {@link DelegatingObservableMapLabelProvider}.
+	 * 
+	 * @param modelObjectPropertyName
+	 * @return {@link ModelObjectColumnLabelProvider}
+	 */
+	public static ModelObjectColumnLabelProvider newModelObjectDelegate(String modelObjectPropertyName) {
+		return new ModelObjectColumnLabelProvider(modelObjectPropertyName);
+	}
+	
+	/**
+	 * Return a standard label provider for any kind of {@link ModelObject} that
+	 * only need its name and/or image presented in the column. The returned 
+	 * label provider is expected to be used as a delegate by a 
+	 * {@link DelegatingObservableMapLabelProvider}.
+	 * 
+	 * @return {@link ModelObjectColumnLabelProvider}
+	 */
+	public static ModelObjectColumnLabelProvider newModelObjectDelegate() {
+		return new ModelObjectColumnLabelProvider();
+	}
+	/**
+	 * Return a standard label provider for any kind of {@link ObservableEntity}
+	 * that needs its type name and/or image presented in the column. Caller
+	 * must supply the simple (NOT nested) property name that will return an
+	 * instance of {@link ObservableEntity}. The returned Label provider is
+	 * expected to be used as a delegate by a
+	 * {@link DelegatingObservableMapLabelProvider}.
+	 * 
+	 * @param entityPropertyName
+	 * @return {@link EntityTypeColumnLabelProvider}
+	 */
+	public static EntityTypeColumnLabelProvider newEntityTypeDelegate(String entityPropertyName) {
+		// TODO Auto-generated method stub
+		return new EntityTypeColumnLabelProvider(entityPropertyName);
+	}
+	
+	/**
+	 * Return a standard label provider to present the
+	 * {@link Contributor#getType()} property in a grid. The returned Label
+	 * provider is expected to be used as a delegate by a
+	 * {@link DelegatingObservableMapLabelProvider}.
+	 * 
+	 * @return {@link ContributorTypeColumnLabelProvider}
+	 */
+	public static ContributorTypeColumnLabelProvider newContributorTypeDelegate() {
+		return new ContributorTypeColumnLabelProvider();
+	}
+
+	/**
+	 * Return a standard label provider for a regular {@link String} property
+	 * that can be readily presented as is. Caller must supply the simple (NOT
+	 * nested) property name that will return an {@link Integer}. The returned
+	 * Label provider is expected to be used as a delegate by a
+	 * {@link DelegatingObservableMapLabelProvider}.
+	 * 
+	 * @param stringPropertyName
+	 * @return {@link StringColumnLabelProvider}
+	 */
+	public static StringColumnLabelProvider newStringDelegate(String stringPropertyName) {
+		return new StringColumnLabelProvider(stringPropertyName);
+	}
+
+	/**
+	 * Return a standard label provider for a regular {@link Integer} property
+	 * that can be readily presented as is. Caller must supply the simple (NOT
+	 * nested) property name that will return a {@link String}. The returned
+	 * Label provider is expected to be used as a delegate by a
+	 * {@link DelegatingObservableMapLabelProvider}.
+	 * 
+	 * @param numberPropertyName
+	 * @return {@link IntegerColumnLabelProvider}
+	 */
+	public static IntegerColumnLabelProvider newIntegerDelegate(String numberPropertyName) {
+		return new IntegerColumnLabelProvider(numberPropertyName);
+	}
 
 }

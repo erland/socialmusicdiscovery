@@ -27,46 +27,29 @@
 
 package org.socialmusicdiscovery.rcp.views.util;
 
-import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
-import org.socialmusicdiscovery.rcp.content.ModelObject;
-import org.socialmusicdiscovery.rcp.content.ObservableEntity;
-import org.socialmusicdiscovery.rcp.content.ObservableMedium;
+import org.socialmusicdiscovery.server.business.model.core.Contributor;
 
 /**
- * Simple, static label provider. Returns a reasonable name for most/all known
- * entity types.
+ * A standard label provider to present the {@link Contributor#getType()} property in a grid.
  * 
  * @author Peer Törngren
- * 
  */
-public class DefaultLabelProvider extends LabelProvider implements ILabelProvider {
+public class ContributorTypeColumnLabelProvider extends AbstractColumnLabelProviderDelegate<Contributor> {
 
-	private ImageManager imageManager = new ImageManager();
-
-	@Override
-	public Image getImage(Object element) {
-		return element instanceof ObservableEntity ? imageManager.getEntityImage((ObservableEntity) element) : super.getImage(element);
+	protected ContributorTypeColumnLabelProvider() {
+		super("type");
 	}
 
 	@Override
-	public String getText(Object element) {
-		if (element instanceof ObservableMedium) {
-			ObservableMedium m = (ObservableMedium)element;
-			Integer number = m.getNumber();
-			String name = getName(m);
-			return name==null ? number.toString() : number + " - " + name;
-		}
-		if (element instanceof ModelObject) {
-			return getName((ModelObject)element);
-		} 
-		return super.getText(element);
+	protected String doGetText(Contributor contributor) {
+		// expect to evolve over time (localized name etc)
+		return contributor.getType();
 	}
 
-	private String getName(ModelObject mo) {
-		return mo.getName();
+	@Override
+	protected Image doGetImage(Contributor contributor) {
+		String imageName = contributor.getType().toLowerCase();
+		return imageManager.getOrLoad(imageName);
 	}
-	
-
 }

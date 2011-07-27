@@ -48,7 +48,7 @@ import org.socialmusicdiscovery.rcp.content.ObservableRelease;
 import org.socialmusicdiscovery.rcp.content.ObservableTrack;
 import org.socialmusicdiscovery.rcp.content.RecordingProvider;
 import org.socialmusicdiscovery.rcp.editors.widgets.SelectionPanel;
-import org.socialmusicdiscovery.rcp.views.util.DefaultLabelProvider;
+import org.socialmusicdiscovery.rcp.views.util.LabelProviderFactory;
 import org.socialmusicdiscovery.server.business.model.core.Medium;
 
 /**
@@ -120,7 +120,7 @@ public class TrackUI extends Composite {
 		mediumViewer.setSorter(new ViewerSorter());
 		mediumCombo = mediumViewer.getCombo();
 		mediumCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		mediumViewer.setLabelProvider(new DefaultLabelProvider());
+		mediumViewer.setLabelProvider(LabelProviderFactory.forStaticList());
 		
 		trackSpinner = new Spinner(indexArea, SWT.BORDER);
 		trackSpinner.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
