@@ -74,6 +74,7 @@ public class ClientConfigModule extends AbstractModule {
             converters.put(Series.class, SeriesEntity.class);
             converters.put(PlayableElement.class, PlayableElementEntity.class);
             converters.put(ConfigurationParameter.class, ConfigurationParameterEntity.class);
+            converters.put(Image.class, ImageEntity.class);
             converters.put(SMDIdentity.class,SMDIdentity.class);
 
             return converters;
