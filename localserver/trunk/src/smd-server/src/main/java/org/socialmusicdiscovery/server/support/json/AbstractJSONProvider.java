@@ -237,7 +237,7 @@ public abstract class AbstractJSONProvider implements MessageBodyReader<Object>,
                         MediaType mediaType, MultivaluedMap httpHeaders, OutputStream entityStream)
             throws IOException, WebApplicationException {
         //TODO: Remove setPrettyPrinting later, for now it's useful during debugging
-        entityStream.write(gsonBuilder.setPrettyPrinting().create().toJson(t).getBytes());
+        entityStream.write(gsonBuilder.setPrettyPrinting().create().toJson(t).getBytes("utf-8"));
 
     }
 
