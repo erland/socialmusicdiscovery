@@ -112,7 +112,7 @@ public class BrowseServiceTest extends BaseTestCase {
     }
     @Test
     public void testBrowseTracks() throws Exception {
-        TrackBrowseService browseService = new TrackBrowseService();
+        TrackBrowseService browseService = browseServiceManager.getBrowseService("Track");
         Result<TrackEntity> result = browseService.findChildren(new ArrayList<String>(), new ArrayList<String>(), null, null, true);
         assert result.getItems().size() == 79;
         assert result.getCount() == 79;
@@ -242,7 +242,7 @@ public class BrowseServiceTest extends BaseTestCase {
 
     @Test
     public void testBrowseArtists() throws Exception {
-        ArtistBrowseService browseService = new ArtistBrowseService();
+        ArtistBrowseService browseService = browseServiceManager.getBrowseService("Artist");
         Result<ArtistEntity> result = browseService.findChildren(new ArrayList<String>(), new ArrayList<String>(), null, null, true);
         assert result.getItems().size() == 50;
         assert result.getCount() == 50;
@@ -339,7 +339,7 @@ public class BrowseServiceTest extends BaseTestCase {
 
     @Test
     public void testBrowseReleases() throws Exception {
-        ReleaseBrowseService browseService = new ReleaseBrowseService();
+        ReleaseBrowseService browseService = browseServiceManager.getBrowseService("Release");
         Result<ReleaseEntity> result = browseService.findChildren(new ArrayList<String>(), new ArrayList<String>(), null, null, true);
         assert result.getItems().size() == 5;
         assert result.getCount() == 5;
@@ -394,7 +394,7 @@ public class BrowseServiceTest extends BaseTestCase {
 
     @Test
     public void testBrowseWorks() throws Exception {
-        WorkBrowseService browseService = new WorkBrowseService();
+        WorkBrowseService browseService = browseServiceManager.getBrowseService("Work");
         Result<WorkEntity> result = browseService.findChildren(new ArrayList<String>(), new ArrayList<String>(), null, null, true);
         assert result.getItems().size() == 79;
         assert result.getCount() == 79;
@@ -443,7 +443,7 @@ public class BrowseServiceTest extends BaseTestCase {
 
     @Test
     public void testBrowseLabels() throws Exception {
-        LabelBrowseService browseService = new LabelBrowseService();
+        LabelBrowseService browseService = browseServiceManager.getBrowseService("Label");
         Result<LabelEntity> result = browseService.findChildren(new ArrayList<String>(), new ArrayList<String>(), null, null, true);
         assert result.getItems().size() == 3;
         assert result.getCount() == 3;
@@ -492,7 +492,7 @@ public class BrowseServiceTest extends BaseTestCase {
 
     @Test
     public void testBrowseClassifications() throws Exception {
-        ClassificationBrowseService browseService = new ClassificationBrowseService();
+        ClassificationBrowseService browseService = browseServiceManager.getBrowseService("Classification");
         Result<ClassificationEntity> result = browseService.findChildren(new ArrayList<String>(), new ArrayList<String>(), null, null, true);
         assert result.getItems().size() == 17;
         assert result.getCount() == 17;

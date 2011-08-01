@@ -41,9 +41,11 @@ public class ItemResult extends Result {
             this.image = image;
         }
 
-        public Item(Object item, ItemImage image, Boolean playable, String playableElementsURL, Boolean leaf) {
+        public Item(Object item, ItemImage image, String name, String sortKey, Boolean playable, String playableElementsURL, Boolean leaf) {
             this.item = item;
             this.image = image;
+            this.name = name;
+            this.sortKey = sortKey;
             if (playable) {
                 this.playable = playableElementsURL;
             }
@@ -64,9 +66,11 @@ public class ItemResult extends Result {
             this.leaf = leaf;
         }
 
-        public Item(Object item, ItemImage image, Boolean playable, String playableElementsURL, Map<String, Long> childCounters) {
+        public Item(Object item, ItemImage image, String name, String sortKey, Boolean playable, String playableElementsURL, Map<String, Long> childCounters) {
             this.item = item;
             this.image = image;
+            this.name = name;
+            this.sortKey = sortKey;
             if (playable) {
                 this.playable = playableElementsURL;
             }
