@@ -420,7 +420,7 @@ public class SMDListViewWindow extends Window implements Bindable {
                                 !previousCriterias.get(tableView).equals(type + ":" + criteriaString)) {
 
                             // Execute query towards server
-                            JSONObject object = Client.create().resource(HOSTURL + "/browse/" + type + "?" + criteriaString).accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
+                            JSONObject object = Client.create().resource(HOSTURL + "/browse/" + type + "?" + criteriaString+"&itemInfo=true").accept(MediaType.APPLICATION_JSON).get(JSONObject.class);
                             JSONArray objects = object.getJSONArray("items");
                             TableViewItem previousSelectedItem = null;
 
