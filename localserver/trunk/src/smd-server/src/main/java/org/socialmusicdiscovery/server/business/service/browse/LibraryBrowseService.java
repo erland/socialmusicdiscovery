@@ -274,8 +274,9 @@ public class LibraryBrowseService {
                             }
                         }
                     }else {
+                        Integer count = browseResult.getCount();
                         browseResult = new Result<Object>();
-                        browseResult.setCount(browseResult.getCount());
+                        browseResult.setCount(count);
                     }
                 }
 
