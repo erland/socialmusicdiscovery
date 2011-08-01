@@ -100,9 +100,9 @@ public class BrowseFacade {
                 image = new ItemResult.ItemImage(resultItem.getImage().getProviderId(), resultItem.getImage().getProviderImageId(), resultItem.getImage().getUrl());
             }
             if (resultItem.getChildItems() != null) {
-                genericResultItems.add(new ItemResult.Item(item, image, resultItem.getPlayable(), getPlayableElementsURL(criteriaList, resultItem.getId()), new HashMap<String, Long>(resultItem.getChildItems())));
+                genericResultItems.add(new ItemResult.Item(item, resultItem.getType(), resultItem.getId(), resultItem.getName(), resultItem.getSortKey(), image, resultItem.getPlayable(), getPlayableElementsURL(criteriaList, resultItem.getId()), null, new HashMap<String, Long>(resultItem.getChildItems())));
             } else {
-                genericResultItems.add(new ItemResult.Item(item, image, resultItem.getPlayable(), getPlayableElementsURL(criteriaList, resultItem.getId()), resultItem.getLeaf()));
+                genericResultItems.add(new ItemResult.Item(item, resultItem.getType(), resultItem.getId(), resultItem.getName(), resultItem.getSortKey(), image, resultItem.getPlayable(), getPlayableElementsURL(criteriaList, resultItem.getId()), null, resultItem.getLeaf()));
             }
         }
 

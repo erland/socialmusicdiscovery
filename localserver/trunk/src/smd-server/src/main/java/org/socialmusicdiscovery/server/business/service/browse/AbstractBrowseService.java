@@ -33,6 +33,7 @@ import org.socialmusicdiscovery.server.business.logic.ImageProviderManager;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.model.core.Image;
+import org.socialmusicdiscovery.server.support.format.TitleFormat;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -251,7 +252,10 @@ public abstract class AbstractBrowseService {
                 result.setCount(items.size());
             }
 
+            String format = getConfiguration().getStringParameter("format");
+
             for (T item : items) {
+                ResultItem<T> resultItem = null;
                 if (returnChildCounters != null && returnChildCounters) {
                     List<String> relations = Arrays.asList("label", "release", "track", "work", "artist", "classification");
                     Map<String, Long> childCounters = new HashMap<String, Long>();
@@ -289,20 +293,20 @@ public abstract class AbstractBrowseService {
                         }
                     }
 
-                    ResultItem<T> resultItem = new ResultItem<T>(item, getPlayable(), childCounters);
-                    if(sortKeyProvider !=null) {
-                        resultItem.setSortKey(sortKeyProvider.getSortKey(item));
-                    }
-                    resultItem.setImage(getImage(item));
-                    resultItems.add(resultItem);
+                    resultItem = new ResultItem<T>(item, getPlayable(), childCounters);
                 } else {
-                    ResultItem<T> resultItem = new ResultItem<T>(item, getPlayable(), false);
-                    if(sortKeyProvider !=null) {
-                        resultItem.setSortKey(sortKeyProvider.getSortKey(item));
-                    }
-                    resultItem.setImage(getImage(item));
-                    resultItems.add(resultItem);
+                    resultItem = new ResultItem<T>(item, getPlayable(), false);
                 }
+                if(format!=null) {
+                    resultItem.setName(new TitleFormat(format).format(item));
+                }
+                resultItem.setType(objectType);
+                resultItem.setId(resultItem.getType()+":"+item.getId());
+                if(sortKeyProvider !=null) {
+                    resultItem.setSortKey(sortKeyProvider.getSortKey(item));
+                }
+                resultItem.setImage(getImage(item));
+                resultItems.add(resultItem);
             }
         }
         return result;

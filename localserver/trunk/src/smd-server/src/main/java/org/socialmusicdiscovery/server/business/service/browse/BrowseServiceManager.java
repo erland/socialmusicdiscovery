@@ -95,7 +95,7 @@ public class BrowseServiceManager {
             T service = (T) browseServices.get(objectType).newInstance();
             ConfigurationContext context = configurationContexts.get(objectType);
             if (context == null) {
-                context = new MappedConfigurationContext(service.getClass() + ".", new MergedConfigurationManager(new PersistentConfigurationManager()));
+                context = new MappedConfigurationContext(service.getClass().getName() + ".", new MergedConfigurationManager(new PersistentConfigurationManager()));
             }
             service.setConfiguration(context);
             return service;
