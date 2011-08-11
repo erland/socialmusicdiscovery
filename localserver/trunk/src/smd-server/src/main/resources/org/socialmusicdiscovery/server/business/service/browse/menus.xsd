@@ -30,6 +30,17 @@
         </xs:sequence>
     </xs:complexType>
 
+    <xs:complexType name="clientTypeListType">
+        <xs:sequence>
+            <xs:element type="nonEmptyString" name="clientType" maxOccurs="unbounded" minOccurs="1">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">Client type, for example "squeezeboxserver.squeezeplay" or "upnp"
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
     <xs:complexType name="labelsType">
         <xs:sequence>
             <xs:element type="labelType" name="label" maxOccurs="unbounded" minOccurs="1">
@@ -64,6 +75,20 @@
 
     <xs:complexType name="menuType" mixed="true">
         <xs:sequence>
+            <xs:element type="clientTypeListType" name="visibleOn" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">List of client types for which this menu should be visible
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+
+            <xs:element type="clientTypeListType" name="hiddenOn" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">List of client types for which this menu should be hidden
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+
             <xs:element type="contextsType" name="contexts" minOccurs="0" maxOccurs="1">
                 <xs:annotation>
                     <xs:documentation xml:lang="en">List of contexts for which this context menu should be included

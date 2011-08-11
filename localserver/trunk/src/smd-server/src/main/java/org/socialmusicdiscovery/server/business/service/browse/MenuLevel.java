@@ -62,6 +62,13 @@ public interface MenuLevel {
     public String getId();
 
     /**
+     * Checks if this menu level is applicable/visible for the specified client type
+     * @param clientType Client type to check visibility for
+     * @return true if the menu level is visible
+     */
+    public Boolean isVisibleForClientType(String clientType);
+
+    /**
      * The text that should be displayed for items provided through this menu level, typically only used for static items such as
      * {@link MenuLevelCommand} and {@link MenuLevelDynamic}
      * @return The text to display

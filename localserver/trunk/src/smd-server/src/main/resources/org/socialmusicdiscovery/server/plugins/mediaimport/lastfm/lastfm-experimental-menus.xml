@@ -70,6 +70,9 @@
             <menu type="Artist">
                 <menus>
                     <menu type="Folder" id="images" weight="1">
+                        <hiddenOn>
+                            <clientType>upnp</clientType>
+                        </hiddenOn>
                         <labels>
                             <label language="EN">LastFM Images</label>
                         </labels>
@@ -107,6 +110,9 @@
             <menu type="Artist">
                 <menus>
                     <menu id="images" type="ImageFolder" weight="2">
+                        <hiddenOn>
+                            <clientType>upnp</clientType>
+                        </hiddenOn>
                         <labels>
                             <label language="EN">LastFM Image Slideshow</label>
                         </labels>

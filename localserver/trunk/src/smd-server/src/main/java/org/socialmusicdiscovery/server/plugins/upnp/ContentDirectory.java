@@ -198,7 +198,7 @@ public class ContentDirectory extends AbstractContentDirectoryService  {
 			smdMaxItems = new Integer((int)maxResults);
 		}
 		
-		Result<Object> browsedContent = browseService.findChildren(smdObjectID, (int)firstResult, smdMaxItems, false);
+		Result<Object> browsedContent = browseService.findChildren("upnp", smdObjectID, (int)firstResult, smdMaxItems, false);
 		
 		// Memo: DIDL object mandatory elements:
 		// id, parentID, title, class, restricted (for 'object' base class)
@@ -210,7 +210,7 @@ public class ContentDirectory extends AbstractContentDirectoryService  {
 			
 			if(browsedItem.getType().equals("Folder")) {
 				upnpContainer = new SmdFolder( (ResultItem<String>)browsedItem);
-				upnpContainer.setChildCount(browseService.findChildren(browsedItem.getId(), null, null, false).getCount().intValue());
+				upnpContainer.setChildCount(browseService.findChildren("upnp", browsedItem.getId(), null, null, false).getCount().intValue());
 
 			} else if (browsedItem.getType().equals("Artist") ) {
 				ResultItem<ArtistEntity> artistItem = (ResultItem<ArtistEntity>) browsedItem;
@@ -218,7 +218,7 @@ public class ContentDirectory extends AbstractContentDirectoryService  {
 				upnpContainer.setId(objectID+"/"+artistItem.getId())
 					.setClazz(new org.teleal.cling.support.model.DIDLObject.Class("object.container.person.musicArtist"))
 					.setTitle(artistItem.getItem().getName());
-				upnpContainer.setChildCount(browseService.findChildren(artistItem.getId(), null, null, false).getCount().intValue());
+				upnpContainer.setChildCount(browseService.findChildren("upnp", artistItem.getId(), null, null, false).getCount().intValue());
 
 			} else if (browsedItem.getType().equals("Release") ) {
 				ResultItem<ReleaseEntity> releaseItem = (ResultItem<ReleaseEntity>) browsedItem;
@@ -227,7 +227,7 @@ public class ContentDirectory extends AbstractContentDirectoryService  {
 					.setClazz(new org.teleal.cling.support.model.DIDLObject.Class("object.container.album.musicAlbum"))
 					.setCreator("TODO: Put ArtistName")
 					.setTitle(releaseItem.getItem().getName());
-				upnpContainer.setChildCount(browseService.findChildren(releaseItem.getId(), null, null, false).getCount().intValue());
+				upnpContainer.setChildCount(browseService.findChildren("upnp", releaseItem.getId(), null, null, false).getCount().intValue());
 
 			} else if (browsedItem.getType().equals("Classification") ) {
 				ResultItem<ClassificationEntity> classificationItem = (ResultItem<ClassificationEntity>) browsedItem;
@@ -235,7 +235,7 @@ public class ContentDirectory extends AbstractContentDirectoryService  {
 				upnpContainer.setId(objectID+"/"+classificationItem.getId())
 					.setClazz(new org.teleal.cling.support.model.DIDLObject.Class("object.container.genre.musicGenre"))
 					.setTitle(classificationItem.getItem().getName());
-				upnpContainer.setChildCount(browseService.findChildren(classificationItem.getId(), null, null, false).getCount().intValue());
+				upnpContainer.setChildCount(browseService.findChildren("upnp", classificationItem.getId(), null, null, false).getCount().intValue());
 				
 			} else if (browsedItem.getType().equals("Track") ) {
 				upnpTrack = getUpnpMusicTrackFromSmdTrackEntity((ResultItem<TrackEntity>)browsedItem, objectID, filters);
