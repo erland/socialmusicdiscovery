@@ -58,23 +58,11 @@ public class LibraryBrowseService {
         return browseMenuManager.getAllMenus(BrowseMenuManager.MenuType.LIBRARY, context);
     }
 
-    public Result<Object> findChildren(Integer firstItem, Integer maxItems) {
-        return findChildren(null, firstItem, maxItems, false);
+    public Result<Object> findChildren(String clientType, String parentPath, Integer firstItem, Integer maxItems, Boolean counts) {
+        return findChildren(clientType, null, parentPath, firstItem, maxItems, counts);
     }
 
-    public Result<Object> findChildren(Integer firstItem, Integer maxItems, Boolean counts) {
-        return findChildren(null, firstItem, maxItems, counts);
-    }
-
-    public Result<Object> findChildren(String parentPath, Integer firstItem, Integer maxItems) {
-        return findChildren(parentPath, firstItem, maxItems, false);
-    }
-
-    public Result<Object> findChildren(String parentPath, Integer firstItem, Integer maxItems, Boolean counts) {
-        return findChildren(null, parentPath, firstItem, maxItems, counts);
-    }
-
-    protected Result<Object> findChildren(String currentId, String parentPath, Integer firstItem, Integer maxItems, Boolean counts) {
+    protected Result<Object> findChildren(String clientType, String currentId, String parentPath, Integer firstItem, Integer maxItems, Boolean counts) {
         Result<Object> result = new Result<Object>();
         if (counts == null) {
             counts = false;
@@ -155,6 +143,9 @@ public class LibraryBrowseService {
         // If a matching level was found which have childs
         if (possibleLevels != null) {
             for (MenuLevel requestedObjectType : possibleLevels) {
+                if(!requestedObjectType.isVisibleForClientType(clientType)) {
+                    continue;
+                }
                 if (maxItems != null && maxItems < 0) {
                     maxItems=0;
                 }

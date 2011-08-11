@@ -58,7 +58,7 @@ public class LibraryBrowseServiceTest extends BaseTestCase {
     @Test
     public void testBrowseWithoutChilds() throws Exception {
         LibraryBrowseService browseService= new LibraryBrowseService();
-        Result result = browseService.findChildren(null,null,null,false);
+        Result result = browseService.findChildren(null, null,null,null,false);
 
         assert result.getCount()>0;
         assert result.getItems().size()>0;
@@ -73,7 +73,7 @@ public class LibraryBrowseServiceTest extends BaseTestCase {
     @Test
     public void testBrowseWithChilds() throws Exception {
         LibraryBrowseService browseService= new LibraryBrowseService();
-        Result result = browseService.findChildren(null,1,1,true);
+        Result result = browseService.findChildren(null,null,1,1,true);
 
         assert result.getCount()>0;
         assert result.getItems().size()>0;
@@ -111,7 +111,7 @@ public class LibraryBrowseServiceTest extends BaseTestCase {
                 id = parentId + "/";
             }
             id = id + item.getId();
-            Result result = browseService.findChildren(id, null, null, childs);
+            Result result = browseService.findChildren(null, id, null, null, childs);
             Collection<ResultItem> childItems = result.getItems();
             if (childs) {
                 assert noOfChilds == childItems.size();

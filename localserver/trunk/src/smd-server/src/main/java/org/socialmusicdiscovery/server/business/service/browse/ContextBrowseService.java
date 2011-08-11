@@ -35,7 +35,7 @@ public class ContextBrowseService extends LibraryBrowseService {
         return browseMenuManager.getAllMenus(BrowseMenuManager.MenuType.CONTEXT,context);
     }
 
-    public Result<Object> findChildren(String parentPath, Integer firstItem, Integer maxItems, Boolean counts) {
+    public Result<Object> findChildren(String clientType, String parentPath, Integer firstItem, Integer maxItems, Boolean counts) {
         if (counts == null) {
             counts = false;
         }
@@ -52,6 +52,6 @@ public class ContextBrowseService extends LibraryBrowseService {
             parentPath = null;
         }
 
-        return findChildren(currentId,parentPath, firstItem, maxItems, counts);
+        return findChildren(clientType, currentId,parentPath, firstItem, maxItems, counts);
     }
 }

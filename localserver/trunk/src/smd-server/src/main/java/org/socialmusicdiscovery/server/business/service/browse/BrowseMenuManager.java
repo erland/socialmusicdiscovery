@@ -154,7 +154,7 @@ public class BrowseMenuManager {
 
     private MenuLevel getMenuFromElement(Element menuNode) {
         String type = menuNode.getAttributeValue("type");
-        MenuLevel level;
+        AbstractMenuLevel level;
         if(MenuLevelCommand.TYPE.equals(type)) {
             String id = menuNode.getAttributeValue("id");
             level = new MenuLevelCommand(id,getMenuName(menuNode.getChildElements("labels")));
@@ -189,6 +189,20 @@ public class BrowseMenuManager {
                 criteriaDepth = Long.valueOf(menuNode.getAttributeValue("criteriaDepth"));
             }
             level = new MenuLevelDynamic(type, getMenuName(menuNode.getChildElements("labels")), format, Boolean.valueOf(playable), criteriaDepth);
+        }
+
+        Nodes includedClientTypeNodes = menuNode.query("visibleOn/clientType");
+        if(includedClientTypeNodes.size()>0) {
+            for(int j=0;j<includedClientTypeNodes.size();j++) {
+                level.getIncludedClientTypes().add(includedClientTypeNodes.get(j).getValue());
+            }
+        }
+
+        Nodes excludedClientTypeNodes = menuNode.query("hiddenOn/clientType");
+        if(excludedClientTypeNodes.size()>0) {
+            for(int j=0;j<excludedClientTypeNodes.size();j++) {
+                level.getExcludedClientTypes().add(excludedClientTypeNodes.get(j).getValue());
+            }
         }
 
         if(menuNode.getAttributeValue("weight")!=null) {

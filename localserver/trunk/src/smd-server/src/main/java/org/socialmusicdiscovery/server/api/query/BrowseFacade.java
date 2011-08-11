@@ -254,13 +254,14 @@ public class BrowseFacade {
      * @param offset Offset of the first item to get, this is used to get the result in smaller chunks
      * @param size   Number of items to get
      * @param childs true if child counters should be provided
+     * @param clientType Type of client doing the browse request, for example "squeezeboxserver.squeezeplay.squeezeos"
      * @return A list of matching objects
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/library")
-    public Result browseLibrary(@QueryParam("offset") Integer offset, @QueryParam("size") Integer size, @QueryParam("childs") Boolean childs, @QueryParam("itemInfo") Boolean itemInfo) {
-        return browseLibrary(null, offset, size, childs, itemInfo);
+    public Result browseLibrary(@QueryParam("offset") Integer offset, @QueryParam("size") Integer size, @QueryParam("childs") Boolean childs, @QueryParam("itemInfo") Boolean itemInfo, @QueryParam("clientType") String clientType) {
+        return browseLibrary(null, offset, size, childs, itemInfo, clientType);
     }
 
     /**
@@ -270,18 +271,19 @@ public class BrowseFacade {
      * @param offset   Offset of the first item to get, this is used to get the result in smaller chunks
      * @param size     Number of items to get
      * @param childs   true if child counters should be provided
+     * @param clientType Type of client doing the browse request, for example "squeezeboxserver.squeezeplay.squeezeos"
      * @return A list of matching objects
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/library/{object:.*}")
-    public Result browseLibrary(@PathParam("object") String objectId, @QueryParam("offset") Integer offset, @QueryParam("size") Integer size, @QueryParam("childs") Boolean childs, @QueryParam("itemInfo") Boolean itemInfo) {
+    public Result browseLibrary(@PathParam("object") String objectId, @QueryParam("offset") Integer offset, @QueryParam("size") Integer size, @QueryParam("childs") Boolean childs, @QueryParam("itemInfo") Boolean itemInfo, @QueryParam("clientType") String clientType) {
         if (size != null && offset == null) {
             offset = 0;
         }
 
         LibraryBrowseService browseService = InjectHelper.instance(LibraryBrowseService.class);
-        org.socialmusicdiscovery.server.business.service.browse.Result result = new CopyHelper().detachedCopy(browseService.findChildren(objectId, offset, size, childs));
+        org.socialmusicdiscovery.server.business.service.browse.Result result = new CopyHelper().detachedCopy(browseService.findChildren(clientType, objectId, offset, size, childs));
 
         List<String> parentObjects = new ArrayList<String>();
         if (objectId != null) {
@@ -357,18 +359,19 @@ public class BrowseFacade {
      * @param offset   Offset of the first item to get, this is used to get the result in smaller chunks
      * @param size     Number of items to get
      * @param childs   true if child counters should be provided
+     * @param clientType Type of client doing the browse request, for example "squeezeboxserver.squeezeplay.squeezeos"
      * @return A list of matching objects
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/context/{object:.*}")
-    public Result browseContext(@PathParam("object") String objectId, @QueryParam("offset") Integer offset, @QueryParam("size") Integer size, @QueryParam("childs") Boolean childs, @QueryParam("itemInfo") Boolean itemInfo) {
+    public Result browseContext(@PathParam("object") String objectId, @QueryParam("offset") Integer offset, @QueryParam("size") Integer size, @QueryParam("childs") Boolean childs, @QueryParam("itemInfo") Boolean itemInfo, @QueryParam("clientType") String clientType) {
         if (size != null && offset == null) {
             offset = 0;
         }
 
         ContextBrowseService browseService = InjectHelper.instance(ContextBrowseService.class);
-        org.socialmusicdiscovery.server.business.service.browse.Result result = new CopyHelper().detachedCopy(browseService.findChildren(objectId, offset, size, childs));
+        org.socialmusicdiscovery.server.business.service.browse.Result result = new CopyHelper().detachedCopy(browseService.findChildren(clientType, objectId, offset, size, childs));
 
         List<String> parentObjects = new ArrayList<String>(Arrays.asList(objectId.split("/")));
         parentObjects.remove(0);

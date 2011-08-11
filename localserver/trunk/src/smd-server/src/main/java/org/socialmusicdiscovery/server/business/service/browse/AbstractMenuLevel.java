@@ -28,12 +28,24 @@
 package org.socialmusicdiscovery.server.business.service.browse;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Abstract class used by all {@link MenuLevel} implementations
  */
 public abstract class AbstractMenuLevel implements MenuLevel {
+    /**
+     * Client types which the menu should be visible for
+     */
+    private Set<String> includedClientTypes = new HashSet<String>();
+
+    /**
+     * Client types which the menu should be hidden for
+     */
+    private Set<String> excludedClientTypes = new HashSet<String>();
+
     /**
      * Type of item, typically the same as returned from {@link org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity#forEntity(org.socialmusicdiscovery.server.business.model.SMDIdentity)}
      */
@@ -118,5 +130,52 @@ public abstract class AbstractMenuLevel implements MenuLevel {
 
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    public Set<String> getIncludedClientTypes() {
+        return includedClientTypes;
+    }
+
+    public Set<String> getExcludedClientTypes() {
+        return excludedClientTypes;
+    }
+
+    @Override
+    public Boolean isVisibleForClientType(String clientType) {
+        if(clientType==null && includedClientTypes.size()>0) {
+            return false;
+        }else if(clientType==null) {
+            return true;
+        }else if(includedClientTypes.size()==0 && excludedClientTypes.size()==0) {
+            return true;
+        }else {
+            if(includedClientTypes.contains(clientType)) {
+                return true;
+            }else if(excludedClientTypes.contains(clientType)) {
+                return false;
+            }
+            for (String excludedType : excludedClientTypes) {
+                if(clientType.startsWith(excludedType)) {
+                    for (String includedType : includedClientTypes) {
+                        if(includedType.startsWith(excludedType)) {
+                            if(clientType.startsWith(includedType)) {
+                                return true;
+                            }
+                        }
+                    }
+                    return false;
+                }
+            }
+            if(includedClientTypes.size()>0) {
+                for (String includedType : includedClientTypes) {
+                    if(clientType.startsWith(includedType)) {
+                        return true;
+                    }
+                }
+                return false;
+            }else {
+                return true;
+            }
+        }
     }
 }
