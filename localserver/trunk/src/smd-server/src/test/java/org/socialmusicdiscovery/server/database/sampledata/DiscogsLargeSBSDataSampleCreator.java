@@ -134,7 +134,10 @@ public class DiscogsLargeSBSDataSampleCreator {
 
             String releaseYear = null;
             if(getChildrenByTagName(release, "released").size()>0) {
-                releaseYear = getChildrenByTagName(release, "released").get(0).getTextContent().substring(0,4);
+                String year = getChildrenByTagName(release, "released").get(0).getTextContent();
+                if(year.length()>=4) {
+                    releaseYear = year.substring(0,4);
+                }
             }
 
             List<Element> albumArtistsElement = getChildrenByTagName(release, "artists");
