@@ -27,11 +27,18 @@
 
 package org.socialmusicdiscovery.server.plugins.upnp;
 
+import com.google.inject.Inject;
+
+import org.socialmusicdiscovery.server.business.logic.InjectHelper;
 import org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity;
 import org.socialmusicdiscovery.server.business.model.core.*;
+import org.socialmusicdiscovery.server.business.service.browse.ArtistBrowseService;
+import org.socialmusicdiscovery.server.business.service.browse.BrowseServiceManager;
+import org.socialmusicdiscovery.server.business.service.browse.ClassificationBrowseService;
 import org.socialmusicdiscovery.server.business.service.browse.LibraryBrowseService;
 import org.socialmusicdiscovery.server.business.service.browse.Result;
 import org.socialmusicdiscovery.server.business.service.browse.ResultItem;
+import org.socialmusicdiscovery.server.business.service.browse.ResultItem.ResultItemImage;
 import org.teleal.cling.binding.annotations.*;
 import org.teleal.cling.model.message.header.UpnpHeader;
 import org.teleal.cling.model.types.ErrorCode;
@@ -43,12 +50,20 @@ import org.teleal.cling.support.contentdirectory.ContentDirectoryErrorCode;
 import org.teleal.cling.support.contentdirectory.ContentDirectoryException;
 import org.teleal.cling.support.contentdirectory.DIDLParser;
 import org.teleal.cling.support.model.*;
+import org.teleal.cling.support.model.DIDLObject.Property;
+import org.teleal.cling.support.model.DIDLObject.Property.UPNP;
 import org.teleal.cling.support.model.container.Container;
+import org.teleal.cling.support.model.container.MusicAlbum;
+import org.teleal.cling.support.model.item.Item;
 import org.teleal.cling.support.model.item.MusicTrack;
+import org.teleal.cling.support.model.item.Photo;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.StringTokenizer;
 
 @UpnpStateVariables({
     @UpnpStateVariable(
@@ -99,7 +114,8 @@ import java.util.List;
 })
 public class ContentDirectory extends AbstractContentDirectoryService  {
 
-
+	@Inject
+	BrowseServiceManager browseServiceManager;
 
 	public ContentDirectory() {
 
@@ -107,7 +123,7 @@ public class ContentDirectory extends AbstractContentDirectoryService  {
 				Arrays.asList("dc:title", "upnp:class", "upnp:genre"),
 				// sort caps
 				Arrays.asList("dc:title", "upnp:author"));
-		// TODO Auto-generated constructor stub
+		InjectHelper.injectMembers(this);
 	}
 
 	
@@ -124,7 +140,8 @@ public class ContentDirectory extends AbstractContentDirectoryService  {
         	// Foobar: 
         	String UA = null;
         	try {
-        		UA = ReceivingAction.getRequestMessage().getHeaders().getFirstHeader(UpnpHeader.Type.USER_AGENT).getString();
+        		// UA = ReceivingAction.getRequestMessage().getHeaders().getFirstHeader(UpnpHeader.Type.USER_AGENT).getString();
+        		UA = ReceivingAction.getExtraResponseHeaders().getFirstHeader(UpnpHeader.Type.USER_AGENT).getString();
         		System.err.println(">>>>>>>>>> RequestFrom agent: " + UA);
         	} catch (NullPointerException ex) {
         		System.err.println(">>>>>>>>>> RequestFrom agent: Anonymous");
@@ -155,16 +172,17 @@ public class ContentDirectory extends AbstractContentDirectoryService  {
         public SmdFolder(ResultItem<String> folderItem) {
             setId(folderItem.getId());
             
-            // for performance reason, childCount should be null
-            // unfortunately, cling doesn't permit it (yet)
-            // setChildCount(null);
-            // TODO: fill a bug report or submit a patch for cling
-            // problem is null pointer exception in DIDLParser.java (line 337)
-            // containerElement.setAttribute("childCount", Integer.toString(container.getChildCount()));
-            // yet check how UPnP clients behave with containers without childCount attribute
+            // childCount is optional according to UPnP spec
+            // for performance reason, childCount isn't set by plugin
+            // cling didn't permit it before, now it's null by default
+            //setChildCount(null);
             setRestricted(true);
-            // item contained in result item is of type String
-            setTitle(folderItem.getItem()); 
+
+            // for "metaFolder", getItem is null
+            // could be smd model change or bug in Plugin code
+            // TODO: check if dc:title works for both meta folder and real folders
+            //setTitle(folderItem.getItem()); 
+            setTitle(folderItem.getName());
             setClazz(new org.teleal.cling.support.model.DIDLObject.Class("object.container"));
         }
     }
@@ -179,6 +197,10 @@ public class ContentDirectory extends AbstractContentDirectoryService  {
 
 		DIDLContent didl = new DIDLContent();
 		LibraryBrowseService browseService = new LibraryBrowseService();
+
+		
+		ArtistBrowseService artistBrowseService = browseServiceManager.getBrowseService("Artist");
+		ClassificationBrowseService classificationBrowseService = browseServiceManager.getBrowseService("Classification");
 		
 		String smdObjectID = null;
 		Integer smdMaxItems;
@@ -204,30 +226,187 @@ public class ContentDirectory extends AbstractContentDirectoryService  {
 		// id, parentID, title, class, restricted (for 'object' base class)
 		
 		Container upnpContainer = null;
-		MusicTrack upnpTrack= null;
+		Item upnpItem = null;
 		
 		for(ResultItem<?> browsedItem: browsedContent.getItems()) {
 			
-			if(browsedItem.getType().equals("Folder")) {
+			// nullify container to prevent a bug if browsedItem type is unknown 
+			// unless nullified, the same object will be added twice in didl document
+			upnpContainer = null;
+			
+			if(browsedItem.getType().equals("Folder") || browsedItem.getType().equals("ImageFolder") ) {
+				
+				
+				// found item is a Folder (could be root elements, LastFM Image, etc.
 				upnpContainer = new SmdFolder( (ResultItem<String>)browsedItem);
-				upnpContainer.setChildCount(browseService.findChildren("upnp", browsedItem.getId(), null, null, false).getCount().intValue());
+
+				// create object ID (parentId/itemID)
+				if(smdObjectID != null) {
+					upnpContainer.setId(smdObjectID+"/"+browsedItem.getId());
+				}
+				// before r839: upnpContainer.setChildCount(browseService.findChildren(browsedItem.getId(), null, null, false).getCount().intValue());
+                // after  r839: upnpContainer.setChildCount(browseService.findChildren("upnp", browsedItem.getId(), null, null, false).getCount().intValue());
 
 			} else if (browsedItem.getType().equals("Artist") ) {
+				
+				// SMD Item is considered as an artist, create corresponding UPnP container
+				
 				ResultItem<ArtistEntity> artistItem = (ResultItem<ArtistEntity>) browsedItem;
-				upnpContainer = new org.teleal.cling.support.model.container.MusicArtist();
-				upnpContainer.setId(objectID+"/"+artistItem.getId())
+				
+				org.teleal.cling.support.model.container.MusicArtist upnpMusicArtist = new org.teleal.cling.support.model.container.MusicArtist();
+				
+				upnpContainer = upnpMusicArtist;
+				upnpMusicArtist.setId(objectID+"/"+artistItem.getId())
 					.setClazz(new org.teleal.cling.support.model.DIDLObject.Class("object.container.person.musicArtist"))
 					.setTitle(artistItem.getItem().getName());
-				upnpContainer.setChildCount(browseService.findChildren("upnp", artistItem.getId(), null, null, false).getCount().intValue());
+				System.err.println("CurrentArtist: "+upnpMusicArtist.getTitle());
+				// TODO: Artist can have "artistDiscographyURI" 
+				// upnpMusicArtist.setGenres( new String[] {"Unknown"} );
+				
+				// findChildren seems to require parent path concatenation now
+				//upnpContainer.setChildCount(browseService.findChildren(artistItem.getId(), null, null, false).getCount().intValue());
+				// upnpContainer.setChildCount(browseService.findChildren(objectID+"/"+artistItem.getId(), null, null, false).getCount().intValue());
+				
+				// search for artist genre
+				// TODO: activate again when performance problem is gone
+//				List<String> artistGenres = new ArrayList<String>();
+//				for(ResultItem<ClassificationEntity> classificationResult: classificationBrowseService.findChildren(Arrays.asList(artistItem.getId()), null, 0, null, false).getItems() ) {
+//					ClassificationEntity classification = classificationResult.getItem();
+//					if(classification.getType().equals("genre")) {
+//						artistGenres.add(classification.getName());
+//					}
+//				}
+//				if(artistGenres.size()>0) {
+//					upnpMusicArtist.setGenres(artistGenres.toArray(new String[0]));
+//				}
 
 			} else if (browsedItem.getType().equals("Release") ) {
 				ResultItem<ReleaseEntity> releaseItem = (ResultItem<ReleaseEntity>) browsedItem;
-				upnpContainer = new org.teleal.cling.support.model.container.MusicArtist();
-				upnpContainer.setId(objectID+"/"+releaseItem.getId())
-					.setClazz(new org.teleal.cling.support.model.DIDLObject.Class("object.container.album.musicAlbum"))
-					.setCreator("TODO: Put ArtistName")
-					.setTitle(releaseItem.getItem().getName());
-				upnpContainer.setChildCount(browseService.findChildren("upnp", releaseItem.getId(), null, null, false).getCount().intValue());
+				MusicAlbum upnpAlbum = new MusicAlbum();
+				upnpContainer = upnpAlbum;
+				List<PersonWithRole> contributors =  new ArrayList<PersonWithRole>();
+				
+//				try {
+
+				Collection<ResultItem<ArtistEntity>> artists = 
+					artistBrowseService.findChildren(Arrays.asList(releaseItem.getId()), null, 0, null, false).getItems(); 
+				
+				for(ResultItem<ArtistEntity> artist : artists) {
+					// TODO: replace hard coded "performer" by SMD role
+					 contributors.add(new PersonWithRole(artist.getItem().getName(), "Performer"));
+				}
+				
+				upnpAlbum.setArtists(contributors.toArray(new PersonWithRole[0] ));
+// TODO: check what happens if there's no artist (should be handled below by contributors.size test)
+//				} catch(java.util.NoSuchElementException Ex) {
+//					// ignore this exception, it means there's no artist for that album
+//				}
+				
+				upnpAlbum.setId(objectID+"/"+releaseItem.getId());
+				upnpAlbum.setClazz(new org.teleal.cling.support.model.DIDLObject.Class("object.container.album.musicAlbum"));
+				
+				if(contributors.size()>0) {
+					upnpAlbum.setCreator(contributors.get(0).getName());
+				} else {
+					upnpAlbum.setCreator("unknown");
+				}
+				
+				upnpAlbum.setTitle(releaseItem.getItem().getName());
+				upnpAlbum.addProperty(new DIDLObject.Property.UPNP.ALBUM(upnpAlbum.getTitle()) );
+				upnpAlbum.setDescription("aze");
+				// <albumArtUri dlna:profileID="PNG_TN">
+				// <albumArtUri dlna:profileID="JPEG_TN">
+				
+				upnpAlbum.setAlbumArtURIs(new URI[] { new URI(releaseItem.getImage().getUrl())} );
+				Property<URI>[] albumArtUriProperties = upnpAlbum.getProperties(UPNP.ALBUM_ART_URI.class);
+				for(Property<URI> uriProperty : albumArtUriProperties) {
+					//DIDLObject.Property.DLNA.PROFILE_ID toto = new DIDLObject.Property.DLNA.PROFILE_ID();
+					//toto.getValue().
+					//DIDLAttribute tutu = new DIDLAttribute(DIDLObject.Property.DLNA, "dlna", "zeazé")
+					
+					// value for dlna:profileID attribute of upnp:albumArtURI element
+					String upnpProfileID;
+					
+			    	if(uriProperty.getValue().toString().endsWith(".png")) {
+			    		upnpProfileID = "PNG_TN";
+			    	} else {
+			    		// if extension isn't png, suppose it's JPEG (maybe a bad guess)
+			    		upnpProfileID = "JPEG_TN";
+			    		// TODO: improve image entity to contain image type or to force it 
+			    	}
+			    	
+					uriProperty.addAttribute( 
+							new DIDLObject.Property.DLNA.PROFILE_ID(
+									new DIDLAttribute(
+									DIDLObject.Property.DLNA.NAMESPACE.URI, 
+									"dlna", 
+									"JPEG_TN")
+							)	
+					);					
+				}
+				
+				// search for album genre
+// commented for performance reason, should be uncommented or changed
+// when performance problem is solved
+//				List<String> albumGenres = new ArrayList<String>();
+//				for(ResultItem<ClassificationEntity> classificationResult: classificationBrowseService.findChildren(Arrays.asList(releaseItem.getId()), null, 0, null, false).getItems() ) {
+//					ClassificationEntity classification = classificationResult.getItem();
+//					if(classification.getType().equals("genre")) {
+//						albumGenres.add(classification.getName());
+//					}
+//				}
+
+				
+				// construct album genres from genre, style and moods classifications
+				List<String> albumGenres = new ArrayList<String>();
+				for(ResultItem<ClassificationEntity> classificationResult: 
+								classificationBrowseService.findChildren(
+									Arrays.asList(releaseItem.getId(),"Classification.genre"), 
+										null, 0, null, false).getItems() 
+				) {
+					StringTokenizer sk = new StringTokenizer(classificationResult.getItem().getName(), ",");
+					while(sk.hasMoreTokens() ) {
+						String genre = sk.nextToken().trim();
+						if(!albumGenres.contains(genre))
+							albumGenres.add(genre);
+					}
+				}
+
+				for(ResultItem<ClassificationEntity> classificationResult: 
+					classificationBrowseService.findChildren(
+						Arrays.asList(releaseItem.getId(),"Classification.style"), 
+							null, 0, null, false).getItems() 
+				) {
+//						albumGenres.addAll( Arrays.asList(classificationResult.getItem().getName().split(" ")) );
+					StringTokenizer sk = new StringTokenizer(classificationResult.getItem().getName(), ",");
+					while(sk.hasMoreTokens() ) {
+						String genre = sk.nextToken().trim();
+						if(!albumGenres.contains(genre))
+							albumGenres.add(genre);
+					}
+				}
+
+				for(ResultItem<ClassificationEntity> classificationResult: 
+					classificationBrowseService.findChildren(
+						Arrays.asList(releaseItem.getId(),"Classification.mood"), 
+							null, 0, null, false).getItems() 
+				) {
+//						albumGenres.add(classificationResult.getItem().getName());
+						StringTokenizer sk = new StringTokenizer(classificationResult.getItem().getName(), ",");
+						while(sk.hasMoreTokens() ) {
+							String genre = sk.nextToken().trim();
+							if(!albumGenres.contains(genre))
+								albumGenres.add(genre);
+						}						
+				}
+					
+				if(albumGenres.size()>0) {
+					upnpAlbum.setGenres(albumGenres.toArray(new String[0]));
+				}
+				
+				// TODO: add childcount is asked for by the client parameters
+				// before r839: upnpContainer.setChildCount(browseService.findChildren(objectID+"/"+releaseItem.getId(), null, null, false).getCount().intValue());
+				// after  r839: upnpContainer.setChildCount(browseService.findChildren("upnp", artistItem.getId(), null, null, false).getCount().intValue());
 
 			} else if (browsedItem.getType().equals("Classification") ) {
 				ResultItem<ClassificationEntity> classificationItem = (ResultItem<ClassificationEntity>) browsedItem;
@@ -238,20 +417,48 @@ public class ContentDirectory extends AbstractContentDirectoryService  {
 				upnpContainer.setChildCount(browseService.findChildren("upnp", classificationItem.getId(), null, null, false).getCount().intValue());
 				
 			} else if (browsedItem.getType().equals("Track") ) {
-				upnpTrack = getUpnpMusicTrackFromSmdTrackEntity((ResultItem<TrackEntity>)browsedItem, objectID, filters);
 				
-			}else {
+				upnpItem = getUpnpMusicTrackFromSmdTrackEntity((ResultItem<TrackEntity>)browsedItem, objectID, filters);
+				
+			} else if (browsedItem.getType().equals("LastFMImage") ) {
+				ResultItemImage smdImage = browsedItem.getImage(); 		
+				Photo upnpPhoto = new Photo();
+		    	upnpItem = upnpPhoto;
+		    	
+				// Mandatory elements:
+		    	upnpPhoto.setTitle("unknown");
+		    	upnpPhoto.setAlbum("unknown");
+		    	upnpPhoto.setWriteStatus(WriteStatus.NOT_WRITABLE);
+		    	upnpPhoto.setCreator("LastFM");
+		    	upnpPhoto.setId(objectID+"/"+browsedItem.getId());
+		    	upnpPhoto.setClazz(new org.teleal.cling.support.model.DIDLObject.Class("object.item.imageItem.photo"));
+		    	Res url = new Res();
+		    	upnpPhoto.addResource(url);
+		    	url.setValue(smdImage.getUrl());
+		    	if(url.getValue().endsWith(".png")) {
+		    		url.setProtocolInfo(new ProtocolInfo("http-get:*:image/png:DLNA.ORG_OP=01;DLNA.ORG_CI=0;DLNA.ORG_FLAGS="));
+		    	} else if(url.getValue().endsWith(".jpg")) {
+		    		url.setProtocolInfo(new ProtocolInfo("http-get:*:image/jpeg:DLNA.ORG_OP=01;DLNA.ORG_CI=0;DLNA.ORG_FLAGS="));
+		    	} 
+
+			} else {
 				System.err.println("TYPE: "+browsedItem.getType());
 			}
+			
 			if(upnpContainer != null) {
 				upnpContainer.setRestricted(true);
 				upnpContainer.setParentID(objectID);
+				
+				if(upnpContainer.getCreator() == null) {
+					upnpContainer.setCreator("SMD");
+				}
+				
 				didl.addContainer(upnpContainer);
 			}
-			if(upnpTrack != null) {
-				upnpTrack.setRestricted(true);
-				upnpTrack.setParentID(objectID);
-				didl.addItem(upnpTrack);
+			if(upnpItem != null) {
+				upnpItem.setRestricted(true);
+				upnpItem.setParentID(objectID);
+				didl.addItem(upnpItem);
 			}
 	        			
 		}
@@ -319,7 +526,7 @@ public class ContentDirectory extends AbstractContentDirectoryService  {
 			upnpTrack.setOriginalTrackNumber(trackItem.getNumber());
 		}
 		if(wantedProperty("dc:date", filters)) {
-			// TODO: verigy date nullity 
+			// TODO: verify date nullity 
 			// upnpTrack.setDate(trackItem.getRelease().getDate().toString());
 		}
 		if(wantedProperty("upnp:artists", filters)) {
@@ -460,7 +667,6 @@ public class ContentDirectory extends AbstractContentDirectoryService  {
 				for(Contributor contributor: smdTrack.getRecording().getContributors()) {
 					contributors.add(new PersonWithRole(contributor.getArtist().getName(),
 							contributor.getType()));
-					
 				}
 				upnpTrack.setArtists(contributors.toArray(new PersonWithRole[0]));
 				

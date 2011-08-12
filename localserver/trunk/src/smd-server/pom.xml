@@ -138,12 +138,12 @@
 	  	<dependency>
 	  		<groupId>org.teleal.cling</groupId>
 	  		<artifactId>cling-core</artifactId>
-	  		<version>1.0.2</version>
+	  		<version>1.0.3</version>
 	  	</dependency>
 	  	<dependency>
 	  		<groupId>org.teleal.cling</groupId>
 	  		<artifactId>cling-support</artifactId>
-	  		<version>1.0.2</version>
+	  		<version>1.0.3</version>
 	  	</dependency>
 
         <!-- ANTLR, required for title format parsing -->
