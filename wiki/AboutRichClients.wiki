@@ -24,20 +24,24 @@ http://socialmusicdiscovery.googlecode.com/svn/wiki/AboutRichClients/SBSImport.p
 http://socialmusicdiscovery.googlecode.com/svn/wiki/AboutRichClients/SMDConfig.png
 http://socialmusicdiscovery.googlecode.com/svn/wiki/AboutRichClients/SMDLibraryView.png
 
-= iPad client =
+= iOS client =
 
-The plan is to create a native client for Apple iPad to make it easy to discover music or do simple management of your music library directly from an iPad. Maybe browsing related artist, change a classification, correct an artist name that have been spelled wrong or similar things.
+The plan is to create a native client for Apple iPad (and possibly iPhone/iPod Touch) to make it easy to discover music or do simple management of your music library directly from an iOS device. Maybe browsing related artist, change a classification, correct an artist name that have been spelled wrong or similar things.
 
-The current state is that we haven't focused much on the iPad client so far but the plan is that it should use the same JSON based interface as the multi platform client when talking the the server/dataabase, so if anyone is interested in getting involved in this already now, please let us know.
+The current state is that we haven't focused much on the iOS client so far but the plan is that it should use the same JSON based interface as the multi platform client when talking the the server/dataabase. We haven't decided if the iOS client will be an extension of one of the existing iOS apps or if we will create a custom one for SMD. If anyone is interested in getting involved in this already now, please let us know.
 
 = Android client =
 
 The plan is to create a native client for Android to make it easy to discover music or do simple management of your music library directly from an Android based tablet. Maybe browsing related artist, change a classification, correct an artist name that have been spelled wrong or similar things.
 
-The current state is that we haven't focused much on the Android client so far but the plan is that it should use the same JSON based interface as the multi platform client when talking the the server/dataabase, so if anyone is interested in getting involved in this already now, please let us know.
+The current state is that we haven't focused much on the Android client so far but the plan is that it should use the same JSON based interface as the multi platform client when talking the the server/dataabase. We haven't decided if the Android client will be an extension of one of the existing Android apps or if we will create a custom one for SMD. if anyone is interested in getting involved in this already now, please let us know.
 
 = Native Windows client =
 
 Since most users likely are going to use a Windows computer when not maintaining the library from an iOS or Android tablet, we might need a native Windows client to make this an enjoyable experience. 
 
 We have decided to wait a bit with implementing this, mainly because we have limited resources in the project, but also because we aren't sure how good the multi platform client will get. However, if you have experience of development on the Windows platform and would be interested in doing something in this area, please let us know.
+
+= Clients for other platforms =
+
+We haven't discussed clients for any other platforms than the ones mentioned above but this doesn't mean we aren't interested in this. If you would like to contribute to the project and make a client for your favorite platform/device, you are very welcome to join the project.
