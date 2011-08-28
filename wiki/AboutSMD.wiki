@@ -111,7 +111,7 @@ Since all project members involved are working on the project during their spare
 
 === Functionality currently worked on ===
 This might change but at the moment we are working on:
-  * A rich user interface to make it possible to add and modify information in SMD library without the need to use an external tagging tool.
+  * [AboutRichClients A rich user interface to make it possible to add and modify information in SMD library without the need to use an external tagging tool.]
   * Making it possible to import information from some online sources for example Musicbrainz, Discogs, LastFM or Spotify into the SMD library and make it possible to use that information when browsing. Some examples of ideas:
     * Import extra information from discogs.com for a selected album.
     * Import all albums for a selected artist from Spotify and add it as any other album in your SMD library.
