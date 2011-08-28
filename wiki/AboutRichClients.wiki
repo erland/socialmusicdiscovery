@@ -1,0 +1,43 @@
+#summary About rich clients
+
+= Introduction =
+
+An important aspect of the Social Music Discovery project is that it should be easy to maintain the data, to handle this the plan is to create a rich user interface using modern technologies than just having a simple web based user interface. 
+
+Information can of course be imported from external sources such as tags in the music files and online services but it should also be possible to edit and maintain the information about your music directly in the Social Music Discovery application.
+
+The client part is separated from the server/database, the SMD server/database will typically run on the computer you are using for Squeezebox Server while the client can run on any computer in the network. 
+
+= Multi platform client =
+
+The first rich client we are working on is a multi platform client built on Eclipse RCP technology. 
+
+The current state is that the core editors work with basic features. We still miss a few editors (notably Work, Label, Part and RecordingSession), and a
+lot of usability features (e.g. drag-and-drop, etc ). After adding the
+remaining editors for the core model, the next major step would probably be
+to add support for the subjective model to make it possible to add/remove things like relations and classifications(genres, styles). 
+
+We need more people who like to work on this multi platform client, so if you are interested in getting involved in this, please let us know.
+
+Below follows some screen shots from the current state of the multi platform client:
+http://socialmusicdiscovery.googlecode.com/svn/wiki/AboutRichClients/SBSImport.png
+http://socialmusicdiscovery.googlecode.com/svn/wiki/AboutRichClients/SMDConfig.png
+http://socialmusicdiscovery.googlecode.com/svn/wiki/AboutRichClients/SMDLibraryView.png
+
+= iPad client =
+
+The plan is to create a native client for Apple iPad to make it easy to discover music or do simple management of your music library directly from an iPad. Maybe browsing related artist, change a classification, correct an artist name that have been spelled wrong or similar things.
+
+The current state is that we haven't focused much on the iPad client so far but the plan is that it should use the same JSON based interface as the multi platform client when talking the the server/dataabase, so if anyone is interested in getting involved in this already now, please let us know.
+
+= Android client =
+
+The plan is to create a native client for Android to make it easy to discover music or do simple management of your music library directly from an Android based tablet. Maybe browsing related artist, change a classification, correct an artist name that have been spelled wrong or similar things.
+
+The current state is that we haven't focused much on the Android client so far but the plan is that it should use the same JSON based interface as the multi platform client when talking the the server/dataabase, so if anyone is interested in getting involved in this already now, please let us know.
+
+= Native Windows client =
+
+Since most users likely are going to use a Windows computer when not maintaining the library from an iOS or Android tablet, we might need a native Windows client to make this an enjoyable experience. 
+
+We have decided to wait a bit with implementing this, mainly because we have limited resources in the project, but also because we aren't sure how good the multi platform client will get. However, if you have experience of development on the Windows platform and would be interested in doing something in this area, please let us know.
