@@ -1,0 +1,14 @@
+#summary About UPnP client
+
+= Introduction =
+
+We have decided to implement a UPnP interface on top of the SMD server to make it possible to browse and discover music in the SMD library from the UPnP client application of your choice.
+
+The UPnP interface is focused at functions to browse and search in your library, it's still work in progress but it's continuously getting more functionality. For managing library data we will probably continue to use the custom JSON based HTTP interface, possibly some simple management operations might also be exposed via UPnP.
+
+= Screenshots =
+== Accessing SMD from Foobar ==
+http://socialmusicdiscovery.googlecode.com/svn/wiki/AboutUPnP/smd-foobar-upnp.png
+
+== Accessing SMD from Windows Media Player ==
+http://socialmusicdiscovery.googlecode.com/svn/wiki/AboutUPnP/smd-wmp-upnp.png
