@@ -29,7 +29,7 @@ There are a number of fundamental principles which makes SMD different than anyt
   SMD is designed with the mindset that information will come from many different sources, there is no single master source. 
   * *Secure the information* 
   SMD is also designed with the mindset that the locally managed data is critical. It would be a catastrophe if you woke up one morning and all the tags in your music files were gone. For similar reasons it would be even worse if the locally stored SMD database suddenly wasn't available. To handle this the SMD application will offer backup/restore operations to a textual format. Besides making it possible to do backup of the data, this will also make it possible to get access to the data if the SMD project for some reason wouldn't be maintained sometime in the future.
-  * *Integration local and online music* 
+  * *Integration of local and online music* 
   Another important aspect is that when you discover music it's rarely important where the music file is stored. It should be possible to seamlessly browse through your library, even if some parts are offered by an online streaming service and other parts are stored on a local hard drive. Think about it as if you are discovering music instead of just discovering the local hard drive. As long as the desired quality version is played when you hit play, it doesn't matter if it's provided by a streaming service or from the music file on your local hard drive.
 
 == Target users ==
