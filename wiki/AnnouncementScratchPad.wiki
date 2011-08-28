@@ -9,7 +9,7 @@ This page is just a scratch pad which is used to be able to edit announcements t
 
 We have now been working for a while on a completely new project to enhance the music discovery functionality of the Squeezebox. The project is not ready for a public end user release yet but we feel that we have accomplished enough to try to make people interested in the project and make it possible for them to follow the status.
 
-The project was initiated in August 2010 and during the project so far there have been about 10-15 different Squeezebox community members involved. Some have contributed with ideas, others with documentation/modelling and a few core members have contributed with source code. Without all these contributors this project would never have happened.
+The project was initiated in August 2010 and during the project so far there have been about 10-15 different Squeezebox community members involved. Some have contributed with ideas, others with documentation/modelling and a few core members have been heavily involved in writing the source code. Without all these contributors this project would never have happened.
 
 There is a more detailed project description which can be found at the following link on our project site, so I'll just link to it instead of repeating everything here:
 http://code.google.com/p/socialmusicdiscovery/wiki/AboutSMD
