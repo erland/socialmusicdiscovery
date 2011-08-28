@@ -15,7 +15,7 @@ Adam is not particularly interested in music, he is the family's camera guy. He 
 
 Adam knows that the system is open source, and is prepared to go online to seek help on forums when problems occur. That's what he does with his video tools. But he really wants the system to run without ever touching it after installation.
 
-Adam uses the operating system, a web browser and a text editor. To Adam, music is about disc size and bandwidth. He has heard of Michael Jackson, but thinks that AC/DC has to do the with the power supply on the server. 
+Adam uses the operating system, a web browser and a text editor. To Adam, music is about disc size and bandwidth. He has heard of Michael Jackson, but thinks that AC/DC is something related to the power supply on the server. 
 
 = Libby the Librarian =
 
