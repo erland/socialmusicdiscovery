@@ -12,8 +12,8 @@ The client part is separated from the server/database, the SMD server/database w
 
 The first rich client we are working on is a multi platform client built on Eclipse RCP technology. 
 
-The current state is that the core editors work with basic features. We still miss a few editors (notably Work, Label, Part and RecordingSession), and a
-lot of usability features (e.g. drag-and-drop, etc ). After adding the
+The current state is that the core editors work with basic features. We still miss a few editors (notably Work, Label, Part and !RecordingSession), and a
+lot of usability features (e.g. drag-and-drop, undo/redo, etc ). We also lack a consistent set of icons (current icons are just place-holders). After adding the
 remaining editors for the core model, the next major step would probably be
 to add support for the subjective model to make it possible to add/remove things like relations and classifications(genres, styles). 
 
