@@ -1,0 +1,27 @@
+#summary Scratchpad for annoucment texts
+
+= Introduction =
+
+This page is just a scratch pad which is used to be able to edit announcements together in the project, you will NOT find the final public announcement on this page.
+
+
+= Announcement: SMD, let's discover the music =
+
+We have now been working for a while on a completely new project to enhance the music discovery functionality of the Squeezebox. The project is not ready for a public end user release yet but we feel that we have accomplished enough to try to make people interested in the project and make it possible for them to follow the status.
+
+The project was initiated in August 2010 and during the project so far there have been about 10-15 different Squeezebox community members involved. Some have contributed with ideas, others with documentation/modelling and a few core members have contributed with source code. Without all these contributors this project would never have happened.
+
+There is a more detailed project description which can be found at the following link on our project site, so I'll just link to it instead of repeating everything here:
+http://code.google.com/p/socialmusicdiscovery/wiki/AboutSMD
+
+The current state of the project is that we want more core contributors, primarily people who are interested in contributing as developers and user interface design, but we are also interested in people who like to help defining more detailed requirements and functionality.
+
+The state of the project is that we have taken a small first step towards our main goal, but there is a lot of work left. We do have an executable version of SMD which can be installed already now by adding the following plugin repository in the "Plugins" tab of Squeezebox Server Settings and check the "Social Music Discovery" plugin.
+http://socialmusicdiscovery.googlecode.com/svn/repository/alpha.xml
+
+You will need to have Java 6 or later installed on the computer to make it work.
+
+If you have questions, feel free to reply to this forum thread.
+
+If you just want to subscribe on the project status, we have a read only mailing list which we will be using for announcements:
+http://groups.google.com/group/socialmusicdiscovery-announcements
