@@ -31,6 +31,7 @@ import org.eclipse.core.databinding.observable.map.IObservableMap;
 import org.eclipse.jface.databinding.viewers.ObservableMapLabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.socialmusicdiscovery.rcp.content.DataSource.Root;
+import org.socialmusicdiscovery.rcp.content.DataSource.Section;
 import org.socialmusicdiscovery.rcp.content.ObservableEntity;
 
 public class ObservableEntityColumnLabelProvider extends ObservableMapLabelProvider {
@@ -48,7 +49,14 @@ public class ObservableEntityColumnLabelProvider extends ObservableMapLabelProvi
 		if (isRootColumn(element, columnIndex)) {
 			return imageManager.getRootImage((Root) element);
 		}
+		if (isSectionColumn(element, columnIndex)) {
+			return imageManager.getSectionImage((Section) element);
+		}
 		return super.getColumnImage(element, columnIndex);
+	}
+
+	private boolean isSectionColumn(Object element, int columnIndex) {
+		return columnIndex==0 && element instanceof Section;
 	}
 
 	private boolean isRootColumn(Object element, int columnIndex) {

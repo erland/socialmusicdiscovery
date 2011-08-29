@@ -100,6 +100,19 @@ public final class JobUtil {
 	}
 	
 	/**
+	 * Convenience method, runs task in active shell.
+	 * @param runnable
+	 * @param dialogTitle
+	 * @param isCancelable
+	 * @return boolean
+	 * @see #run(Shell, IRunnableWithProgress, String, boolean)
+	 */
+	public static boolean run(IRunnableWithProgress runnable, String dialogTitle, boolean isCancelable) {
+		Shell shell = Display.getCurrent().getActiveShell();
+		return run(shell, runnable, dialogTitle, isCancelable);
+	}
+	
+	/**
 	 * A simple runner with a progress monitor. For more sophisticated
 	 * operation, consider running a {@link Job} thru {@link #schedule(Job)}. 
 	 * 

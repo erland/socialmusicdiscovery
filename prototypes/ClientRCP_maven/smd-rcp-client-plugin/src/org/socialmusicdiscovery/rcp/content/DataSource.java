@@ -48,6 +48,7 @@ import org.eclipse.core.databinding.observable.list.WritableList;
 import org.eclipse.core.databinding.observable.set.WritableSet;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.socialmusicdiscovery.rcp.error.ExtendedErrorDialog;
 import org.socialmusicdiscovery.rcp.error.FatalApplicationException;
@@ -63,10 +64,12 @@ import org.socialmusicdiscovery.server.api.management.mediaimport.MediaImportSta
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
+import org.socialmusicdiscovery.server.business.model.core.Label;
 import org.socialmusicdiscovery.server.business.model.core.PlayableElement;
 import org.socialmusicdiscovery.server.business.model.core.Recording;
 import org.socialmusicdiscovery.server.business.model.core.Release;
 import org.socialmusicdiscovery.server.business.model.core.Track;
+import org.socialmusicdiscovery.server.business.model.core.Work;
 
 import com.google.inject.Inject;
 import com.sun.jersey.api.client.Client;
@@ -144,31 +147,53 @@ public class DataSource extends AbstractObservable implements ModelObject {
 	 */
 	private class MyLoader implements IRunnableWithProgress {
 
-		private final List<Root> roots;
+		private final Root[] roots;
 		private final Shell shell;
 
-		public MyLoader(Shell shell, List<Root> visibleRoots) {
-			assert shell!=null : "Must have shell!";
+		public MyLoader(Root... visibleRoots) {
 			this.roots = visibleRoots;
-			this.shell = shell;
+			this.shell = Display.getCurrent().getActiveShell();
 		}
 
 		@Override
 		public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-			monitor.beginTask("Load content: "+roots.size() + " roots.", roots.size());
+			if (roots.length==1) {
+				loadSingle(monitor);
+			} else if (roots.length>1) {
+				loadMany(monitor);
+			} else {
+				// no-op
+			}
+		}
+
+		private void loadMany(IProgressMonitor monitor) {
+			monitor.beginTask("Load content: "+roots.length + " roots.", roots.length);
 			for (final Root root : roots) {
 				monitor.subTask("Load "+root.name+" ...");
 				shell.getDisplay().syncExec(new Runnable() {
 					@Override
 					public void run() {
-						root.getObservableChildren(); // pre-load children to speed subsequent operations 
+						root.load(); 
 					}
 				});
 				monitor.worked(1);
 			}
-			
+			monitor.done();
 		}
 		
+		private void loadSingle(IProgressMonitor monitor) {
+			final Root root = roots[0];
+//			monitor.beginTask("Load root: "+root.getName(), IProgressMonitor.UNKNOWN);  // TODO run in background
+			monitor.beginTask("Load root: "+root.getName(), 2);
+			monitor.worked(1);
+			shell.getDisplay().syncExec(new Runnable() {
+				@Override
+				public void run() {
+					root.load(); 
+				}
+			});
+			monitor.done();
+		}
 	}
 	/**
 	 * Runs persistency operations on proper thread with callback to a {@link ProgressMonitor}.
@@ -315,6 +340,8 @@ public class DataSource extends AbstractObservable implements ModelObject {
 
 	private List<Root<? extends SMDIdentity>> roots;
 
+	private boolean isLazyRootLoad = true;  // if true, load roots when expanded (not when connected)
+
 	/**
 	 * The "home" of a specific type of entity.
 	 *
@@ -413,7 +440,7 @@ public class DataSource extends AbstractObservable implements ModelObject {
 
 		/**
 		 * <p>
-			 * Returns a {@link WritableSet}. Loads children and updates
+		 * Returns a {@link WritableSet}. Loads children and updates
 		 * {@link #isLoaded} status if connected but not loaded. Do <b>NOT</b>
 		 * maintain the same set across sessions; set must be replaced when Root
 		 * is reloaded.
@@ -431,17 +458,21 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		 * 
 		 * @see #dispose()
 		 */
-		@SuppressWarnings("unchecked")
 		public IObservableList getObservableChildren() {
 			if (!isLoaded && (isConnected || isAutoConnect)) {
-				List<ObservableEntity> all = new ArrayList<ObservableEntity>(findAll());
-				Collections.sort(all);
-				sortedEntities = new WritableList(all, getType());
-				isLoaded = true;
-				sortedEntities.addListChangeListener(new MyEntityCollectionListener());
-				sections = createSections();
+				JobUtil.run(new MyLoader(this), "Load content: "+name, false);
 			}
 			return sortedEntities.size()<mimimumSectionSize ? sortedEntities : sections;
+		}
+
+		@SuppressWarnings("unchecked")
+		private void load() {
+			List<ObservableEntity> all = new ArrayList<ObservableEntity>(findAll());
+			Collections.sort(all);
+			sortedEntities = new WritableList(all, getType());
+			isLoaded = true;
+			sortedEntities.addListChangeListener(new MyEntityCollectionListener());
+			sections = createSections();
 		}
 
 		public String getName() {
@@ -694,7 +725,8 @@ public class DataSource extends AbstractObservable implements ModelObject {
 
 		@Override
 		public boolean hasChildren() {
-			return sortedEntities!=null && sortedEntities.size()>0;
+			// return true if lazy load - hitting "expand" will update actual state if no children found
+			return isLoaded ? sortedEntities.size()>0 : isLazyRootLoad;
 		}
 
 		/**
@@ -832,6 +864,10 @@ public class DataSource extends AbstractObservable implements ModelObject {
 			return children!=null && !children.isEmpty();
 		}
 
+		public Root getRoot() {
+			return root;
+		}
+
 	}
 	
 	public DataSource(boolean isAutoConnect) {
@@ -849,6 +885,8 @@ public class DataSource extends AbstractObservable implements ModelObject {
 				,new Root<Release>("Releases", ObservableRelease.class, "/releases", Release.class, new GenericType<Set<Release>>() {}, false ) 
 				,new Root<Track>("Tracks", ObservableTrack.class, "/tracks", Track.class, new GenericType<Set<Track>>() {}, true )
 				,new Root<PlayableElement>("Playables", ObservablePlayableElement.class, "/playableElements", PlayableElement.class, new GenericType<Set<PlayableElement>>() {}, false )
+				,new Root<Work>("Works", ObservableWork.class, "/works", Work.class, new GenericType<Set<Work>>() {}, false)
+				,new Root<Label>("Labels", ObservableLabel.class, "/labels", Label.class, new GenericType<Set<Label>>() {}, false)
 			);
 		}
 		return roots;
@@ -872,7 +910,7 @@ public class DataSource extends AbstractObservable implements ModelObject {
 
 	@SuppressWarnings("unchecked")
 	private List<Root> getVisibleRoots() {
-		return resolveRoots(Artist.class, Release.class);
+		return resolveRoots(Artist.class, Release.class, Work.class, Label.class);
 	}
 
 	/**
@@ -969,12 +1007,16 @@ public class DataSource extends AbstractObservable implements ModelObject {
 	 * @see #disconnect()
 	 * @throws IllegalStateException
 	 */
-	public boolean connect(Shell shell) {
+	public boolean connect() {
 		if (isConnected) {
 			throw new IllegalStateException("Already connected");
 		}
 		isConnected = true; // do NOT fire events, but tell roots that they can load data
-		isConnected  = JobUtil.run(shell, new MyLoader(shell, getVisibleRoots()), "Connect to server", false);
+		if (!isLazyRootLoad ) {
+			List<Root> visibleRoots = getVisibleRoots();
+			Root[] rootsToLoad = visibleRoots.toArray(new Root[visibleRoots.size()]);
+			isConnected  = JobUtil.run(new MyLoader(rootsToLoad), "Connect to server", false);
+		}
 
 		// now fire an event to notify listeners and refresh input
 		firePropertyChange(new PropertyChangeEvent(this, PROP_IS_CONNECTED, false, isConnected()));
@@ -1080,7 +1122,7 @@ public class DataSource extends AbstractObservable implements ModelObject {
 
 	public void initialize(Shell shell) {
 		if (isAutoConnect) {
-			connect(shell);
+			connect();
 		}
 	}
 }
