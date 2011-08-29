@@ -6,6 +6,17 @@ It's all about discovering and finding specific music you are searching for, or 
 
 To make all this enjoyable for everyone, it's also important to not be tied to a specific user interface, operating system or hardware device. Some people will like to discover music while sitting behind a computer while other prefers to sit in the listening room with a touch screen device or even a IR remote. To handle this, SMD offers open third party integration interfaces which can be used to build your own custom user interface or integrate your own player hardware.
 
+So the main intention with SMD is to make it easy and interesting to discover music, basically SMD is for you if you answer "Yes" on one of the following questions:
+
+  * Do you find that the standard browsing on your Squeezebox isn't flexible enough ?
+  * Do you consume music from both your local library and an online streaming service which allows you to play individual songs ?
+  * Do you use different applications or web sites when listening to music compared to when finding something to buy ?
+  * Do you want to be able to share recommendations with friends and people with similar musical taste ?
+  * Do you get recommendations from friends but don't have any easy way to play them on your normal music player ?
+  * Do you miss an easy way to explore new music based on what you are currently listening to ?
+
+SMD is about solving and making all this easier. We aren't there yet but to goal is to get there eventually. We usually try to find and analyze user needs through the [http://forums.slimdevices.com Logitech community forums] but if you give us your thoughts already now you can make sure your ideas and needs are considered. The easiest way to give us your ideas is to post in the announcement thread in the [http://forums.slimdevices.com Logitech community forums].
+
 == Short and long term goals ==
 The initial focus will be to:
   * Support Squeezebox hardware players
@@ -53,19 +64,6 @@ SMD is focused at satisfying users that like to explore and discover music. For 
 See the [SoftwareInstallation installation instructions] for further information.
 
 = Common questions =
-== Why should I care ? ==
-
-As mentioned earlier the main intention with SMD is to make it easy and interesting to discover music, SMD is for you if you answer "Yes" on one of the following questions:
-
-  * Do you find that the standard browsing on your Squeezebox isn't flexible enough ?
-  * Do you consume music from both your local library and an online streaming service which allows you to play individual songs ?
-  * Do you use different applications or web sites when listening to music compared to when finding something to buy ?
-  * Do you want to be able to share recommendations with friends and people with similar musical taste ?
-  * Do you get recommendations from friends but don't have any easy way to play them on your normal music player ?
-  * Do you miss an easy way to explore new music based on what you are currently listening to ?
-
-SMD is about solving and making all this easier. We aren't there yet but to goal is to get there eventually. We usually try to find and analyze user needs through the [http://forums.slimdevices.com Logitech community forums] but if you give us your thoughts already now you can make sure your ideas and needs are considered. The easiest way to give us your ideas is to post in the announcement thread in the [http://forums.slimdevices.com Logitech community forums].
-
 
 == Is it or will it replace Squeezebox Server ? ==
 
