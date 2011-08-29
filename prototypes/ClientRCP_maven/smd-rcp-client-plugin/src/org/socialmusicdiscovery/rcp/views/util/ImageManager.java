@@ -36,6 +36,7 @@ import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
 import org.socialmusicdiscovery.rcp.Activator;
 import org.socialmusicdiscovery.rcp.content.DataSource.Root;
+import org.socialmusicdiscovery.rcp.content.DataSource.Section;
 import org.socialmusicdiscovery.rcp.content.ObservableEntity;
 
 /**
@@ -66,6 +67,11 @@ public class ImageManager {
 	
 	public Image getRootImage(Root root) {
 		String imageName = root.getType().getSimpleName().toLowerCase()+"Root"; //$NON-NLS-1$
+		return getOrLoad(imageName);
+	}
+
+	public Image getSectionImage(Section section) {
+		String imageName = section.getRoot().getType().getSimpleName().toLowerCase()+"Section"; //$NON-NLS-1$
 		return getOrLoad(imageName);
 	}
 
