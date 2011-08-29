@@ -62,6 +62,7 @@ As mentioned earlier the main intention with SMD is to make it easy and interest
   * Do you use different applications or web sites when listening to music compared to when finding something to buy ?
   * Do you want to be able to share recommendations with friends and people with similar musical taste ?
   * Do you get recommendations from friends but don't have any easy way to play them on your normal music player ?
+  * Do you miss an easy way to explore new music based on what you are currently listening to ?
 
 SMD is about solving and making all this easier. We aren't there yet but to goal is to get there eventually. We usually try to find and analyze user needs through the [http://forums.slimdevices.com Logitech community forums] but if you give us your thoughts already now you can make sure your ideas and needs are considered. The easiest way to give us your ideas is to post in the announcement thread in the [http://forums.slimdevices.com Logitech community forums].
 
