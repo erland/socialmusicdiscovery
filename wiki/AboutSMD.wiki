@@ -21,6 +21,19 @@ On longer terms, the vision is also to be able to support things like:
   * User friendly playlist management
   * Ability to share and get recommendations from other users with similar musical taste
 
+== Functionality available already today ==
+It is important to note that even if we at the current stage consider SMD good enough to give you a peek into the future, there are still much work left before it has reached its full potential. Due to this we consider the current release to be an early alpha release, mainly because we want to add a lot more library management and music discovery related functionality before is ready for an official end user release. To reach this goal we need more contributors to the project, so let us know if you are interested.
+
+However, already at its current stage, SMD will give you the following advantages:
+  * Extensible persistent data storage prepared to store both tags, manually entered information and information imported from online services.
+  * Improved scanning of tag data, which currently supports:
+      * All tags supported by Squeezebox Server
+      * Extra tags like: PERFORMER, WORK, MOOD, STYLE
+  * Improved browsing using your standard Squeezebox remote. In addition to standard Squeeezebox Server menus this will give you things like:
+    * Separate Composers, Conductors menus.
+    * Support for Styles and Moods menus if you have STYLE or MOOD tags in your music files.
+    * Context menus making it possible to browse related information on any item and not just on songs. For example, browse to an album and then select to browse among the composers which have composed material on that album.
+
 == Important principles ==
 There are a number of fundamental principles which makes SMD different than anything else currently out there:
   * *Extensible information model*
@@ -99,15 +112,6 @@ The answer to this question is that even if it's possible for multiple users to 
 At the moment the project is in a very early stage, some simple browsing functionality is working and offers more than the standard Squeezebox Server browse menus, but we are continuously working on adding more features. 
 
 Since all project members involved are working on the project during their spare time, we currently don't have a release plan with exact dates ("we're not big fans of deadlines, we have enough of them at work" :-). But to give some kind of indication, it's not going to be ready for an official release within the next couple of months, it will hopefully have a lot more functionality 6 months in the future and if everything works as plan it's going to be continuously enhanced during many years.
-
-=== Functionality at the current stage ===
-  * Information in music file tags from all music files available in Squeezebox Server library will be imported into SMD library. We are working on an exact list of default tags to support, but at the moment we at least support:
-    * All tags supported by Squeezebox Server
-    * PERFORMER, WORK, MOOD, STYLE
-  * You will be able to browse the SMD library using your standard Squeezebox remote. Compared to standard SBS this will give you at least:
-    * Separate Composers, Conductors menus.
-    * Support for Styles and Moods menus if you have STYLE or MOOD tags in your music files.
-    * Context menu making it possible to browse related information on any item and not just on songs. For example, browse to an album and then select to browse among the composers which have composed material on that album.
 
 === Functionality currently worked on ===
 This might change but at the moment we are working on:
