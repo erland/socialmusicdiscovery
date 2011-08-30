@@ -53,6 +53,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
+import org.socialmusicdiscovery.rcp.content.ObservableLabel;
 import org.socialmusicdiscovery.rcp.content.ObservableRelease;
 import org.socialmusicdiscovery.rcp.content.RecordLabelProvider;
 import org.socialmusicdiscovery.rcp.editors.widgets.ContributorPanel;
@@ -343,8 +344,9 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 		//
 		return bindingContext;
 	}
+
 	protected void initManualDataBindings(DataBindingContext bindingContext) {
-		getDetailsPanel().getSelectionPanel().bindSelection(bindingContext, getModel(), ObservableRelease.PROP_label);
+		getDetailsPanel().getSelectionPanel().bindSelection(bindingContext, getModel(), ObservableRelease.PROP_label, ObservableLabel.PROP_name);
 	}
 
 }
