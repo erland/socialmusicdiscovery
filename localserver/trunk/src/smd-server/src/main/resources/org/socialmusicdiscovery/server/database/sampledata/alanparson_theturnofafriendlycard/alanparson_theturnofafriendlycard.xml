@@ -13,6 +13,7 @@
             <column header="id" type="STRING"/>
             <column header="name" type="STRING"/>
             <column header="sort_as" type="STRING"/>
+            <column header="date" type="DATE"/>
             <column header="last_updated" type="DATE"/>
             <column header="last_updated_by" type="STRING"/>
         </loadData>
@@ -45,6 +46,7 @@
         <loadData tableName="recording_sessions"
                   file="org/socialmusicdiscovery/server/database/sampledata/alanparson_theturnofafriendlycard/recording_sessions.csv">
             <column header="id" type="STRING"/>
+            <column header="date" type="DATE"/>
             <column header="recording_id" type="STRING"/>
             <column header="work_id" type="STRING"/>
             <column header="last_updated" type="DATE"/>
@@ -59,6 +61,7 @@
                   file="org/socialmusicdiscovery/server/database/sampledata/alanparson_theturnofafriendlycard/recordings.csv">
             <column header="id" type="STRING"/>
             <column header="name" type="STRING"/>
+            <column header="date" type="DATE"/>
             <column header="last_updated" type="DATE"/>
             <column header="last_updated_by" type="STRING"/>
         </loadData>

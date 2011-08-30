@@ -28,6 +28,7 @@
                   file="org/socialmusicdiscovery/server/database/sampledata/crazyfrog_axelf/recordings.csv">
             <column header="id" type="STRING"/>
             <column header="name" type="STRING"/>
+            <column header="date" type="DATE"/>
             <column header="last_updated" type="DATE"/>
             <column header="last_updated_by" type="STRING"/>
         </loadData>
