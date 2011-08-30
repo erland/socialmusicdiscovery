@@ -31,11 +31,8 @@ import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.beans.PojoObservables;
-import org.eclipse.core.databinding.observable.map.IObservableMap;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.SWTObservables;
-import org.eclipse.jface.databinding.viewers.ObservableListContentProvider;
-import org.eclipse.jface.databinding.viewers.ObservableMapLabelProvider;
 import org.eclipse.jface.databinding.viewers.ViewersObservables;
 import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
 import org.eclipse.nebula.jface.gridviewer.GridViewerColumn;
@@ -57,7 +54,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.socialmusicdiscovery.rcp.content.ObservableRelease;
-import org.socialmusicdiscovery.rcp.content.ObservableTrack;
+import org.socialmusicdiscovery.rcp.content.RecordLabelProvider;
 import org.socialmusicdiscovery.rcp.editors.widgets.ContributorPanel;
 import org.socialmusicdiscovery.rcp.editors.widgets.TrackMediumNumberComparator;
 import org.socialmusicdiscovery.rcp.editors.widgets.TrackNumberComparator;
@@ -95,8 +92,6 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 	private Composite releasesArea;
 	private Label lblNewLabel;
 	private CTabItem itemDetails;
-	private Composite labelArea;
-	private Label lblPlaceHolder;
 	private Composite tracksArea;
 	private TrackContributorPanel trackContributorPanel;
 	private Composite composite;
@@ -105,6 +100,7 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 	private Section trackDetailsSection;
 	private CTabItem trackPlayableTab;
 	private PlayableElementsPanel playableElementsPanel;
+	private DetailsPanel detailsPanel;
 
 	/**
 	 * Create the composite.
@@ -259,13 +255,11 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 		itemDetails = new CTabItem(albumDataTabFolder, SWT.NONE);
 		itemDetails.setText("Details");
 		
-		labelArea = formToolkit.createComposite(albumDataTabFolder, SWT.NONE);
-		itemDetails.setControl(labelArea);
-		formToolkit.paintBordersFor(labelArea);
-		labelArea.setLayout(new GridLayout(1, false));
-		
-		lblPlaceHolder = formToolkit.createLabel(labelArea, "Place holder -  here we will show release details - date, label, numbers etc", SWT.NONE);
-		lblPlaceHolder.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
+		detailsPanel = new DetailsPanel(albumDataTabFolder, SWT.NONE);
+		detailsPanel.getSelectionPanel().getText().setEditable(false);
+		itemDetails.setControl(detailsPanel);
+		formToolkit.adapt(detailsPanel);
+		formToolkit.paintBordersFor(detailsPanel);
 
 		initUI();
 		}
@@ -278,6 +272,8 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 		ViewerUtil.hookSorter(gvcTitle);
 		ViewerUtil.hookSorter(new TrackMediumNumberComparator(),  gvcMediumNbr);
 		ViewerUtil.hookSorter(new TrackNumberComparator(),  gvcTrackNumber);
+		
+		detailsPanel.getSelectionPanel().setElementProvider(new RecordLabelProvider());
 
 //		FIXME: make this work (also disable grid inputs)
 //		ViewerUtil.hookEnabledWithDistinctSelection(gridViewerTracks, trackContributorPanel.getChildren());
@@ -313,6 +309,15 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 	public ObservableRelease getRelease() {
 		return getModel();
 	}
+	public PlayableElementsPanel getPlayableElementsPanel() {
+		return playableElementsPanel;
+	}
+	public TrackContributorPanel getTrackContributorPanel() {
+		return trackContributorPanel;
+	}
+	public DetailsPanel getDetailsPanel() {
+		return detailsPanel;
+	}
 	protected DataBindingContext initDataBindings() {
 		DataBindingContext bindingContext = new DataBindingContext();
 		//
@@ -324,13 +329,6 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 		IObservableValue getModelToolTipTextObserveValue = PojoObservables.observeValue(getModel(), "toolTipText");
 		bindingContext.bindValue(textNameObserveTooltipTextObserveWidget, getModelToolTipTextObserveValue, null, null);
 		//
-		ObservableListContentProvider listContentProvider = new ObservableListContentProvider();
-		gridViewerTracks.setContentProvider(listContentProvider);
-		//
-		IObservableMap[] observeMaps = BeansObservables.observeMaps(listContentProvider.getKnownElements(), ObservableTrack.class, new String[]{"medium.number", "number", "title"});
-		gridViewerTracks.setLabelProvider(new ObservableMapLabelProvider(observeMaps));
-		gridViewerTracks.setInput(getRelease().getTracks());
-		//
 		IObservableValue gridViewerTracksObserveSingleSelection = ViewersObservables.observeDelayedValue(200, ViewersObservables.observeSingleSelection(gridViewerTracks));
 		IObservableValue trackContributorPanelModelObserveValue = BeansObservables.observeValue(trackContributorPanel, "model");
 		bindingContext.bindValue(gridViewerTracksObserveSingleSelection, trackContributorPanelModelObserveValue, null, new UpdateValueStrategy(UpdateValueStrategy.POLICY_NEVER));
@@ -339,12 +337,14 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 		IObservableValue playableElementsPanelModelObserveValue = BeansObservables.observeValue(playableElementsPanel, "model");
 		bindingContext.bindValue(gridViewerTracksObserveSingleSelection_1, playableElementsPanelModelObserveValue, null, new UpdateValueStrategy(UpdateValueStrategy.POLICY_NEVER));
 		//
+		IObservableValue detailsPanelgetDateTimeObserveSelectionObserveWidget = SWTObservables.observeSelection(detailsPanel.getDateTime());
+		IObservableValue getReleaseDateObserveValue = BeansObservables.observeValue(getRelease(), "date");
+		bindingContext.bindValue(detailsPanelgetDateTimeObserveSelectionObserveWidget, getReleaseDateObserveValue, null, null);
+		//
 		return bindingContext;
 	}
-	public PlayableElementsPanel getPlayableElementsPanel() {
-		return playableElementsPanel;
+	protected void initManualDataBindings(DataBindingContext bindingContext) {
+		getDetailsPanel().getSelectionPanel().bindSelection(bindingContext, getModel(), ObservableRelease.PROP_label);
 	}
-	public TrackContributorPanel getTrackContributorPanel() {
-		return trackContributorPanel;
-	}
+
 }

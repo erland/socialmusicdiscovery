@@ -99,6 +99,12 @@
             id="org.socialmusicdiscovery.rcp.editors.recording.RecordingEditor"
             name="%editor.recording.name">
       </editor>
+      <editor
+            class="org.socialmusicdiscovery.rcp.editors.label.LabelEditor"
+            default="false"
+            id="org.socialmusicdiscovery.rcp.editors.label.LabelEditor"
+            name="%editor.label.name">
+      </editor>
    </extension>
    <extension
          id="org.socialmusicdiscovery.rcp.prefs"
