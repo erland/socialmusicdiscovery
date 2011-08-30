@@ -106,5 +106,9 @@ public class ReleaseFindTest extends BaseTestCase {
         releases = releaseRepository.findByWorkWithRelations(work.getId(),null,null);
         assert releases.size()==1;
         assert releases.iterator().next().getName().equals("The Bodyguard (Original Soundtrack Album)");
+
+        releases = releaseRepository.findByLabelWithRelations(releases.iterator().next().getLabel().getId(),null,null);
+        assert releases.size()==1;
+        assert releases.iterator().next().getName().equals("The Bodyguard (Original Soundtrack Album)");
     }
 }
