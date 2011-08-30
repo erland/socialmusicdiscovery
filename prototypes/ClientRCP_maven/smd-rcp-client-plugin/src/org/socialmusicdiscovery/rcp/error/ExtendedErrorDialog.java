@@ -55,6 +55,7 @@ public class ExtendedErrorDialog extends ErrorDialog {
 	
 	public ExtendedErrorDialog(Shell parentShell, String taskName, String problemSummary, String reason, Throwable e) {
 		super(parentShell, taskName, problemSummary, createStatus(reason, e), MASK);
+		e.printStackTrace();
 	}
 
 	private static IStatus createStatus(String message, Throwable e) {
