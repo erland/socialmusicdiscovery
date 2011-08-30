@@ -135,6 +135,7 @@ public class ObservableRelease extends AbstractContributableEntity<Release> impl
 	}
 
 	public void setLabel(Label label) {
+		System.out.println("ObservableRelease.setLabel(): "+label);
 		firePropertyChange(PROP_label, this.label, this.label = label);
 	}
 

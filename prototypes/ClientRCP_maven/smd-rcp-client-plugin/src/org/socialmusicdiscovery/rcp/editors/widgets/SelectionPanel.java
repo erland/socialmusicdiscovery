@@ -56,7 +56,7 @@ import org.socialmusicdiscovery.rcp.views.util.LabelProviderFactory;
  * </p>
  * 
  * <p>
- * Note: to make panel "blend" with various baclgrounds (e.g white forms or grey
+ * Note: to make panel "blend" with various backgrounds (e.g white forms or grey
  * dialogs), set background mode on parent to {@link SWT#INHERIT_DEFAULT}. 
  * Example:<pre>
  * 	public SomeParent(Composite parent, int style) {
@@ -124,6 +124,7 @@ public class SelectionPanel<T extends ModelObject> extends ObservableComposite {
 		label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 		
 		text = new Text(this, SWT.BORDER | SWT.READ_ONLY);
+		text.setToolTipText("Select label by clicking button (not yet possible to type in field)");
 		text.setText("");
 		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
@@ -145,7 +146,7 @@ public class SelectionPanel<T extends ModelObject> extends ObservableComposite {
 	public void bindSelection(DataBindingContext bindingContext, Observable bean, String propertyName) {
 		IObservableValue beanObserveValue = BeansObservables.observeValue(bean, propertyName);
 		IObservableValue selectedObserveValue = BeansObservables.observeValue(this, PROP_selected);
-		bindingContext.bindValue(beanObserveValue, selectedObserveValue, null, null);
+		bindingContext.bindValue(selectedObserveValue, beanObserveValue, null, null);
 	}
 	
 	public T getSelected() {

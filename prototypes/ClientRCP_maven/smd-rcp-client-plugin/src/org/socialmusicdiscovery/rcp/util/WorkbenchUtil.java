@@ -54,11 +54,13 @@ import org.socialmusicdiscovery.rcp.Activator;
 import org.socialmusicdiscovery.rcp.content.ObservableArtist;
 import org.socialmusicdiscovery.rcp.content.ObservableContributor;
 import org.socialmusicdiscovery.rcp.content.ObservableEntity;
+import org.socialmusicdiscovery.rcp.content.ObservableLabel;
 import org.socialmusicdiscovery.rcp.content.ObservableRecording;
 import org.socialmusicdiscovery.rcp.content.ObservableRelease;
 import org.socialmusicdiscovery.rcp.content.ObservableTrack;
 import org.socialmusicdiscovery.rcp.editors.artist.ArtistEditor;
 import org.socialmusicdiscovery.rcp.editors.contributor.ContributorDialog;
+import org.socialmusicdiscovery.rcp.editors.label.LabelEditor;
 import org.socialmusicdiscovery.rcp.editors.recording.RecordingEditor;
 import org.socialmusicdiscovery.rcp.editors.release.ReleaseEditor;
 import org.socialmusicdiscovery.rcp.editors.track.TrackDialog;
@@ -73,6 +75,7 @@ public final class WorkbenchUtil {
 		editors.put(ObservableArtist.class, ArtistEditor.ID);
 		editors.put(ObservableRelease.class, ReleaseEditor.ID);
 		editors.put(ObservableRecording.class, RecordingEditor.ID);
+		editors.put(ObservableLabel.class, LabelEditor.ID);
 	}
 
 	private WorkbenchUtil() { } // static util

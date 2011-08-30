@@ -90,6 +90,7 @@ public abstract class AbstractComposite<T extends ObservableEntity> extends Obse
 		reset();
 		this.model = model;
 		this.dbc = initDataBindings();
+		initManualDataBindings(dbc);
 		afterSetModel(model);
 	}
 
@@ -104,6 +105,19 @@ public abstract class AbstractComposite<T extends ObservableEntity> extends Obse
 	 */
 	protected DataBindingContext initDataBindings() {
 		return new DataBindingContext();
+	}
+
+	/**
+	 * Do any manual data bindings necessary. Keep these out of
+	 * {@link #initDataBindings()} to avoid the GUI editor overwriting manual
+	 * edits. Default implementation does nothing, expect subclasses to override
+	 * as required. This method is called AFTER the standard
+	 * {@link #initDataBindings()} method but BEFORE
+	 * {@link #afterSetModel(ObservableEntity)}.
+	 * 
+	 * @param bindingContext
+	 */
+	protected void initManualDataBindings(DataBindingContext bindingContext) {
 	}
 
 	/**
