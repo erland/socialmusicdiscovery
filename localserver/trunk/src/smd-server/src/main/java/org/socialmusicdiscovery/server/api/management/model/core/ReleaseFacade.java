@@ -56,7 +56,7 @@ public class ReleaseFacade extends AbstractSMDIdentityCRUDFacade<ReleaseEntity, 
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Collection<ReleaseEntity> search(@QueryParam("name") String name, @QueryParam("nameContains") String nameContains, @QueryParam("artist") String artist, @QueryParam("work") String work) {
+    public Collection<ReleaseEntity> search(@QueryParam("name") String name, @QueryParam("nameContains") String nameContains, @QueryParam("artist") String artist, @QueryParam("work") String work, @QueryParam("label") String label) {
         try {
             transactionManager.begin();
             if (name != null) {
@@ -67,6 +67,8 @@ public class ReleaseFacade extends AbstractSMDIdentityCRUDFacade<ReleaseEntity, 
                 return new CopyHelper().detachedCopy(repository.findByArtistWithRelations(artist, Arrays.asList("reference"), null), Expose.class);
             } else if (work != null) {
                 return new CopyHelper().detachedCopy(repository.findByWorkWithRelations(work, Arrays.asList("reference"), null), Expose.class);
+            } else if (label != null) {
+                return new CopyHelper().detachedCopy(repository.findByLabelWithRelations(label, Arrays.asList("reference"), null), Expose.class);
             } else {
                 return new CopyHelper().detachedCopy(repository.findAllWithRelations(Arrays.asList("reference"), null), Expose.class);
             }
