@@ -141,10 +141,12 @@ public class SelectionPanel<T extends ModelObject> extends ObservableComposite {
 	 * 
 	 * @param bindingContext
 	 * @param bean
-	 * @param propertyName
+	 * @param beanPropertyName
+	 * @param propertyNamesToObserve names of properties to observe on the element held by the bean property (typically the name)   
 	 */
-	public void bindSelection(DataBindingContext bindingContext, Observable bean, String propertyName) {
-		IObservableValue beanObserveValue = BeansObservables.observeValue(bean, propertyName);
+	public void bindSelection(DataBindingContext bindingContext, Observable bean, String beanPropertyName, String... propertyNamesToObserve) {
+//		TODO observe composite property to update text field when selected entity changes 
+		IObservableValue beanObserveValue = BeansObservables.observeValue(bean, beanPropertyName);
 		IObservableValue selectedObserveValue = BeansObservables.observeValue(this, PROP_selected);
 		bindingContext.bindValue(selectedObserveValue, beanObserveValue, null, null);
 	}

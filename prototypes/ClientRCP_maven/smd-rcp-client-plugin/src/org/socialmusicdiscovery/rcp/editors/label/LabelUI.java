@@ -32,13 +32,7 @@ import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.SWTObservables;
-import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
-import org.eclipse.nebula.jface.gridviewer.GridViewerColumn;
-import org.eclipse.nebula.widgets.grid.Grid;
-import org.eclipse.nebula.widgets.grid.GridColumn;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -47,7 +41,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
-import org.eclipse.ui.forms.widgets.Section;
 import org.socialmusicdiscovery.rcp.content.ObservableLabel;
 import org.socialmusicdiscovery.rcp.views.util.AbstractComposite;
 
@@ -57,15 +50,7 @@ public class LabelUI extends AbstractComposite<ObservableLabel> {
 	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
 	private ScrolledForm scrldfrmLabel;
 	private Label nameLabel;
-	private Section sctnLabelData;
-	private CTabFolder tabFolder;
-	private CTabItem releaseTab;
-	private Composite composite;
-	private Grid releaseGrid;
-	private GridTableViewer releaseGridTableViewer;
-	private GridColumn releaseColumn;
-	private GridViewerColumn releaseGVC;
-	private Label label;
+	private Label infoLabel;
 
 	/**
 	 * Create the composite.
@@ -80,60 +65,30 @@ public class LabelUI extends AbstractComposite<ObservableLabel> {
 		setLayout(gridLayout);
 		
 		scrldfrmLabel = formToolkit.createScrolledForm(this);
+		scrldfrmLabel.setToolTipText("");
 		scrldfrmLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		formToolkit.paintBordersFor(scrldfrmLabel);
 		scrldfrmLabel.setText("Label");
 		scrldfrmLabel.getBody().setLayout(new GridLayout(1, false));
 		
+		infoLabel = new Label(scrldfrmLabel.getBody(), SWT.WRAP | SWT.HORIZONTAL);
+		infoLabel.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false, 1, 1));
+		formToolkit.adapt(infoLabel, true, true);
+		infoLabel.setText("The label editor is very simple - at the moment we only maintain the name of the label. In future, we may track other things like logo, URL to web page, etc.");
+		
 		nameLabel = new Label(scrldfrmLabel.getBody(), SWT.NONE);
 		formToolkit.adapt(nameLabel, true, true);
-		nameLabel.setText("Name");
+		nameLabel.setText("Name:");
 		
 		nameText = formToolkit.createText(scrldfrmLabel.getBody(), "text", SWT.BORDER);
 		nameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		nameText.setText("");
-		
-		sctnLabelData = formToolkit.createSection(scrldfrmLabel.getBody(), Section.TWISTIE | Section.TITLE_BAR);
-		sctnLabelData.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		formToolkit.paintBordersFor(sctnLabelData);
-		sctnLabelData.setText("Label Data");
-		sctnLabelData.setExpanded(true);
-		
-		tabFolder = new CTabFolder(sctnLabelData, SWT.BORDER | SWT.FLAT | SWT.BOTTOM);
-		formToolkit.adapt(tabFolder);
-		formToolkit.paintBordersFor(tabFolder);
-		sctnLabelData.setClient(tabFolder);
-		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
-		
-		releaseTab = new CTabItem(tabFolder, SWT.NONE);
-		releaseTab.setText("Releases");
-		
-		composite = new Composite(tabFolder, SWT.NONE);
-		releaseTab.setControl(composite);
-		formToolkit.paintBordersFor(composite);
-		composite.setLayout(new GridLayout(1, false));
-		
-		label = new Label(composite, SWT.NONE);
-		label.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
-		formToolkit.adapt(label, true, true);
-		label.setText("<NOT YET IMPLEMENTED>");
-		
-		releaseGridTableViewer = new GridTableViewer(composite, SWT.BORDER);
-		releaseGrid = releaseGridTableViewer.getGrid();
-		releaseGrid.setHeaderVisible(true);
-		formToolkit.paintBordersFor(releaseGrid);
-		
-		releaseGVC = new GridViewerColumn(releaseGridTableViewer, SWT.NONE);
-		releaseColumn = releaseGVC.getColumn();
-		releaseColumn.setWidth(400);
-		releaseColumn.setText("Release");
 		
 		
 		initUI();
 		}
 
 	private void initUI() {
-		tabFolder.setSelection(releaseTab);
 	}
 	
 	@Override

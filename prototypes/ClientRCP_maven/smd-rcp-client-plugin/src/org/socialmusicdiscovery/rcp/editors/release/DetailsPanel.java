@@ -65,6 +65,18 @@ public class DetailsPanel extends Composite {
 		formToolkit.paintBordersFor(composite);
 		composite.setLayout(new GridLayout(1, false));
 		
+		label = new Label(composite, SWT.NONE);
+		formToolkit.adapt(label, true, true);
+		label.setText("<WORK IN PROGRESS: NOT FINISHED>");
+		
+		dateLabel = new Label(composite, SWT.NONE);
+		formToolkit.adapt(dateLabel, true, true);
+		dateLabel.setText("Release Date (year):");
+		
+		dateTime = new DateTime(composite, SWT.BORDER);
+		formToolkit.adapt(dateTime);
+		formToolkit.paintBordersFor(dateTime);
+		
 		selectionPanel = new SelectionPanel<ObservableLabel>(composite, SWT.NONE);
 		selectionPanel.getText().setEditable(true);
 		selectionPanel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -72,18 +84,6 @@ public class DetailsPanel extends Composite {
 		selectionPanel.getLabel().setText("Label:");
 		formToolkit.adapt(selectionPanel);
 		formToolkit.paintBordersFor(selectionPanel);
-		
-		label = new Label(composite, SWT.NONE);
-		formToolkit.adapt(label, true, true);
-		label.setText("<WORK IN PROGRESS: DATE EDITOR NOT FINISHED>");
-		
-		dateLabel = new Label(composite, SWT.NONE);
-		formToolkit.adapt(dateLabel, true, true);
-		dateLabel.setText("Date (year):");
-		
-		dateTime = new DateTime(composite, SWT.BORDER);
-		formToolkit.adapt(dateTime);
-		formToolkit.paintBordersFor(dateTime);
 	}
 
 	@Override
