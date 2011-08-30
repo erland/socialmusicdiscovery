@@ -1,4 +1,4 @@
-id,name,sort_as,last_updated,last_updated_by
-5d0753d3-ba9d-4de6-902f-8bb646e32e0e,Joe's Garage Act I,Joe's Garage Act I,2010-10-01,testdataloader
-61374f00-4bcf-4d1e-af8d-12236bf24b67,Joe's Garage Acts II & III,Joe's Garage Acts II & III,2010-10-01,testdataloader
-88794ebc-c7d3-484a-933a-820a055af5d5,Joe's Garage Acts I & II & III,Joe's Garage Acts I & II & III,2010-10-01,testdataloader
+id,name,sort_as,date,last_updated,last_updated_by
+5d0753d3-ba9d-4de6-902f-8bb646e32e0e,Joe's Garage Act I,Joe's Garage Act I,1979-01-01,2010-10-01,testdataloader
+61374f00-4bcf-4d1e-af8d-12236bf24b67,Joe's Garage Acts II & III,Joe's Garage Acts II & III,1979-01-01,2010-10-01,testdataloader
+88794ebc-c7d3-484a-933a-820a055af5d5,Joe's Garage Acts I & II & III,Joe's Garage Acts I & II & III,1987-01-01,2010-10-01,testdataloader

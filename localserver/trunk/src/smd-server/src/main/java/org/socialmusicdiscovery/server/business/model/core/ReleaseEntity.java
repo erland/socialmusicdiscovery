@@ -44,6 +44,7 @@ import java.util.*;
 @Table(name = "releases")
 @SMDIdentityReferenceEntity.ReferenceType(type = Release.class)
 public class ReleaseEntity extends AbstractSMDIdentityEntity implements Release, ContributorOwner {
+    @Expose
     private Date date;
     @Column(nullable = false)
     @Expose
