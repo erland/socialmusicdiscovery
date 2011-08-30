@@ -637,7 +637,7 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		}
 		private void sectionChange(ModelObject entity) {
 			Section s = sectionMatch(entity);
-			if (!s.contains(entity)) {
+			if (s!=null && !s.contains(entity)) {
 				sectionRemove(entity);
 				s.add(entity);
 			}
