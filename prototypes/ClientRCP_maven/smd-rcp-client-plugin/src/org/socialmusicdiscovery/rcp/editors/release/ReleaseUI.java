@@ -29,9 +29,11 @@ package org.socialmusicdiscovery.rcp.editors.release;
 
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
+import org.eclipse.core.databinding.ValidationStatusProvider;
 import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.beans.PojoObservables;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
+import org.eclipse.jface.databinding.fieldassist.ControlDecorationSupport;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.databinding.viewers.ViewersObservables;
 import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
@@ -60,6 +62,8 @@ import org.socialmusicdiscovery.rcp.editors.widgets.ContributorPanel;
 import org.socialmusicdiscovery.rcp.editors.widgets.TrackMediumNumberComparator;
 import org.socialmusicdiscovery.rcp.editors.widgets.TrackNumberComparator;
 import org.socialmusicdiscovery.rcp.util.ViewerUtil;
+import org.socialmusicdiscovery.rcp.util.databinding.DateConverter;
+import org.socialmusicdiscovery.rcp.util.databinding.StringToYearValidator;
 import org.socialmusicdiscovery.rcp.views.util.AbstractComposite;
 import org.socialmusicdiscovery.rcp.views.util.OpenListener;
 import org.socialmusicdiscovery.server.business.model.core.Recording;
@@ -319,6 +323,28 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 	public DetailsPanel getDetailsPanel() {
 		return detailsPanel;
 	}
+
+	protected void initManualDataBindings(DataBindingContext bindingContext) {
+		getDetailsPanel().getSelectionPanel().bindSelection(bindingContext, getModel(), ObservableRelease.PROP_label, ObservableLabel.PROP_name);
+		
+		bindDateToYear(bindingContext, detailsPanel.getOfficialText(), "date");
+	}
+
+	private void bindDateToYear(DataBindingContext bindingContext, Text text, String propertyName) {
+		IObservableValue textValue = SWTObservables.observeText(text, SWT.Modify);
+		UpdateValueStrategy dateToTextStrategy = new UpdateValueStrategy();
+		dateToTextStrategy.setConverter(DateConverter.dateToYear());
+		
+		IObservableValue dateValue = PojoObservables.observeValue(getModel(), propertyName);
+		UpdateValueStrategy textToDateStrategy = new UpdateValueStrategy();
+		textToDateStrategy.setAfterGetValidator(new StringToYearValidator());
+		textToDateStrategy.setConverter(DateConverter.yearToDate());
+
+		ValidationStatusProvider binding = bindingContext.bindValue(textValue, dateValue, textToDateStrategy, dateToTextStrategy);
+		
+		ControlDecorationSupport.create(binding, SWT.TOP | SWT.LEFT);
+	}
+	
 	protected DataBindingContext initDataBindings() {
 		DataBindingContext bindingContext = new DataBindingContext();
 		//
@@ -338,15 +364,6 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 		IObservableValue playableElementsPanelModelObserveValue = BeansObservables.observeValue(playableElementsPanel, "model");
 		bindingContext.bindValue(gridViewerTracksObserveSingleSelection_1, playableElementsPanelModelObserveValue, null, new UpdateValueStrategy(UpdateValueStrategy.POLICY_NEVER));
 		//
-		IObservableValue detailsPanelgetDateTimeObserveSelectionObserveWidget = SWTObservables.observeSelection(detailsPanel.getDateTime());
-		IObservableValue getReleaseDateObserveValue = BeansObservables.observeValue(getRelease(), "date");
-		bindingContext.bindValue(detailsPanelgetDateTimeObserveSelectionObserveWidget, getReleaseDateObserveValue, null, null);
-		//
 		return bindingContext;
 	}
-
-	protected void initManualDataBindings(DataBindingContext bindingContext) {
-		getDetailsPanel().getSelectionPanel().bindSelection(bindingContext, getModel(), ObservableRelease.PROP_label, ObservableLabel.PROP_name);
-	}
-
 }

@@ -33,23 +33,28 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.socialmusicdiscovery.rcp.content.ObservableLabel;
 import org.socialmusicdiscovery.rcp.editors.widgets.SelectionPanel;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.DateTime;
 
 /**
  * @author Peer Törngren
  *
  */
 public class DetailsPanel extends Composite {
+	
 	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
 	private Composite composite;
 	private SelectionPanel<ObservableLabel> selectionPanel;
-	private Label dateLabel;
-	private DateTime dateTime;
+	private Label releasedLabel;
 	private Label label;
+	private Group dateGroup;
+	private Label originalLabel;
+	private Text officialText;
+	private Text originalText;
 
 	/**
 	 * Create the composite.
@@ -69,13 +74,30 @@ public class DetailsPanel extends Composite {
 		formToolkit.adapt(label, true, true);
 		label.setText("<WORK IN PROGRESS: NOT FINISHED>");
 		
-		dateLabel = new Label(composite, SWT.NONE);
-		formToolkit.adapt(dateLabel, true, true);
-		dateLabel.setText("Release Date (year):");
+		dateGroup = new Group(composite, SWT.NONE);
+		dateGroup.setText("Release Date (year)");
+		formToolkit.paintBordersFor(dateGroup);
+		dateGroup.setLayout(new GridLayout(2, true));
 		
-		dateTime = new DateTime(composite, SWT.BORDER);
-		formToolkit.adapt(dateTime);
-		formToolkit.paintBordersFor(dateTime);
+		releasedLabel = new Label(dateGroup, SWT.NONE);
+		releasedLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		releasedLabel.setToolTipText("Official release year (as stated on media)");
+		formToolkit.adapt(releasedLabel, true, true);
+		releasedLabel.setText("Official:");
+		
+		originalLabel = formToolkit.createLabel(dateGroup, "Original:", SWT.NONE);
+		originalLabel.setEnabled(false);
+		originalLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		originalLabel.setToolTipText("Original release year may be relevant if this is a re-release on a new media, e.g. a CD release of a vinyl LP.");
+		
+		officialText = new Text(dateGroup, SWT.BORDER);
+		officialText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		formToolkit.adapt(officialText, true, true);
+		
+		originalText = new Text(dateGroup, SWT.BORDER);
+		originalText.setEnabled(false);
+		originalText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		formToolkit.adapt(originalText, true, true);
 		
 		selectionPanel = new SelectionPanel<ObservableLabel>(composite, SWT.NONE);
 		selectionPanel.getText().setEditable(true);
@@ -86,6 +108,7 @@ public class DetailsPanel extends Composite {
 		formToolkit.paintBordersFor(selectionPanel);
 	}
 
+
 	@Override
 	protected void checkSubclass() {
 		// Disable the check that prevents subclassing of SWT components
@@ -93,7 +116,10 @@ public class DetailsPanel extends Composite {
 	public SelectionPanel<ObservableLabel> getSelectionPanel() {
 		return selectionPanel;
 	}
-	public DateTime getDateTime() {
-		return dateTime;
+	public Text getOfficialText() {
+		return officialText;
+	}
+	public Text getOriginalText() {
+		return originalText;
 	}
 }
