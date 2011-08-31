@@ -327,7 +327,7 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 	protected void initManualDataBindings(DataBindingContext bindingContext) {
 		getDetailsPanel().getSelectionPanel().bindSelection(bindingContext, getModel(), ObservableRelease.PROP_label, ObservableLabel.PROP_name);
 		
-		bindDateToYear(bindingContext, detailsPanel.getOfficialText(), "date");
+		bindDateToYear(bindingContext, detailsPanel.getYearText(), "date");
 	}
 
 	private void bindDateToYear(DataBindingContext bindingContext, Text text, String propertyName) {
