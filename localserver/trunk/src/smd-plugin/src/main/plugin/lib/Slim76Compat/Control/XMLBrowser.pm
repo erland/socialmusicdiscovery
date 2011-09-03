@@ -147,7 +147,7 @@ sub cliQuery {
 			_cliQuery_done( $opml, \%args );
 		};
 		
-		my %args = (params => $request->getParamsCopy());
+		my %args = (params => $request->getParamsCopy(), isControl => 1);
 
 		# If we are getting an intermediate level, then we just need the one item
 		# If we are getting the last level then we need all items if we are doing playall of some kind
@@ -394,7 +394,7 @@ sub _cliQuery_done {
 			# Add search query to crumb list
 			if ( $subFeed->{type} && $subFeed->{type} eq 'search' && defined $search ) {
 				# Escape periods in the search string
-				@crumbIndex[-1] .= '_' . uri_escape_utf8( $search, "^A-Za-z0-9" );
+				$crumbIndex[-1] .= '_' . uri_escape_utf8( $search, "^A-Za-z0-9" );
 			}
 			
 			# Change URL if there is a play attribute and it's the last item
@@ -440,12 +440,13 @@ sub _cliQuery_done {
 			) {
 				
 				if ( $i =~ /(?:\d+)?_(.+)/ ) {
-					$search = uri_unescape($1);
+					$search = Slim::Utils::Unicode::utf8on(uri_unescape($1));
 				}
 				
 				# Rewrite the URL if it was a search request
 				if ( $subFeed->{type} && $subFeed->{type} eq 'search' && defined $search ) {
-					$subFeed->{url} =~ s/{QUERY}/$search/g;
+					my $encoded = URI::Escape::uri_escape_utf8($search);
+					$subFeed->{url} =~ s/{QUERY}/$encoded/g;
 				}
 				
 				# Setup passthrough args
@@ -488,7 +489,7 @@ sub _cliQuery_done {
 					};
 					
 					my $pt = $subFeed->{passthrough} || [];
-					my %args = (params => $feed->{'query'});
+					my %args = (params => $feed->{'query'}, isControl => 1);
 					
 					if (defined $search && $subFeed->{type} && ($subFeed->{type} eq 'search' || defined $subFeed->{'searchParam'})) {
 						$args{'search'} = $search;
@@ -542,7 +543,8 @@ sub _cliQuery_done {
 					(
 						($subFeed->{'type'} && $subFeed->{'type'} eq 'audio') || 
 						$subFeed->{'enclosure'} ||
-						$subFeed->{'description'}	
+						# Bug 17385 - rss feeds include description at non leaf levels	
+						($subFeed->{'description'} && $subFeed->{'type'} ne 'rss')
 					)
 				) {
 				
@@ -990,6 +992,8 @@ sub _cliQuery_done {
 				$start -= $subFeed->{'offset'};
 				$end   -= $subFeed->{'offset'};
 				main::DEBUGLOG && $log->is_debug && $log->debug("Getting slice $start..$end: $totalCount; offset=", $subFeed->{'offset'}, ' quantity=', scalar @$items);
+		
+				my $search = $subFeed->{type} && $subFeed->{type} eq 'search';
 				
 				my $baseId = scalar @crumbIndex ? join('.', @crumbIndex, '') : '';
 				for my $item ( @$items[$start..$end] ) {
@@ -1001,7 +1005,7 @@ sub _cliQuery_done {
 					if ($name = $item->{name}) {
 						if (defined $item->{'label'}) {
 							$name = $request->string($item->{'label'}) . $request->string('COLON') . ' ' .  $name;
-						} elsif (($item->{'hasMetadata'} || '') eq 'track') {
+						} elsif (!$search && ($item->{'hasMetadata'} || '') eq 'track') {
 							$name = Slim::Music::TitleFormatter::infoFormat(undef, $format, 'TITLE', $item) || $name;
 						}
 					}
@@ -1129,11 +1133,11 @@ sub _cliQuery_done {
 						}
 						
 						if ( $item->{type} && $item->{type} eq 'localservice' ) {
-							$request->addResultLoop( $loopname, $cnt, 'actions',  {
+							$hash{'actions'} = {
 								go => {
 									localservice => $item->{serviceId},
 								},
-							});
+							};
 						}
 
 						elsif ( $item->{type} && $item->{type} eq 'search' ) {
@@ -1322,9 +1326,13 @@ sub _cliQuery_done {
 						$hash{name}  = $name          if defined $name;
 						$hash{type}  = $item->{type}  if defined $item->{type};
 						$hash{title} = $item->{title} if defined $item->{title};
-						$hash{url}   = $item->{url}   if $want_url && defined $item->{url};
 						$hash{image} = $item->{image} if defined $item->{image};
-	
+
+						# add url entries if requested unless they are coderefs as this breaks serialisation
+						if ($want_url && defined $item->{url} && (!ref $item->{url} || ref $item->{url} ne 'CODE')) {
+							$hash{url} = $item->{url};
+						}	
+
 						$hash{isaudio} = defined(hasAudio($item)) + 0;
 						
 						# Bug 7684, set hasitems to 1 if any of the following are true:
@@ -1877,8 +1885,8 @@ sub _favoritesParams {
 sub _defeatDestructiveTouchToPlay {
 	my ($request, $client) = @_;
 	my $pref;
-	
-	if ($client && $client->can('controllerUA') && (my $agent = $client->controllerUA)) {
+
+	if ($client && $client->can('controllerUA') && (my $agent = $client->controllerUA)) {	
 		if ($agent =~ /squeezeplay/i) {
 			my ($version, $revision) = ($agent =~ m%/(\d+(?:\.\d+)?)[.\d]*-r(\d+)%);
 			

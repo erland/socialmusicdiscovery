@@ -1,6 +1,6 @@
 package Slim76Compat::Buttons::XMLBrowser;
 
-# $Id: XMLBrowser.pm 32407 2011-05-11 19:19:14Z adrian $
+# $Id: XMLBrowser.pm 33000 2011-08-05 16:01:23Z adrian $
 
 # Copyright 2005-2009 Logitech.
 
@@ -191,7 +191,7 @@ sub setMode {
 		
 		my $search = $modeParams->{'item'}->{'searchParam'} || $modeParams->{'search'};
 		
-		$url->( $client, $callback, {params => $modeParams, search => $search}, @{$pt});
+		$url->( $client, $callback, {isButton => 1, params => $modeParams, search => $search}, @{$pt});
 	}
 	
 	else {
@@ -299,18 +299,25 @@ sub gotPlaylist {
 		main::idleStreams();
 	}
 
-	my $action = $params->{'action'} || 'play';
+	if (@urls) {
+
+		my $action = $params->{'action'} || 'play';
 		
-	if ( $action eq 'play' ) {
-		$client->execute([ 'playlist', 'play', \@urls ]);
-		if (Slim::Buttons::Common::mode($client) ne 'playlist') {
-			Slim::Buttons::Common::pushModeLeft($client, 'playlist');
+		if ( $action eq 'play' ) {
+			$client->execute([ 'playlist', 'play', \@urls ]);
+			if (Slim::Buttons::Common::mode($client) ne 'playlist') {
+				Slim::Buttons::Common::pushModeLeft($client, 'playlist');
+			}
 		}
-	}
-	else {
-		my $cmd = $action eq 'insert' ? 'inserttracks' : 'addtracks';
-		$client->execute([ 'playlist', $cmd, 'listref', \@urls ]);
-		Slim76Compat::Control::XMLBrowser::_addingToPlaylist($client, $action);
+		else {
+			my $cmd = $action eq 'insert' ? 'inserttracks' : 'addtracks';
+			$client->execute([ 'playlist', $cmd, 'listref', \@urls ]);
+			Slim76Compat::Control::XMLBrowser::_addingToPlaylist($client, $action);
+		}
+
+	} else {
+
+		$client->showBriefly({ line => [ undef, $client->string('PLAYLIST_EMPTY') ] });
 	}
 }
 
@@ -645,7 +652,7 @@ sub gotOPML {
 					$name .= " ($year)" if $year;
 				}
 		
-				if ($prefs->get('showArtist') && (my $artist = $item->{'artist'})) {
+				if ($prefs->get('showArtist') && (my $artist = $item->{'artist'} || $item->{'name2'})) {
 					$name .= sprintf(' %s %s', $client->string('BY'), $artist);
 				}
 				
@@ -872,6 +879,14 @@ sub gotOPML {
 		
 		'overlayRef' => \&overlaySymbol,
 	);
+
+	# if a list has textkeys defined, use these for numberScroll within Input.Choice
+	if ($opml->{'sorted'} && $opml->{'items'}->[0] && defined $opml->{'items'}->[0]->{'textkey'}) {
+		$params{'textkeyRef'} = sub {
+			my $item = $opml->{'items'}->[shift] || return;
+			return $item->{'textkey'} || $item->{'name'};
+		};
+	}
 
 	Slim::Buttons::Common::pushModeLeft($client, 'INPUT.Choice', \%params);
 }
@@ -1352,7 +1367,7 @@ sub playItem {
 				$log->debug( "Fetching OPML playlist from coderef $cbname" );
 			}
 			
-			return $url->( $client, $callback, {}, @{$pt} );
+			return $url->( $client, $callback, { isButton => 1 }, @{$pt} );
 		}
 		
 		# Playlist item may contain child items without a URL, i.e. Rhapsody's Tracks menu item
