@@ -1,8 +1,9 @@
 Some VERY brief notes on how to setup and run the RCP prototype client. 
 
-These instructions are also available on the wiki (linked to this actual page in SVN):
-http://socialmusicdiscovery.googlecode.com/svn/prototypes/ClientRCP_maven/smd-rcp-client-plugin/ReadMe.txt
-   
+These instructions are available both on the wiki and in Eclipse (wiki is linked to the actual page in SVN):
+* wiki: http://socialmusicdiscovery.googlecode.com/svn/prototypes/ClientRCP_maven/smd-rcp-client-plugin/ReadMe.txt
+* Eclipse: /smd-rcp-client-plugin/ReadMe.txt 
+ 
 === DISCLAIMER ===
 
 These instructions are preliminary and temporary for the prototype. 
