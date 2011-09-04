@@ -3,16 +3,22 @@ Some VERY brief notes on how to setup and run the RCP prototype client.
 These instructions are also available on the wiki (linked to this actual page in SVN):
 http://socialmusicdiscovery.googlecode.com/svn/prototypes/ClientRCP_maven/smd-rcp-client-plugin/ReadMe.txt
    
-=== DISCLAIMER === 
+=== DISCLAIMER ===
+
 These instructions are preliminary and temporary for the prototype. 
 Please feel free to correct errors or add missing info!
 
-=== To Build and Run from command line === 
-1. Use Maven to build and run a standalone client (see wiki for details):
+=== To Build and Run from command line ===
+ 
+1. Use subversion to checkout server and client code (see wiki for details)
+2. Use Maven to build server code
+	a. cd .../localserver
+	b. mvn install  
+2. Use Maven to build and run a standalone client
 	a. cd .../ClientRCP_maven
 	b. svn update
 	c. mvn install
-2. run client
+3. Run client
 	a. cd ClientRCP_maven/smd-rcp-client/target/win32.win32.x86/eclipse
 	   (adjust path for your platform)
 	b. launcher.exe
