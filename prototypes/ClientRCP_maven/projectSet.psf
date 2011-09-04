@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<psf version="2.0">
+<provider id="org.tigris.subversion.subclipse.core.svnnature">
+<project reference="0.9.3,https://socialmusicdiscovery.googlecode.com/svn/prototypes/ClientRCP_maven/smd-rcp-client,smd-rcp-client"/>
+<project reference="0.9.3,https://socialmusicdiscovery.googlecode.com/svn/prototypes/ClientRCP_maven/smd-rcp-client-feature,smd-rcp-client-feature"/>
+<project reference="0.9.3,https://socialmusicdiscovery.googlecode.com/svn/prototypes/ClientRCP_maven/smd-rcp-client-plugin,smd-rcp-client-plugin"/>
+<project reference="0.9.3,https://socialmusicdiscovery.googlecode.com/svn/prototypes/ClientRCP_maven/smd-rcp-client-plugin-tests,smd-rcp-client-plugin-tests"/>
+<project reference="0.9.3,https://socialmusicdiscovery.googlecode.com/svn/prototypes/ClientRCP_maven/smd-rcp-client-site,smd-rcp-client-site"/>
+</provider>
+</psf>
