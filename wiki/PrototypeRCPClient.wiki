@@ -14,9 +14,6 @@ Latest pre-compiled nightly builds of RCP Client can be found here:
 This section provides a very rough overview of things to do. For details, please refer to the shared [http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=Component%3DUI-RCPClient "todo list"]. 
 
 Here are a few words on what I think needs to be done to bring this thing out of the prototype folder and let us start widening scope and honing details:
-  # [http://code.google.com/p/socialmusicdiscovery/issues/detail?id=21 Add "cell editor" to edit contributor types]
-  # [http://code.google.com/p/socialmusicdiscovery/issues/detail?id=20 	Add/delete contributors (and more)]
-  # [http://code.google.com/p/socialmusicdiscovery/issues/detail?id=25 Improve performance]
   # [http://code.google.com/p/socialmusicdiscovery/issues/detail?id=8 Restructured plug-ins (as outlined below)]
   # [http://code.google.com/p/socialmusicdiscovery/issues/detail?id=4 A bootstrap to deploy the basic client (e.g. JWS)]
   # [http://code.google.com/p/socialmusicdiscovery/issues/detail?id=3 An update site where we can upload new versions of the plug-ins]
@@ -39,7 +36,7 @@ Some brief and preliminary thoughts on the design principles for the RCP client.
     * PShelf - could replace !ExpandBar as the primary navigation widget.
   * UI Style and "Skins"
     * Now (Eclipse 3.x): we run with the default appearance produced by the Forms Toolkit. 
-    * Then (Eclipse 4): we use the new (CSS-oriented) way of styling the application. It is too much work to do that using the current platform (3.6).
+    * Then (Eclipse 4): we use the new (CSS-oriented) way of styling the application. It is too much work to do that using the current platform.
   * Target platform - a pre-configured RCP target platform is downloaded and provided by Maven. This includes the RCP base framework and all desired plug-ins to avoid the dependency on individual installations.
   * Plug-in Component structure - we separate the client in a few main parts. The basic idea is to have a small base product that is easily installed and rarely updated, and to use an update site to maintain the other components.
     * Installer - an almost empty "bootstrap" to allow installation/update of other components from update site
@@ -53,10 +50,10 @@ Some brief and preliminary thoughts on the design principles for the RCP client.
   
 
 = External Links =
-  * SWT Designer (part of !WindowBuilder PRO)
-    * http://code.google.com/javadevtools/wbpro/installation/updatesite_3.6.html
-    * update site: http://dl.google.com/eclipse/inst/d2wbpro/latest/3.6 - you probably need to ignore one security warning.
-
+ * Eclipse for RCP and RAP developers: http://www.eclipse.org/downloads/packages/eclipse-rcp-and-rap-developers/indigor 
+ * SWT Designer (part of !WindowBuilder)
+   * Eclipse 3.7: http://www.eclipse.org/windowbuilder
+   * Google (for Eclipse 3.6): http://code.google.com/javadevtools/wbpro/installation/updatesite_3.6.html
  * Eclipse snippets, examples and tutorials:
    * RCP:
      * http://www.vogella.de/articles/EclipseRCP/article.html
@@ -66,13 +63,11 @@ Some brief and preliminary thoughts on the design principles for the RCP client.
    * SWT:
      * http://www.eclipse.org/swt/snippets/
      * http://www.eclipse.org/swt/examples.php
-    
-  * Eclipse Integration for Apache Maven (IAM)
-    * http://www.eclipse.org/iam 
-    * Update site: http://q4e.googlecode.com/svn/trunk/updatesite-iam
-
-  * Build and Deploy
-    * Building (Eclipsepedia): http://wiki.eclipse.org/Building
-    * Eclipse PDE Build - Tutorial: http://www.vogella.de/articles/EclipsePDEBuild/article.html
-    * Equinox/p2: http://wiki.eclipse.org/Equinox/p2
-    * Buckminster: http://www.eclipse.org/buckminster/
+   * Eclipse Integration for Apache Maven (IAM)
+     * http://www.eclipse.org/iam 
+     * Update site: http://q4e.googlecode.com/svn/trunk/updatesite-iam
+   * Build and Deploy
+     * Building (Eclipsepedia): http://wiki.eclipse.org/Building
+     * Eclipse PDE Build - Tutorial: http://www.vogella.de/articles/EclipsePDEBuild/article.html
+     * Equinox/p2: http://wiki.eclipse.org/Equinox/p2
+     * Buckminster: http://www.eclipse.org/buckminster/
