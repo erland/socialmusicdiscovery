@@ -14,7 +14,7 @@ Latest pre-compiled nightly builds of RCP Client can be found here:
 This section provides a very rough overview of things to do. For details, please refer to the shared [http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=Component%3DUI-RCPClient "todo list"]. 
 
 Here are a few words on what I think needs to be done to bring this thing out of the prototype folder and let us start widening scope and honing details:
-  # [http://code.google.com/p/socialmusicdiscovery/issues/detail?id=8 Restructured plug-ins (as outlined in issue)]
+  # [http://code.google.com/p/socialmusicdiscovery/issues/detail?id=8 Restructured plug-ins (as outlined in below)]
   # [http://code.google.com/p/socialmusicdiscovery/issues/detail?id=4 A bootstrap to deploy the basic client (e.g. JWS)]
   # [http://code.google.com/p/socialmusicdiscovery/issues/detail?id=3 An update site where we can upload new versions of the plug-ins]
   # [http://code.google.com/p/socialmusicdiscovery/issues/detail?id=6 Create extension points to allow more editors]
