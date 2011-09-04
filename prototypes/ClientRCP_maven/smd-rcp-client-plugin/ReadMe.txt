@@ -30,7 +30,16 @@ Please feel free to correct errors or add missing info!
 
 1. Install Eclipse 3.7 for RCP developers: http://www.eclipse.org/downloads/packages/eclipse-rcp-and-rap-developers/indigor
 2. Check out and build SMD code as described on the wiki: http://code.google.com/p/socialmusicdiscovery/wiki/BuildInstructions
-3. Import all client projects into Eclipse: File - Import - Team - Team Project Set - ..../ClientRCP_maven/projectSet.psf  
+3. Import all client projects into Eclipse: 
+   a. File - Import - General - Existing Projects into Workspace 
+   b. browse to .../ClientRCP_maven
+   c. select at least the following projects:
+      - smd-rcp-client
+      - smd-rcp-client-feature
+      - smd-rcp-client-plugin
+      optional:
+      - smd-rcp-client-tests
+      - smd-rcp-client-site
 4. Open the .target file that fits your platform (e.g. /smd-rcp-client/smd-rcp-client.win32.x86.target). 
    In the upper right hand corner, click "set as target platform" 
 5. Launch client: right-click 'smd-rcp.product.launch (<your OS>)' - 'Run As ...' - 'smd-rcp.product'.
@@ -58,4 +67,16 @@ Please feel free to correct errors or add missing info!
      http://www.eclipse.org/swt/examples.php
     
 Some general notes and design guidelines are available on the wiki: 
-http://code.google.com/p/socialmusicdiscovery/wiki/PrototypeRCPClient     
+http://code.google.com/p/socialmusicdiscovery/wiki/PrototypeRCPClient
+
+=== NOTES ===
+
+- Team Project Set 
+  For some reason, the exported Team Project Set (.../ClientRCP_maven/projectSet.psf) cannot be imported.
+- Subversion Plugin
+  For some reason, the Eclipse/Polarion plugin does not seem to work. 
+  We cannot import projexcts that were checked out with command-line SVN.
+  For the time being, we have to stick with the Subclipse plugin available at tigris.org
+- Eclipse Development Target 
+  For some reason, we can not mabe Maven/Tycho produce a target platform that also includes Eclipse source and jUnit tests.
+  Alas, we use a temporary "development target platform" that adds the local Eclipse installation to the platform.
