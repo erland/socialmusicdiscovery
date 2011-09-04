@@ -39,7 +39,10 @@ Please feel free to correct errors or add missing info!
 1. Install and setup Eclipse for RCP developers as described above
 2. Install SWT Designer from update site: http://download.eclipse.org/windowbuilder/WB/release/R201106211200/3.7
    You need at least the SWT designer and the WindowBuilder engine, but might just as well install it all.
-   As of Eclipse 3.7, WindowBuilder is part of Eclipse (see more on http://www.eclipse.org/windowbuilder)
+   - As of Eclipse 3.7, WindowBuilder is part of Eclipse (see more on http://www.eclipse.org/windowbuilder).
+     Older versions were part of Google's WindowBuilder PRO: 
+     - http://code.google.com/javadevtools/wbpro/installation/updatesite_3.6.html
+     - update site: http://dl.google.com/eclipse/inst/d2wbpro/latest/3.6
 3. Optional: install or refer to Eclipse examples:
    - RCP:
 	 http://www.vogella.de/articles/EclipseRCP/article.html
