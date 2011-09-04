@@ -64,7 +64,8 @@ To start using you need to:
 Now, you probably want to run the server inside your development environment so you can step through the code in the debugger, to do this you first need to install a Java development environment. The preferred choices are:
   * IntelliJ IDEA Community Edition: http://www.jetbrains.com/idea/download/index.html
     * The commercial version of IntelliJ IDEA will of course also work if you have access to a license.
-  * Eclipse for RCP and RAD developers: http://www.eclipse.org/downloads/packages/eclipse-rcp-and-rap-developers/heliossr1 
+  * Eclipse: choose the most recent version, e.g. http://www.eclipse.org/downloads/packages/eclipse-classic-37/indigor 
+     * Note: If you also want to edit the RCP client code, please refer to the [http://socialmusicdiscovery.googlecode.com/svn/prototypes/ClientRCP_maven/smd-rcp-client-plugin/ReadMe.txt RCP Client ReadMe file].
 
 You can generate project files with maven, see the [BuildInstructions build instructions] for more information about this.
 
