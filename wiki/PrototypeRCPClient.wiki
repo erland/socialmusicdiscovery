@@ -47,7 +47,10 @@ Some brief and preliminary thoughts on the design principles for the RCP client.
       * Navigator UI - A PShelf presentation of "shallow" objects, with the ability to "inflate" any object and open an editor on it
       * Core model editors - EditorPart subclasses that operate on SMDEntity instances from the core model
       * Subjective model editors - EditorPart subclasses that operate on SMD instances from the subjective model
-  
+  * i18N 
+    * At the time of writing, the prototype is not localizable. We do of course to change this at some point in time, using the built-in Eclipse/Java mechanisms to do so.
+    * character set is UTF-8. All projects should have this setting defined, to avoid dependencies and failures due to bad workspace settings.
+
 
 = External Links =
  * Eclipse for RCP and RAP developers: http://www.eclipse.org/downloads/packages/eclipse-rcp-and-rap-developers/indigor 
