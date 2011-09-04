@@ -25,6 +25,7 @@ Please feel free to correct errors or add missing info!
 	b. launcher.exe
 	
 === To Build and Run in Eclipse === 
+
 1. Install Eclipse 3.7 for RCP developers: http://www.eclipse.org/downloads/packages/eclipse-rcp-and-rap-developers/indigor
 2. Check out and build SMD code as described on the wiki: http://code.google.com/p/socialmusicdiscovery/wiki/BuildInstructions
 3. Import all client projects into Eclipse: File - Import - Team - Team Project Set - ..../ClientRCP_maven/projectSet.psf  
@@ -37,7 +38,7 @@ Please feel free to correct errors or add missing info!
 
 1. Install and setup Eclipse for RCP developers as described above
 2. Install SWT Designer from update site: http://download.eclipse.org/windowbuilder/WB/release/R201106211200/3.7
-   You need at least the SWR designer and the WindowBuilder engine, but might just as well install it all.
+   You need at least the SWT designer and the WindowBuilder engine, but might just as well install it all.
    As of Eclipse 3.7, WindowBuilder is part of Eclipse (see more on http://www.eclipse.org/windowbuilder)
 3. Optional: install or refer to Eclipse examples:
    - RCP:
