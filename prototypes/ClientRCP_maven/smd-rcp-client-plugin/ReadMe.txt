@@ -7,6 +7,8 @@ These instructions are available both on the wiki and in Eclipse (wiki is linked
 === DISCLAIMER ===
 
 These instructions are preliminary and temporary for the prototype. 
+The setup for Eclipse 3.7 is not yet fully verified!
+
 Please feel free to correct errors or add missing info!
 
 === To Build and Run from command line ===
@@ -43,7 +45,9 @@ Please feel free to correct errors or add missing info!
      Older versions were part of Google's WindowBuilder PRO: 
      - http://code.google.com/javadevtools/wbpro/installation/updatesite_3.6.html
      - update site: http://dl.google.com/eclipse/inst/d2wbpro/latest/3.6
-3. Optional: install or refer to Eclipse examples:
+3. Install Subclipse plugin from update site http://subclipse.tigris.org/update_1.6.x
+   (you probably have to ignore a warning during install)
+4. Optional: install or refer to Eclipse examples:
    - RCP:
 	 http://www.vogella.de/articles/EclipseRCP/article.html
    - JFace:
