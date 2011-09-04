@@ -54,8 +54,11 @@ Please feel free to correct errors or add missing info!
      Older versions were part of Google's WindowBuilder PRO: 
      - http://code.google.com/javadevtools/wbpro/installation/updatesite_3.6.html
      - update site: http://dl.google.com/eclipse/inst/d2wbpro/latest/3.6
-3. Install Subclipse plugin from update site http://subclipse.tigris.org/update_1.6.x
-   (you probably have to ignore a warning during install)
+3. Install plugin for Subversion
+   - recommended: Subclipse plugin from update site http://subclipse.tigris.org/update_1.6.x
+    (you probably have to ignore a warning during install)
+   - alternative: Subversive plugin from http://download.eclipse.org/technology/subversive/0.7/update-site/
+     On next restart, check to include the latest versions of SVNKit and JavaHL.
 4. Optional: install or refer to Eclipse examples:
    - RCP:
 	 http://www.vogella.de/articles/EclipseRCP/article.html
@@ -74,9 +77,12 @@ http://code.google.com/p/socialmusicdiscovery/wiki/PrototypeRCPClient
 - Team Project Set 
   For some reason, the exported Team Project Set (.../ClientRCP_maven/projectSet.psf) cannot be imported.
 - Subversion Plugin
-  For some reason, the Eclipse/Polarion plugin does not seem to work. 
-  We cannot import projexcts that were checked out with command-line SVN.
-  For the time being, we have to stick with the Subclipse plugin available at tigris.org
+  For some reason, the Eclipse/Polarion Subversive plugin has occasionally caused some problems, primarily 
+  preventing import of projects that were checked out with command-line SVN. On recent experiments, the 
+  Subversive plug seems to work OK. Meanwhile, The Subclipse plugin (available at tigris.org) worked 
+  ok at first attempt and has not presented any problems.
+  Since the Subversive plugin seems to be favored by Eclipse, this should be the recommended option.
+  However, since Subclipse seems to work better, it is our recommended option. 
 - Eclipse Development Target 
   For some reason, we can not mabe Maven/Tycho produce a target platform that also includes Eclipse source and jUnit tests.
   Alas, we use a temporary "development target platform" that adds the local Eclipse installation to the platform.
