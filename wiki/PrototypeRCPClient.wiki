@@ -66,11 +66,17 @@ Some brief and preliminary thoughts on the design principles for the RCP client.
    * SWT:
      * http://www.eclipse.org/swt/snippets/
      * http://www.eclipse.org/swt/examples.php
-   * Eclipse Integration for Apache Maven (IAM)
-     * http://www.eclipse.org/iam 
-     * Update site: http://q4e.googlecode.com/svn/trunk/updatesite-iam
+   * Maven
+     * M2Eclipse (M2E): http://www.eclipse.org/m2e
+       * Forum: http://www.eclipse.org/forums/index.php/f/61
+       * SonaType: http://m2eclipse.sonatype.org
+     * IAM (Eclipse Integration for Apache Maven)
+       * http://www.eclipse.org/iam 
+       * Update site: http://q4e.googlecode.com/svn/trunk/updatesite-iam
    * Build and Deploy
      * Building (Eclipsepedia): http://wiki.eclipse.org/Building
      * Eclipse PDE Build - Tutorial: http://www.vogella.de/articles/EclipsePDEBuild/article.html
      * Equinox/p2: http://wiki.eclipse.org/Equinox/p2
-     * Buckminster: http://www.eclipse.org/buckminster/
+     * Tycho: http://www.eclipse.org/tycho
+       * Forum: http://www.eclipse.org/forums/index.php?t=thread&frm_id=183
+     * Buckminster: http://www.eclipse.org/buckminster
