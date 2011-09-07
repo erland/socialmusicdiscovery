@@ -113,6 +113,7 @@ public class ClientConfigModule extends AbstractModule {
 			super(true);
 		}
 
+		@SuppressWarnings("rawtypes")
 		protected Map<Class, Class> getConversionMap() {
 			Map<Class, Class> converters = new HashMap<Class, Class>();
 
@@ -145,6 +146,7 @@ public class ClientConfigModule extends AbstractModule {
 			return converters;
 		}
 
+		@SuppressWarnings("rawtypes")
 		protected Map<String, Class> getObjectTypeConversionMap() {
 		    Map<String, Class> converters = new HashMap<String,Class>();
 		
