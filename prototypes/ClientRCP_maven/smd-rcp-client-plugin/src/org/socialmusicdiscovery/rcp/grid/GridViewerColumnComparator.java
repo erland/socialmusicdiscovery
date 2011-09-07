@@ -60,6 +60,7 @@ import org.socialmusicdiscovery.rcp.util.ViewerUtil;
  * 
  * @author Peer Törngren
  */
+@SuppressWarnings("rawtypes")
 public class GridViewerColumnComparator extends ViewerComparator implements SelectionListener {
 
 	private static class VoidComparator extends ViewerComparator {

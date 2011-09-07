@@ -135,10 +135,9 @@ public abstract class AbstractObservable implements Observable {
 	 * @param existingSet
 	 * @param newContent
 	 */
-	@SuppressWarnings("unchecked")
-	protected void updateSet(String propertyName, Set existingSet, Collection newContent) {
+	protected <T> void updateSet(String propertyName, Set<T> existingSet, Collection<T> newContent) {
 		try {
-			Set oldContent = existingSet.getClass().newInstance();
+			Set<T> oldContent = existingSet.getClass().newInstance();
 			oldContent.addAll(existingSet);
 			existingSet.retainAll(newContent);
 			existingSet.addAll(newContent);
@@ -156,10 +155,9 @@ public abstract class AbstractObservable implements Observable {
 	 * @param existingList
 	 * @param newContent
 	 */
-	@SuppressWarnings("unchecked")
-	protected void updateList(String propertyName, List existingList, Collection newContent) {
+	protected <T> void updateList(String propertyName, List<T> existingList, Collection<T> newContent) {
 		try {
-			List oldContent = existingList.getClass().newInstance();
+			List<T> oldContent = existingList.getClass().newInstance();
 			oldContent.addAll(existingList);
 			existingList.clear();
 			existingList.addAll(newContent);
