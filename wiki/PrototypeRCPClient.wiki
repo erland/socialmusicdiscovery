@@ -53,6 +53,7 @@ Some brief and preliminary thoughts on the design principles for the RCP client.
 
 
 = External Links =
+ * Peer's Eclipse links: http://snipurl.com/p2r-eclipse
  * Eclipse for RCP and RAP developers: http://www.eclipse.org/downloads/packages/eclipse-rcp-and-rap-developers/indigor 
  * SWT Designer (part of !WindowBuilder)
    * Eclipse 3.7: http://www.eclipse.org/windowbuilder
@@ -81,4 +82,3 @@ Some brief and preliminary thoughts on the design principles for the RCP client.
    * Build and Deploy
      * Building (Eclipsepedia): http://wiki.eclipse.org/Building
      * Eclipse PDE Build - Tutorial: http://www.vogella.de/articles/EclipsePDEBuild/article.html
- * Peer's Eclipse links: http://snipurl.com/p2r-eclipse
