@@ -68,7 +68,6 @@ Some brief and preliminary thoughts on the design principles for the RCP client.
  * Equinox/p2: http://wiki.eclipse.org/Equinox/p2
  * Tycho: http://www.eclipse.org/tycho
    * Forum: http://www.eclipse.org/forums/index.php?t=thread&frm_id=183
- * Buckminster: http://www.eclipse.org/buckminster
  * Nebula: http://www.eclipse.org/nebula
  * Eclipse snippets, examples and tutorials:
    * RCP:
