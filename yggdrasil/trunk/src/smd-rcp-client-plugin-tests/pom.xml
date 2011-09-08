@@ -19,7 +19,8 @@
         <artifactId>tycho-surefire-plugin</artifactId>
         <version>0.12.0</version>
         <configuration>
-        	<includes>
+           	<encoding>UTF-8</encoding>
+       		<includes>
         		<include>**/*Test.class</include>
         	</includes>
         </configuration>
