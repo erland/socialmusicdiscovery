@@ -19,20 +19,22 @@ This will give you:
   * The SMD plugin installed into Squeezebox Server
   * The SMD Server installed into Squeezebox Server and automatically launched when Squeezebox Server is started:
     * It will use the MySQL database of Squeezebox Sever and store it's data in a "smd" schema if Squeezebox Server is configured to use its bundled MySQL database.
-    * It will use a H2 database stored in the Squeezebox Server cache directory if Squeezebox Server is configured to use its SQLite database (SBS 7.6 or later) or it's configure to use a standalone MySQL database.
-  * The SMD Frontend can be launched from Squeezebox Server web interface
+    * It will use a H2 database stored in the Squeezebox Server cache directory
+  * The SMD Frontend can be launched from Squeezebox Server web interface from Extras/Social Music Discovery menu
     * The frontend is the simple Apache Pivot based version, it doesn't contain any management of data.
-    * The Apache Pivot fronend is planned to be replaced with the RCP version at some stage.
+    * The Apache Pivot fronend is planned to be replaced with the [AboutRichClients RCP client] at some stage.
 
 To start using it, you need to:
-  # Start SMD Frontend
-  # Click the "Import" button to import your SBS library into the SMD database
+  # Start Squeezebox Server
+  # Either perform a rescan in Squeezebox Server or goto "Squeezebox Server Settings/Advanced/Social Music Discovery" and select on of the "Import" buttons to import your SBS library into the SMD database. The progress of the import will be visible in Squeezebox Server Settings/Information.
   # After the import is finished you can
-    * Search for releases, artists or works
-    * Double click on a release to see more details about the release
-    * Single click on a release to see related artists and works
-    * Single click on an artist to see related releases and works
-    * Single click on a work to see related releases or artists
+    * Through your normal Squeezebox remote or web interface goto "My Music/Social Music Discovery"
+    * Through the Squeezebox Server web interface, goto Extras/Social Music Discovery and use the SMD frontend to:
+      * Search for releases, artists or works
+      * Double click on a release to see more details about the release
+      * Single click on a release to see related artists and works
+      * Single click on an artist to see related releases and works
+      * Single click on a work to see related releases or artists
 
 = Installation for SMD Server development / debugging =
 
@@ -82,9 +84,9 @@ As a suitable further reading, it's suggested that you take a look at:
    * [SoftwareSMDFrontend SMD Frontend design description]
      * Note that this is just a temporary solution until RCP client is a bit more finished.
 
-= Installation for SMD Frontend development / debugging =
+= Installation for SMD client development / debugging =
 
-This installation is suitable for SMD Frontend development. Since the Apache Pivot based frontend is just a temporary solution, it's not described here, instead this description focus on what's needed for the RCP based frontend.
+This installation is suitable for SMD client development. Since the Apache Pivot based frontend is just a temporary solution, it's not described here, instead this description focus on what's needed for the RCP based frontend.
 
 Install the prerequisites which is needed to compile the frontend:
   * Maven: http://maven.apache.org/
