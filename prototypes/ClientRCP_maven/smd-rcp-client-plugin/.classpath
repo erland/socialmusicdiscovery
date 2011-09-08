@@ -19,6 +19,7 @@
 	<classpathentry exported="true" kind="lib" path="target/dependencies/jersey-client-1.6.jar" sourcepath="target/dependencies/jersey-client-1.6-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="target/dependencies/jersey-core-1.6.jar" sourcepath="target/dependencies/jersey-core-1.6-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="target/dependencies/guice-3.0.jar" sourcepath="target/dependencies/guice-3.0-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="target/dependencies/javax.inject-osgi-1.jar" sourcepath="target/dependencies/javax.inject-osgi-1-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="target/dependencies/gson-1.6.jar" sourcepath="target/dependencies/gson-1.6-sources.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

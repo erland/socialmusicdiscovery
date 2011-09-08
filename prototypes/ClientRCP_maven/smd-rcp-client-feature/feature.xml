@@ -44,6 +44,13 @@
          unpack="false"/>
 
    <plugin
+        id="javax.inject"
+        download-size="0"
+        install-size="0"
+        version="1.0.0"
+        unpack="false"/>
+
+   <plugin
          id="javax.ws.rs.jsr311-api"
          download-size="0"
          install-size="0"
