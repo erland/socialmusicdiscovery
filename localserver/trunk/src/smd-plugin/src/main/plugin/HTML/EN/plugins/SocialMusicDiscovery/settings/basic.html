@@ -25,6 +25,10 @@
 		<input name="full_import" type="submit" class="stdclick" value="[% "SETUP_PLUGIN_SOCIALMUSICDISCOVERY_FULL_IMPORT" | string %]">
 	[% END %]
 
+	[% WRAPPER setting title="SETUP_PLUGIN_SOCIALMUSICDISCOVERY_INCREMENTAL_IMPORT" desc="SETUP_PLUGIN_SOCIALMUSICDISCOVERY_INCREMENTAL_IMPORT_DESC" %]
+		<input name="incremental_import" type="submit" class="stdclick" value="[% "SETUP_PLUGIN_SOCIALMUSICDISCOVERY_INCREMENTAL_IMPORT" | string %]">
+	[% END %]
+
 	[% WRAPPER setting title="SETUP_PLUGIN_SOCIALMUSICDISCOVERY_SIMULATED_DATA" desc="SETUP_PLUGIN_SOCIALMUSICDISCOVERY_SIMULATED_DATA_DESC" %]
 		<input type="text" class="stdedit selectFile" name="pref_simulatedData" id="simulatedData" value="[% prefs.pref_simulatedData %]" size="40">
 	[% END %]

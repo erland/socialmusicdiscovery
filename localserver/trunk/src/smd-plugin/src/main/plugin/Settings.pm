@@ -62,7 +62,10 @@ sub handler {
 
 	if($paramRef->{'full_import'}) {
 		Plugins::SocialMusicDiscovery::Importer::startFullImport();
+	}elsif($paramRef->{'incremental_import'}) {
+		Plugins::SocialMusicDiscovery::Importer::startImport();
 	}
+
 	return $class->SUPER::handler($client, $paramRef);
 }
 
