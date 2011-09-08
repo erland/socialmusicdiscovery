@@ -1,0 +1,19 @@
+About the target platforms:
+
+The actual runtime platforms are built using Maven and Tycho, fetching the RCP bundles from a p2 repository. 
+Maven also fetches a number of third-party plug-ins (with sources) and place these with the RCP bundles to form a target runtime platform.
+  
+Alas, the fetched RCP bundles hold no sources, nor do they hold any junit test classes, which makes it very hard to develop and debug.
+
+The target platform definitions here include the Maven-produced runtime platform, and adds a few bundles from the p2 repository:
+- Eclipse RCP SDK - holds the sources for all files, including the XML metadata for extension declarations 
+- Eclipse Plug-in Development Environment - holds junit test classes to make the tests compile and run
+
+NOTE: the development platform is "sloppy"; it includes more plug-ins than the actual runtime platform. 
+There is also a risk for version mismatch between the Maven build and the local target definition.
+
+We could manually strip the extraneous plug-ins from the definition, but the work to do (and maintain) this is bigger than the reward. 
+ 
+Until further notice:
+Code that compiles and runs in the Eclipse IDE is not guaranteed to run in the standalone client. 
+Alas, the client must always be compiled and run from the command line to verify changes.
