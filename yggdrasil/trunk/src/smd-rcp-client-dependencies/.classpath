@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry exported="true" kind="lib" path="target/dependencies/commons-lang-2.6.jar" sourcepath="target/dependencies/commons-lang-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="target/dependencies/smd-server-client-osgi-1.0-SNAPSHOT.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry exported="true" kind="lib" path="target/dependencies/commons-logging-1.1.1.jar" sourcepath="target/dependencies/commons-logging-1.1.1-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="target/dependencies/commons-beanutils-1.8.3.jar" sourcepath="target/dependencies/commons-beanutils-1.8.3-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="target/dependencies/gson-1.6.jar" sourcepath="target/dependencies/gson-1.6-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="target/dependencies/guice-3.0.jar" sourcepath="target/dependencies/guice-1.6-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="target/dependencies/jersey-client-1.6.jar" sourcepath="target/dependencies/jersey-client-1.6-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="target/dependencies/jersey-core-1.6.jar" sourcepath="target/dependencies/jersey-core-1.6-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="target/dependencies/jsr311-api-1.0.jar" sourcepath="target/dependencies/jsr311-api-1.0-sources.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>
