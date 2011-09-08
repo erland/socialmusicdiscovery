@@ -5,12 +5,12 @@
 		<title lang="EN">Social Music Discovery (ALPHA test versions)</title>
 	</details>
 	<plugins>
-		<plugin name="SocialMusicDiscovery" version="0.1.826" minTarget="7.5.0" maxTarget="7.6+">
+		<plugin name="SocialMusicDiscovery" version="0.1.905" minTarget="7.5.0" maxTarget="7.6+">
 			<title lang="EN">Social Music Discovery *Alpha*</title>
 			<desc lang="EN">Social Music Discovery application</desc>
 			<creator>Social Music Discovery project</creator>
-			<url>http://socialmusicdiscovery.googlecode.com/files/smd-plugin-0.1.826-full.zip</url>
-			<sha>f8516734fef97af26d46934bf937b06174936f26</sha>
+			<url>http://socialmusicdiscovery.googlecode.com/files/smd-plugin-0.1.905-full.zip</url>
+			<sha>66f97680ddabc5266b44df11a40696b989f7c2d8</sha>
 			<link>http://socialmusicdiscovery.googlecode.com</link>
 		</plugin>
 	</plugins>
