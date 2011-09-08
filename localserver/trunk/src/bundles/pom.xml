@@ -8,5 +8,6 @@
 
     <modules>
         <module>smd-server-client-osgi</module>
+	<module>javax.inject-osgi</module>
     </modules>
 </project>
