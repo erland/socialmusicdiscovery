@@ -7,7 +7,7 @@ Yggdrasil is a rich client for the Social Music Discovery (SMD) project, built o
 
 The name *Yggdrasil* is taken from [http://en.wikipedia.org/wiki/Yggdrasil Norse mythology]; it was said to be the world tree around which the nine worlds existed. The branches of Yggdrasil extend far into the heavens, and the tree is supported by three roots that extend far away into other locations. 
 
-In SMD, Yggdrasil connects metadata in the music library and allows the user to maintain both hard facts and subjective opinions. It may not be the world tree around which everything revolves, but is the view into this tree - the SMD repository - and the instrument for connecting the tree with heavens and other locations.
+In SMD, Yggdrasil connects metadata in the music library and allows the user to maintain both hard facts and subjective opinions about local or online music. It may not be the world tree around which everything revolves, but is the view into this tree - the SMD repository - and the instrument for connecting the tree with heavens and other locations.
 
 Yggdrasil is not primarily an instrument for enjoying music, more about paving the ground for listening pleasure.
 
