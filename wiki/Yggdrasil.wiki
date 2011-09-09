@@ -3,7 +3,7 @@ http://socialmusicdiscovery.googlecode.com/svn/yggdrasil/trunk/src/smd-rcp-clien
 
 = Introduction =
 
-Yggdrasil is a rich client for the Social Music Discovery (SMD) project, built on the Eclipse Rich Client Platform ([http://wiki.eclipse.org/index.php/Rich_Client_Platform RCP]).
+*Yggdrasil* is a rich client for the Social Music Discovery (SMD) project, built on the Eclipse Rich Client Platform ([http://wiki.eclipse.org/index.php/Rich_Client_Platform RCP]).
 
 The name *Yggdrasil* is taken from [http://en.wikipedia.org/wiki/Yggdrasil Norse mythology]; it was said to be the world tree around which the nine worlds existed. The branches of Yggdrasil extend far into the heavens, and the tree is supported by three roots that extend far away into other locations. 
 
