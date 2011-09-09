@@ -19,6 +19,8 @@ to add support for the subjective model to make it possible to add/remove things
 
 We need more people who like to work on this multi platform client, so if you are interested in getting involved in this, please let us know.
 
+If you want to try the multi platform RCP client at its current state, see more information on the [SoftwareInstallation installation instructions page]
+
 Below follows some screen shots from the current state of the multi platform client:
 http://socialmusicdiscovery.googlecode.com/svn/wiki/AboutRichClients/SBSImport.png
 http://socialmusicdiscovery.googlecode.com/svn/wiki/AboutRichClients/SMDConfig.png
