@@ -52,6 +52,11 @@ Some brief and preliminary thoughts on the design principles for the RCP client.
     * At the time of writing, the prototype is not localizable. We should of course change this at some point in time, using the built-in Eclipse/Java mechanisms to do so.
     * character set is UTF-8. All projects should have this setting defined, to avoid dependencies and failures due to bad workspace settings.
 
+= Developer Notes =
+  * Launcher doesn't launch  
+    * Q: Sometime the launcher just won't launch stuff from within the IDE, eventhough everything seems to be in order. 
+    * A: delete the launcher form the "Run Congurations" menu, and fre-launch it by right-clicking the checked in launcher ("Run As - Eclipse Application")
+
 
 = External Links =
  * Peer's Eclipse links: http://snipurl.com/p2r-eclipse
