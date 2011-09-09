@@ -47,7 +47,7 @@
         id="javax.inject"
         download-size="0"
         install-size="0"
-        version="1.0.0"
+        version="0.0.0"
         unpack="false"/>
 
    <plugin
