@@ -5,12 +5,12 @@
 		<title lang="EN">Social Music Discovery (Development versions)</title>
 	</details>
 	<plugins>
-		<plugin name="SocialMusicDiscovery" version="0.1.905" minTarget="7.5.0" maxTarget="7.6+">
+		<plugin name="SocialMusicDiscovery" version="0.1.919" minTarget="7.5.0" maxTarget="7.6+">
 			<title lang="EN">Social Music Discovery (perl only) *Alpha*</title>
 			<desc lang="EN">Support plugin for the Social Music Discovery application</desc>
 			<creator>Social Music Discovery project</creator>
-			<url>http://socialmusicdiscovery.googlecode.com/files/smd-plugin-0.1.905-perl.zip</url>
-			<sha>cf9001740eeaa4ea2793736a498d3d72a1eb469b</sha>
+			<url>http://socialmusicdiscovery.googlecode.com/files/smd-plugin-0.1.919-perl.zip</url>
+			<sha>249a315fa1fae7b9e20c641864b2e2d86fa125a5</sha>
 			<link>http://socialmusicdiscovery.googlecode.com</link>
 		</plugin>
 	</plugins>
