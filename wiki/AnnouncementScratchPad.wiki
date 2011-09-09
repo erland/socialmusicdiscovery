@@ -21,6 +21,9 @@ http://socialmusicdiscovery.googlecode.com/svn/repository/alpha.xml
 
 You will need to have Java 6 or later installed on the computer to make it work.
 
+For further details regarding installation and configuration see:
+http://code.google.com/p/socialmusicdiscovery/wiki/SoftwareInstallation
+
 If you have questions, feel free to reply to this forum thread.
 
 If you just want to subscribe on the project status, we have a read only mailing list which we will be using for announcements:
