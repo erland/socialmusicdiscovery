@@ -4,7 +4,7 @@
 
 There are a number of different options to install the SMD prototype as described below.
 
-= Installation for beta testing =
+= Installation of SMD for beta testing =
 
 The easiest way to install if you just want to beta test the software, is to do as follows. This is not the best way if you want to look at the source code or run the software in the debugger, but it's the preferred way if you are only looking for a way to get it up and running and do some testing.
 
@@ -35,6 +35,41 @@ To start using it, you need to:
       * Single click on a release to see related artists and works
       * Single click on an artist to see related releases and works
       * Single click on a work to see related releases or artists
+
+= Trying out the RCP Client =
+
+The RCP Client isn't ready for beta testing yet but if you like to install the current version just to see how it looks like, you should do as follows.
+
+  # Make sure [http://www.java.com/inc/BrowserRedirect1.jsp Java 6] or later is installed on the computer where you like to run the RCP Client prototype
+  # Install the main SMD server and plugin as described in the above "Installation of SMD for beta testing" section
+  # Download the RCP Client Prototype zip for your operating system from our [http://code.google.com/p/socialmusicdiscovery/downloads/list download page]
+  # Unzip the zip and start the *launcher* which is found inside the eclipse directory in the zip.
+    * Just hit the "x" to close the welcome screen shown initially
+    * If you are running the SMD server/plugin on a separate server, you will need to goto *Window->Preferences->SMD->Server Connection* and specify the hostname or IP address of the computer where you are running the SMD server/plugin.
+
+The RCP Client is in a very early stage at the moment, but you can try it out to get a feeling how a rich client will feel in comparison to the traditional web interface which Squeezebox Server is using.
+
+We are currently in the process of moving the RCP client from being a prototype to something we are going to permanently include in the SMD project, eventually it's going to be available under the name *[http://en.wikipedia.org/wiki/Yggdrasil YGGDRASIL]*
+
+= Trying out the UPnP server =
+
+The UPnP server included in SMD is disabled by default, but if you like to try the current version just to see how it looks like, you should do as follows.
+
+  # Install the main SMD server and plugin as described in the above "Installation of SMD for beta testing" section
+  # Make sure [http://www.java.com/inc/BrowserRedirect1.jsp Java 6] or later is installed on the computer where you are running the web browser
+  # In Squeezebox Server web interface goto *Extras/Social Music Discovery*
+  # Wait for the smd-frontend to load, this will typically take some time the first time so don't be confused if you are only seeing a blank page initially and noting seems to happen.
+  # Select the *Change configuration* button when the smd-frontend interface appears
+  # Find the *org.socialmusicdiscovery.server.plugins.UpnpPlugin.enabled* setting and change its value to *true*
+  # Restart SBS and when SBS and SMD is running again a new *SMD Media Server* should appear on your network.
+
+The UPnP MediaServer is in a very early stage at the moment, but you can try it out to get a feeling how the SMD database can/will be exposed to any UPnP client you like to use.
+
+Some things to note:
+  * There is currently no support for playing tracks from the UPnP server, you can only browse the library
+  * The UPnP server currently have incompatibility issues with some UPnP clients.
+    * Look at the page [AboutUPnP about the UPnP server] for some information about which clients we have tried it with and know are working fairly good.
+    * We know there are major issues with the [www.plugplayer.com OSX/iOS PlugPlayer app] and are working on trying to solve that.
 
 = Installation for SMD Server development / debugging =
 
