@@ -11,10 +11,9 @@ In SMD, Yggdrasil connects metadata in the music library and allows the user to 
 
 Yggdrasil is not primarily an instrument for enjoying music, more about paving the ground for listening pleasure.
 
-== Legalese ==
-The preliminary logo was downloaded from [http://commons.wikimedia.org/wiki WikiMedia] and slightly augmented with text.
+*Legalese* 
 
-License details can be found [http://socialmusicdiscovery.googlecode.com/svn/yggdrasil/trunk/src/smd-rcp-client-plugin/icons/logo/License.txt here].
+The preliminary logo was downloaded from [http://commons.wikimedia.org/wiki WikiMedia] and slightly augmented with text. License details can be found [http://socialmusicdiscovery.googlecode.com/svn/yggdrasil/trunk/src/smd-rcp-client-plugin/icons/logo/License.txt here].
 
 = Details =
 
