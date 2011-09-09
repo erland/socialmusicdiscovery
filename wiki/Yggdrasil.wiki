@@ -1,5 +1,6 @@
 #summary About the SMD rich client Yggdrasil.
-
+http://socialmusicdiscovery.googlecode.com/svn/yggdrasil/trunk/src/smd-rcp-client-plugin/icons/logo/splash.png
+Logo downloaded from [http://commons.wikimedia.org/wiki WikiMedia] and slightly augmented with text. The logo is preliminary. The license details are [http://socialmusicdiscovery.googlecode.com/svn/yggdrasil/trunk/src/smd-rcp-client-plugin/icons/logo/License.txt here].
 = Introduction =
 
 Yggdrasil is a rich client for the Social Music Discovery (SMD) project, built on the Eclipse Rich Client Platform ([http://wiki.eclipse.org/index.php/Rich_Client_Platform RCP]).
