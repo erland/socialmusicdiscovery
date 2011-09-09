@@ -56,8 +56,8 @@ Some brief and preliminary thoughts on the design principles for the RCP client.
 A few notes that may or may not be useful for RCP developers.
 == "FAQ" ==
   * Launcher doesn't launch  
-    * Q: Sometime the launcher just won't launch stuff from within the IDE, eventhough everything seems to be in order. 
-    * A: delete the launcher form the "Run Congurations" menu, and re-launch it by right-clicking the checked in launcher ("Run As - Eclipse Application")
+    * Q: Sometime the launcher just won't launch stuff from within the IDE, even though everything seems to be in order. 
+    * A: delete the launcher form the "Run Configurations" menu, and re-launch it by right-clicking the checked in launcher ("Run As - Eclipse Application")
 
 = External Links =
  * Peer's Eclipse links: http://snipurl.com/p2r-eclipse
