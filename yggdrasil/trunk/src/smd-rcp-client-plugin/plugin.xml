@@ -72,11 +72,11 @@
             name="%view.navigatorname">
       </view>
        <view
-            name="Progress View"
-            icon="icons/progress.png"
-            category="org.eclipse.ui"
-            class="org.eclipse.ui.ExtensionFactory:progressView"
-            id="org.eclipse.ui.views.ProgressView">
+             category="org.eclipse.ui"
+             class="org.eclipse.ui.ExtensionFactory:progressView"
+             icon="icons/strawman/progress.png"
+             id="org.eclipse.ui.views.ProgressView"
+             name="Progress View">
          </view>
    </extension>
    <extension
