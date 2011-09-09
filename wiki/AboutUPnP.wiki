@@ -7,6 +7,8 @@ We have decided to implement a UPnP interface on top of the SMD server to make i
 The UPnP interface is focused at functions to browse and search in your library, it's still work in progress but it's continuously getting more functionality. As of today (october 2011), UPnP plugin is not yet fully functional (you can not yet play browsed music).
 For managing library data we will probably continue to use the custom JSON based HTTP interface, possibly some simple management operations might also be exposed via UPnP.
 
+Note that due to its early state, the UPnP server in SMD is currently deactivated in the default distribution of SMD, but you can find instructions how to activate it on the [SoftwareInstallation installation instruction page].
+
 = Screenshots =
 
 == Accessing SMD from Linn Kinsky Desktop ==
