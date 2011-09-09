@@ -12,4 +12,4 @@ Yggdrasil is not primarily an instrument for enjoying music, more about paving t
 
 = Details =
 
-Yggdrasil is in the process of moving out of the prototype directory. Meanwhile, most information on the PrototypeRCPClient is still valid.
+Yggdrasil is in the process of moving out of the prototype directory. Meanwhile, most information on the [PrototypeRCPClient Prototype RCP Client] is still valid.
