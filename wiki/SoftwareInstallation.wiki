@@ -10,8 +10,8 @@ The easiest way to install if you just want to beta test the software, is to do 
 
   # Make sure [http://www.java.com/inc/BrowserRedirect1.jsp Java 6] or later is installed on the computer running Squeezebox Server
   # Configure one of the following alpha repositories in your Squeezebox Server in Settings/Plugins
-    * Official builds: http://socialmusicdiscovery.googlecode.com/svn/repository/alpha.xml
-    * Nightly builds: http://downloads.socialmusicdiscovery.org/smd-plugin/svn-alpha-repository.xml
+    * Official tested builds: http://socialmusicdiscovery.googlecode.com/svn/repository/alpha.xml
+    * Latest untested builds: http://downloads.socialmusicdiscovery.org/smd-plugin/svn-alpha-repository.xml
 
   # In Squeezebox Server inside Settings/Plugin, select to install "Social Music Discovery" which is available in the repository you just setup.
 
@@ -49,7 +49,7 @@ The RCP Client isn't ready for beta testing yet but if you like to install the c
 
 The RCP Client is in a very early stage at the moment, but you can try it out to get a feeling how a rich client will feel in comparison to the traditional web interface which Squeezebox Server is using.
 
-We are currently in the process of moving the RCP client from being a prototype to something we are going to permanently include in the SMD project, eventually it's going to be available under the name *[http://en.wikipedia.org/wiki/Yggdrasil YGGDRASIL]*
+We are currently in the process of moving the RCP client from being a prototype to something we are going to permanently include in the SMD project, eventually it's going to be available under the name *[http://en.wikipedia.org/wiki/Yggdrasil Yggdrasil]*
 
 = Trying out the UPnP server =
 
@@ -87,8 +87,8 @@ You now need to build both SMD Server and SMD Frontend
 
 If you like the server to use a Squeezebox Server library, you also need to install the SMD Plugin in your Squeezebox Server
   # Configure one of the following development repositories in your Squeezebox Server in Settings/Plugins
-    * Official builds: http://socialmusicdiscovery.googlecode.com/svn/repository/development.xml
-    * Nightly builds: http://downloads.socialmusicdiscovery.org/smd-plugin/svn-development-repository.xml
+    * Official tested builds: http://socialmusicdiscovery.googlecode.com/svn/repository/development.xml
+    * Latest untested builds: http://downloads.socialmusicdiscovery.org/smd-plugin/svn-development-repository.xml
 
   # In Squeezebox Server inside Settings/Plugin, select to install "Social Music Discovery" which is available in the repository you just setup.
     * The development repository only contains the SMD Plugin without and server/frontend, so this installation differs from the above suggested installation for beta testing.
@@ -121,9 +121,9 @@ As a suitable further reading, it's suggested that you take a look at:
 
 = Installation for SMD client development / debugging =
 
-This installation is suitable for SMD client development. Since the Apache Pivot based frontend is just a temporary solution, it's not described here, instead this description focus on what's needed for the RCP based frontend.
+This installation is suitable for SMD client development. Since the Apache Pivot based frontend is just a temporary solution, it's not described here, instead this description focus on what's needed for the RCP based frontend called [Yggdrasil].
 
-Install the prerequisites which is needed to compile the frontend:
+Install the prerequisites which is needed to compile Yggdrasil:
   * Maven: http://maven.apache.org/
   * Java 6 JDK: http://www.oracle.com/technetwork/java/javase/downloads/index.html
     * The package under "Java Platform, Standard Edition" should be enough
@@ -134,14 +134,14 @@ You now need to build SMD Server
   * Check out the source code and build with maven
     * See the separate [BuildInstructions build instructions] page for more information about this
     * An alternative to building SMD Server, is to download the latest smd-plugin-full package from our download page: 
-      * Official builds: http://code.google.com/p/socialmusicdiscovery/downloads/list
-      * Nightly builds: http://downloads.socialmusicdiscovery.org/smd-server/
+      * Official tested builds: http://code.google.com/p/socialmusicdiscovery/downloads/list
+      * Latest untested builds: http://downloads.socialmusicdiscovery.org/smd-server/
       * You will need the smd-server-1.0-SNAPSHOT.jar bundled in this zip file.
 
 If you like the server to use a Squeezebox Server library, you also need to install the SMD Plugin in your Squeezebox Server
   # Configure one of the following development repositories in your Squeezebox Server in Settings/Plugins
-    * Official builds: http://socialmusicdiscovery.googlecode.com/svn/repository/development.xml
-    * Nightly builds: http://downloads.socialmusicdiscovery.org/smd-plugin/svn-development-repository.xml
+    * Official tested builds: http://socialmusicdiscovery.googlecode.com/svn/repository/development.xml
+    * Latest untested builds: http://downloads.socialmusicdiscovery.org/smd-plugin/svn-development-repository.xml
     * The development repository only contains the SMD Plugin without and server/frontend, so this installation differs from the above suggested installation for beta testing.
   # In Squeezebox Server inside Settings/Plugin, select to install "Social Music Discovery" which is available in the repository you just setup.
 
@@ -150,10 +150,11 @@ To start using you need to:
     * If you are running Squeezebox Server on a separate machine (somehost), you can instead use: java -Dsqueezeboxserver.host=somehost -jar smd-server-1.0-SNAPSHOT.jar
     * If you want an in-memory database filled with some sample data, you can instead use: java -Dorg.socialmusicdiscovery.server.database=h2-memory-test -jar smd-server-1.0-SNAPSHOT.jar
 
-To build the RCP client, follow the instructions described on the separate [PrototypeRCPClient RCP client page]
+To build the Yggdrasil, follow the instructions described on the separate [BuildInstructions build instructions]
 
 As a suitable further reading, it's suggested that you take a look at:
- * [PrototypeRCPClient Description of RCP client]
+ * [Yggdrasil Description of Yggdrasil (rich client)]
+ * [PrototypeRCPClient Previous description of RCP client prototype which now has become Yggdrasil]
  * Other documentation that might be of interest are:
    * [SoftwareSMDServer SMD Server design description]
    * [SoftwarePlugin SMD Plugin design description]
