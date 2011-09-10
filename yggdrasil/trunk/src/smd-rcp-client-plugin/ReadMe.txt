@@ -8,19 +8,27 @@ Please feel free to correct errors or add missing info!
 
 === To Build and Run from command line ===
 
-Prerequisite: you have maven and subversion installed. Instructions below 
-assume that "mvn" runs Maven and "svn" runs subvdersion.
+Prerequisite: you have Maven and Subversion command-line versions installed. 
+
+There are of course many other ways to check out and build, the instructions 
+below should be seen as guidelines. Instructions below assume that "mvn" runs 
+Maven and "svn" runs subversion.
+
+Please see wiki for exact, up-to-date details on how to check out and build server code.
   
-1. Use subversion to checkout server and client code (see wiki for details)
+1. Use subversion to checkout server and client code:
+   a. cd to some empty directory, e.g. "/smd" or "D:\smd"
+   b. svn checkout https://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src localserver
+   c. svn checkout https://socialmusicdiscovery.googlecode.com/svn/yggdrasil/trunk/src yggdrasil
 2. Use Maven to build server code
 	a. cd .../localserver
 	b. mvn install  
-2. Use Maven to build and run a standalone client
+3. Use Maven to build and run a standalone client
 	a. cd .../yggdrasil
 	b. mvn install
-3. Run client
+4. Run client
+   (with path and launcher name as generated for your platform)   
 	a. cd .../yggdrasil/smd-rcp-client/target/win32.win32.x86/eclipse
-	   (adjust path for your platform)
 	b. yggdrasil.exe
 	
 === To Build and Run in Eclipse === 
