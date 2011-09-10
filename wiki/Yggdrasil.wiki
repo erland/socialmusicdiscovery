@@ -21,7 +21,7 @@ Yggdrasil is in the process of moving out of the prototype directory. Meanwhile,
 This disclaimer will be removed when the yggdrasil relocation and refactoring seems stable.
 #summary Description of RCP Client
 
-= For Users =
+= To Download and Run =
 Latest pre-compiled nightly builds of RCP Client can be found here:
   * http://downloads.socialmusicdiscovery.org/smd-yggdrasil
 
@@ -29,13 +29,13 @@ Download, unzip into desired location, drill down to find the launcher (on Windo
 
 More info to be added ...
 
-= For Developers =
+= To Develop =
 Source code is available here: http://socialmusicdiscovery.googlecode.com/svn/yggdrasil
 
-Brief instructions on what you need to do to get it running is available in the Readme-file:
+Brief instructions on what you need to do to set up the development environment is available in the Readme-file:
   * http://socialmusicdiscovery.googlecode.com/svn/yggdrasil/smd-rcp-client-plugin/ReadMe.txt
 
-= Design Guidelines =
+== Design Guidelines ==
 Some brief and preliminary thoughts on the design principles for the RCP client. Comments expected and welcome!
 
   * JFace 
@@ -65,14 +65,14 @@ Some brief and preliminary thoughts on the design principles for the RCP client.
     * At the time of writing, the prototype is not localizable. We should of course change this at some point in time, using the built-in Eclipse/Java mechanisms to do so.
     * character set is UTF-8. All projects should have this setting defined, to avoid dependencies and failures due to bad workspace settings.
 
-= Developer Notes =
+== Developer Notes ==
 A few notes that may or may not be useful for RCP developers.
-== "FAQ" ==
+=== "FAQ" ===
   * Launcher doesn't launch  
     * Q: Sometime the launcher just won't launch stuff from within the IDE, even though everything seems to be in order. 
     * A: delete the launcher form the "Run Configurations" menu, and re-launch it by right-clicking the checked in launcher ("Run As - Eclipse Application")
 
-= External Links =
+== External Links ==
  * Peer's Eclipse links: http://snipurl.com/p2r-eclipse
  * Eclipse for RCP and RAP developers: http://www.eclipse.org/downloads/packages/eclipse-rcp-and-rap-developers/indigor 
  * SWT Designer (part of !WindowBuilder)
