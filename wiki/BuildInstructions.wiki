@@ -52,6 +52,7 @@ mvn eclipse:clean
 }}}
 
 = SMD server =
+For more information about SMD Server, click [SoftwareSMDServer here]
 
 The svn path is:
   * https://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-server/
@@ -63,11 +64,12 @@ To run, you build with maven as described above and then run:
   * java -jar smd-server-1.0-SNAPSHOT.jar
 
 = SMD frontend =
+For more information about SMD Server, click [SoftwareSMDFrontend here]
 
 The svn path is:
   * https://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-frontend/
 
-Latest pre-compiled binary version (if you don't want to build it locally):
+Latest untested pre-compiled binary version (if you don't want to build it locally):
   * http://downloads.socialmusicdiscovery.org/smd-frontend/
 
 To run, you build with maven as described above and then run:
@@ -75,6 +77,8 @@ To run, you build with maven as described above and then run:
 
 
 = SMD plugin =
+For more information about SMD Server, click [SoftwarePlugin here]
+
 The svn path is:
   * https://socialmusicdiscovery.googlecode.com/svn/localserver/trunk/src/smd-plugin/
 
@@ -88,14 +92,28 @@ To build the plugin with bundled server and frontend with maven:
   * mvn install -Dsmdsignpasswd=XXX
   (Where XXX is a secret password, contact Erland if you need it)
 
-The latest official build (with server/frontend bundled with plugin) is available in this repository which you can configure in SBS Settings/Plugins:
+The latest official tested build (with server/frontend bundled with plugin) is available in this repository which you can configure in SBS Settings/Plugins:
   * http://socialmusicdiscovery.googlecode.com/svn/repository/alpha.xml
 
-The latest official build (without server/frontend) is available in this repository which you can configure in SBS Settings/Plugins:
+The latest official tested build (without server/frontend) is available in this repository which you can configure in SBS Settings/Plugins:
   * http://socialmusicdiscovery.googlecode.com/svn/repository/development.xml
 
-The latest nightly build (with server/frontend bundled with plugin) is available in this repository which you can configure in SBS Settings/Plugins:
+The latest untested binary build (with server/frontend bundled with plugin) is available in this repository which you can configure in SBS Settings/Plugins:
   * http://downloads.socialmusicdiscovery.org/smd-plugin/svn-alpha-repository.xml
 
-The latest nightly build (without server/frontend) is available in this repository which you can configure in SBS Settings/Plugins:
+The latest untested binary build (without server/frontend) is available in this repository which you can configure in SBS Settings/Plugins:
   * http://downloads.socialmusicdiscovery.org/smd-plugin/svn-development-repository.xml
+
+= SMD Yggdrasil (formerly known as RCP Client) =
+For more information about SMD Yggdrasil, click [Yggdrasil here]
+
+The svn path is:
+  * https://socialmusicdiscovery.googlecode.com/svn/yggdrasil/trunk/src/
+
+Latest untested pre-compiled binary version (if you don't want to build it locally):
+  * http://downloads.socialmusicdiscovery.org/smd-yggdrasil/
+
+To run, you build with maven as described above and then run:
+  # Goto the *smd-rcp-client/target* directory
+  # Enter the sub directory for your platform
+  # Run the *launcher* inside the eclipse directory
