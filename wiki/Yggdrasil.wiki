@@ -23,12 +23,14 @@ This disclaimer will be removed when the yggdrasil relocation and refactoring se
 
 = For Users =
 Latest pre-compiled nightly builds of RCP Client can be found here:
-  * http://downloads.socialmusicdiscovery.org/yggdrasil/
+  * http://downloads.socialmusicdiscovery.org/smd-yggdrasil
+
+Download, unzip into desired location, drill down to find the launcher (on Windows, this will be called yggdrasil.exe).
 
 More info to be added ...
 
-= For developers =
-* The source code is available here: http://socialmusicdiscovery.googlecode.com/svn/yggdrasil
+= For Developers =
+Source code is available here: http://socialmusicdiscovery.googlecode.com/svn/yggdrasil
 
 Brief instructions on what you need to do to get it running is available in the Readme-file:
   * http://socialmusicdiscovery.googlecode.com/svn/yggdrasil/smd-rcp-client-plugin/ReadMe.txt
