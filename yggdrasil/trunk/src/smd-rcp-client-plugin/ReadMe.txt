@@ -7,15 +7,17 @@ These instructions are available both on the wiki and in Eclipse (wiki is linked
 Please feel free to correct errors or add missing info!
 
 === To Build and Run from command line ===
- 
+
+Prerequisite: you have maven and subversion installed. Instructions below 
+assume that "mvn" runs Maven and "svn" runs subvdersion.
+  
 1. Use subversion to checkout server and client code (see wiki for details)
 2. Use Maven to build server code
 	a. cd .../localserver
 	b. mvn install  
 2. Use Maven to build and run a standalone client
 	a. cd .../yggdrasil
-	b. svn update
-	c. mvn install
+	b. mvn install
 3. Run client
 	a. cd .../yggdrasil/smd-rcp-client/target/win32.win32.x86/eclipse
 	   (adjust path for your platform)
