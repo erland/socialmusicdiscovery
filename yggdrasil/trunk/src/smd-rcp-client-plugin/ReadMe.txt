@@ -1,4 +1,4 @@
-Some VERY brief notes on how to setup and run the RCP prototype client. 
+Some VERY brief notes on how to setup and run the "yggdrasil" RCP client. 
 
 These instructions are available both on the wiki and in Eclipse (wiki is linked to the actual page in SVN):
 * wiki: http://socialmusicdiscovery.googlecode.com/svn/yggdrasil/trunk/src/smd-rcp-client-plugin/ReadMe.txt
