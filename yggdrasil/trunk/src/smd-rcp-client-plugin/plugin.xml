@@ -29,6 +29,14 @@
                name="windowImages"
                value="icons/logo/DesenhodabandaYggDrasil+Y-16x16.png,icons/logo/DesenhodabandaYggDrasil+Y-32x32.png">
          </property>
+         <property
+               name="aboutText"
+               value="Yggdrasil manages the Social Music Discovery (SMD) repository. It is still under development.">
+         </property>
+         <property
+               name="aboutImage"
+               value="icons/logo/splash-104x104.png">
+         </property>
       </product>
    </extension>
    <extension

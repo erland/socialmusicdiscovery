@@ -462,7 +462,7 @@ public class DataSource extends AbstractObservable implements ModelObject {
 			if (!isLoaded && (isConnected || isAutoConnect)) {
 				JobUtil.run(new MyLoader(this), "Load content: "+name, false);
 			}
-			return sortedEntities.size()<mimimumSectionSize ? sortedEntities : sections;
+			return sortedEntities==null || sortedEntities.size()<mimimumSectionSize ? sortedEntities : sections;
 		}
 
 		@SuppressWarnings("unchecked")
