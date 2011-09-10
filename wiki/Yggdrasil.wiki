@@ -19,7 +19,6 @@ The preliminary logo was downloaded from [http://commons.wikimedia.org/wiki Wiki
 Yggdrasil is in the process of moving out of the prototype directory. Meanwhile, most information on the [PrototypeRCPClient Prototype RCP Client] is still valid, and the prototype client is probably more stable.
 
 This disclaimer will be removed when the yggdrasil relocation and refactoring seems stable.
-#summary Description of RCP Client
 
 = To Download and Run =
 Latest pre-compiled nightly builds of RCP Client can be found here:
