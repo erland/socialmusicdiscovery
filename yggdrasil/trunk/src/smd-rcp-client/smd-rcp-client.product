@@ -10,14 +10,14 @@
 Discovery (SMD) project, built on the Eclipse Rich Client Platform (RCP).
 
 The name Yggdrasil is taken from Norse mythology; it was said to be the 
-world tree around which the nine worlds existed. The branches extend far 
+world tree around which the nine worlds existed. Its branches extend far 
 into the heavens, and the tree is supported by three roots that extend 
 far away into other locations.
 
-In SMD, Yggdrasil connects metadata in the music library and allows the 
+In SMD, Yggdrasil connects metadata in the music library and allows its
 user to maintain both hard facts and subjective opinions about local or
-online music. It may not be the world tree around which everything 
-revolves, but is the view into this tree - the SMD repository - and the 
+online music. It is perhaps not the world tree around which everything 
+revolves, but rather the view into this tree - the SMD repository - and the 
 instrument for connecting the tree with heavens and other locations.
 
 NOTE: Yggdrasil is in active development - many features are still missing!
@@ -38,7 +38,7 @@ SMD: http://code.google.com/p/socialmusicdiscovery
 
    <splash
       location="smd-rcp-client-plugin" />
-   <launcher>
+   <launcher name="yggdrasil">
       <solaris/>
       <win useIco="false">
          <bmp/>
