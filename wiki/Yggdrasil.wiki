@@ -31,8 +31,9 @@ More info to be added ...
 
 = To Develop =
 The short story:
-* Source code: http://socialmusicdiscovery.googlecode.com/svn/yggdrasil
-* Instructions to set up the environment: http://socialmusicdiscovery.googlecode.com/svn/yggdrasil/trunk/src/smd-rcp-client-plugin/ReadMe.txt
+
+  * Source code: http://socialmusicdiscovery.googlecode.com/svn/yggdrasil
+  * Instructions to set up the environment: http://socialmusicdiscovery.googlecode.com/svn/yggdrasil/trunk/src/smd-rcp-client-plugin/ReadMe.txt
 
 For more info, read below.
 == Design Guidelines ==
