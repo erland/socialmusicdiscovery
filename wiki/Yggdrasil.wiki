@@ -33,7 +33,7 @@ More info to be added ...
 Source code is available here: http://socialmusicdiscovery.googlecode.com/svn/yggdrasil
 
 Brief instructions on what you need to do to set up the development environment is available in the Readme-file:
-  * http://socialmusicdiscovery.googlecode.com/svn/yggdrasil/smd-rcp-client-plugin/ReadMe.txt
+  * http://socialmusicdiscovery.googlecode.com/svn/yggdrasil/trunk/src/smd-rcp-client-plugin/ReadMe.txt
 
 == Design Guidelines ==
 Some brief and preliminary thoughts on the design principles for the RCP client. Comments expected and welcome!
