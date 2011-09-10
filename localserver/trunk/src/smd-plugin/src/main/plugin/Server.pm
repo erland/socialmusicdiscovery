@@ -82,7 +82,14 @@ sub start {
 		push @opts, "-Dsqueezeboxserver.passwordhash=" . $sprefs->get('password');
 	}
 
-	my @cmd = ("java", @opts, "-jar", "$smdServerPath");
+	# use server to search for java and convert to short path if windows
+	my $javaPath = Slim::Utils::Misc::findbin("java");
+	$javaPath = Slim::Utils::OSDetect::getOS->decodeExternalHelperPath($javaPath);
+
+	# fallback to Proc::Background finding java
+	$javaPath ||= "java";
+
+	my @cmd = ($javaPath, @opts, "-jar", "$smdServerPath");
 
 	$log->info("Starting smd-server");
 
