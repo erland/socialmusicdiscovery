@@ -10,6 +10,7 @@ Brief instructions on what you need to do to get it running is available in the 
 Latest pre-compiled nightly builds of RCP Client can be found here:
   * http://downloads.socialmusicdiscovery.org/smd-rcpclient/
 
+Please note that the RCP Client prototype is no longer maintained, we have now moved it from being a prototype into an official module called [Yggdrasil]
 = "Roadmap" =
 This section provides a very rough overview of things to do. For details, please refer to the shared [http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=Component%3DUI-RCPClient "todo list"]. 
 
