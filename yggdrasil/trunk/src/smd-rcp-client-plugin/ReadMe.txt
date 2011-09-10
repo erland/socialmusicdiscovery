@@ -29,7 +29,7 @@ Please see wiki for exact, up-to-date details on how to check out and build serv
 4. Run client
    (with path and launcher name as generated for your platform)   
 	a. cd .../yggdrasil/smd-rcp-client/target/win32.win32.x86/eclipse
-	b. yggdrasil.exe
+	b. yggdrasil.exe (or launcher.exe) 
 	
 === To Build and Run in Eclipse === 
 
