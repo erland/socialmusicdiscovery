@@ -24,18 +24,22 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="smd-rcp-client-plugin.application"
-            name="%product.name">
+            name="SMD Yggdrasil">
          <property
                name="windowImages"
-               value="icons/logo/DesenhodabandaYggDrasil+Y-16x16.png,icons/logo/DesenhodabandaYggDrasil+Y-32x32.png">
+               value="icons/logo/DesenhodabandaYggDrasil+Y-16x16.png,icons/logo/DesenhodabandaYggDrasil+Y-32x32.png,icons/logo/DesenhodabandaYggDrasil+Y-48x48.png,icons/logo/DesenhodabandaYggDrasil+Y-64x64.png,icons/logo/DesenhodabandaYggDrasil+Y-128x128.png">
          </property>
          <property
                name="aboutText"
-               value="Yggdrasil manages the Social Music Discovery (SMD) repository. It is still under development.">
+               value="Welcome to SMD Yggdrasil ALPHA, an evolving rich client for the Social Music &#x0D;&#x0A;Discovery (SMD) project, built on the Eclipse Rich Client Platform (RCP).&#x0D;&#x0A;&#x0D;&#x0A;The name Yggdrasil is taken from Norse mythology; it was said to be the &#x0D;&#x0A;world tree around which the nine worlds existed. The branches extend far &#x0D;&#x0A;into the heavens, and the tree is supported by three roots that extend &#x0D;&#x0A;far away into other locations.&#x0D;&#x0A;&#x0D;&#x0A;In SMD, Yggdrasil connects metadata in the music library and allows the &#x0D;&#x0A;user to maintain both hard facts and subjective opinions about local or&#x0D;&#x0A;online music. It may not be the world tree around which everything &#x0D;&#x0A;revolves, but is the view into this tree - the SMD repository - and the &#x0D;&#x0A;instrument for connecting the tree with heavens and other locations.&#x0D;&#x0A;&#x0D;&#x0A;NOTE: Yggdrasil is in active development - many features are still missing!&#x0D;&#x0A;&#x0D;&#x0A;Yggdrasil: http://code.google.com/p/socialmusicdiscovery/wiki/Yggdrasil&#x0D;&#x0A;SMD: http://code.google.com/p/socialmusicdiscovery">
          </property>
          <property
                name="aboutImage"
-               value="icons/logo/splash-104x104.png">
+               value="icons/logo/splash-250x250.png">
+         </property>
+         <property
+               name="appName"
+               value="SMD Yggdrasil">
          </property>
       </product>
    </extension>
