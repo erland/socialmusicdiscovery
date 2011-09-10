@@ -47,6 +47,7 @@
          point="org.eclipse.ui.intro">
       <intro
             class="org.eclipse.ui.intro.config.CustomizableIntroPart"
+            icon="icons/logo/DesenhodabandaYggDrasil+Y-16x16.png"
             id="smdrcp.intro">
       </intro>
       <introProductBinding
