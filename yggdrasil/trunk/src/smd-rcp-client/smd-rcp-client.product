@@ -38,7 +38,7 @@ SMD: http://code.google.com/p/socialmusicdiscovery
 
    <splash
       location="smd-rcp-client-plugin" />
-   <launcher name="yggdrasil">
+   <launcher>
       <solaris/>
       <win useIco="false">
          <bmp/>
