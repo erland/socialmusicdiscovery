@@ -1,14 +1,9 @@
 Some VERY brief notes on how to setup and run the RCP prototype client. 
 
 These instructions are available both on the wiki and in Eclipse (wiki is linked to the actual page in SVN):
-* wiki: http://socialmusicdiscovery.googlecode.com/svn/prototypes/ClientRCP_maven/smd-rcp-client-plugin/ReadMe.txt
+* wiki: http://socialmusicdiscovery.googlecode.com/svn/yggdrasil/trunk/src/smd-rcp-client-plugin/ReadMe.txt
 * Eclipse: /smd-rcp-client-plugin/ReadMe.txt 
  
-=== DISCLAIMER ===
-
-These instructions are preliminary and temporary for the prototype. 
-The setup for Eclipse 3.7 is not yet fully verified!
-
 Please feel free to correct errors or add missing info!
 
 === To Build and Run from command line ===
@@ -18,31 +13,34 @@ Please feel free to correct errors or add missing info!
 	a. cd .../localserver
 	b. mvn install  
 2. Use Maven to build and run a standalone client
-	a. cd .../ClientRCP_maven
+	a. cd .../yggdrasil
 	b. svn update
 	c. mvn install
 3. Run client
-	a. cd ClientRCP_maven/smd-rcp-client/target/win32.win32.x86/eclipse
+	a. cd .../yggdrasil/smd-rcp-client/target/win32.win32.x86/eclipse
 	   (adjust path for your platform)
-	b. launcher.exe
+	b. yggdrasil.exe
 	
 === To Build and Run in Eclipse === 
 
-1. Install Eclipse 3.7 for RCP developers: http://www.eclipse.org/downloads/packages/eclipse-rcp-and-rap-developers/indigor
+1. Install Eclipse 3.7 for RCP/RAP developers: http://www.eclipse.org/downloads/packages/eclipse-rcp-and-rap-developers/indigor
 2. Check out and build SMD code as described on the wiki: http://code.google.com/p/socialmusicdiscovery/wiki/BuildInstructions
 3. Import all client projects into Eclipse: 
    a. File - Import - General - Existing Projects into Workspace 
-   b. browse to .../ClientRCP_maven
+   b. browse to .../yggdrasil
    c. select at least the following projects:
       - smd-rcp-client
       - smd-rcp-client-feature
+      - smd-rcp-client-dependencies
       - smd-rcp-client-plugin
-      optional:
+      optional (but recommended):
       - smd-rcp-client-tests
       - smd-rcp-client-site
 4. Open the .target file that fits your platform (e.g. /smd-rcp-client/smd-rcp-client.win32.x86.target). 
    In the upper right hand corner, click "set as target platform" 
-5. Launch client: right-click 'smd-rcp.product.launch (<your OS>)' - 'Run As ...' - 'smd-rcp.product'.
+5. Launch client:
+   a. Recommended: open smd-rcp-client/smd-rcp-client.product. On the Overview tab, click Testing - 2. Test the application - Launch an Eclipse application
+   b. Alternative: right-click 'smd-rcp.product.launch (<your OS>)' - 'Run As ...' - 'smd-rcp.product'.
    Example: /smd-rcp-client-plugin/smd-rcp.product.launch (WIN32)
    
 === To work on the client === 
@@ -70,12 +68,13 @@ Please feel free to correct errors or add missing info!
      http://www.eclipse.org/swt/examples.php
     
 Some general notes and design guidelines are available on the wiki: 
-http://code.google.com/p/socialmusicdiscovery/wiki/PrototypeRCPClient
+http://code.google.com/p/socialmusicdiscovery/wiki/Yggdrasil
 
 === NOTES ===
 
 - Team Project Set 
-  For some reason, the exported Team Project Set (.../ClientRCP_maven/projectSet.psf) cannot be imported.
+  For some reason, an exported Team Project Set cannot be imported; local and SVN paths get mixed up. 
+  Not investigated further.
 - Subversion Plugin
   For some reason, the Eclipse/Polarion Subversive plugin has occasionally caused some problems, primarily 
   preventing import of projects that were checked out with command-line SVN. On recent experiments, the 
@@ -83,6 +82,12 @@ http://code.google.com/p/socialmusicdiscovery/wiki/PrototypeRCPClient
   ok at first attempt and has not presented any problems.
   Since the Subversive plugin seems to be favored by Eclipse, this should be the recommended option.
   However, since Subclipse seems to work better, it is our recommended option. 
+  Anyone who has the time an energy to sort out exactly how to setup and use Subversive with SMD yggdrasil 
+  is more than welcome to share this knowledge! 
 - Eclipse Development Target 
-  For some reason, we can not mabe Maven/Tycho produce a target platform that also includes Eclipse source and jUnit tests.
-  Alas, we use a temporary "development target platform" that adds the local Eclipse installation to the platform.
+  For some reason, we can not make Maven/Tycho produce a target platform that also includes Eclipse source 
+  and jUnit tests. Alas, we have to use a target platform that adds the online p2 repository to the platform.
+  This is unfortunate but not a disaster since the target is only used in development and does not depend on 
+  a local installation. We will have more features available thru this target platform than at runtime,
+  offering the opportunity to add dependencies to feature not available at runtime. However, any mistakes 
+  in this area will be rapidly detected when we try to build the client with Maven. 
