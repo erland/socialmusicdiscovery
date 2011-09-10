@@ -1,0 +1,44 @@
+# how to solve little problems
+
+= When I click on Import, nothing happens =
+
+*When I click on Import, nothing happensWhen I click on Import, nothing happens no progress info on the information page.*
+
+Check if you see any errors in the SBS server.log file.
+If there is nothing there, check if you have a smd-server.log file in the SBS log directory and check if it contains anything useful.
+
+Make sure you have Java 6 installed on the computer running Squeezebox Server.
+
+You can check the task manager and make sure there is a java process running, SBS should automatically startup the SMD java application in the background when SBS is started. The SMD java application communicates via port 9998 with SBS, so if you have a firewall installed, you might have to open that port. From how you describe it, it kind of sounds like the java server either has died or SBS isn't able to communicate with it. 
+
+
+= Does SMD work with 7.5.6? =
+
+Yes, SMD has been reported to work either on 7.5.4, 7.5.6 or 7.6.x branch.
+
+
+= Pending reported error #1 =
+
+{{{
+
+[11-09-10 11:42:26.2316] main::init (326) Starting Squeezebox Server (v7.5.6, r32834, Sat Aug  6 02:04:12 PDT 2011) perl 5.010000
+[11-09-10 11:42:27.1535] Slim::Utils::Strings::parseStrings (351) Error: Parsing line 1: ï»¿# Max Spicer, May 2007
+[11-09-10 11:47:09.7631] Plugins::SocialMusicDiscovery::Server::__ANON__ (166) error POST http://musik:9998/mediaimportmodules/squeezeboxserver: Connect timed out: Bad file descriptor
+[11-09-10 11:47:09.7855] Plugins::SocialMusicDiscovery::Importer::_smdServerError (199) Import into SMD failed: Unable to contact SMD server
+[11-09-10 11:47:50.4649] Plugins::SocialMusicDiscovery::Server::__ANON__ (166) error POST http://localhost:9998/mediaimportmodules/squeezeboxserver: Connect timed out: Bad file descriptor
+[11-09-10 11:47:50.5285] Plugins::SocialMusicDiscovery::Importer::_smdServerError (199) Import into SMD failed: Unable to contact SMD server
+[11-09-10 11:47:52.0427] Slim::Utils::Misc::msg (1165) Warning: [11:47:52.0424] Use of uninitialized value in concatenation (.) or string at /<C:\Program\SQUEEZ~1\server\SQUEEZ~3.EXE>Slim/Networking/SimpleAsyncHTTP.pm line 377.
+[11-09-10 11:47:52.1379] Slim::Formats::XML::gotErrorViaHTTP (347) Error: getting http://www.sr.se/cgi-bin/rssfeed/rssfeed.aspx?rssfeed=83
+404 Sidan kan inte hittas
+[11-09-10 11:47:52.1382] Slim::Plugin::RSSNews::Plugin::gotError (371) While loading feed http://www.sr.se/cgi-bin/rssfeed/rssfeed.aspx?rssfeed=83: 404 Sidan kan inte hittas, skipping!
+
+}}}
+
+
+= Pending reported error #2 =
+
+{{{
+[11-09-10 12:25:29.7189] main::init (345) Starting Squeezebox Server (v7.6.0, r31373, Mon Sep 27 02:09:12 PDT 2010) perl 5.010000
+[11-09-10 12:26:39.1879] Plugins::SocialMusicDiscovery::Server::__ANON__ (166) error GET http://192.168.xxxx.xx:9998/browse/library: Connect timed out: Bad file descriptor
+[11-09-10 12:26:39.2364] Slim::Networking::IO::Select::__ANON__ (146) Error: Select task failed calling Slim::Networking::Async::_async_connect: ; fh=Slim::Networking::Async::Socket::HTTP=GLOB(0x885d15c)
+}}}
