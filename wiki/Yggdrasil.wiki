@@ -30,11 +30,11 @@ Download, unzip into desired location, drill down to find the launcher (on Windo
 More info to be added ...
 
 = To Develop =
-Source code is available here: http://socialmusicdiscovery.googlecode.com/svn/yggdrasil
+The short story:
+* Source code: http://socialmusicdiscovery.googlecode.com/svn/yggdrasil
+* Instructions to set up the environment: http://socialmusicdiscovery.googlecode.com/svn/yggdrasil/trunk/src/smd-rcp-client-plugin/ReadMe.txt
 
-Brief instructions on what you need to do to set up the development environment is available in the Readme-file:
-  * http://socialmusicdiscovery.googlecode.com/svn/yggdrasil/trunk/src/smd-rcp-client-plugin/ReadMe.txt
-
+For more info, read below.
 == Design Guidelines ==
 Some brief and preliminary thoughts on the design principles for the RCP client. Comments expected and welcome!
 
