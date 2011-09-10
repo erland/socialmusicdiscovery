@@ -82,13 +82,13 @@ sub start {
 		push @opts, "-Dsqueezeboxserver.passwordhash=" . $sprefs->get('password');
 	}
 
-	my $cmdString = join(' ', ("java", @opts, "-jar $smdServerPath"));
+	my @cmd = ("java", @opts, "-jar", "$smdServerPath");
 
 	$log->info("Starting smd-server");
 
-	$log->debug("cmdline: $cmdString");
+	$log->debug("cmdline: ", join(' ', @cmd));
 
-	$server = Proc::Background->new({'die_upon_destroy' => 1}, $cmdString);
+	$server = Proc::Background->new({'die_upon_destroy' => 1}, @cmd);
 
 	if (!$class->running) {
 		$log->error("Unable to launch smd-server");
