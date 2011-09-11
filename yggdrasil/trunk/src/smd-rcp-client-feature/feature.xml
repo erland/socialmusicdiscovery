@@ -2,7 +2,8 @@
 <feature
       id="smd-rcp-client-feature"
       label="SMD RCP Client Feature"
-      version="1.0.0.qualifier">
+      version="1.0.0.qualifier"
+      provider-name="SMD, the Social Music Discovery project">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -22,6 +23,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
    <plugin
          id="org.socialmusicdiscovery.smd-server-client-osgi"
          download-size="0"
@@ -44,11 +46,11 @@
          unpack="false"/>
 
    <plugin
-        id="javax.inject"
-        download-size="0"
-        install-size="0"
-        version="0.0.0"
-        unpack="false"/>
+         id="javax.inject"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
          id="javax.ws.rs.jsr311-api"
@@ -112,17 +114,5 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
- org.eclipse.ui,
- org.eclipse.core.runtime,
- org.eclipse.ui.intro,
- org.eclipse.ui.forms,
- org.eclipse.swt,
- org.eclipse.core.databinding,
- org.eclipse.core.databinding.beans,
- org.eclipse.core.databinding.observable,
- org.eclipse.core.databinding.property,
- org.eclipse.jface.databinding,
- org.eclipse.core.expressions,
 
 </feature>

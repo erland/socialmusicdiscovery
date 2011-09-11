@@ -93,3 +93,4 @@ Export-Package: com.google.gson,
  org.socialmusicdiscovery.server.support.format.provider,
  org.socialmusicdiscovery.server.support.json
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: SMD, the Social Music Discovery project
