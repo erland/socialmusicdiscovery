@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Dependencies
-Bundle-SymbolicName: dependencies
+Bundle-SymbolicName: org.socialmusicdiscovery.dependencies
 Bundle-Version: 1.0.0
 Bundle-ClassPath: target/dependencies/gson-1.6.jar,
  target/dependencies/guice-3.0.jar,
@@ -60,10 +60,10 @@ Export-Package: com.google.gson,
  com.sun.jersey.spi.inject,
  com.sun.jersey.spi.service,
  com.sun.ws.rs.ext,
+ javax.inject,
  javax.ws.rs,
  javax.ws.rs.core,
  javax.ws.rs.ext,
- javax.inject,
  org.apache.commons.beanutils,
  org.apache.commons.beanutils.converters,
  org.apache.commons.beanutils.expression,
