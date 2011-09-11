@@ -1,25 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="target/dependencies/commons-lang-2.6.jar" sourcepath="target/dependencies/commons-lang-2.6-sources.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry exported="true" kind="lib" path="lib/grid-1.0.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/calendarcombo-1.0.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/cdatetime-0.14.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/cwt-0.9.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/datechooser-1.0.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/formattedtext-1.0.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/swt-grouplayout.jar"/>
-	<classpathentry exported="true" kind="lib" path="target/dependencies/commons-beanutils-1.8.3.jar" sourcepath="target/dependencies/commons-beanutils-1.8.3-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="target/dependencies/commons-logging-1.1.1.jar" sourcepath="target/dependencies/commons-logging-1.1.1-sources.jar"/>
-	<classpathentry kind="lib" path="lib/pshelf-1.0.0.jar" sourcepath="pshelf-1.0.0-src.zip"/>
-	<classpathentry exported="true" kind="lib" path="target/dependencies/smd-server-client-osgi-1.0-SNAPSHOT.jar" sourcepath="target/dependencies/smd-server-client-osgi-1.0-SNAPSHOT-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="target/dependencies/jsr311-api-1.0.jar" sourcepath="target/dependencies/jsr311-api-1.0-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="target/dependencies/jersey-client-1.6.jar" sourcepath="target/dependencies/jersey-client-1.6-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="target/dependencies/jersey-core-1.6.jar" sourcepath="target/dependencies/jersey-core-1.6-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="target/dependencies/guice-3.0.jar" sourcepath="target/dependencies/guice-3.0-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="target/dependencies/javax.inject-osgi-1.jar" sourcepath="target/dependencies/javax.inject-osgi-1-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="target/dependencies/gson-1.6.jar" sourcepath="target/dependencies/gson-1.6-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/grid-1.0.0.jar" sourcepath="lib/grid-1.0.0-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/pshelf-1.0.0.jar" sourcepath="lib/pshelf-1.0.0-src.zip"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
