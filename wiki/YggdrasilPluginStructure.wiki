@@ -7,7 +7,14 @@ Some notes on the plugin structure of the Yggdrasil RCP client.
 We separate the client in a few main parts. The basic idea is to have a small base product that is easily installed and rarely updated, and to use an update site to maintain the other components. 
 
 = Refactoring In Progress =
-The current structure is being refactored. The sketch below illustrates the suggested changes. The sketch is available as a Visual Paradigm model/diagram in the SVN repository: https://socialmusicdiscovery.googlecode.com/svn/wiki/Yggdrasil/ProjectStructureDiagram.vpp
+The current structure is being refactored. The sketch below illustrates the suggested changes. The sketch is saved from a Visual Paradigm model  in the SVN repository: https://socialmusicdiscovery.googlecode.com/svn/wiki/Yggdrasil/ProjectStructureDiagram.vpp
 
+Note: you may need to open the image in an external viewer to see the details.
 
 [http://socialmusicdiscovery.googlecode.com/svn/wiki/Yggdrasil/ProjectStructureDiagram.png]
+
+The essential objectives are:
+  * Separate product packaging and branding from source code. Hence the single plug-in "yggdrasil" that holds all product info, the application extension and logo and splash images.
+  * Separate our code from third-party components. Hence the "dependencies" container plug-in. This holds .jar files, downloaded by Maven or checked into SVN, and also our own framework for the client code; general utilities, data source framework and fundamental interfaces.
+  * Allow download from update site. Hence the "site" and "feature" projects - update sites seem to prefer features over plug-ins? These are mere container and hold no code. They also offer a way to repackage the client if/when the need arises.
+  * Allow others to extend the basic client with new components, or to offer replacements for our defaults (e.g. better navigator or editors). hence the separation between the navigator and the editors for the core and the subjective model.
