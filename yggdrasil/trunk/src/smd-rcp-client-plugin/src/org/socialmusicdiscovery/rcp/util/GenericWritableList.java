@@ -78,18 +78,15 @@ public class GenericWritableList<T> extends WritableList {
 		super(realm, c, elementType);
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	public Iterator<T> iterator() {
 		return super.iterator();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public T[] toArray() {
 		return (T[]) super.toArray();
 	}
-	@SuppressWarnings("unchecked")
 	@Override
 	public T[] toArray(Object[] a) {
 		return (T[]) super.toArray(a);

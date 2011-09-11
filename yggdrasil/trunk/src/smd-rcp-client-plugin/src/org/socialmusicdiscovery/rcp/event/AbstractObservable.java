@@ -35,6 +35,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.socialmusicdiscovery.rcp.error.FatalApplicationException;
+import org.socialmusicdiscovery.rcp.util.GenericWritableList;
+import org.socialmusicdiscovery.rcp.util.GenericWritableSet;
 
 /**
  * Basic implementation that delegates all calls to an internal
@@ -130,12 +132,25 @@ public abstract class AbstractObservable implements Observable {
 	}
 
 	/**
+	 * Update content of existing set, retaining the instance. Convenience method to eliminate 
+	 * type conformance warnings from subclasses. Could probably be fixed by other complier settings 
+	 * or smarter signature.
+	 * @param propertyName
+	 * @param existingSet
+	 * @param newContent
+	 */
+	@SuppressWarnings("unchecked")
+	protected <T> void updateSet(String propertyName, GenericWritableSet<T> existingSet, Collection<? extends T> newContent) {
+		updateSet(propertyName, (Set<T>)existingSet, newContent);
+	}
+	
+	/**
 	 * Update content of existing set, retaining the instance.
 	 * @param propertyName
 	 * @param existingSet
 	 * @param newContent
 	 */
-	protected <T> void updateSet(String propertyName, Set<T> existingSet, Collection<T> newContent) {
+	protected <T> void updateSet(String propertyName, Set<T> existingSet, Collection<? extends T> newContent) {
 		try {
 			Set<T> oldContent = existingSet.getClass().newInstance();
 			oldContent.addAll(existingSet);
@@ -149,6 +164,18 @@ public abstract class AbstractObservable implements Observable {
 		}
 	}
 
+	/**
+	 * Update content of existing list, retaining the instance. Convenience method to eliminate 
+	 * type conformance warnings from subclasses. Could probably be fixed by other complier settings 
+	 * or smarter signature.
+	 * @param propertyName
+	 * @param existingList
+	 * @param newContent
+	 */
+	@SuppressWarnings("unchecked")
+	protected <T> void updateList(String propertyName, GenericWritableList<T> existingList, Collection<T> newContent) {
+		updateList(propertyName, (List<T>) existingList, newContent);
+	}
 	/**
 	 * Update content of existing list, retaining the instance.
 	 * @param propertyName

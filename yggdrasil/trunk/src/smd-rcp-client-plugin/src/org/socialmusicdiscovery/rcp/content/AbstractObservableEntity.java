@@ -194,7 +194,6 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 	 * Convenience method for subclasses. 
 	 * @return {@link Root} for this instance
 	 */
-	@SuppressWarnings("unchecked")
 	protected Root<T> getRoot() {
 		return (Root<T>) getDataSource().resolveRoot(this);
 	}

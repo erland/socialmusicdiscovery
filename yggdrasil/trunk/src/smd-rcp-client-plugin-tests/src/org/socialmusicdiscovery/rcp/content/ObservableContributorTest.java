@@ -35,7 +35,6 @@ import org.socialmusicdiscovery.rcp.test.MultiPurposeListener;
 /**
  * @author Peer Törngren
  */
-@SuppressWarnings("unchecked")
 public class ObservableContributorTest extends AbstractTestCase {
 
 

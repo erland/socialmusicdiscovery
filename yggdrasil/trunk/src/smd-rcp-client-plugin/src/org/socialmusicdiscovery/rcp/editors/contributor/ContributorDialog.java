@@ -76,7 +76,6 @@ public class ContributorDialog extends AbstractEditorDialog<ObservableContributo
 			return haveArtist && haveType;
 		}
 		
-		@SuppressWarnings("unchecked")
 		private boolean isUnique(Contributor prospect) {
 			Set<Contributor> contributors = owner.getContributors();
 			for (Contributor c : contributors) {

@@ -261,7 +261,6 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		private final Set<ObservableEntity> toDelete;
 		private final Set<ObservableEntity> toSave;
 		
-		@SuppressWarnings("unchecked")
 		private MyInnerPersistor(Shell shell, ObservableEntity entity) {
 			this.shell = shell;
 			this.entity = entity;
@@ -433,7 +432,6 @@ public class DataSource extends AbstractObservable implements ModelObject {
 		}
 		
 		// TODO fix generics, eliminate warning
-		@SuppressWarnings("unchecked")
 		private <O extends ObservableEntity<T>> O getOrStore(T serverObject) {
 			return (O) cache.getOrStore(serverObject);
 		}

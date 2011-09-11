@@ -252,7 +252,6 @@ import com.google.gson.annotations.Expose;
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private <T> T getFieldValue(Field f, Object object) {
 		try {
 			return (T) f.get(object);

@@ -126,7 +126,6 @@ import org.socialmusicdiscovery.rcp.util.ChangeMonitor.PropertyData;
 		runner.run();
 	}
 
-	@SuppressWarnings("unchecked")
 	private void handleChangedCollection(PropertyChangeEvent evt) {
 		Collection<Observable> oldValue = (Collection<Observable>) evt.getOldValue();
 		Collection<Observable> newValue = (Collection<Observable>) evt.getNewValue();
