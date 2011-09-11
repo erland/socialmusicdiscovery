@@ -36,6 +36,8 @@ To start using it, you need to:
       * Single click on an artist to see related releases and works
       * Single click on a work to see related releases or artists
 
+If you get some problem, look in the [TroubleshootingFAQ troubleshooting FAQ] and if that doesn't help post details about your problem in the [http://forums.slimdevices.com/showthread.php?t=90278 announcement thread].
+
 = Trying out the RCP Client =
 
 The RCP Client isn't ready for beta testing yet but if you like to install the current version just to see how it looks like, you should do as follows.
@@ -50,6 +52,8 @@ The RCP Client isn't ready for beta testing yet but if you like to install the c
 The RCP Client is in a very early stage at the moment, but you can try it out to get a feeling how a rich client will feel in comparison to the traditional web interface which Squeezebox Server is using.
 
 We are currently in the process of moving the RCP client from being a prototype to something we are going to permanently include in the SMD project, eventually it's going to be available under the name *[http://en.wikipedia.org/wiki/Yggdrasil Yggdrasil]*
+
+If you get some problem, look in the [TroubleshootingFAQ troubleshooting FAQ] and if that doesn't help post details about your problem in the [http://forums.slimdevices.com/showthread.php?t=90278 announcement thread].
 
 = Trying out the UPnP server =
 
@@ -70,6 +74,9 @@ Some things to note:
   * The UPnP server currently have incompatibility issues with some UPnP clients.
     * Look at the page [AboutUPnP about the UPnP server] for some information about which clients we have tried it with and know are working fairly good.
     * We know there are major issues with the [www.plugplayer.com OSX/iOS PlugPlayer app] and are working on trying to solve that.
+
+
+If you get some problem, look in the [TroubleshootingFAQ troubleshooting FAQ] and if that doesn't help post details about your problem in the [http://forums.slimdevices.com/showthread.php?t=90278 announcement thread].
 
 = Installation for SMD Server development / debugging =
 
