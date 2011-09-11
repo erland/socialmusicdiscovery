@@ -1,0 +1,8 @@
+#summary One-sentence summary of this page.
+
+= Introduction =
+
+Some notes on the plugin structure of the Yggdrasil RCP client.
+
+
+= Details =
