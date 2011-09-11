@@ -1,4 +1,4 @@
-#summary Some notes on the architecture and plugin structure of the Yggdrasil RCP client.
+#summary Some notes on the plugin structure of the Yggdrasil RCP client.
 
 = Introduction =
 
@@ -11,7 +11,7 @@ Note: you may need to open the image in an external viewer to see the details.
 
 [http://socialmusicdiscovery.googlecode.com/svn/wiki/Yggdrasil/ProjectStructureDiagram.png]
 
-==Refactoring Objectives==
+==Refactoring Objectives and Rationale==
   * Separate product packaging and branding from source code. Hence the single plug-in "yggdrasil" that holds all product info, the application extension and logo and splash images.
   * Separate business logic from technical features and third-party components. Hence the "foundation" plug-in. This holds .jar files, downloaded by Maven or checked into SVN, and also our own framework for the client code - this includes general utilities, the data source framework for connecting to the SMD server, and some fundamental classes and interfaces that editors and viewers operate on.
   * Allow download from update site. Hence the "site" and "feature" projects - update sites seem to prefer features over plug-ins? These are mere container and hold no code. They also offer a way to repackage the client if/when the need arises.
