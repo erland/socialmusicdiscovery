@@ -2,7 +2,8 @@
 
 = Introduction =
 
-Some notes on the plugin structure of the Yggdrasil RCP client.
+Some notes on the plugin structure of the Yggdrasil RCP client. 
 
+We separate the client in a few main parts. The basic idea is to have a small base product that is easily installed and rarely updated, and to use an update site to maintain the other components. 
 
-= Details =
+The current structure is being refactored. The sketch below illustrates the suggested changes. The sketch is available as a Visual Paradigm model/diagram in the SVN repository (same folder as the .PNG image).
