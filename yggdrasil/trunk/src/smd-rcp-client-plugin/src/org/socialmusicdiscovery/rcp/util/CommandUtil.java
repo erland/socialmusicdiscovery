@@ -67,7 +67,6 @@ public final class CommandUtil {
 
 	private CommandUtil() {}
 
-	@SuppressWarnings("unchecked")
 	public static <T> T getDefaultVariable(ExecutionEvent event) {
 		EvaluationContext ctx = (EvaluationContext) event.getApplicationContext();
 		T result = (T) ctx.getDefaultVariable();

@@ -77,7 +77,6 @@ public class TrackDialog extends AbstractEditorDialog<ObservableTrack> {
 			return template.getRecording()!=null;
 		}
 		
-		@SuppressWarnings("unchecked")
 		private boolean isUnique(Track prospect) {
 			List<Track> tracks = release.getTracks();
 			for (Track t : tracks) {

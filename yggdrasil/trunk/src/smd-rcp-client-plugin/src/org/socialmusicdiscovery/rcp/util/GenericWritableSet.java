@@ -68,7 +68,6 @@ public class GenericWritableSet<T> extends WritableSet {
 		super(realm, c, elementType);
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	public Iterator<T> iterator() {
 		return super.iterator();

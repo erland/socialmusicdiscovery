@@ -140,7 +140,6 @@ public abstract class AbstractEditorPart<T extends AbstractEditableEntity, U ext
 		model.inflate();
 	}
 
-	@SuppressWarnings("unchecked")
 	private T resolveModel() {
 		return (T) getEditorInput();
 	}
@@ -225,7 +224,6 @@ public abstract class AbstractEditorPart<T extends AbstractEditableEntity, U ext
 		return ui;
 	}
 
-	@SuppressWarnings("unchecked")
 	protected T getEntity() {
 		T entity = (T) getEditorInput().getAdapter(AbstractEditableEntity.class);
 		assert getEditorInput()==null || entity!=null : "Input is not an "+AbstractObservableEntity.class+": "+getEditorInput();

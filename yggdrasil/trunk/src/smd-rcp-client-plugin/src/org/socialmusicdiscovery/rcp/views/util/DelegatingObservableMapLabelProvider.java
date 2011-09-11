@@ -64,7 +64,6 @@ public class DelegatingObservableMapLabelProvider extends ObservableMapLabelProv
 		this.delegates = providers;
 	}
 
-	@SuppressWarnings("unchecked") // stupid warning, why? Should perhaps change compiler settings
 	private static IObservableMap[] createAttributeMap(IObservableSet knownElements, AbstractColumnLabelProviderDelegate... baseProviders) {
 		List<String> propertyNamesToObserve = new ArrayList<String>();
 		for (AbstractColumnLabelProviderDelegate baseProvider : baseProviders) {

@@ -113,7 +113,7 @@ public abstract class AbstractColumnLabelProviderDelegate<T> extends ColumnLabel
 	protected String safeNumber(Number numberOrNull) {
 		return numberOrNull==null ? "" : numberOrNull.toString();
 	}
-	@SuppressWarnings("unchecked")
+
 	protected <V> V getValue(Object element, String propertyName) {
 		try {
 			return (V) PropertyUtils.getProperty(element, propertyName);

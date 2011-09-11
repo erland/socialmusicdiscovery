@@ -127,8 +127,7 @@ public final class WorkbenchUtil {
 		return window;
 	}
 
-	 @SuppressWarnings("unchecked")
-	public static <T> T getService(Class<?> api) {
+	 public static <T> T getService(Class<?> api) {
 		return (T) getWindow().getService(api);
 	}
 	 
