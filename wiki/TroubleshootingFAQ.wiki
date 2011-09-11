@@ -1,44 +1,57 @@
-# how to solve little problems
+#summary How to solve installation/configuration issues
+=Troubleshooting FAQ=
+This page will show how to debug and solve different kinds of issues which can occur when installing and configuring SMD.
 
-= When I click on Import, nothing happens =
+==When I click on Import, nothing happens==
 
-_When I click on Import, nothing happensWhen I click on Import, nothing happens no progress info on the information page._
+The usual problem when this happens is that the SMD java server isn't running. The SMD java server should be started automatically when you start Squeezebox Server. 
 
-Check if you see any errors in the SBS server.log file.
-If there is nothing there, check if you have a smd-server.log file in the SBS log directory and check if it contains anything useful.
+Look in the server.log (found through *Squeezebox Server Settings/Advanced/Logging*) and you will typically see something like this in the log:
+{{{
+[11-09-10 11:47:09.7855] Plugins::SocialMusicDiscovery::Importer::_smdServerError (199) Import into SMD failed: Unable to contact SMD server
+[11-09-10 11:47:50.4649] Plugins::SocialMusicDiscovery::Server::__ANON__ (166) error POST http://localhost:9998/mediaimportmodules/squeezeboxserver: Connect timed out: Bad file descriptor
+}}}
 
-Make sure you have Java 6 installed on the computer running Squeezebox Server.
+To check if SMD java server is running, you can look in the task manager for a java process.
 
-You can check the task manager and make sure there is a java process running, SBS should automatically startup the SMD java application in the background when SBS is started. The SMD java application communicates via port 9998 with SBS, so if you have a firewall installed, you might have to open that port. From how you describe it, it kind of sounds like the java server either has died or SBS isn't able to communicate with it. 
+Note that Java 6 or later is required, so make sure to install that in case you haven't done so already, if you are running Windows you will find it here:
+http://www.java.com/inc/BrowserRedirect1.jsp
+
+Java 6 is also required on the desktop/laptop if you are using the SBS web interface on another computer than where SBS is running and you want to be able to use the smd-frontend which can be reached through the *Extras/Social Music Discovery* menu in SBS web interface.
+
+The SMD java server will communicate using port 9998 by default, so if you have a firewall installed you might have to open access to this port. 
+
+*To debug the problem further:*
+  # Activate "debug" logging level on "plugin.socialmusicdiscovery" in *Squeezebox Server Settings/Advanced/Social Music Discovery*
+  # Make sure the *Save logging settings for use at next application restart* checkbox is checked
+  # Restart Squeezebox Server
+  # After it has started, look in the server.log and see if you see something useful.
 
 
-= Does SMD work with 7.5.6? =
+If you see something like this:
+{{{
+[11-09-11 00:02:13.1161] Plugins::SocialMusicDiscovery::Server::start (47) not starting smd-server as hostname is not set to localhost
+}}}
+The issue is that you have configured a IP-address or hostname in *Squeezebox Server Settings/Advanced/Social Music Discovery*, the *SMD Server hostname/IP-address* parameter should only be set to something else than *localhost* if you want to start SMD server manually on another computer than the one Squeezebox Server is running on.
+
+
+If you see something like this:
+{{{
+[11-09-10 12:47:23.2015] Plugins::SocialMusicDiscovery::Server::start (87) Starting smd-server
+[11-09-10 12:47:23.2017] Plugins::SocialMusicDiscovery::Server::start (89) cmdline: java -Dorg.socialmusicdiscovery.server.database.directory=C:\Documents and Settings\All Users\Application Data\Squeezebox\Cache -Dorg.socialmusicdiscovery.server.daemon=true -Dorg.socialmusicdiscovery.server.port=9998 -Dorg.socialmusicdiscovery.server.stdout=C:\Documents and Settings\All Users\Application Data\Squeezebox\Logs\smd-server.log -Dorg.socialmusicdiscovery.server.stderr=C:\Documents and Settings\All Users\Application Data\Squeezebox\Logs\smd-server.log -jar C:\Documents and Settings\All Users\Application Data\Squeezebox\Cache\InstalledPlugins\Plugins\SocialMusicDiscovery\smd-server-1.0-SNAPSHOT.jar
+}}}
+It's an indication that it tried to start the SMD server but it probably crashed some time later. There was a known issue in the 0.1.919 build where it wasn't started because Java wasn't found and because of space characters in directory names, this should be fixed in the 0.1.954 build. If the log looks like above and the problem remains in 0.1.954 or later builds, please look in the smd-server.log file in the SBS log directory (found through Squeezebox Server Settings/Advanced/Logging) and report any errors in the [http://forums.slimdevices.com/showthread.php?t=90278 announcement thread].
+
+
+*If none of the above is the problem, try the following:*
+  # Start SBS
+  # Open a command prompt
+  # Change directory to the SBS cache directory, for example: *cd "C:\Documents and Settings\All Users\Application Data\Squeezebox\Cache"*
+  # In the command prompt run: *java -jar InstalledPlugins\Plugins\SocialMusicDiscovery\smd-server-1.0-SNAPSHOT.jar*
+  # If the command returns to the prompt, something is wrong, in that case look for any errors in the command prompt window. If it is not returned to the prompt it means the SMD server was able to start successfully. We still need to investigate why, so please report in the [http://forums.slimdevices.com/showthread.php?t=90278 announcement thread] if this happens, but you can now run an import and try SMD with the manually started server.
+
+== Does SMD work with 7.5.6? ==
 
 Yes, SMD has been reported to work either on 7.5.4, 7.5.6 or 7.6.x branch.
 
-
-= Pending reported error #1 =
-
-{{{
-
-[11-09-10 11:42:26.2316] main::init (326) Starting Squeezebox Server (v7.5.6, r32834, Sat Aug  6 02:04:12 PDT 2011) perl 5.010000
-[11-09-10 11:42:27.1535] Slim::Utils::Strings::parseStrings (351) Error: Parsing line 1: ï»¿# Max Spicer, May 2007
-[11-09-10 11:47:09.7631] Plugins::SocialMusicDiscovery::Server::__ANON__ (166) error POST http://musik:9998/mediaimportmodules/squeezeboxserver: Connect timed out: Bad file descriptor
-[11-09-10 11:47:09.7855] Plugins::SocialMusicDiscovery::Importer::_smdServerError (199) Import into SMD failed: Unable to contact SMD server
-[11-09-10 11:47:50.4649] Plugins::SocialMusicDiscovery::Server::__ANON__ (166) error POST http://localhost:9998/mediaimportmodules/squeezeboxserver: Connect timed out: Bad file descriptor
-[11-09-10 11:47:50.5285] Plugins::SocialMusicDiscovery::Importer::_smdServerError (199) Import into SMD failed: Unable to contact SMD server
-[11-09-10 11:47:52.0427] Slim::Utils::Misc::msg (1165) Warning: [11:47:52.0424] Use of uninitialized value in concatenation (.) or string at /<C:\Program\SQUEEZ~1\server\SQUEEZ~3.EXE>Slim/Networking/SimpleAsyncHTTP.pm line 377.
-[11-09-10 11:47:52.1379] Slim::Formats::XML::gotErrorViaHTTP (347) Error: getting http://www.sr.se/cgi-bin/rssfeed/rssfeed.aspx?rssfeed=83
-404 Sidan kan inte hittas
-[11-09-10 11:47:52.1382] Slim::Plugin::RSSNews::Plugin::gotError (371) While loading feed http://www.sr.se/cgi-bin/rssfeed/rssfeed.aspx?rssfeed=83: 404 Sidan kan inte hittas, skipping!
-
-}}}
-
-
-= Pending reported error #2 =
-
-{{{
-[11-09-10 12:25:29.7189] main::init (345) Starting Squeezebox Server (v7.6.0, r31373, Mon Sep 27 02:09:12 PDT 2010) perl 5.010000
-[11-09-10 12:26:39.1879] Plugins::SocialMusicDiscovery::Server::__ANON__ (166) error GET http://192.168.xxxx.xx:9998/browse/library: Connect timed out: Bad file descriptor
-[11-09-10 12:26:39.2364] Slim::Networking::IO::Select::__ANON__ (146) Error: Select task failed calling Slim::Networking::Async::_async_connect: ; fh=Slim::Networking::Async::Socket::HTTP=GLOB(0x885d15c)
-}}}
+There is a known problem with 7.5.x releases where the import in *Squeezebox Server Settings/Information* will report that scanning is finished even if import is still in progress. Don't worry about this, if the progress bards for the Social Music Discovery phases are progressing it means that the import is running.
