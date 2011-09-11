@@ -52,7 +52,7 @@ Some brief and preliminary thoughts on the design principles for the RCP client.
     * Now (Eclipse 3.x): we run with the default appearance produced by the Forms Toolkit. 
     * Then (Eclipse 4): we use the new (CSS-oriented) way of styling the application. It is too much work to do that using the current platform.
   * Target platform - a pre-configured RCP target platform is downloaded and provided by Maven. This includes the RCP base framework and all desired plug-ins to avoid the dependency on individual installations.
-  * Plug-in Component structure - we separate the client in a few main parts. The basic idea is to have a small base product that is easily installed and rarely updated, and to use an update site to maintain the other components. More info on the [YggdrasilPlug-InStructure] page. 
+  * Plug-in Component structure - we separate the client in a few main parts. The basic idea is to have a small base product that is easily installed and rarely updated, and to use an update site to maintain the other components. More info on the [YggdrasilPluginStructure] page. 
     * Installer - an almost empty "bootstrap" to allow installation/update of other components from update site
     * Product - splash screens, license, intro pages, etc
     * Foundation - fundamental UI components; custom widgets, utils, common abstractions, ...
