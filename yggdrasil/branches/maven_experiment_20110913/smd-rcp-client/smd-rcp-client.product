@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="SMD Yggdrasil" uid="smd-rcp-client-plugin.product" id="smd-rcp-client-plugin.product" application="smd-rcp-client-plugin.application" version="1.0.0" useFeatures="true" includeLaunchers="true">
+
+   <aboutInfo>
+      <image path="/smd-rcp-client-plugin/icons/logo/splash-250x250.png"/>
+      <text>
+         Welcome to SMD Yggdrasil ALPHA, an evolving rich client for the Social Music 
+Discovery (SMD) project, built on the Eclipse Rich Client Platform (RCP).
+
+The name Yggdrasil is taken from Norse mythology; it was said to be the 
+world tree around which the nine worlds existed. Its branches extend far 
+into the heavens, and the tree is supported by three roots that extend 
+far away into other locations.
+
+In SMD, Yggdrasil connects metadata in the music library and allows its
+user to maintain both hard facts and subjective opinions about local or
+online music. It is perhaps not the world tree around which everything 
+revolves, but rather the view into this tree - the SMD repository - and the 
+instrument for connecting the tree with heavens and other locations.
+
+NOTE: Yggdrasil is in active development - many features are still missing!
+
+Yggdrasil: http://code.google.com/p/socialmusicdiscovery/wiki/Yggdrasil
+SMD: http://code.google.com/p/socialmusicdiscovery
+      </text>
+   </aboutInfo>
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+   </launcherArgs>
+
+   <windowImages i16="/smd-rcp-client-plugin/icons/logo/DesenhodabandaYggDrasil+Y-16x16.png" i32="/smd-rcp-client-plugin/icons/logo/DesenhodabandaYggDrasil+Y-32x32.png" i48="/smd-rcp-client-plugin/icons/logo/DesenhodabandaYggDrasil+Y-48x48.png" i64="/smd-rcp-client-plugin/icons/logo/DesenhodabandaYggDrasil+Y-64x64.png" i128="/smd-rcp-client-plugin/icons/logo/DesenhodabandaYggDrasil+Y-128x128.png"/>
+
+   <splash
+      location="smd-rcp-client-plugin" />
+   <launcher name="yggdrasil">
+      <solaris/>
+      <win useIco="false">
+         <bmp
+            winSmallHigh="/smd-rcp-client-plugin/icons/logo/DesenhodabandaYggDrasil+Y-16x16.bmp"
+            winSmallLow="/smd-rcp-client-plugin/icons/logo/DesenhodabandaYggDrasil+Y-16x16-256.bmp"
+            winMediumHigh="/smd-rcp-client-plugin/icons/logo/DesenhodabandaYggDrasil+Y-32x32.bmp"
+            winMediumLow="/smd-rcp-client-plugin/icons/logo/DesenhodabandaYggDrasil+Y-32x32-256.bmp"
+            winLargeHigh="/smd-rcp-client-plugin/icons/logo/DesenhodabandaYggDrasil+Y-48x48.bmp"
+            winLargeLow="/smd-rcp-client-plugin/icons/logo/DesenhodabandaYggDrasil+Y-48x48-256.bmp"/>
+      </win>
+   </launcher>
+
+   <intro introId="smdrcp.intro"/>
+
+   <vm>
+   </vm>
+
+   <license>
+        <url>http://www.opensource.org/licenses/bsd-license.php</url>
+        <text>
+   Copyright 2010-2011, Social Music Discovery project
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+    * Neither the name of Social Music Discovery project nor the
+      names of its contributors may be used to endorse or promote products
+      derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot; AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL SOCIAL MUSIC DISCOVERY PROJECT BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+         </text>
+   </license>
+
+   <plugins>
+   </plugins>
+
+   <features>
+      <feature id="smd-rcp-client-feature" version="1.0.0.qualifier"/>
+      <feature id="org.eclipse.rcp"/>
+   </features>
+
+
+</product>
