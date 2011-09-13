@@ -1,0 +1,6 @@
+Most external, third-party jars are fetched and placed (by Maven) in the target folder of the "dependencies" plugin , 
+others (that are not readily available for Maven to download) are checked in in the 'lib' folder here. These 
+components are either not available as binary downloads to Maven, or the availability of the component is unreliable.
+This has typically been the case for Eclipse Nebula widgets, where the build system has been broken every now and then 
+over the past years, including a period of almost a year when no binary downloads where available.
+

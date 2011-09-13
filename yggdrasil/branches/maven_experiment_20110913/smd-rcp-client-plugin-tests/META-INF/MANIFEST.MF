@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Tests for SMD Plug-in
+Bundle-SymbolicName: smd-rcp-client-plugin.tests
+Bundle-Version: 1.0.0.qualifier
+Fragment-Host: smd-rcp-client-plugin;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.junit;bundle-version="4.8.2"
+Bundle-Vendor: SMD, the Social Music Discovery project
+
