@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.6"?>
 
-<target name="win32.x86_64 development platform" sequenceNumber="1">
+<target name="linux.gtk.x86_64 development platform" sequenceNumber="1">
 <locations>
-<location path="${workspace_loc:/smd-rcp-client}/target/win32.win32.x86_64/eclipse" type="Directory"/>
+<location path="${workspace_loc:/smd-rcp-client}/target/linux.gtk.x86_64/eclipse" type="Directory"/>
 <location includeAllPlatforms="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.pde.feature.group" version="3.7.0.v20110504-0800-7b7qFVpFEx2XnmYtj_9RfO7"/>
 <unit id="org.eclipse.rcp.sdk.id" version="3.7.0.I20110613-1736"/>
@@ -11,8 +11,8 @@
 </location>
 </locations>
 <environment>
-<os>win32</os>
-<ws>win32</ws>
+<os>linux</os>
+<ws>gtk</ws>
 <arch>x86_64</arch>
 <nl>sv_SE</nl>
 </environment>
