@@ -52,7 +52,6 @@
     <module>smd-rcp-client-plugin-tests</module>
     <module>smd-rcp-client-feature</module>
     <module>smd-rcp-client</module>
-    <module>smd-rcp-client-dependencies</module>
     <module>smd-rcp-client-site</module>
   </modules>
 
