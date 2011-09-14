@@ -64,6 +64,9 @@ Some brief and preliminary thoughts on the design principles for the RCP client.
   * i18N 
     * At the time of writing, the prototype is not localizable. We should of course change this at some point in time, using the built-in Eclipse/Java mechanisms to do so.
     * character set is UTF-8. All projects should have this setting defined, to avoid dependencies and failures due to bad workspace settings.
+  * Naming conventions
+    * All names are fully qualified and prefixed by *org.socialmusicdiscovery.yggdrasil*. This includes including file system directories and Maven artifact ids.
+    * Features are suffixed by *-feature* in file system and Maven pom files, but the Eclipse id does not carry this suffix (this is to make it easy to spot in the file system but still look OK when presented in a p2 repository).
 
 == Developer Notes ==
 A few notes that may or may not be useful for RCP developers.
