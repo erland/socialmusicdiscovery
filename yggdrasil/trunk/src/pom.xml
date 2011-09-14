@@ -51,7 +51,7 @@
     <module>org.socialmusicdiscovery.yggdrasil.foundation</module>
     <module>org.socialmusicdiscovery.yggdrasil.foundation.tests</module>
     <module>org.socialmusicdiscovery.yggdrasil.base-feature</module>
-    <module>org.socialmusicdiscovery.yggdrasil</module>
+    <module>org.socialmusicdiscovery.yggdrasil-product</module>
     <module>org.socialmusicdiscovery.yggdrasil-site</module>
   </modules>
 
