@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="smd-rcp-client-feature"
-      label="SMD RCP Client Feature"
+      id="org.socialmusicdiscovery.yggdrasil.base"
+      label="SMD Yggdrasil Base Feature"
       version="1.0.0.qualifier"
       provider-name="SMD, the Social Music Discovery project">
 
@@ -16,6 +16,10 @@
    <license url="http://www.example.com/license">
       [Enter License Description here.]
    </license>
+
+   <url>
+      <update label="SMD Eclipse Updates" url="http://updates.socialmusicdiscovery.org/eclipse-updates"/>
+   </url>
 
    <plugin
          id="smd-rcp-client-plugin"

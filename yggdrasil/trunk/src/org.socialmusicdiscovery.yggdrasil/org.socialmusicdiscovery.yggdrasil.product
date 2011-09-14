@@ -90,8 +90,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    </plugins>
 
    <features>
-      <feature id="smd-rcp-client-feature" version="1.0.0.qualifier"/>
       <feature id="org.eclipse.rcp"/>
+      <feature id="org.socialmusicdiscovery.yggdrasil.base" version="1.0.0.qualifier"/>
    </features>
 
 

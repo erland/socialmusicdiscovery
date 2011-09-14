@@ -3,5 +3,5 @@
    <description name="Social Music Discovery" url="http://updates.socialmusicdiscovery.org/eclipse-updates">
       Social Music Discovery updates
    </description>
-   <feature url="features/smd-rcp-client-feature_1.0.0.qualifier.jar" id="smd-rcp-client-feature" version="1.0.0.qualifier"/>
+   <feature url="features/org.socialmusicdiscovery.yggdrasil.base_1.0.0.qualifier.jar" id="org.socialmusicdiscovery.yggdrasil.base" version="1.0.0.qualifier"/>
 </site>
