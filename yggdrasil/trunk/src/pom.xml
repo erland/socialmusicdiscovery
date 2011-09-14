@@ -52,7 +52,7 @@
     <module>org.socialmusicdiscovery.yggdrasil.foundation.tests</module>
     <module>org.socialmusicdiscovery.yggdrasil.base-feature</module>
     <module>org.socialmusicdiscovery.yggdrasil</module>
-    <module>smd-rcp-client-site</module>
+    <module>org.socialmusicdiscovery.yggdrasil-site</module>
   </modules>
 
   <build>
