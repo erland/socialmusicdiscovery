@@ -1,5 +1,5 @@
 #summary About the SMD rich client Yggdrasil.
-http://socialmusicdiscovery.googlecode.com/svn/yggdrasil/trunk/src/smd-rcp-client-plugin/icons/logo/splash.png
+http://socialmusicdiscovery.googlecode.com/svn/yggdrasil/trunk/src/org.socialmusicdiscovery.yggdrasil.foundation/icons/logo/splash.png
 
 = Introduction =
 
@@ -13,7 +13,7 @@ Yggdrasil is not primarily an instrument for enjoying music, more about paving t
 
 *Legalese* 
 
-The preliminary logo was downloaded from [http://commons.wikimedia.org/wiki WikiMedia] and slightly augmented with text. Credits and license details can be found [http://socialmusicdiscovery.googlecode.com/svn/yggdrasil/trunk/src/smd-rcp-client-plugin/icons/logo/License.txt here].
+The preliminary logo was downloaded from [http://commons.wikimedia.org/wiki WikiMedia] and slightly augmented with text. Credits and license details can be found [http://socialmusicdiscovery.googlecode.com/svn/yggdrasil/trunk/src/org.socialmusicdiscovery.yggdrasil.foundation/icons/logo/License.txt here].
 
 ==WARNING==
 Yggdrasil is in the process of moving out of the prototype directory. Meanwhile, most information on the [PrototypeRCPClient Prototype RCP Client] is still valid, and the prototype client is probably more stable.
@@ -32,7 +32,7 @@ More info to be added ...
 The short story:
 
   * Source code: http://socialmusicdiscovery.googlecode.com/svn/yggdrasil
-  * Instructions to set up the environment: http://socialmusicdiscovery.googlecode.com/svn/yggdrasil/trunk/src/smd-rcp-client-plugin/ReadMe.txt
+  * Instructions to set up the environment: http://socialmusicdiscovery.googlecode.com/svn/yggdrasil/trunk/src/org.socialmusicdiscovery.yggdrasil.foundation/ReadMe.txt
 
 For more info, read below.
 == Design Guidelines ==
