@@ -51,7 +51,7 @@
     <module>org.socialmusicdiscovery.yggdrasil.foundation</module>
     <module>org.socialmusicdiscovery.yggdrasil.foundation.tests</module>
     <module>smd-rcp-client-feature</module>
-    <module>smd-rcp-client</module>
+    <module>org.socialmusicdiscovery.yggdrasil</module>
     <module>smd-rcp-client-site</module>
   </modules>
 
