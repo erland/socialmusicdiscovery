@@ -49,7 +49,7 @@
 
   <modules>
     <module>smd-rcp-client-plugin</module>
-    <module>smd-rcp-client-plugin-tests</module>
+    <module>org.socialmusicdiscovery.yggdrasil.foundation.tests</module>
     <module>smd-rcp-client-feature</module>
     <module>smd-rcp-client</module>
     <module>smd-rcp-client-site</module>
