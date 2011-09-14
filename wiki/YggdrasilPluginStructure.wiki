@@ -12,7 +12,11 @@ Note: you may need to open the image in an external viewer to see the details.
 [http://socialmusicdiscovery.googlecode.com/svn/wiki/Yggdrasil/ProjectStructureDiagram.png]
 
 ==Refactoring Objectives and Rationale==
-  * Separate product packaging and branding from source code to allow reuse of source code in different configurations. Hence the single plug-in "yggdrasil" that holds all product info, the application extension and logo and splash images.
-  * Separate our specific UI components from technical features and third-party components to allow new plug-ins to reuse our general platform. Hence the "foundation" plug-in. This holds third-party .jar files downloaded by Maven or checked into SVN, and also our own server API, This plug also holds our framework for client code - this includes general utilities, the data source framework for connecting to the SMD server, and some fundamental classes and interfaces that editors and viewers operate on.
-  * Allow download from update site. Hence the "site" and "feature" projects - update sites seem to prefer features over plug-ins? These are mere container and hold no code. They also offer a way to repackage the client if/when the need arises.
-  * Allow others to extend the basic client with new components, or to offer replacements for our defaults. Hence the separation between the navigator and the editors for the core and the subjective model. Intention is that we or someone else should be able to offer better or alternative navigator or editors, or add additional plug-ins by hooking into the navigator, he command framework or our standard editors.
+  * Allow reuse of source code in different configurations. 
+    * Hence the single plug-in "yggdrasil" that holds all product info, the application extension and logo and splash images to separate product packaging and branding from source code.
+  * Allow new plug-ins to reuse our general platform. 
+    * Hence the "foundation" plug-in to separate our specific UI components from technical features and third-party components. The foundation plug-in holds third-party .jar files downloaded by Maven or checked into SVN, and our own server API. It also holds our framework for client code - this includes general utilities, the data source framework for connecting to the SMD server, and some fundamental classes and interfaces that editors and viewers operate on.
+  * Allow others to extend the basic client with new components, or to offer replacements for our defaults. 
+    * Hence the separation between the navigator and the editors for the core and the subjective model. Intention is that we or someone else should be able to offer a better or alternative navigator or editors, or add additional plug-ins by hooking into the navigator, the command framework an/or our standard editors.
+  * Allow download from update site. 
+    * Hence the "site" and "feature" projects - update sites seem to prefer features over plug-ins? These are mere container and hold no code. They also offer a way to repackage the client if/when the need arises.
