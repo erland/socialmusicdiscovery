@@ -114,6 +114,6 @@ Latest untested pre-compiled binary version (if you don't want to build it local
   * http://downloads.socialmusicdiscovery.org/smd-yggdrasil/
 
 To run, you build with maven as described above and then run:
-  # Goto the *smd-rcp-client/target* directory
+  # Goto the *org.socialmusicdiscovery.yggdrasil/target* directory
   # Enter the sub directory for your platform
   # Run the *yggdrasil* launcher inside the eclipse directory
