@@ -60,6 +60,9 @@ import org.socialmusicdiscovery.server.business.repository.classification.Classi
 import org.socialmusicdiscovery.server.business.repository.classification.ClassificationRepository;
 import org.socialmusicdiscovery.server.business.repository.core.*;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validation;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -101,6 +104,7 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
     private Map<String, Collection<String>> releaseCache = new HashMap<String, Collection<String>>();
     private Set<String> releaseMusicbrainzCache = new HashSet<String>();
     private Set<String> releaseDiscogsCache = new HashSet<String>();
+    private javax.validation.Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     @Inject
     private PlayableElementRepository playableElementRepository;
@@ -171,6 +175,20 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
     /**
      * @inherit
      */
+    @Override
+    public void init(Map<String,String> executionParameters) {
+        classificationCache = new HashMap<TypeIdentity, Collection<String>>();
+        artistCache = new HashMap<String, Collection<String>>();
+        artistMusicbrainzCache = new HashSet<String>();
+        releaseCache = new HashMap<String, Collection<String>>();
+        releaseMusicbrainzCache = new HashSet<String>();
+        releaseDiscogsCache = new HashSet<String>();
+        super.init(executionParameters);
+    }
+
+    /**
+     * @inherit
+     */
     public void execute(ProcessingStatusCallback progressHandler) {
         TrackListData trackList = null;
         final long CHUNK_SIZE = 20;
@@ -231,7 +249,15 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                     entityManager.getTransaction().begin();
                     for (TrackData track : trackList.getTracks()) {
                         progressHandler.progress(getId(), track.getFile(), trackList.getOffset() + i + 1, trackList.getCount());
-                        importNewPlayableElement(track);
+                        try {
+                            importNewPlayableElement(track);
+                        }catch (ConstraintViolationException e) {
+                            //TODO: Change this so it uses the logging framework
+                            System.err.println("ERROR when importing: "+track.getFile()+": ");
+                            for (ConstraintViolation<?> violation : e.getConstraintViolations()) {
+                                System.err.println("- "+violation.getLeafBean().getClass().getSimpleName()+"."+violation.getPropertyPath().toString()+": "+violation.getMessage());
+                            }
+                        }
                         i++;
                     }
                     entityManager.flush();
@@ -314,6 +340,7 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                     playableElement.setUri(data.getUrl());
                     playableElement.setLastUpdated(new Date());
                     playableElement.setLastUpdatedBy(getId());
+                    validate(playableElement);
                 }
             }
         } else {
@@ -324,6 +351,7 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
             playableElement.setSmdID(data.getSmdID());
             playableElement.setLastUpdated(new Date());
             playableElement.setLastUpdatedBy(getId());
+            validate(playableElement);
             playableElementRepository.create(playableElement);
             playableElements.add(playableElement);
 
@@ -362,11 +390,13 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                         }
                         work.setLastUpdated(new Date());
                         work.setLastUpdatedBy(getId());
+                        validate(work);
                     } else {
                         work = (WorkEntity)existingWorks.iterator().next();
                         if(work.getLastUpdatedBy().equals(getId()) && sortTags.containsKey(TagData.WORK+":"+workName)) {
                             work.setSortAs(sortTags.get(TagData.WORK+":"+workName));
                         }
+                        validate(work);
                     }
                 } else {
                     // Create a Work entity based on the TITLE tag
@@ -377,6 +407,7 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                     }
                     work.setLastUpdated(new Date());
                     work.setLastUpdatedBy(getId());
+                    validate(work);
                 }
 
                 // Create Work entity and add composers to it if it didn't already exist
@@ -419,6 +450,7 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                             identity.setUri(artistId);
                             identity.setLastUpdated(new Date());
                             identity.setLastUpdatedBy(getId());
+                            validate(identity);
                             globalIdentityRepository.create(identity);
                         }
                         artistMusicbrainzCache.add(artistId);
@@ -436,6 +468,7 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                             identity.setUri(artistId);
                             identity.setLastUpdated(new Date());
                             identity.setLastUpdatedBy(getId());
+                            validate(identity);
                             globalIdentityRepository.create(identity);
                         }
                         artistMusicbrainzCache.add(artistId);
@@ -508,6 +541,7 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                                 // Just ignore year if it can't be parsed
                             }
                         }
+                        validate(release);
                         releaseRepository.create(release);
                         if (albumArtistContributors.size() > 0) {
                             saveContributors(release, albumArtistContributors);
@@ -524,6 +558,7 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                         if(release.getLastUpdatedBy().equals(getId()) && sortTags.containsKey(TagData.ALBUM+":"+albumName)) {
                             release.setSortAs(sortTags.get(TagData.ALBUM+":"+albumName));
                         }
+                        validate(release);
                     }
 
                     if (tags.containsKey(TagData.MUSICBRAINZ_ALBUM_ID)) {
@@ -537,6 +572,7 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                                 identity.setUri(releaseId);
                                 identity.setLastUpdated(new Date());
                                 identity.setLastUpdatedBy(getId());
+                                validate(identity);
                                 globalIdentityRepository.create(identity);
                             }
                             releaseMusicbrainzCache.add(releaseId);
@@ -553,6 +589,7 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                                 identity.setUri(releaseId);
                                 identity.setLastUpdated(new Date());
                                 identity.setLastUpdatedBy(getId());
+                                validate(identity);
                                 globalIdentityRepository.create(identity);
                             }
                             releaseDiscogsCache.add(releaseId);
@@ -580,6 +617,7 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                     track.getPlayableElements().addAll(playableElements);
                     track.setRecording(recording);
                     release.addTrack(track);
+                    validate(track);
                     trackRepository.create(track);
 
                     if (tags.containsKey(TagData.MUSICBRAINZ_TRACK_ID)) {
@@ -589,6 +627,7 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                         identity.setUri(tags.get(TagData.MUSICBRAINZ_TRACK_ID).iterator().next());
                         identity.setLastUpdated(new Date());
                         identity.setLastUpdatedBy(getId());
+                        validate(identity);
                         globalIdentityRepository.create(identity);
                     }
 
@@ -631,6 +670,7 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                             }
                             medium.addTrack(track);
                             release.addMedium(medium);
+                            validate(medium);
                             mediumRepository.create(medium);
                         }else {
                             medium.addTrack(track);
@@ -650,6 +690,7 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
         defaultImage.setType(Image.TYPE_COVER_FRONT);
         defaultImage.setRelatedTo(relatedObject.getReference());
         defaultImage.setUri(imageProviderManager.getProvider(SqueezeboxServerImageProvider.PROVIDER_ID).getImageURL(defaultImage));
+        validate(defaultImage);
         imageRepository.create(defaultImage);
         return defaultImage;
     }
@@ -705,6 +746,7 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                             if(existingArtist.getLastUpdatedBy().equals(getId()) && sortValues.containsKey(sortPrefix+artistName)) {
                                 existingArtist.setSortAs(sortValues.get(sortPrefix+artistName));
                             }
+                            validate(existingArtist);
                         }
                     }
                 }
@@ -716,6 +758,7 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                     }
                     artist.setLastUpdated(new Date());
                     artist.setLastUpdatedBy(getId());
+                    validate(artist);
                     artistRepository.create(artist);
                     artists.add(artist);
                     this.artistCache.put(artistName.toLowerCase(), Arrays.asList(artist.getId()));
@@ -729,6 +772,7 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                 contributor.setType(contributorType);
                 contributor.setLastUpdated(new Date());
                 contributor.setLastUpdatedBy(getId());
+                validate(contributor);
                 contributors.add(contributor);
             }
         }
@@ -794,7 +838,7 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                             if(existingClassification.getLastUpdatedBy().equals(getId()) && sortValues.containsKey(sortPrefix+classificationName)) {
                                 existingClassification.setSortAs(sortValues.get(sortPrefix+classificationName));
                             }
-
+                            validate(existingClassification);
                         }
                     }
                 }
@@ -811,6 +855,7 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
                     classification.setType(classificationType);
                     classification.setLastUpdated(new Date());
                     classification.setLastUpdatedBy(getId());
+                    validate(classification);
                     classificationRepository.create(classification);
                     classification.addReference(classificationReference);
                     classificationReferenceRepository.create(classificationReference);
@@ -825,6 +870,12 @@ public class SqueezeboxServer extends AbstractProcessingModule implements MediaI
         }
     }
 
+    private <T extends SMDIdentity> void validate(T entity) {
+        Set<ConstraintViolation<T>> errors = validator.validate(entity);
+        if(errors.size()>0) {
+            throw new ConstraintViolationException(new HashSet<ConstraintViolation<?>>(errors));
+        }
+    }
     @Override
     public Collection<ConfigurationParameter> getDefaultConfiguration() {
         return Arrays.asList(

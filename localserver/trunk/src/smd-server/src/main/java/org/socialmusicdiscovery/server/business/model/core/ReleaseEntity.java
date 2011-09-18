@@ -35,6 +35,7 @@ import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity
 import org.socialmusicdiscovery.server.business.model.search.ReleaseSearchRelationEntity;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.util.*;
 
 /**
@@ -46,10 +47,12 @@ import java.util.*;
 public class ReleaseEntity extends AbstractSMDIdentityEntity implements Release, ContributorOwner {
     @Expose
     private Date date;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 255)
+    @Size(min = 1, max = 255)
     @Expose
     private String name;
-    @Column(name="sort_as", nullable = false)
+    @Column(name="sort_as", nullable = false, length = 255)
+    @Size(min = 1, max = 255)
     @Expose
     private String sortAs;
     @ManyToOne(targetEntity = LabelEntity.class)
