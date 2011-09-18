@@ -37,6 +37,7 @@ import javax.persistence.Column;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -50,10 +51,12 @@ public class ClassificationEntity extends AbstractSMDIdentityEntity implements C
     @Column(nullable = false)
     @Expose
     private String type;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 255)
+    @Size(min = 1, max = 255)
     @Expose
     private String name;
-    @Column(name="sort_as", nullable = false)
+    @Column(name="sort_as", nullable = false, length = 255)
+    @Size(min = 1, max = 255)
     @Expose
     private String sortAs;
     @OneToMany(targetEntity = ClassificationEntity.class, orphanRemoval = true)

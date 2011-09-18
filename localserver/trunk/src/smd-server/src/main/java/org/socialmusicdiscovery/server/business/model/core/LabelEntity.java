@@ -34,6 +34,7 @@ import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity
 
 import javax.persistence.Column;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 
 /**
  * See {@link Label}
@@ -42,10 +43,12 @@ import javax.persistence.Table;
 @Table(name = "labels")
 @SMDIdentityReferenceEntity.ReferenceType(type = Label.class)
 public class LabelEntity extends AbstractSMDIdentityEntity implements Label {
-    @Column(nullable = false)
+    @Column(nullable = false, length = 255)
+    @Size(min = 1, max = 255)
     @Expose
     private String name;
-    @Column(name="sort_as", nullable = false)
+    @Column(name="sort_as", nullable = false, length = 255)
+    @Size(min = 1, max = 255)
     @Expose
     private String sortAs;
 

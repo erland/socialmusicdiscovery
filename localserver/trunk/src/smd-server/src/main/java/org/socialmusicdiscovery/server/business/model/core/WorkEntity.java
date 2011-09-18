@@ -34,6 +34,7 @@ import org.socialmusicdiscovery.server.business.model.AbstractSMDIdentityEntity;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -45,11 +46,13 @@ import java.util.Set;
 @Table(name = "works")
 @SMDIdentityReferenceEntity.ReferenceType(type = Work.class)
 public class WorkEntity extends AbstractSMDIdentityEntity implements Work, ContributorOwner {
-    @Column(nullable = false)
     @Expose
+    @Column(length = 511, nullable = false)
+    @Size(min = 1, max = 511)
     private String name;
-    @Column(name="sort_as", nullable = false)
     @Expose
+    @Column(name="sort_as", length = 511, nullable = false)
+    @Size(min = 1, max = 511)
     private String sortAs;
     @Expose
     private Date date;

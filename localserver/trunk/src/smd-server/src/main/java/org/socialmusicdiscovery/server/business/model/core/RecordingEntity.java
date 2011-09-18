@@ -35,6 +35,7 @@ import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity
 import org.socialmusicdiscovery.server.business.model.search.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -47,9 +48,12 @@ import java.util.Set;
 @SMDIdentityReferenceEntity.ReferenceType(type = Recording.class)
 public class RecordingEntity extends AbstractSMDIdentityEntity implements Recording, ContributorOwner {
     @Expose
+    @Column(length = 511)
+    @Size(min = 1, max = 511)
     private String name;
-    @Column(name="sort_as")
     @Expose
+    @Column(name="sort_as", length = 511)
+    @Size(min = 1, max = 511)
     private String sortAs;
     @Expose
     private Date date;

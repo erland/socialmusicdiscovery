@@ -40,8 +40,10 @@ import org.socialmusicdiscovery.server.business.repository.core.ArtistRepository
 import org.socialmusicdiscovery.server.business.repository.core.ReleaseRepository;
 import org.socialmusicdiscovery.test.BaseTestCase;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import javax.validation.ConstraintViolationException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -77,6 +79,12 @@ public class SqueezeboxServerTest extends BaseTestCase {
         }
         defaultValueConfigurationManager.setParametersForPath(pluginConfigurationPath, defaultConfiguration);
         squeezeboxServer.setConfiguration(new MappedConfigurationContext(pluginConfigurationPath, defaultValueConfigurationManager));
+        squeezeboxServer.init(null);
+    }
+
+    @BeforeMethod
+    public void setUpMethod() {
+        em.clear();
         squeezeboxServer.init(null);
     }
 
@@ -264,6 +272,280 @@ public class SqueezeboxServerTest extends BaseTestCase {
             }
         }
     }
+    @Test
+    public void testImportLongAlbumTitle() throws Exception {
+        loadTestData("org.socialmusicdiscovery.server.business.model", "Empty Tables.xml");
+        boolean gotError = false;
+        boolean gotSuccess = false;
+        em.getTransaction().begin();
+        try {
+            TrackData trackData = new TrackData();
+            trackData.setFile("/music/Some Album/Some Title.flac");
+            trackData.setFormat("flc");
+            trackData.setSmdID("00000000000000000000000000000001-00000000-00000000");
+            trackData.setUrl("file://" + trackData.getFile());
+            String albumTitle = "";
+            for(int i=0;i<255;i++) {
+                albumTitle += "\u00d4";
+            }
+            trackData.setTags(Arrays.asList(
+                    new TagData(TagData.ALBUM, albumTitle),
+                    new TagData(TagData.TITLE, "Some Title"),
+                    new TagData(TagData.ARTIST, "Some Artist"),
+                    new TagData(TagData.GENRE, "Some Genre")
+            ));
+            squeezeboxServer.importNewPlayableElement(trackData);
+            gotSuccess = true;
+            em.getTransaction().commit();
+            em.getTransaction().begin();
+            trackData.setSmdID("00000000000000000000000000000002-00000000-00000000");
+            trackData.setTags(Arrays.asList(
+                    new TagData(TagData.ALBUM, "a"+albumTitle),
+                    new TagData(TagData.TITLE, "Some Title"),
+                    new TagData(TagData.ARTIST, "Some Artist"),
+                    new TagData(TagData.GENRE, "Some Genre")
+            ));
+            squeezeboxServer.importNewPlayableElement(trackData);
+            em.getTransaction().commit();
+        } catch (ConstraintViolationException e) {
+            gotError = true;
+        } finally {
+            if(em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+        }
+        assert gotSuccess;
+        assert gotError;
+    }
+
+    @Test
+    public void testImportLongTrackTitle() throws Exception {
+        loadTestData("org.socialmusicdiscovery.server.business.model", "Empty Tables.xml");
+        boolean gotError = false;
+        boolean gotSuccess = false;
+        em.getTransaction().begin();
+        try {
+            TrackData trackData = new TrackData();
+            trackData.setFile("/music/Some Album/Some Title.flac");
+            trackData.setFormat("flc");
+            trackData.setSmdID("00000000000000000000000000000001-00000000-00000000");
+            trackData.setUrl("file://" + trackData.getFile());
+            String trackTitle = "";
+            for(int i=0;i<511;i++) {
+                trackTitle += "\u00d4";
+            }
+            trackData.setTags(Arrays.asList(
+                    new TagData(TagData.ALBUM, "Some album"),
+                    new TagData(TagData.TITLE, trackTitle),
+                    new TagData(TagData.ARTIST, "Some Artist"),
+                    new TagData(TagData.GENRE, "Some Genre")
+            ));
+            gotSuccess = true;
+            em.getTransaction().commit();
+            em.getTransaction().begin();
+            squeezeboxServer.importNewPlayableElement(trackData);
+            trackData.setTags(Arrays.asList(
+                    new TagData(TagData.ALBUM, "Some album"),
+                    new TagData(TagData.TITLE, "a"+trackTitle),
+                    new TagData(TagData.ARTIST, "Some Artist"),
+                    new TagData(TagData.GENRE, "Some Genre")
+            ));
+            trackData.setSmdID("00000000000000000000000000000002-00000000-00000000");
+            squeezeboxServer.importNewPlayableElement(trackData);
+            em.getTransaction().commit();
+        } catch (ConstraintViolationException e) {
+            gotError = true;
+        } finally {
+            if(em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+        }
+        assert gotSuccess;
+        assert gotError;
+    }
+
+    @Test
+    public void testImportLongArtistTitle() throws Exception {
+        loadTestData("org.socialmusicdiscovery.server.business.model", "Empty Tables.xml");
+        boolean gotError = false;
+        boolean gotSuccess = false;
+        em.getTransaction().begin();
+        try {
+            TrackData trackData = new TrackData();
+            trackData.setFile("/music/Some Album/Some Title.flac");
+            trackData.setFormat("flc");
+            trackData.setSmdID("00000000000000000000000000000001-00000000-00000000");
+            trackData.setUrl("file://" + trackData.getFile());
+            String artistTitle = "";
+            for(int i=0;i<255;i++) {
+                artistTitle += "\u00d4";
+            }
+            trackData.setTags(Arrays.asList(
+                    new TagData(TagData.ALBUM, "Some album"),
+                    new TagData(TagData.TITLE, "Some title"),
+                    new TagData(TagData.ARTIST, artistTitle),
+                    new TagData(TagData.GENRE, "Some Genre")
+            ));
+            squeezeboxServer.importNewPlayableElement(trackData);
+            gotSuccess = true;
+            em.getTransaction().commit();
+            em.getTransaction().begin();
+            trackData.setSmdID("00000000000000000000000000000002-00000000-00000000");
+            trackData.setTags(Arrays.asList(
+                    new TagData(TagData.ALBUM, "Some album"),
+                    new TagData(TagData.TITLE, "Some title"),
+                    new TagData(TagData.ARTIST, "a"+artistTitle),
+                    new TagData(TagData.GENRE, "Some Genre")
+            ));
+            squeezeboxServer.importNewPlayableElement(trackData);
+            em.getTransaction().commit();
+        } catch (ConstraintViolationException e) {
+            gotError = true;
+        } finally {
+            if(em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+        }
+        assert gotSuccess;
+        assert gotError;
+    }
+
+    @Test
+    public void testImportLongGenreTitle() throws Exception {
+        loadTestData("org.socialmusicdiscovery.server.business.model", "Empty Tables.xml");
+        boolean gotError = false;
+        boolean gotSuccess = false;
+        em.getTransaction().begin();
+        try {
+            TrackData trackData = new TrackData();
+            trackData.setFile("/music/Some Album/Some Title.flac");
+            trackData.setFormat("flc");
+            trackData.setSmdID("00000000000000000000000000000001-00000000-00000000");
+            trackData.setUrl("file://" + trackData.getFile());
+            String genreTitle = "";
+            for(int i=0;i<255;i++) {
+                genreTitle += "\u00d4";
+            }
+            trackData.setTags(Arrays.asList(
+                    new TagData(TagData.ALBUM, "Some album"),
+                    new TagData(TagData.TITLE, "Some title"),
+                    new TagData(TagData.ARTIST, "Some artist"),
+                    new TagData(TagData.GENRE, genreTitle)
+            ));
+            squeezeboxServer.importNewPlayableElement(trackData);
+            gotSuccess = true;
+            em.getTransaction().commit();
+            em.getTransaction().begin();
+            trackData.setSmdID("00000000000000000000000000000002-00000000-00000000");
+            trackData.setTags(Arrays.asList(
+                    new TagData(TagData.ALBUM, "Some album"),
+                    new TagData(TagData.TITLE, "Some title"),
+                    new TagData(TagData.ARTIST, "Some artist"),
+                    new TagData(TagData.GENRE, "a"+genreTitle)
+            ));
+            squeezeboxServer.importNewPlayableElement(trackData);
+            em.getTransaction().commit();
+        } catch (ConstraintViolationException e) {
+            gotError = true;
+        } finally {
+            if(em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+        }
+        assert gotSuccess;
+        assert gotError;
+    }
+
+    @Test
+    public void testImportLongFilePath() throws Exception {
+        loadTestData("org.socialmusicdiscovery.server.business.model", "Empty Tables.xml");
+        boolean gotError = false;
+        boolean gotSuccess = false;
+        em.getTransaction().begin();
+        try {
+            String file = "";
+            for(int i=0;i<1024-5-7;i++) {
+                file += "\u00d4";
+            }
+            TrackData trackData = new TrackData();
+            trackData.setFile(file+".flac");
+            trackData.setFormat("flc");
+            trackData.setSmdID("00000000000000000000000000000001-00000000-00000000");
+            trackData.setUrl("file://" + trackData.getFile());
+            trackData.setTags(Arrays.asList(
+                    new TagData(TagData.ALBUM, "Some album"),
+                    new TagData(TagData.TITLE, "Some title"),
+                    new TagData(TagData.ARTIST, "Some artist"),
+                    new TagData(TagData.GENRE, "Some Genre")
+            ));
+            squeezeboxServer.importNewPlayableElement(trackData);
+            gotSuccess = true;
+            em.getTransaction().commit();
+            em.getTransaction().begin();
+            trackData.setFile(file+"a.flac");
+            trackData.setSmdID("00000000000000000000000000000002-00000000-00000000");
+            trackData.setUrl("file://" + trackData.getFile());
+            squeezeboxServer.importNewPlayableElement(trackData);
+            em.getTransaction().commit();
+        } catch (ConstraintViolationException e) {
+            gotError = true;
+        } finally {
+            if(em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+        }
+        assert gotSuccess;
+        assert gotError;
+    }
+
+    @Test
+    public void testImportLongWorkTitle() throws Exception {
+        loadTestData("org.socialmusicdiscovery.server.business.model", "Empty Tables.xml");
+        boolean gotError = false;
+        boolean gotSuccess = false;
+        em.getTransaction().begin();
+        try {
+            TrackData trackData = new TrackData();
+            trackData.setFile("/music/Some Album/Some Title.flac");
+            trackData.setFormat("flc");
+            trackData.setSmdID("00000000000000000000000000000001-00000000-00000000");
+            trackData.setUrl("file://" + trackData.getFile());
+            String workTitle = "";
+            for(int i=0;i<511;i++) {
+                workTitle += "\u00d4";
+            }
+            trackData.setTags(Arrays.asList(
+                    new TagData(TagData.ALBUM, "Some album"),
+                    new TagData(TagData.TITLE, "Some title"),
+                    new TagData(TagData.WORK, workTitle),
+                    new TagData(TagData.ARTIST, "Some Artist"),
+                    new TagData(TagData.GENRE, "Some Genre")
+            ));
+            squeezeboxServer.importNewPlayableElement(trackData);
+            gotSuccess = true;
+            em.getTransaction().commit();
+            em.getTransaction().begin();
+            trackData.setSmdID("00000000000000000000000000000002-00000000-00000000");
+            trackData.setTags(Arrays.asList(
+                    new TagData(TagData.ALBUM, "Some album"),
+                    new TagData(TagData.TITLE, "Some title"),
+                    new TagData(TagData.WORK, "a"+workTitle),
+                    new TagData(TagData.ARTIST, "Some Artist"),
+                    new TagData(TagData.GENRE, "Some Genre")
+            ));
+            squeezeboxServer.importNewPlayableElement(trackData);
+            em.getTransaction().commit();
+        } catch (ConstraintViolationException e) {
+            gotError = true;
+        } finally {
+            if(em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+        }
+        assert gotSuccess;
+        assert gotError;
+    }
+
     void validateJoesGarageAct(Release release) {
         assert release.getTracks() != null;
         assert release.getTracks().size() == 3;

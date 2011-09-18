@@ -33,6 +33,7 @@ import org.socialmusicdiscovery.server.business.model.AbstractSMDIdentityEntity;
 import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.util.Set;
 
 /**
@@ -42,10 +43,12 @@ import java.util.Set;
 @Table(name = "artists")
 @SMDIdentityReferenceEntity.ReferenceType(type = Artist.class)
 public class ArtistEntity extends AbstractSMDIdentityEntity implements Artist {
-    @Column(nullable = false)
+    @Column(nullable = false, length = 255)
+    @Size(min = 1, max = 255)
     @Expose
     private String name;
-    @Column(name="sort_as", nullable = false)
+    @Column(name="sort_as", nullable = false, length = 255)
+    @Size(min = 1, max = 255)
     @Expose
     private String sortAs;
 

@@ -33,6 +33,7 @@ import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity
 
 import javax.persistence.Column;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 
 /**
  * See {@link PlayableElement}
@@ -42,6 +43,7 @@ import javax.persistence.Table;
 @SMDIdentityReferenceEntity.ReferenceType(type = PlayableElement.class)
 public class PlayableElementEntity extends AbstractSMDIdentityEntity implements PlayableElement {
     @Column(nullable = false, length = 1024)
+    @Size(min = 1, max = 1024)
     @Expose
     private String uri;
     @Column(nullable = false)
