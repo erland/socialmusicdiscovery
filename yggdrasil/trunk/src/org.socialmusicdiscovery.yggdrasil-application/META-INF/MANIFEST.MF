@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: SMD Yggdrasil
+Bundle-SymbolicName: org.socialmusicdiscovery.yggdrasil;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.socialmusicdiscovery.yggdrasil.Activator
+Bundle-Vendor: SMD, the Social Music Discovery project
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.ui.intro,
+ org.socialmusicdiscovery.yggdrasil.foundation;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Localization: plugin
+Bundle-ActivationPolicy: lazy
