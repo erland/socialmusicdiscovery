@@ -66,7 +66,7 @@ Some brief and preliminary thoughts on the design principles for the RCP client.
     * character set is UTF-8. All projects should have this setting defined, to avoid dependencies and failures due to bad workspace settings.
   * Naming conventions
     * All names are fully qualified and prefixed by *org.socialmusicdiscovery.yggdrasil*. This includes file system directories and Maven artifact ids.
-    * _-suffix_ some projects carry a "dash suffix" in file system and Maven pom files to make them easy to spot in the file system and build logs, but the Eclipse id omits the suffix to make the project look OK when presented in a p2 repository. This pattern applies to projects that can benefit from this type of discriminator, e.g. *-site*, *-product* or *-application*. 
+    * _-suffix_: some projects carry a "dash suffix" in file system and Maven pom files to make them easy to spot in the file system and build logs, but the Eclipse id omits the suffix to make the project look OK when presented in a p2 repository. This pattern applies to projects that can benefit from this type of discriminator, e.g. *-site*, *-product* or *-application*. 
 
 == Developer Notes ==
 A few notes that may or may not be useful for RCP developers.
