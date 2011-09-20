@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="application"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="org.socialmusicdiscovery.yggdrasil.Application">
+         </run>
+      </application>
+   </extension>
+   <extension
+         point="org.eclipse.ui.intro.config">
+      <config
+            introId="org.socialmusicdiscovery.yggdrasil.intro"
+            content="introContent.xml"
+            id="org.socialmusicdiscovery.yggdrasil.configId">
+         <presentation
+               home-page-id="root">
+            <implementation
+                  kind="html"
+                  os="win32,linux,macosx">
+            </implementation>
+         </presentation>
+      </config>
+   </extension>
+   <extension
+         point="org.eclipse.ui.intro.configExtension">
+      <configExtension
+            content="ext.xml"
+            configId="org.socialmusicdiscovery.yggdrasil.configId">
+      </configExtension>
+   </extension>
+   <extension
+         point="org.eclipse.ui.intro">
+      <intro
+            class="org.eclipse.ui.intro.config.CustomizableIntroPart"
+            icon="icons/DesenhodabandaYggDrasil-16x16.png"
+            id="org.socialmusicdiscovery.yggdrasil.intro">
+      </intro>
+      <introProductBinding
+            introId="org.socialmusicdiscovery.yggdrasil.intro"
+            productId="org.socialmusicdiscovery.yggdrasil.product">
+      </introProductBinding>
+   </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.socialmusicdiscovery.yggdrasil.application"
+            description="The rich client for SMD"
+            name="SMD Yggdrasil">
+         <property
+               name="windowImages"
+               value="platform:/plugin/org.socialmusicdiscovery.yggdrasil.foundation/icons/logo/DesenhodabandaYggDrasil+Y-16x16.png,platform:/plugin/org.socialmusicdiscovery.yggdrasil.foundation/icons/logo/DesenhodabandaYggDrasil+Y-32x32.png,platform:/plugin/org.socialmusicdiscovery.yggdrasil.foundation/icons/logo/DesenhodabandaYggDrasil+Y-48x48.png,platform:/plugin/org.socialmusicdiscovery.yggdrasil.foundation/icons/logo/DesenhodabandaYggDrasil+Y-64x64.png,platform:/plugin/org.socialmusicdiscovery.yggdrasil.foundation/icons/logo/DesenhodabandaYggDrasil+Y-128x128.png">
+         </property>
+         <property
+               name="aboutText"
+               value="Welcome to SMD Yggdrasil ALPHA, an evolving rich client for the Social Music &#x0A;Discovery (SMD) project, built on the Eclipse Rich Client Platform (RCP).&#x0A;&#x0A;The name Yggdrasil is taken from Norse mythology; it was said to be the &#x0A;world tree around which the nine worlds existed. Its branches extend far &#x0A;into the heavens, and the tree is supported by three roots that extend &#x0A;far away into other locations.&#x0A;&#x0A;In SMD, Yggdrasil connects metadata in the music library and allows its&#x0A;user to maintain both hard facts and subjective opinions about local or&#x0A;online music. It is perhaps not the world tree around which everything &#x0A;revolves, but rather the view into this tree - the SMD repository - and the &#x0A;instrument for connecting the tree with heavens and other locations.&#x0A;&#x0A;NOTE: Yggdrasil is in active development - many features are still missing!&#x0A;&#x0A;Yggdrasil: http://code.google.com/p/socialmusicdiscovery/wiki/Yggdrasil&#x0A;SMD: http://code.google.com/p/socialmusicdiscovery">
+         </property>
+         <property
+               name="aboutImage"
+               value="platform:/plugin/org.socialmusicdiscovery.yggdrasil.foundation/icons/logo/splash-250x250.png">
+         </property>
+         <property
+               name="appName"
+               value="SMD Yggdrasil">
+         </property>
+      </product>
+   </extension>
+</plugin>
