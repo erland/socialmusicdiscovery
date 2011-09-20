@@ -1,4 +1,4 @@
-About the target platforms:
+=== About the target platforms ===
 
 The actual runtime platforms are built using Maven and Tycho, fetching the RCP bundles from a p2 repository. 
 Maven also fetches a number of third-party plug-ins (with sources) and place these with the RCP bundles to form a target runtime platform.
@@ -14,6 +14,40 @@ There is also a risk for version mismatch between the Maven build and these loca
 
 We could manually strip the extraneous plug-ins from the definition, but the work to do (and maintain) this is bigger than the reward. 
  
-Until further notice:
+--- Until further notice ---
 Code that compiles and runs in the Eclipse IDE is not guaranteed to run in the standalone client. 
 Alas, the client must always be compiled and run from the command line to verify any changes.
+
+=== About the Product and Application ===
+
+It seams that Tycho does not like building a product that is also a plug-in. The packaging types   
+"eclipse-plugin" and "eclipse-application" seem mutually exclusive. It may be that we can make use 
+of "eclipse-repository" to create a p2 repository and an installable product, but even if the standard 
+Eclipse builders can handle product definitions in a regular plug-in, it seems wise to separate the 
+product/packaging bundle from the application (if nothing else to please Tycho). More details can be found on 
+http://wiki.eclipse.org/Tycho/Packaging_Types
+
+Some notes on how various files and identifiers relate.
+
+* org.socialmusicdiscovery.yggdrasil.product
+  ** Must match product id in the same file (file name and declared id must match).
+  ** plugin.xml extension must be named "product" (must match suffix in product id)
+  ** pom.xml must carry the same name (<artifactId>org.socialmusicdiscovery.yggdrasil</artifactId>)
+  ** "Synchronize with declaring plug-in" will write/update the proper product extension entry in the application's plugin.xml.
+* org.socialmusicdiscovery.yggdrasil.application
+  Referenced from product declaration (.product file and extension in plugin.xml).
+  Suffix ("application") is declared in plugin.xml extension, prefix is derived from plugin name. 
+  
+  === About config.ini ===
+  
+  There is currently a bug in Tycho that causes the name of the splash file to get corrupted in the generated 
+  config.ini if the plug-in name contains dots (see http://www.eclipse.org/forums/index.php/m/662311/); the 
+  generated file holds the text 
+  	osgi.splashPath=platform\:/base/plugins/org
+  when it should be
+  	osgi.splashPath=platform\:/base/plugins/org.socialmusicdiscovery.yggdrasil.some-plugin-name
+   
+  The effect is that the application currently launches without a splash screen. I did try to add the config.ini 
+  file and change the product spec to use the existing file rather than generate a new, but this had no effect. 
+  Since the bug still doesn't seem to be fixed, we will probably have to redo this project and let Tycho build the 
+  product as "eclipse-repository".
