@@ -29,11 +29,11 @@ http://wiki.eclipse.org/Tycho/Packaging_Types
 
 Some notes on how various files and identifiers relate.
 
-* org.socialmusicdiscovery.yggdrasil.product
-  ** Must match product id in the same file (file name and declared id must match).
-  ** plugin.xml extension must be named "product" (must match suffix in product id)
-  ** pom.xml must carry the same name (<artifactId>org.socialmusicdiscovery.yggdrasil</artifactId>)
-  ** "Synchronize with declaring plug-in" will write/update the proper product extension entry in the application's plugin.xml.
+* org.socialmusicdiscovery.yggdrasil-product.product
+  Must match product id in the same file (file name and declared id must match).
+  plugin.xml extension must be named "product" (must match suffix in product id)
+  pom.xml must carry the same name (<artifactId>org.socialmusicdiscovery.yggdrasil-product</artifactId>)
+  "Synchronize with declaring plug-in" will write/update the proper product extension entry in the application's plugin.xml.
 * org.socialmusicdiscovery.yggdrasil.application
   Referenced from product declaration (.product file and extension in plugin.xml).
   Suffix ("application") is declared in plugin.xml extension, prefix is derived from plugin name. 
@@ -45,7 +45,7 @@ Some notes on how various files and identifiers relate.
   generated file holds the text 
   	osgi.splashPath=platform\:/base/plugins/org
   when it should be
-  	osgi.splashPath=platform\:/base/plugins/org.socialmusicdiscovery.yggdrasil.some-plugin-name
+  	osgi.splashPath=platform\:/base/plugins/org.socialmusicdiscovery.yggdrasil.mysplashplugin
    
   The effect is that the application currently launches without a splash screen. I did try to add the config.ini 
   file and change the product spec to use the existing file rather than generate a new, but this had no effect. 
