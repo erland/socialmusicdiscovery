@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="SMD Yggdrasil" uid="org.socialmusicdiscovery.yggdrasil.product" id="org.socialmusicdiscovery.yggdrasil.product" application="org.socialmusicdiscovery.yggdrasil.application" version="1.0.0" useFeatures="true" includeLaunchers="true">
+<product name="SMD Yggdrasil" uid="org.socialmusicdiscovery.yggdrasil-product.product" id="org.socialmusicdiscovery.yggdrasil.product" application="org.socialmusicdiscovery.yggdrasil.application" version="1.0.0" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.socialmusicdiscovery.yggdrasil.foundation/icons/logo/splash-250x250.png"/>
