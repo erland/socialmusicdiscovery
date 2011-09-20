@@ -50,7 +50,7 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
 	private AbstractStatusHandler workbenchErrorHandler;
 
-	public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) {
+    public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) {
         return new ApplicationWorkbenchWindowAdvisor(configurer);
     }
     
@@ -62,7 +62,6 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 	public String getInitialWindowPerspectiveId() {
 		return Perspective.ID;
 	}
-	
 	public synchronized AbstractStatusHandler getWorkbenchErrorHandler() {
 		if (workbenchErrorHandler == null) {
 			workbenchErrorHandler = new MyWorkbenchErrorHandler();

@@ -39,7 +39,7 @@ import org.socialmusicdiscovery.rcp.prefs.PreferenceConstants;
 public class Activator extends AbstractUIPlugin {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "smd-rcp-client-plugin"; //$NON-NLS-1$
+	public static final String PLUGIN_ID = "org.socialmusicdiscovery.yggdrasil.foundation"; //$NON-NLS-1$
 
 	// The shared instance
 	private static Activator plugin;

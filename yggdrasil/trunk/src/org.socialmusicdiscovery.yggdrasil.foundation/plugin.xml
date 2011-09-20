@@ -3,79 +3,12 @@
 <plugin>
 
    <extension
-         id="application"
-         point="org.eclipse.core.runtime.applications">
-      <application>
-         <run
-               class="org.socialmusicdiscovery.rcp.Application">
-         </run>
-      </application>
-   </extension>
-   <extension
          point="org.eclipse.ui.perspectives">
       <perspective
             name="%perspective.name"
             class="org.socialmusicdiscovery.rcp.Perspective"
             id="org.socialmusicdiscovery.rcp.Perspective">
       </perspective>
-   </extension>
-   <extension
-         id="product"
-         point="org.eclipse.core.runtime.products">
-      <product
-            application="smd-rcp-client-plugin.application"
-            name="SMD Yggdrasil">
-         <property
-               name="windowImages"
-               value="icons/logo/DesenhodabandaYggDrasil+Y-16x16.png,icons/logo/DesenhodabandaYggDrasil+Y-32x32.png,icons/logo/DesenhodabandaYggDrasil+Y-48x48.png,icons/logo/DesenhodabandaYggDrasil+Y-64x64.png,icons/logo/DesenhodabandaYggDrasil+Y-128x128.png">
-         </property>
-         <property
-               name="aboutText"
-               value="Welcome to SMD Yggdrasil ALPHA, an evolving rich client for the Social Music &#x0A;Discovery (SMD) project, built on the Eclipse Rich Client Platform (RCP).&#x0A;&#x0A;The name Yggdrasil is taken from Norse mythology; it was said to be the &#x0A;world tree around which the nine worlds existed. Its branches extend far &#x0A;into the heavens, and the tree is supported by three roots that extend &#x0A;far away into other locations.&#x0A;&#x0A;In SMD, Yggdrasil connects metadata in the music library and allows its&#x0A;user to maintain both hard facts and subjective opinions about local or&#x0A;online music. It is perhaps not the world tree around which everything &#x0A;revolves, but rather the view into this tree - the SMD repository - and the &#x0A;instrument for connecting the tree with heavens and other locations.&#x0A;&#x0A;NOTE: Yggdrasil is in active development - many features are still missing!&#x0A;&#x0A;Yggdrasil: http://code.google.com/p/socialmusicdiscovery/wiki/Yggdrasil&#x0A;SMD: http://code.google.com/p/socialmusicdiscovery">
-         </property>
-         <property
-               name="aboutImage"
-               value="icons/logo/splash-250x250.png">
-         </property>
-         <property
-               name="appName"
-               value="SMD Yggdrasil">
-         </property>
-      </product>
-   </extension>
-   <extension
-         point="org.eclipse.ui.intro">
-      <intro
-            class="org.eclipse.ui.intro.config.CustomizableIntroPart"
-            icon="icons/logo/DesenhodabandaYggDrasil+Y-16x16.png"
-            id="smdrcp.intro">
-      </intro>
-      <introProductBinding
-            introId="smdrcp.intro"
-            productId="smd-rcp-client-plugin.product">
-      </introProductBinding>
-   </extension>
-   <extension
-         point="org.eclipse.ui.intro.config">
-      <config
-            introId="smdrcp.intro"
-            content="introContent.xml"
-            id="smd-rcp.configId">
-         <presentation
-               home-page-id="root">
-            <implementation
-                  kind="html"
-                  os="win32,linux,macosx">
-            </implementation>
-         </presentation>
-      </config>
-   </extension>
-   <extension
-         point="org.eclipse.ui.intro.configExtension">
-      <configExtension
-            content="ext.xml"
-            configId="smd-rcp.configId">
-      </configExtension>
    </extension>
    <extension
          point="org.eclipse.ui.views">

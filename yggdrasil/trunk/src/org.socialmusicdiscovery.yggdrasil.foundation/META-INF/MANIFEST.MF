@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: SMD Yggdrasil
-Bundle-SymbolicName: smd-rcp-client-plugin;singleton:=true
+Bundle-SymbolicName: org.socialmusicdiscovery.yggdrasil.foundation;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: SMD, the Social Music Discovery project
 Require-Bundle: org.eclipse.ui,
@@ -40,3 +40,30 @@ Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
  lib/grid-1.0.0.jar,
  lib/pshelf-1.0.0.jar
+Export-Package: org.eclipse.nebula.jface.gridviewer,
+ org.eclipse.nebula.jface.gridviewer.internal,
+ org.eclipse.nebula.widgets.grid,
+ org.eclipse.nebula.widgets.grid.internal,
+ org.eclipse.nebula.widgets.pshelf,
+ org.socialmusicdiscovery.rcp,
+ org.socialmusicdiscovery.rcp.commands,
+ org.socialmusicdiscovery.rcp.content,
+ org.socialmusicdiscovery.rcp.editors,
+ org.socialmusicdiscovery.rcp.editors.artist,
+ org.socialmusicdiscovery.rcp.editors.contributor,
+ org.socialmusicdiscovery.rcp.editors.label,
+ org.socialmusicdiscovery.rcp.editors.recording,
+ org.socialmusicdiscovery.rcp.editors.release,
+ org.socialmusicdiscovery.rcp.editors.track,
+ org.socialmusicdiscovery.rcp.editors.widgets,
+ org.socialmusicdiscovery.rcp.error,
+ org.socialmusicdiscovery.rcp.event,
+ org.socialmusicdiscovery.rcp.FIX.ME,
+ org.socialmusicdiscovery.rcp.grid,
+ org.socialmusicdiscovery.rcp.injections,
+ org.socialmusicdiscovery.rcp.prefs,
+ org.socialmusicdiscovery.rcp.util,
+ org.socialmusicdiscovery.rcp.util.databinding,
+ org.socialmusicdiscovery.rcp.views,
+ org.socialmusicdiscovery.rcp.views.navigator,
+ org.socialmusicdiscovery.rcp.views.util
