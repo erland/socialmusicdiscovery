@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.socialmusicdiscovery.yggdrasil.core
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.socialmusicdiscovery.yggdrasil.core.Activator
 Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ org.socialmusicdiscovery.yggdrasil.foundation;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: SMD, the Social Music Discovery Project
