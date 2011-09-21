@@ -34,25 +34,19 @@ Please see wiki for exact, up-to-date details on how to check out and build serv
 === To Build and Run in Eclipse === 
 
 1. Install Eclipse 3.7 for RCP/RAP developers: http://www.eclipse.org/downloads/packages/eclipse-rcp-and-rap-developers/indigor
-2. Check out and build SMD code as described on the wiki: http://code.google.com/p/socialmusicdiscovery/wiki/BuildInstructions
+2. Check out and build SMD code as described above
 3. Import all client projects into Eclipse: 
    a. File - Import - General - Existing Projects into Workspace 
    b. browse to .../yggdrasil
-   c. select at least the following projects:
-      - smd-rcp-client
-      - smd-rcp-client-feature
-      - smd-rcp-client-dependencies
-      - smd-rcp-client-plugin
-      optional (but recommended):
-      - smd-rcp-client-tests
-      - smd-rcp-client-site
-4. Open the .target file that fits your platform (e.g. /smd-rcp-client/smd-rcp-client.win32.x86.target). 
+   c. select all projects
+4. In org.socialmusicdiscovery.yggdrasil-product, open the .target file that fits your platform (e.g. dev-win32.x86.target). 
    In the upper right hand corner, click "set as target platform" 
-5. Launch client:
-   a. Recommended: open smd-rcp-client/smd-rcp-client.product. On the Overview tab, click Testing - 2. Test the application - Launch an Eclipse application
-   b. Alternative: right-click 'smd-rcp.product.launch (<your OS>)' - 'Run As ...' - 'smd-rcp.product'.
-   Example: /smd-rcp-client-plugin/smd-rcp.product.launch (WIN32)
-   
+5. Launch client: 
+   a. open /org.socialmusicdiscovery.yggdrasil-product/org.socialmusicdiscovery.yggdrasil-product.product
+   b. Select the Overview tab
+   c. Optional: if you change any product/application data, click "1. Synchronize"
+   d. Under "2. Test the product", click "Launch an Eclipse application"
+
 === To work on the client === 
 
 1. Install and setup Eclipse for RCP developers as described above
@@ -67,6 +61,7 @@ Please see wiki for exact, up-to-date details on how to check out and build serv
     (you probably have to ignore a warning during install)
    - alternative: Subversive plugin from http://download.eclipse.org/technology/subversive/0.7/update-site/
      On next restart, check to include the latest versions of SVNKit and JavaHL.
+     NOTE: we've had some problems with the Subversive plug-in, the Subclipse is recommended (see notes below).
 4. Optional: install or refer to Eclipse examples:
    - RCP:
 	 http://www.vogella.de/articles/EclipseRCP/article.html
