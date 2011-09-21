@@ -1,12 +1,16 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: SMD Yggdrasil Navigator
-Bundle-SymbolicName: org.socialmusicdiscovery.yggdrasil.navigator
+Bundle-SymbolicName: org.socialmusicdiscovery.yggdrasil.navigator;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.socialmusicdiscovery.yggdrasil.navigator.Activator
 Bundle-Vendor: SMD, the Social Music Discovery Project
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.socialmusicdiscovery.yggdrasil.foundation;bundle-version="1.0.0"
+ org.socialmusicdiscovery.yggdrasil.foundation;bundle-version="1.0.0",
+ org.eclipse.jface.databinding;bundle-version="1.5.0",
+ org.eclipse.core.databinding.property;bundle-version="1.4.0",
+ org.eclipse.core.databinding.observable;bundle-version="1.4.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
+Export-Package: org.socialmusicdiscovery.rcp.views.navigator

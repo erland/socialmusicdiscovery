@@ -25,48 +25,47 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.rcp;
+package org.socialmusicdiscovery.yggdrasil;
 
-import org.eclipse.equinox.app.IApplication;
-import org.eclipse.equinox.app.IApplicationContext;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.application.IWorkbenchConfigurer;
+import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
+import org.eclipse.ui.application.WorkbenchAdvisor;
+import org.eclipse.ui.application.WorkbenchWindowAdvisor;
+import org.eclipse.ui.statushandlers.AbstractStatusHandler;
+import org.eclipse.ui.statushandlers.StatusAdapter;
+import org.eclipse.ui.statushandlers.StatusManager;
+import org.eclipse.ui.statushandlers.WorkbenchErrorHandler;
 
-/**
- * This class controls all aspects of the application's execution
- */
-public class Application implements IApplication {
+public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
-	 */
-	public Object start(IApplicationContext context) {
-		Display display = PlatformUI.createDisplay();
-		try {
-			int returnCode = PlatformUI.createAndRunWorkbench(display, new ApplicationWorkbenchAdvisor());
-			if (returnCode == PlatformUI.RETURN_RESTART) {
-				return IApplication.EXIT_RESTART;
-			}
-			return IApplication.EXIT_OK;
-		} finally {
-			display.dispose();
+    private class MyWorkbenchErrorHandler extends WorkbenchErrorHandler {
+
+		@Override
+		public void handle(StatusAdapter statusAdapter, int style) {
+			// kludge, must be a way to tell the default handler to show error?
+			super.handle(statusAdapter, style|StatusManager.SHOW);
 		}
+
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.equinox.app.IApplication#stop()
-	 */
-	public void stop() {
-		if (!PlatformUI.isWorkbenchRunning())
-			return;
-		final IWorkbench workbench = PlatformUI.getWorkbench();
-		final Display display = workbench.getDisplay();
-		display.syncExec(new Runnable() {
-			public void run() {
-				if (!display.isDisposed())
-					workbench.close();
-			}
-		});
+	private AbstractStatusHandler workbenchErrorHandler;
+
+    public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) {
+        return new ApplicationWorkbenchWindowAdvisor(configurer);
+    }
+    
+    public void initialize(IWorkbenchConfigurer configurer) {
+        super.initialize(configurer);
+        configurer.setSaveAndRestore(true);
+    }
+
+	public String getInitialWindowPerspectiveId() {
+		return Perspective.ID;
+	}
+	public synchronized AbstractStatusHandler getWorkbenchErrorHandler() {
+		if (workbenchErrorHandler == null) {
+			workbenchErrorHandler = new MyWorkbenchErrorHandler();
+		}
+		return workbenchErrorHandler;
 	}
 }

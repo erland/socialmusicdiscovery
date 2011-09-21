@@ -3,29 +3,6 @@
 <plugin>
 
    <extension
-         point="org.eclipse.ui.perspectives">
-      <perspective
-            name="%perspective.name"
-            class="org.socialmusicdiscovery.rcp.Perspective"
-            id="org.socialmusicdiscovery.rcp.Perspective">
-      </perspective>
-   </extension>
-   <extension
-         point="org.eclipse.ui.views">
-      <view
-            class="org.socialmusicdiscovery.rcp.views.navigator.NavigatorView"
-            id="org.socialmusicdiscovery.rcp.views.NavigatorView"
-            name="%view.navigatorname">
-      </view>
-       <view
-             category="org.eclipse.ui"
-             class="org.eclipse.ui.ExtensionFactory:progressView"
-             icon="icons/strawman/progress.png"
-             id="org.eclipse.ui.views.ProgressView"
-             name="Progress View">
-         </view>
-   </extension>
-   <extension
          point="org.eclipse.ui.editors">
       <editor
             class="org.socialmusicdiscovery.rcp.editors.artist.ArtistEditor"
@@ -51,6 +28,16 @@
             id="org.socialmusicdiscovery.rcp.editors.label.LabelEditor"
             name="%editor.label.name">
       </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+        <view
+             category="org.eclipse.ui"
+             class="org.eclipse.ui.ExtensionFactory:progressView"
+             icon="icons/strawman/progress.png"
+             id="org.eclipse.ui.views.ProgressView"
+             name="Progress View">
+         </view>
    </extension>
    <extension
          id="org.socialmusicdiscovery.rcp.prefs"
