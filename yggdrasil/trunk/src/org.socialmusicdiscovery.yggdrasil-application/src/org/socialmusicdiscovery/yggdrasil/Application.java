@@ -32,7 +32,7 @@ import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
-import org.socialmusicdiscovery.rcp.ApplicationWorkbenchAdvisor;
+import org.socialmusicdiscovery.yggdrasil.ApplicationWorkbenchAdvisor;
 
 /**
  * This class controls all aspects of the application's execution

@@ -2,6 +2,14 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            name="%perspective.name"
+            class="org.socialmusicdiscovery.yggdrasil.Perspective"
+            id="org.socialmusicdiscovery.yggdrasil.Perspective">
+      </perspective>
+   </extension>
+   <extension
          id="application"
          point="org.eclipse.core.runtime.applications">
       <application>

@@ -25,30 +25,50 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.rcp;
+package org.socialmusicdiscovery.yggdrasil;
 
-import org.eclipse.ui.IFolderLayout;
-import org.eclipse.ui.IPageLayout;
-import org.eclipse.ui.IPerspectiveFactory;
-import org.socialmusicdiscovery.rcp.views.navigator.NavigatorView;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
+import org.eclipse.ui.application.ActionBarAdvisor;
+import org.eclipse.ui.application.IActionBarConfigurer;
 
-public class Perspective implements IPerspectiveFactory {
+public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 
-	public static final String ID_VIEW_FOLDER = "views";
-	//	private static final String PLACEHOLDER_PATTERN = "org.socialmusicdiscovery.rcp.views.*";
-	public final static String ID = Perspective.class.getName();
-	private static final String ID_PROGRESSVIEW = "org.eclipse.ui.views.ProgressView";
-
-	
-	public void createInitialLayout(IPageLayout layout) {
-		String editorArea = layout.getEditorArea();
-		layout.setEditorAreaVisible(true);
-		
-		layout.addStandaloneView(NavigatorView.ID,  false, IPageLayout.LEFT, 0.25f, editorArea);
-		IFolderLayout folder = layout.createFolder(ID_VIEW_FOLDER, IPageLayout.BOTTOM, 0.80f, editorArea);
-		folder.addView(ID_PROGRESSVIEW);
-//		folder.addPlaceholder(PLACEHOLDER_PATTERN);
-		
-		layout.getViewLayout(NavigatorView.ID).setCloseable(false);
+    private IWorkbenchAction introAction;
+	private IWorkbenchAction preferenceAction;
+	private IWorkbenchAction saveAction;
+	private IWorkbenchAction saveAllAction;
+    
+	public ApplicationActionBarAdvisor(IActionBarConfigurer configurer) {
+		super(configurer);
 	}
+
+	protected void makeActions(IWorkbenchWindow window) {
+		// built-in commands/actions needs to be created here? Cannot create thru extension point?
+		// http://www.eclipsezone.com/eclipse/forums/t113363.html
+		// http://dev.eclipse.org/newslists/news.eclipse.platform.rcp/msg36330.html
+
+		preferenceAction = ActionFactory.PREFERENCES.create(window);
+		register(preferenceAction);
+
+		introAction = ActionFactory.INTRO.create(window);
+		register(introAction);
+		
+        saveAction = ActionFactory.SAVE.create(window);
+        register(saveAction);
+
+        saveAllAction = ActionFactory.SAVE_ALL.create(window);
+        register(saveAllAction);
+
+
+
+
+	}
+
+	protected void fillMenuBar(IMenuManager menuBar) {
+		// menu is defined thru menu extension points in plugin.xml 
+	}
+
 }
