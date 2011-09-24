@@ -3,10 +3,14 @@
 <schema targetNamespace="org.socialmusicdiscovery.yggdrasil.foundation" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.socialmusicdiscovery.yggdrasil.foundation" id="org.socialmusicdiscovery.yggdrasil.editordialogs" name="Dialogs"/>
+         <meta.schema plugin="org.socialmusicdiscovery.yggdrasil.foundation" id="org.socialmusicdiscovery.yggdrasil.editordialogs" name="Editor Dialogs"/>
       </appinfo>
       <documentation>
-         Allows dialogs to be registered for specific types of content, more or less like editors.
+         &lt;p&gt;This extension point is used to add new editor dialogs to the workbench. An editor dialog is a visual component that is launched in a separate shell, not within a workbench page. It is typically used to edit or browse a dependend object that is a child of a parent; the editing is done in a modal dialog, and the changes are immediately save when the dialog is closed (the editing does not affect the parent&apos;s &quot;dirty&quot; status).&lt;/p&gt;
+
+&lt;p&gt;To open an editor dialog, the user will typically invoke &quot;Edit&quot; on an element that is visible as a child within a regular editor. When this action is performed the workbench registry is consulted to determine an appropriate editor dialog for the element type, and then a new instance of the editor dialog is created. The actual result depends on the type of the editor.&lt;/p&gt;
+
+&lt;p&gt;The standard Eclipse workbench provides support for editors launched in spearate frames, but has no direct support for editors built on modal dialogs. The SMD Yggdrasil foundation holds some utilities to deal with this. Like a regular Eclipse editor, the dialog must be declared with the content type that it handles; the SMD utils will use this to locate the approriate editor for the content, much like the Eclipse workbench does for a regular workbench editor.&lt;/p&gt;
       </documentation>
    </annotation>
 
@@ -77,7 +81,7 @@
          <meta.section type="since"/>
       </appinfo>
       <documentation>
-         [Enter the first release in which this extension point appears.]
+         SMD Yggdrasil ALPHA, 2011-09-29 (no formal version number).
       </documentation>
    </annotation>
 
@@ -86,7 +90,18 @@
          <meta.section type="examples"/>
       </appinfo>
       <documentation>
-         [Enter extension point usage example here.]
+         The following is an example of an editor dialog extension definition: 
+&lt;p&gt;
+&lt;pre&gt;
+  &lt;extension
+        point=&quot;org.socialmusicdiscovery.yggdrasil.editordialogs&quot;&gt;
+     &lt;Dialog
+           class=&quot;org.socialmusicdiscovery.yggdrasil.core.editors.track.TrackDialog&quot;
+           contentTypeId=&quot;org.socialmusicdiscovery.server.business.model.core.Track&quot;&gt;
+     &lt;/Dialog&gt;
+  &lt;/extension&gt;
+&lt;/pre&gt;
+&lt;/p&gt;
       </documentation>
    </annotation>
 
@@ -95,7 +110,8 @@
          <meta.section type="apiinfo"/>
       </appinfo>
       <documentation>
-         [Enter API information here.]
+         &lt;p&gt;The &lt;b&gt;class&lt;/b&gt; attribute must refer to a class that implements the &lt;code&gt;EditorDialog&lt;/code&gt; interface.&lt;/p&gt;
+&lt;p&gt;The &lt;b&gt;contentTypeId&lt;/b&gt; works like the corresponding attribute in the standard Eclipse &lt;code&gt;org.eclipse.ui.editors&lt;/code&gt; extension, except that it is mandatory here. A corresponding &lt;code&gt;org.eclipse.core.contenttype.contentTypes&lt;/code&gt; extension must be declared with a &lt;b&gt;name&lt;/b&gt; that matches the SMD entity that the dialog operates on (example: &lt;code&gt;name=&quot;Track&quot;&lt;/code&gt;).&lt;/p&gt;
       </documentation>
    </annotation>
 
@@ -104,9 +120,37 @@
          <meta.section type="implementation"/>
       </appinfo>
       <documentation>
-         [Enter information about supplied implementation of this extension point.]
+         This plug-in provides no concrete implementation, but the &lt;code&gt;AbstractEditorDialog&lt;/code&gt; can be used to create usable dialogs.
       </documentation>
    </annotation>
 
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+         &lt;p&gt;Copyright 2010-2011, Social Music Discovery project&lt;br&gt;
+All rights reserved.&lt;/p&gt;
+
+&lt;p&gt;Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+&lt;ul&gt;
+&lt;li&gt;Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.&lt;/li&gt;
+&lt;li&gt;Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.&lt;/li&gt;
+&lt;li&gt;Neither the name of Social Music Discovery project nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.&lt;/li&gt;
+&lt;/ul&gt;
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot; AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL SOCIAL MUSIC DISCOVERY PROJECT BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+&lt;/p&gt;
+      </documentation>
+   </annotation>
 
 </schema>
