@@ -1,16 +1,9 @@
 #summary Some notes on the plugin structure of the Yggdrasil RCP client.
 
-= Introduction =
-
-We separate the client in a few main parts. The basic idea is to have a small base product that is easily installed and rarely updated, and to use an update site to maintain the other components. 
-
-The sketch below illustrates the essential structure (the sketch is saved from a Visual Paradigm model in the SVN repository: https://socialmusicdiscovery.googlecode.com/svn/wiki/Yggdrasil/ProjectStructureDiagram.vpp)
-
-Note: you may need to open the image in an external viewer to see the details.
-
-[http://socialmusicdiscovery.googlecode.com/svn/wiki/Yggdrasil/ProjectStructureDiagram.png]
+Yggdrasil is based on Eclipse RCP, and we strive to follow the Eclipse culture and leverage the component architecture to offer an extensible and flexible platform. We separate the client in a few main parts, where the basic idea is to have a small base product that is easily installed and rarely updated, and to use an update site to maintain the other components. We also want to allow others to extend the basic platform with new features.
 
 ==Objectives and Rationale==
+What we want to achieve, and how we design the structure for this purpose:
   * Allow reuse of source code in different configurations. 
     * Hence the plug-ins "yggdrasil-product" and "yggdrasil-application" that hold all product info, the application extension, intro text and logo and splash images to separate product packaging and branding from source code.
   * Allow new plug-ins to reuse our general platform. 
@@ -19,3 +12,10 @@ Note: you may need to open the image in an external viewer to see the details.
     * Hence the separation between the navigator and the editors for the core and the subjective model. Intention is that we or someone else should be able to offer an alternative navigator, additional or better editors, or add plug-ins to offer new features by hooking into the navigator, the command framework an/or our standard editors.
   * Allow download from update site. 
     * Hence the "yggdrasil-site" and "yggdrasil.base-feature" projects - update sites seem to prefer features over plug-ins? These are mere container and hold no code. They also offer a way to repackage the client if/when the need arises; the feature defines a plug-in configuraton that can be used in several application configurations, either on its own, augmented by other features, or ignored and replace by a feature that composes the plugins in another way.
+
+==Overview==
+The sketch below illustrates the essential structure (the sketch is saved from a Visual Paradigm model in the SVN repository: https://socialmusicdiscovery.googlecode.com/svn/wiki/Yggdrasil/ProjectStructureDiagram.vpp)
+
+*Note*: you may need to open the image in an external viewer to see the details.
+
+[http://socialmusicdiscovery.googlecode.com/svn/wiki/Yggdrasil/ProjectStructureDiagram.png]
