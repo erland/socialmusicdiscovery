@@ -36,7 +36,7 @@ The short story:
 
 For more info, read below.
 = To Extend =
-The Yggdrasil client is designed to leverage the Eclipse extension architecture. We hope that other developers will extend our initial platform by developing more or better plug-ins to enhance the client platform. More information on how to develop plug-ins can be found on the [ExtendersGuideToYggrdrasil Extender's Guide To Yggrdrasil].
+The Yggdrasil client is designed to leverage the Eclipse extension architecture. We hope that other developers will extend our initial platform by developing more or better plug-ins to enhance the client platform. More information on how to develop plug-ins can be found on the [ExtendersGuideToYggdrasil Extender's Guide To Yggdrasil].
 == Design Guidelines ==
 Some brief and preliminary thoughts on the design principles for the RCP client. Structural info and guidelines can be found on the [YggdrasilPluginStructure Yggdrasil Plugin Structure] page. Comments expected and welcome!
 
