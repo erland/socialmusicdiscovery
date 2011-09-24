@@ -32,9 +32,12 @@ import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.core.databinding.ValidationStatusProvider;
 import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.beans.PojoObservables;
+import org.eclipse.core.databinding.observable.map.IObservableMap;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.fieldassist.ControlDecorationSupport;
 import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.jface.databinding.viewers.ObservableListContentProvider;
+import org.eclipse.jface.databinding.viewers.ObservableMapLabelProvider;
 import org.eclipse.jface.databinding.viewers.ViewersObservables;
 import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
 import org.eclipse.nebula.jface.gridviewer.GridViewerColumn;
@@ -57,6 +60,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.socialmusicdiscovery.rcp.content.ObservableLabel;
 import org.socialmusicdiscovery.rcp.content.ObservableRelease;
+import org.socialmusicdiscovery.rcp.content.ObservableTrack;
 import org.socialmusicdiscovery.rcp.content.RecordLabelProvider;
 import org.socialmusicdiscovery.rcp.util.ViewerUtil;
 import org.socialmusicdiscovery.rcp.util.databinding.DateConverter;
@@ -355,6 +359,15 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 		IObservableValue textNameObserveTooltipTextObserveWidget = SWTObservables.observeTooltipText(textName);
 		IObservableValue getModelToolTipTextObserveValue = PojoObservables.observeValue(getModel(), "toolTipText");
 		bindingContext.bindValue(textNameObserveTooltipTextObserveWidget, getModelToolTipTextObserveValue, null, null);
+		//
+		ObservableListContentProvider listContentProvider = new ObservableListContentProvider();
+		gridViewerTracks.setContentProvider(listContentProvider);
+		//
+		IObservableMap[] observeMaps = BeansObservables.observeMaps(listContentProvider.getKnownElements(), ObservableTrack.class, new String[]{"medium.number", "number", "title"});
+		gridViewerTracks.setLabelProvider(new ObservableMapLabelProvider(observeMaps));
+		gridViewerTracks.setInput(getRelease().getTracks());
+		//
+
 		//
 		IObservableValue gridViewerTracksObserveSingleSelection = ViewersObservables.observeDelayedValue(200, ViewersObservables.observeSingleSelection(gridViewerTracks));
 		IObservableValue trackContributorPanelModelObserveValue = BeansObservables.observeValue(trackContributorPanel, "model");
