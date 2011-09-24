@@ -25,43 +25,31 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.rcp.util;
+package org.socialmusicdiscovery.yggdrasil.core.editors.artist;
 
-import org.socialmusicdiscovery.rcp.Activator;
-import org.socialmusicdiscovery.rcp.content.DataSource;
-import org.socialmusicdiscovery.rcp.content.ObservableEntity;
-import org.socialmusicdiscovery.server.business.model.core.Artist;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
+import org.socialmusicdiscovery.rcp.content.ObservableArtist;
+import org.socialmusicdiscovery.rcp.editors.AbstractEditorPart;
 
-/**
- * Some SMD-specific convenience utils.
- * 
- * @author Peer Törngren
- *
- */
-public class SMDUtil {
+public class ArtistEditor extends AbstractEditorPart<ObservableArtist, ArtistUI> {
 
-	private SMDUtil() {}
+	public static final String ID = ArtistEditor.class.getName();
 
-	/**
-	 * Convenience method.
-	 * @return {@link DataSource}
-	 */
-	public static DataSource getDataSource() {
-		return Activator.getDefault().getDataSource();
+	public ArtistEditor() {
 	}
 
-	/**
-	 * Analyze supplied element and return a string to represent the content type.
-	 * This type can be used as the "filename" in a content type extension, and thus 
-	 * editors can be mapped to this type id. Typically, an SMD {@link Artist} would return the 
-	 * string "Artist".
-	 *  
-	 * @param element
-	 * @return Simple unqualified string or <code>null</code> 
-	 */
-	public static String resolveContentTypeName(Object element) {
-		return element instanceof ObservableEntity ? ((ObservableEntity) element).getTypeName() : null;
+	@Override
+	public void createPartControl(Composite parent) {
+		super.createPartControl(parent, new ArtistUI(parent, SWT.NONE));
+		hookContextMenus();
 	}
-	
 
+	private void hookContextMenus() {
+		hookContextMenus(
+			getUI().getArtistContributionsPanel().getGridViewer()
+//			getUI().getAliasArea().getGridViewer(),
+//			getUI().getMemberArea().getGridViewer(),
+		);
+	}
 }

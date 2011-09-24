@@ -25,43 +25,39 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.rcp.util;
+package org.socialmusicdiscovery.rcp.dialogs;
 
-import org.socialmusicdiscovery.rcp.Activator;
-import org.socialmusicdiscovery.rcp.content.DataSource;
+import org.eclipse.ui.IEditorInput;
 import org.socialmusicdiscovery.rcp.content.ObservableEntity;
-import org.socialmusicdiscovery.server.business.model.core.Artist;
+import org.socialmusicdiscovery.rcp.util.WorkbenchUtil;
 
 /**
- * Some SMD-specific convenience utils.
+ * An "editor" for modifying existing instances, typically implemented as a
+ * modal dialog. This is primarily useful for editing dependent entities that do
+ * not implement {@link IEditorInput} and hence cannot be edited in a regular
+ * editor. Implementers of this interface should typically be registered with
+ * the extension point along with a declaration of the content type the dialog
+ * handles. This way, the dialog can be "automagically" launched on selected
+ * content by calling {@link WorkbenchUtil#openDistinct(Object)}, the same way
+ * we open editors for {@link IEditorInput} elements.
  * 
  * @author Peer Törngren
- *
+ * 
  */
-public class SMDUtil {
-
-	private SMDUtil() {}
+public interface EditorDialog<T extends ObservableEntity> {
 
 	/**
-	 * Convenience method.
-	 * @return {@link DataSource}
+	 * The ID of the editor dialog extension point, as declared in the plug-in
+	 * metadata.
 	 */
-	public static DataSource getDataSource() {
-		return Activator.getDefault().getDataSource();
-	}
+	String ExtensionID = "org.socialmusicdiscovery.yggdrasil.editordialogs";
+
 
 	/**
-	 * Analyze supplied element and return a string to represent the content type.
-	 * This type can be used as the "filename" in a content type extension, and thus 
-	 * editors can be mapped to this type id. Typically, an SMD {@link Artist} would return the 
-	 * string "Artist".
+	 * Edit the supplied entity and save it to persistent store. 
 	 *  
-	 * @param element
-	 * @return Simple unqualified string or <code>null</code> 
+	 * @param <code>true</code> if entity was edited, <code>false</code> if user did not make any changes
 	 */
-	public static String resolveContentTypeName(Object element) {
-		return element instanceof ObservableEntity ? ((ObservableEntity) element).getTypeName() : null;
-	}
-	
+	boolean edit(T entity);
 
 }

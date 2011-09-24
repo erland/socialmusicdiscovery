@@ -29,15 +29,13 @@ package org.socialmusicdiscovery.rcp.util;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
@@ -50,33 +48,11 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.services.IEvaluationService;
-import org.socialmusicdiscovery.rcp.Activator;
-import org.socialmusicdiscovery.rcp.content.ObservableArtist;
-import org.socialmusicdiscovery.rcp.content.ObservableContributor;
 import org.socialmusicdiscovery.rcp.content.ObservableEntity;
-import org.socialmusicdiscovery.rcp.content.ObservableLabel;
-import org.socialmusicdiscovery.rcp.content.ObservableRecording;
-import org.socialmusicdiscovery.rcp.content.ObservableRelease;
-import org.socialmusicdiscovery.rcp.content.ObservableTrack;
-import org.socialmusicdiscovery.rcp.editors.artist.ArtistEditor;
-import org.socialmusicdiscovery.rcp.editors.contributor.ContributorDialog;
-import org.socialmusicdiscovery.rcp.editors.label.LabelEditor;
-import org.socialmusicdiscovery.rcp.editors.recording.RecordingEditor;
-import org.socialmusicdiscovery.rcp.editors.release.ReleaseEditor;
-import org.socialmusicdiscovery.rcp.editors.track.TrackDialog;
+import org.socialmusicdiscovery.rcp.dialogs.EditorDialog;
 import org.socialmusicdiscovery.rcp.error.FatalApplicationException;
 
 public final class WorkbenchUtil {
-
-	private final static Map<Class<?>, String> editors = new HashMap<Class<?>, String>();
-	private final static Map<Class<?>, String> views = new HashMap<Class<?>, String>();
-
-	static {
-		editors.put(ObservableArtist.class, ArtistEditor.ID);
-		editors.put(ObservableRelease.class, ReleaseEditor.ID);
-		editors.put(ObservableRecording.class, RecordingEditor.ID);
-		editors.put(ObservableLabel.class, LabelEditor.ID);
-	}
 
 	private WorkbenchUtil() { } // static util
 
@@ -153,29 +129,24 @@ public final class WorkbenchUtil {
 	}
 
 	public static Object openDistinct(Object selectedElement) {
+		
+		// editor?
 		IEditorInput editorInput = resolveEditableElement(selectedElement);
-
 		if (editorInput!=null) {
-			// editor?
 			String editorId = resolveEditorId(editorInput);
 			if (editorId!=null) {
 				return WorkbenchUtil.openEditor(editorInput, editorId);
 			}
-			
-			// view?
-			String viewId = resolveViewId(editorInput);
-			if (viewId!=null) {
-				return WorkbenchUtil.openView(viewId, viewId);
-			}
 		} 
 
 		// dialog?
-		ObservableEntity entity = openDialog(selectedElement);
-		if (entity!=null) {
-			if (entity.isDirty()) {
-				Activator.getDefault().getDataSource().persist(new Shell(), entity);
+		if (selectedElement instanceof ObservableEntity) {
+			ObservableEntity entity = (ObservableEntity) selectedElement;
+			EditorDialog<ObservableEntity> dlg = ExtensionUtil.resolveEditorDialog(entity.getTypeName());
+			if (dlg!=null) {
+				dlg.edit(entity);
+				return selectedElement;
 			}
-			return entity;
 		}
 		
 		// no luck :-(
@@ -183,15 +154,15 @@ public final class WorkbenchUtil {
 		return null;
 	}
 
-	private static ObservableEntity openDialog(Object input) {
-		if (input instanceof ObservableContributor) {
-			return ContributorDialog.open((ObservableContributor) input);
-		}
-		if (input instanceof ObservableTrack) {
-			return TrackDialog.open((ObservableTrack) input);
-		}
-		return null;
-	}
+//	private static ObservableEntity openDialog(Object input) {
+//		if (input instanceof ObservableContributor) {
+//			return ContributorDialog.open((ObservableContributor) input);
+//		}
+//		if (input instanceof ObservableTrack) {
+//			return TrackDialog.open((ObservableTrack) input);
+//		}
+//		return null;
+//	}
 
 	private static IEditorInput resolveEditableElement(Object selectedElement) {
 		if (selectedElement instanceof IEditorInput) {
@@ -205,16 +176,12 @@ public final class WorkbenchUtil {
 	}
 
 	private static String resolveEditorId(Object element) {
-		// TODO this will need to be made much more robust, we cannot depend on the base class
-		// the editor should probably declare an interface that it can handle, perhaps 
-		// thru a contentTypeId referring to the extensions of org.eclipse.core.contenttype.contentTypes
-		return element==null ? null : editors.get(element.getClass());
-	}
-
-	private static String resolveViewId(Object element) {
-		// TODO this will need to be made much more robust, we cannot depend on the base class
-		// the view should probably declare an interface that it can handle 
-		return element==null ? null : views.get(element.getClass());
+		String contentTypeId = SMDUtil.resolveContentTypeName(element);
+		if (contentTypeId==null) {
+			return null;
+		}
+		IEditorDescriptor editor = PlatformUI.getWorkbench().getEditorRegistry().getDefaultEditor(contentTypeId);
+		return editor==null ? null : editor.getId();
 	}
 
 	public static Object open(ExecutionEvent event) {

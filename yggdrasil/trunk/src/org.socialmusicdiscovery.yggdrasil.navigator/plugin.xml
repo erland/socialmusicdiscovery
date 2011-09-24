@@ -6,7 +6,7 @@
       <view
             class="org.socialmusicdiscovery.rcp.views.navigator.NavigatorView"
             id="org.socialmusicdiscovery.rcp.views.NavigatorView"
-            name="Navigator">
+            name="%view.navigatorname ">
       </view>
    </extension>
 

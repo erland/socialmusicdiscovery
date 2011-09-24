@@ -27,41 +27,43 @@
 
 package org.socialmusicdiscovery.rcp.util;
 
-import org.socialmusicdiscovery.rcp.Activator;
-import org.socialmusicdiscovery.rcp.content.DataSource;
-import org.socialmusicdiscovery.rcp.content.ObservableEntity;
-import org.socialmusicdiscovery.server.business.model.core.Artist;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.Platform;
+import org.socialmusicdiscovery.rcp.dialogs.EditorDialog;
+import org.socialmusicdiscovery.rcp.error.FatalApplicationException;
+
 
 /**
- * Some SMD-specific convenience utils.
+ * Some helpers for working with extensions, both standard Eclipse and Yggdrasil
+ * extension points.
  * 
  * @author Peer Törngren
- *
+ * 
  */
-public class SMDUtil {
+public final class ExtensionUtil {
 
-	private SMDUtil() {}
+	private ExtensionUtil() {}
 
-	/**
-	 * Convenience method.
-	 * @return {@link DataSource}
-	 */
-	public static DataSource getDataSource() {
-		return Activator.getDefault().getDataSource();
+	public static <T extends EditorDialog> T resolveEditorDialog(String contentName) {
+		String contentTypeId = resolveContentTypeId(contentName);
+		IConfigurationElement[] extensions = Platform.getExtensionRegistry().getConfigurationElementsFor(EditorDialog.ExtensionID);
+		
+		for (IConfigurationElement extension : extensions) {
+			if (extension.getAttribute("contentTypeId").equals(contentTypeId)) { //$NON-NLS-1$
+				try {
+					return (T) extension.createExecutableExtension("class"); //$NON-NLS-1$
+				} catch (CoreException e1) {
+					throw new FatalApplicationException("Unable to instantiate editor dialog: "+extension.getName(), e1);  //$NON-NLS-1$
+				}
+			}
+		}
+		return null;
 	}
 
-	/**
-	 * Analyze supplied element and return a string to represent the content type.
-	 * This type can be used as the "filename" in a content type extension, and thus 
-	 * editors can be mapped to this type id. Typically, an SMD {@link Artist} would return the 
-	 * string "Artist".
-	 *  
-	 * @param element
-	 * @return Simple unqualified string or <code>null</code> 
-	 */
-	public static String resolveContentTypeName(Object element) {
-		return element instanceof ObservableEntity ? ((ObservableEntity) element).getTypeName() : null;
+	private static String resolveContentTypeId(String contentName) {
+		return Platform.getContentTypeManager().findContentTypeFor(contentName).getId();
 	}
-	
+
 
 }

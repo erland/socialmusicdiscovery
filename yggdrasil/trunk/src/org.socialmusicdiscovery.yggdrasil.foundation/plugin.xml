@@ -1,34 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension-point id="org.socialmusicdiscovery.yggdrasil.editordialogs" name="Editor Dialogs" schema="schema/org.socialmusicdiscovery.yggdrasil.editordialogs.exsd"/>
 
-   <extension
-         point="org.eclipse.ui.editors">
-      <editor
-            class="org.socialmusicdiscovery.rcp.editors.artist.ArtistEditor"
-            default="false"
-            id="org.socialmusicdiscovery.rcp.editors.artist.ArtistEditor"
-            name="%editor.artist.name">
-      </editor>
-      <editor
-            class="org.socialmusicdiscovery.rcp.editors.release.ReleaseEditor"
-            default="false"
-            id="org.socialmusicdiscovery.rcp.editors.release.ReleaseEditor"
-            name="%editor.release.name">
-      </editor>
-      <editor
-            class="org.socialmusicdiscovery.rcp.editors.recording.RecordingEditor"
-            default="false"
-            id="org.socialmusicdiscovery.rcp.editors.recording.RecordingEditor"
-            name="%editor.recording.name">
-      </editor>
-      <editor
-            class="org.socialmusicdiscovery.rcp.editors.label.LabelEditor"
-            default="false"
-            id="org.socialmusicdiscovery.rcp.editors.label.LabelEditor"
-            name="%editor.label.name">
-      </editor>
-   </extension>
    <extension
          point="org.eclipse.ui.views">
         <view
@@ -223,66 +197,6 @@
             </visibleWhen>
          </command>
       </menuContribution>
-      <menuContribution
-            allPopups="true"
-            locationURI="org.socialmusicdiscovery.rcp.editors.artist.ArtistEditor">
-         <command
-               commandId="org.socialmusicdiscovery.rcp.commands.PlayElement"
-               label="%popup.command.play.label"
-               mnemonic="%popup.command.play.mnemonic"
-               style="push">
-            <visibleWhen
-                  checkEnabled="false">
-               <instanceof
-                     value="org.socialmusicdiscovery.server.business.model.core.PlayableElement">
-               </instanceof>
-            </visibleWhen>
-         </command>
-      </menuContribution>
-      <menuContribution
-            allPopups="true"
-            locationURI="popup:org.socialmusicdiscovery.rcp.editors.widgets.ContributorPanel">
-         <command
-               commandId="org.socialmusicdiscovery.rcp.commands.CreateContributor"
-               label="%popup.command.createDependent.label"
-               mnemonic="%popup.command.createDependent.mnemonic"
-               style="push">
-         </command>
-         <command
-               commandId="org.socialmusicdiscovery.rcp.commands.DeleteDependent"
-               label="%popup.command.delete.label"
-               mnemonic="%popup.command.delete.mnemonic"
-               style="push">
-         </command>
-         <command
-               commandId="org.socialmusicdiscovery.rcp.commands.EditArtist"
-               label="%popup.command.editArtist.label"
-               mnemonic="%popup.command.editArtist.mnemonic"
-               style="push">
-         </command>
-      </menuContribution>
-      <menuContribution
-            allPopups="true"
-            locationURI="popup:org.socialmusicdiscovery.rcp.editors.release.ReleaseEditor.tracks">
-         <command
-               commandId="org.socialmusicdiscovery.rcp.commands.CreateTrack"
-               label="%popup.command.createDependent.label"
-               mnemonic="%popup.command.createDependent.mnemonic"
-               style="push">
-         </command>
-         <command
-               commandId="org.socialmusicdiscovery.rcp.commands.DeleteDependent"
-               label="%popup.command.delete.label"
-               mnemonic="%popup.command.delete.mnemonic"
-               style="push">
-         </command>
-         <command
-               commandId="org.socialmusicdiscovery.rcp.commands.EditRecording"
-               label="%popup.command.editRecording.label"
-               mnemonic="%popup.command.editRecording.mnemonic"
-               style="push">
-         </command>
-      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -293,16 +207,6 @@
       <command
             id="org.socialmusicdiscovery.rcp.commands.Create"
             name="Create">
-      </command>
-      <command
-            defaultHandler="org.socialmusicdiscovery.rcp.commands.CreateContributor"
-            id="org.socialmusicdiscovery.rcp.commands.CreateContributor"
-            name="Create Contributor">
-      </command>
-      <command
-            defaultHandler="org.socialmusicdiscovery.rcp.commands.CreateTrack"
-            id="org.socialmusicdiscovery.rcp.commands.CreateTrack"
-            name="Create Track">
       </command>
       <command
             id="org.socialmusicdiscovery.rcp.commands.Delete"
@@ -327,14 +231,6 @@
       <command
             id="org.socialmusicdiscovery.rcp.commands.PlayElement"
             name="Play">
-      </command>
-      <command
-            id="org.socialmusicdiscovery.rcp.commands.EditRecording"
-            name="Edit Recording">
-      </command>
-      <command
-            id="org.socialmusicdiscovery.rcp.commands.EditArtist"
-            name="Edit Artist">
       </command>
    </extension>
    <extension
@@ -388,18 +284,6 @@
          </enabledWhen>
       </handler>
      <handler
-            class="org.socialmusicdiscovery.rcp.commands.PlayElement"
-            commandId="org.socialmusicdiscovery.rcp.commands.PlayElement">
-          <enabledWhen>
-                <iterate
-                      ifEmpty="false">
-                  <instanceof
-                        value="org.socialmusicdiscovery.server.business.model.core.PlayableElement">
-                  </instanceof>
-               </iterate>
-         </enabledWhen>
-      </handler>
-     <handler
            class="org.socialmusicdiscovery.rcp.commands.ConnectDataSource"
            commandId="org.socialmusicdiscovery.rcp.commands.ConnectDataSource">
      </handler>
@@ -412,29 +296,92 @@
            commandId="org.socialmusicdiscovery.rcp.commands.ImportFromSBS">
      </handler>
      <handler
-           class="org.socialmusicdiscovery.rcp.commands.OpenRecordingEditor"
-           commandId="org.socialmusicdiscovery.rcp.commands.EditRecording">
-        <enabledWhen>
-           <iterate
-                 ifEmpty="false">
-              <instanceof
-                    value="org.socialmusicdiscovery.server.business.model.core.Track">
-              </instanceof>
-           </iterate>
-        </enabledWhen>
-     </handler>
-     <handler
-           class="org.socialmusicdiscovery.rcp.commands.OpenArtistEditor"
-           commandId="org.socialmusicdiscovery.rcp.commands.EditArtist">
-        <enabledWhen>
-           <iterate
-                 ifEmpty="false">
-              <instanceof
-                    value="org.socialmusicdiscovery.server.business.model.core.Contributor">
-              </instanceof>
-           </iterate>
-        </enabledWhen>
-     </handler>
+            class="org.socialmusicdiscovery.rcp.commands.PlayElement"
+            commandId="org.socialmusicdiscovery.rcp.commands.PlayElement">
+          <enabledWhen>
+                <iterate
+                      ifEmpty="false">
+                  <instanceof
+                        value="org.socialmusicdiscovery.server.business.model.core.PlayableElement">
+                  </instanceof>
+               </iterate>
+         </enabledWhen>
+      </handler>
+    </extension>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            file-names="Artist"
+            id="org.socialmusicdiscovery.server.business.model.core.Artist"
+            name="Artist"
+            priority="normal">
+      </content-type>
+      <content-type
+            file-names="Contributor"
+            id="org.socialmusicdiscovery.server.business.model.core.Contributor"
+            name="Contributor"
+            priority="normal">
+      </content-type>
+      <content-type
+            file-names="ContributorOwner"
+            id="org.socialmusicdiscovery.server.business.model.core.ContributorOwner"
+            name="Contributor Owner"
+            priority="normal">
+      </content-type>
+      <content-type
+            file-names="Label"
+            id="org.socialmusicdiscovery.server.business.model.core.Label"
+            name="Label"
+            priority="normal">
+      </content-type>
+      <content-type
+            file-names="Medium"
+            id="org.socialmusicdiscovery.server.business.model.core.Medium"
+            name="Medium"
+            priority="normal">
+      </content-type>
+      <content-type
+            file-names="Person"
+            id="org.socialmusicdiscovery.server.business.model.core.Person"
+            name="Person"
+            priority="normal">
+      </content-type>
+      <content-type
+            file-names="PlayableElement"
+            id="org.socialmusicdiscovery.server.business.model.core.PlayableElement"
+            name="Playable Element"
+            priority="normal">
+      </content-type>
+      <content-type
+            file-names="Recording"
+            id="org.socialmusicdiscovery.server.business.model.core.Recording"
+            name="Recording"
+            priority="normal">
+      </content-type>
+      <content-type
+            file-names="RecordingSession"
+            id="org.socialmusicdiscovery.server.business.model.core.RecordingSession"
+            name="Recording Session"
+            priority="normal">
+      </content-type>
+      <content-type
+            file-names="Release"
+            id="org.socialmusicdiscovery.server.business.model.core.Release"
+            name="Release"
+            priority="normal">
+      </content-type>
+      <content-type
+            file-names="Work"
+            id="org.socialmusicdiscovery.server.business.model.core.Work"
+            name="Work"
+            priority="normal">
+      </content-type>
+      <content-type
+            file-names="Track"
+            id="org.socialmusicdiscovery.server.business.model.core.Track"
+            name="Track"
+            priority="normal">
+      </content-type>
    </extension>
 
 </plugin>
