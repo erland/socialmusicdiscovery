@@ -30,7 +30,7 @@ package org.socialmusicdiscovery.yggdrasil.core.editors.recording;
 
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.beans.BeansObservables;
-import org.eclipse.core.databinding.observable.list.WritableList;
+import org.eclipse.core.databinding.observable.set.WritableSet;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
@@ -288,8 +288,8 @@ public class RecordingUI extends AbstractComposite<ObservableRecording> {
 	}
 	
 	private void bindWorks() {
-		WritableList list = new WritableList(getModel().getWorks(), ObservableWork.class);
-		ViewerUtil.bind(worksViewer, list, LabelProviderFactory.newModelObjectDelegate());
+		WritableSet set = new WritableSet(getModel().getWorks(), ObservableWork.class);
+		ViewerUtil.bind(worksViewer, set, LabelProviderFactory.newModelObjectDelegate());
 	}
 
 	private void bindTracks() {
