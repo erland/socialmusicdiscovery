@@ -25,43 +25,45 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.rcp.util;
+package org.socialmusicdiscovery.yggdrasil.core.editors.release;
 
-import org.socialmusicdiscovery.rcp.Activator;
-import org.socialmusicdiscovery.rcp.content.DataSource;
-import org.socialmusicdiscovery.rcp.content.ObservableEntity;
-import org.socialmusicdiscovery.server.business.model.core.Artist;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IWorkbenchPartSite;
+import org.socialmusicdiscovery.rcp.content.ObservableRelease;
+import org.socialmusicdiscovery.rcp.editors.AbstractEditorPart;
+import org.socialmusicdiscovery.rcp.util.ViewerUtil;
+import org.socialmusicdiscovery.yggdrasil.core.editors.ContributorPanel;
 
 /**
- * Some SMD-specific convenience utils.
- * 
+ * <p>Menu IDs (suffix to the part name) are defined as constants, as recommended by {@link IWorkbenchPartSite#registerContextMenu(org.eclipse.jface.action.MenuManager, org.eclipse.jface.viewers.ISelectionProvider)}: 
+ * <ul><li>c
  * @author Peer Törngren
  *
  */
-public class SMDUtil {
+public class ReleaseEditor extends AbstractEditorPart<ObservableRelease, ReleaseUI> {
 
-	private SMDUtil() {}
+	public static final String ID = ReleaseEditor.class.getName();
+	private static final String MENU_ID_CONTRIBUTORS = ContributorPanel.MENU_ID;
+	private static final String MENU_ID_TRACKS = ID+".tracks";
 
-	/**
-	 * Convenience method.
-	 * @return {@link DataSource}
-	 */
-	public static DataSource getDataSource() {
-		return Activator.getDefault().getDataSource();
+	@Override
+	public void createPartControl(Composite parent) {
+		super.createPartControl(parent, new ReleaseUI(parent, SWT.NONE));
+		hookContextMenus();
 	}
 
-	/**
-	 * Analyze supplied element and return a string to represent the content type.
-	 * This type can be used as the "filename" in a content type extension, and thus 
-	 * editors can be mapped to this type id. Typically, an SMD {@link Artist} would return the 
-	 * string "Artist".
-	 *  
-	 * @param element
-	 * @return Simple unqualified string or <code>null</code> 
-	 */
-	public static String resolveContentTypeName(Object element) {
-		return element instanceof ObservableEntity ? ((ObservableEntity) element).getTypeName() : null;
+	private void hookContextMenus() {
+		hookContextMenus(
+			getUI().getPlayableElementsPanel().getGridTableViewer(),
+			getUI().getTrackContributorPanel().getContributorPanel().getGridViewer() 
+		);
+		ViewerUtil.hookContextMenu(this, MENU_ID_CONTRIBUTORS, 
+				getUI().getArtistPanel().getGridViewer()
+		);
+		ViewerUtil.hookContextMenu(this, MENU_ID_TRACKS, 
+				getUI().getGridViewerTracks()
+		);
 	}
-	
 
 }

@@ -33,7 +33,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.socialmusicdiscovery.rcp.Activator;
 import org.socialmusicdiscovery.rcp.content.ObservableEntity;
+import org.socialmusicdiscovery.rcp.dialogs.EditorDialog;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
 import org.socialmusicdiscovery.server.business.model.core.Track;
 
@@ -46,7 +48,7 @@ import org.socialmusicdiscovery.server.business.model.core.Track;
  * 
  * @author Peer Törngren
  */
-public abstract class AbstractEditorDialog<T extends ObservableEntity> extends Dialog {
+public abstract class AbstractEditorDialog<T extends ObservableEntity> extends Dialog implements EditorDialog<T> {
 
 	private final String title;
 	protected Button okButton;
@@ -63,6 +65,9 @@ public abstract class AbstractEditorDialog<T extends ObservableEntity> extends D
 		getShell().setText(title);
 	}
 	
+	protected boolean openOK() {
+		return openOK(this);
+	}
 	/**
 	 * Open dialog and check return status. 
 	 * @param dlg
@@ -82,5 +87,36 @@ public abstract class AbstractEditorDialog<T extends ObservableEntity> extends D
 		okButton.setEnabled(false);
 		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
 	}
+
+	/**
+	 * Implementation note: subclasses should typically <b>not</b> override this class, 
+	 * but must implement {@link #beforeEdit(ObservableEntity)} and {@link #afterEdit()}.
+	 */
+	@Override
+	public boolean edit(T entity) {
+		beforeEdit(entity);
+		if (open() == Dialog.OK) {
+			T result = afterEdit();
+			if (result.isDirty()) {
+				Activator.getDefault().getDataSource().persist(new Shell(), result);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Setup the dialog to edit the supplied entity.
+	 * @param entity
+	 */
+	protected abstract void beforeEdit(T entity);
+
+	/**
+	 * Get the edited result from this dialog, or <code>null</code>.
+	 * This method is called when user has closed the dialog by pressing "OK".
+	 * If dialog is cancelled, this method is <b>not</b> called. 
+	 * @return A new or modified entity, or <code>null</code>
+	 */
+	protected abstract T afterEdit();
 	
 }

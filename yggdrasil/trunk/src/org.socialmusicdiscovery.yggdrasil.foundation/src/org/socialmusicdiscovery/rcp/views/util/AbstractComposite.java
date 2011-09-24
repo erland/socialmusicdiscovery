@@ -32,7 +32,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPart;
 import org.socialmusicdiscovery.rcp.content.AbstractObservableEntity;
 import org.socialmusicdiscovery.rcp.content.ObservableEntity;
-import org.socialmusicdiscovery.rcp.editors.widgets.ObservableComposite;
 
 /**
  * <p>

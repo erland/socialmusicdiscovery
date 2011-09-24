@@ -25,43 +25,40 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.rcp.util;
+package org.socialmusicdiscovery.yggdrasil.core.commands;
 
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.IHandler;
+import org.eclipse.swt.widgets.Shell;
 import org.socialmusicdiscovery.rcp.Activator;
-import org.socialmusicdiscovery.rcp.content.DataSource;
-import org.socialmusicdiscovery.rcp.content.ObservableEntity;
-import org.socialmusicdiscovery.server.business.model.core.Artist;
+import org.socialmusicdiscovery.rcp.content.ObservableRelease;
+import org.socialmusicdiscovery.rcp.content.ObservableTrack;
+import org.socialmusicdiscovery.rcp.util.CommandUtil;
+import org.socialmusicdiscovery.rcp.util.NotYetImplemented;
+import org.socialmusicdiscovery.yggdrasil.core.editors.track.TrackDialog;
 
 /**
- * Some SMD-specific convenience utils.
- * 
+ * Creates a new instance.
  * @author Peer Törngren
- *
  */
-public class SMDUtil {
+public class CreateTrack extends AbstractHandler implements IHandler {
 
-	private SMDUtil() {}
-
-	/**
-	 * Convenience method.
-	 * @return {@link DataSource}
-	 */
-	public static DataSource getDataSource() {
-		return Activator.getDefault().getDataSource();
+	@Override
+	public Object execute(ExecutionEvent event) throws ExecutionException {
+		ObservableRelease r = (ObservableRelease) CommandUtil.resolveEditorInput(event); 
+		return newInstance(r);
 	}
 
-	/**
-	 * Analyze supplied element and return a string to represent the content type.
-	 * This type can be used as the "filename" in a content type extension, and thus 
-	 * editors can be mapped to this type id. Typically, an SMD {@link Artist} would return the 
-	 * string "Artist".
-	 *  
-	 * @param element
-	 * @return Simple unqualified string or <code>null</code> 
-	 */
-	public static String resolveContentTypeName(Object element) {
-		return element instanceof ObservableEntity ? ((ObservableEntity) element).getTypeName() : null;
+	private ObservableTrack newInstance(ObservableRelease r) {
+		if (NotYetImplemented.confirm("Create new Track")) {
+			ObservableTrack c = new TrackDialog().createChild(r);
+			if (c!=null) {
+				Activator.getDefault().getDataSource().persist(new Shell(), c);
+			}
+			return c;
+		}
+		return null;
 	}
-	
-
 }

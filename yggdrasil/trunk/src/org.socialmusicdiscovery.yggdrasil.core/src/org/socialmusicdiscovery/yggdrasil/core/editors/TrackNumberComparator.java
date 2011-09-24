@@ -25,43 +25,16 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.rcp.util;
+package org.socialmusicdiscovery.yggdrasil.core.editors;
 
-import org.socialmusicdiscovery.rcp.Activator;
-import org.socialmusicdiscovery.rcp.content.DataSource;
-import org.socialmusicdiscovery.rcp.content.ObservableEntity;
-import org.socialmusicdiscovery.server.business.model.core.Artist;
+import java.util.Comparator;
 
-/**
- * Some SMD-specific convenience utils.
- * 
- * @author Peer Törngren
- *
- */
-public class SMDUtil {
+import org.socialmusicdiscovery.rcp.util.Util;
+import org.socialmusicdiscovery.server.business.model.core.Track;
 
-	private SMDUtil() {}
-
-	/**
-	 * Convenience method.
-	 * @return {@link DataSource}
-	 */
-	public static DataSource getDataSource() {
-		return Activator.getDefault().getDataSource();
+public final class TrackNumberComparator implements Comparator<Track> {
+	@Override
+	public int compare(Track t1, Track t2) {
+		return Util.compare(t1.getNumber(), t2.getNumber());
 	}
-
-	/**
-	 * Analyze supplied element and return a string to represent the content type.
-	 * This type can be used as the "filename" in a content type extension, and thus 
-	 * editors can be mapped to this type id. Typically, an SMD {@link Artist} would return the 
-	 * string "Artist".
-	 *  
-	 * @param element
-	 * @return Simple unqualified string or <code>null</code> 
-	 */
-	public static String resolveContentTypeName(Object element) {
-		return element instanceof ObservableEntity ? ((ObservableEntity) element).getTypeName() : null;
-	}
-	
-
 }

@@ -24,44 +24,32 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.socialmusicdiscovery.rcp.dialogs;
 
-package org.socialmusicdiscovery.rcp.util;
+import org.eclipse.ui.IEditorInput;
+import org.socialmusicdiscovery.rcp.content.AbstractDependentEntity;
+import org.socialmusicdiscovery.rcp.content.AbstractObservableEntity;
 
-import org.socialmusicdiscovery.rcp.Activator;
-import org.socialmusicdiscovery.rcp.content.DataSource;
-import org.socialmusicdiscovery.rcp.content.ObservableEntity;
-import org.socialmusicdiscovery.server.business.model.core.Artist;
 
 /**
- * Some SMD-specific convenience utils.
+ * An "editor" for creating new child instances to a parent, typically
+ * implemented as a modal dialog. This is primarily useful for creating dependent 
+ * entities that do not implement {@link IEditorInput} and hence cannot be edited 
+ * in a regular editor. 
  * 
  * @author Peer Törngren
- *
+ * 
+ * @param <P> the parent of the child to be created
+ * @param <C> the child that gets created for the parent
  */
-public class SMDUtil {
-
-	private SMDUtil() {}
+public interface FactoryDialog<P extends AbstractObservableEntity, C extends AbstractDependentEntity> {
 
 	/**
-	 * Convenience method.
-	 * @return {@link DataSource}
+	 * Create a new child to supplied parent.
+	 * 
+	 * @param parent
+	 * @return A new child instance, or <code>null</code>. The parent-child
+	 *         relation (if any) depends on the implementation.
 	 */
-	public static DataSource getDataSource() {
-		return Activator.getDefault().getDataSource();
-	}
-
-	/**
-	 * Analyze supplied element and return a string to represent the content type.
-	 * This type can be used as the "filename" in a content type extension, and thus 
-	 * editors can be mapped to this type id. Typically, an SMD {@link Artist} would return the 
-	 * string "Artist".
-	 *  
-	 * @param element
-	 * @return Simple unqualified string or <code>null</code> 
-	 */
-	public static String resolveContentTypeName(Object element) {
-		return element instanceof ObservableEntity ? ((ObservableEntity) element).getTypeName() : null;
-	}
-	
-
+	C createChild(P parent);
 }

@@ -25,43 +25,33 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.rcp.util;
+package org.socialmusicdiscovery.yggdrasil.core.editors.recording;
 
-import org.socialmusicdiscovery.rcp.Activator;
-import org.socialmusicdiscovery.rcp.content.DataSource;
-import org.socialmusicdiscovery.rcp.content.ObservableEntity;
-import org.socialmusicdiscovery.server.business.model.core.Artist;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
+import org.socialmusicdiscovery.rcp.content.ObservableRecording;
+import org.socialmusicdiscovery.rcp.editors.AbstractEditorPart;
+import org.socialmusicdiscovery.rcp.util.ViewerUtil;
+import org.socialmusicdiscovery.yggdrasil.core.editors.ContributorPanel;
 
-/**
- * Some SMD-specific convenience utils.
- * 
- * @author Peer Törngren
- *
- */
-public class SMDUtil {
+public class RecordingEditor extends AbstractEditorPart<ObservableRecording, RecordingUI> {
 
-	private SMDUtil() {}
+	public static final String ID = RecordingEditor.class.getName();
+	private static final String MENU_ID_CONTRIBUTORS = ContributorPanel.MENU_ID;
 
-	/**
-	 * Convenience method.
-	 * @return {@link DataSource}
-	 */
-	public static DataSource getDataSource() {
-		return Activator.getDefault().getDataSource();
+	@Override
+	public void createPartControl(Composite parent) {
+		super.createPartControl(parent, new RecordingUI(parent, SWT.NONE));
+		hookAllContextMenus();
 	}
 
-	/**
-	 * Analyze supplied element and return a string to represent the content type.
-	 * This type can be used as the "filename" in a content type extension, and thus 
-	 * editors can be mapped to this type id. Typically, an SMD {@link Artist} would return the 
-	 * string "Artist".
-	 *  
-	 * @param element
-	 * @return Simple unqualified string or <code>null</code> 
-	 */
-	public static String resolveContentTypeName(Object element) {
-		return element instanceof ObservableEntity ? ((ObservableEntity) element).getTypeName() : null;
+	private void hookAllContextMenus() {
+		hookContextMenus(
+			getUI().getTracksViewer(),
+			getUI().getArtistPanel().getGridViewer()
+		);
+		ViewerUtil.hookContextMenu(this, MENU_ID_CONTRIBUTORS, 
+			getUI().getArtistPanel().getGridViewer()
+		);
 	}
-	
-
 }
