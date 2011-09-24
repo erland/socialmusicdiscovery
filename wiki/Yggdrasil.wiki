@@ -21,7 +21,7 @@ Yggdrasil is in the process of moving out of the prototype directory. Meanwhile,
 This disclaimer will be removed when the yggdrasil relocation and refactoring seems stable.
 
 = To Download and Run =
-Latest pre-compiled nightly builds of RCP Client can be found here:
+Latest pre-compiled nightly builds of the yggdrasil can be found here:
   * http://downloads.socialmusicdiscovery.org/smd-yggdrasil
 
 Download, unzip into desired location, drill down to find the launcher (on Windows, this will be called yggdrasil.exe).
