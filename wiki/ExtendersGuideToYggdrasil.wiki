@@ -1,11 +1,10 @@
 #summary Notes on how to create extensions for the SMD Yggdrasil client.
 
-= Introduction =
-
 The SMD Yggdrasil client is designed to leverage the Eclipse extension architecture. We hope that other developers will extend our initial platform by developing more or better plug-ins to enhance the client application. 
 
 In time, this page will provide instructions for how to do so.
 
-= Details =
+= WARNING =
+*Yggdrasil is still unstable*
 
-*Yggdrasil is still unstable* - we do *NOT* recommend anyone to create any extensions yet.
+We do *NOT* recommend anyone to create any extensions yet.
