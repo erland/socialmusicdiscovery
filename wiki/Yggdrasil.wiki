@@ -28,6 +28,11 @@ Download, unzip into desired location, drill down to find the launcher (on Windo
 
 More info to be added ...
 
+= To Extend =
+The Yggdrasil client is designed to leverage the Eclipse extension architecture. We hope that other developers will extend our platform and initial application by developing more or better plug-ins to enhance the end-user experience. 
+
+More information on how to develop plug-ins can be found on the [ExtendersGuideToYggdrasil Extender's Guide To Yggdrasil].
+
 = To Develop =
 The short story:
 
@@ -35,8 +40,7 @@ The short story:
   * Instructions to set up the environment: http://socialmusicdiscovery.googlecode.com/svn/yggdrasil/trunk/src/org.socialmusicdiscovery.yggdrasil.foundation/ReadMe.txt
 
 For more info, read below.
-= To Extend =
-The Yggdrasil client is designed to leverage the Eclipse extension architecture. We hope that other developers will extend our initial platform by developing more or better plug-ins to enhance the client platform. More information on how to develop plug-ins can be found on the [ExtendersGuideToYggdrasil Extender's Guide To Yggdrasil].
+
 == Design Guidelines ==
 Some brief and preliminary thoughts on the design principles for the RCP client. Structural info and guidelines can be found on the [YggdrasilPluginStructure Yggdrasil Plugin Structure] page. Comments expected and welcome!
 
