@@ -10,7 +10,7 @@
       </perspective>
    </extension>
    <extension
-         id="application"
+         id="main"
          point="org.eclipse.core.runtime.applications">
       <application>
          <run
@@ -56,7 +56,7 @@
          id="product"
          point="org.eclipse.core.runtime.products">
       <product
-            application="org.socialmusicdiscovery.yggdrasil.application"
+            application="org.socialmusicdiscovery.yggdrasil.application.main"
             description="The rich client for SMD"
             name="SMD Yggdrasil">
          <property

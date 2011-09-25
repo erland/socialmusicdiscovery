@@ -120,13 +120,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.socialmusicdiscovery.yggdrasil"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.socialmusicdiscovery.yggdrasil.core"
          download-size="0"
          install-size="0"
@@ -149,6 +142,13 @@
 
    <plugin
          id="org.socialmusicdiscovery.yggdrasil.datasource.rest"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.socialmusicdiscovery.yggdrasil.application"
          download-size="0"
          install-size="0"
          version="0.0.0"

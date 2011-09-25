@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: SMD Yggdrasil
-Bundle-SymbolicName: org.socialmusicdiscovery.yggdrasil;singleton:=true
+Bundle-SymbolicName: org.socialmusicdiscovery.yggdrasil.application;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.socialmusicdiscovery.yggdrasil.Activator
 Bundle-Vendor: SMD, the Social Music Discovery project
