@@ -60,6 +60,13 @@ Initialize the importer menu and configure it to run after Squeezebox Server sca
 =cut
 sub init {
 	Slim::Control::Request::subscribe(sub {
+		if (UNIVERSAL::can("Slim::Music::Import","hasAborted")) {
+			require Slim::Music::Import;
+			if(Slim::Music::Import::hasAborted()) {
+				$log->info("Scanning or import aborted");
+				return;
+			}
+		}
 		if($prefs->get('autoimport')) {
 			my $lastImport = $prefs->get('lastImportTime') || 0;
 			if($lastImport eq Slim::Music::Import->lastScanTime) {
