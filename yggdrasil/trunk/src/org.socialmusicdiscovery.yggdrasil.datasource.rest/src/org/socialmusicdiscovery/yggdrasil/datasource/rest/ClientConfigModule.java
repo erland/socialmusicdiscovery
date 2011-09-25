@@ -25,7 +25,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.rcp.injections;
+package org.socialmusicdiscovery.yggdrasil.datasource.rest;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -66,7 +66,6 @@ import org.socialmusicdiscovery.server.business.model.core.Release;
 import org.socialmusicdiscovery.server.business.model.core.Track;
 import org.socialmusicdiscovery.server.business.model.core.Work;
 import org.socialmusicdiscovery.server.support.json.AbstractJSONProvider;
-import org.socialmusicdiscovery.yggdrasil.rest.RESTDataSource;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
