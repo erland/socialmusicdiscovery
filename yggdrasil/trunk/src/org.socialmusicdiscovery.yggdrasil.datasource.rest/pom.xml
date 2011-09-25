@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>yggdrasil-parent</artifactId>
+    <groupId>org.socialmusicdiscovery</groupId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+  <groupId>org.socialmusicdiscovery</groupId>
+  <artifactId>org.socialmusicdiscovery.yggdrasil.datasource.rest</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>eclipse-plugin</packaging>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-source-plugin</artifactId>
+        <version>0.12.0</version>
+        <executions>
+          <execution>
+            <id>plugin-source</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>plugin-source</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

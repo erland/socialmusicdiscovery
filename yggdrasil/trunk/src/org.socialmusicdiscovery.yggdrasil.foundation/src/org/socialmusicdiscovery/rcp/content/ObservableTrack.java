@@ -336,7 +336,7 @@ public class ObservableTrack extends AbstractDependentEntity<Track> implements T
 	}
 
 	@Override
-	protected void postCreate() {
+	public void postCreate() {
 		super.postCreate();
 		if (getRelease()!=null && getRelease().isInflated()) {
 			getRelease().getTracks().add(this);

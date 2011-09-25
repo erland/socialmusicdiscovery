@@ -30,6 +30,7 @@ package org.socialmusicdiscovery.rcp.util;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
+import org.socialmusicdiscovery.rcp.content.DataSource;
 import org.socialmusicdiscovery.rcp.dialogs.EditorDialog;
 import org.socialmusicdiscovery.rcp.error.FatalApplicationException;
 
@@ -63,6 +64,20 @@ public final class ExtensionUtil {
 
 	private static String resolveContentTypeId(String contentName) {
 		return Platform.getContentTypeManager().findContentTypeFor(contentName).getId();
+	}
+
+	public static DataSource resolveDataSource() {
+		IConfigurationElement[] extensions = Platform.getExtensionRegistry().getConfigurationElementsFor(DataSource.ExtensionID);
+		if (extensions.length!=1) {
+			throw new FatalApplicationException("Invalid configuration, unable to resolve a distinct data source extension for extension id "+DataSource.ExtensionID);
+		}
+		
+		IConfigurationElement extension = extensions[0];
+		try {
+			return (DataSource) extension.createExecutableExtension("class");
+		} catch (CoreException e) {
+			throw new FatalApplicationException("Unable to instantiate data source: "+extension.getName(), e);  //$NON-NLS-1$
+		}
 	}
 
 

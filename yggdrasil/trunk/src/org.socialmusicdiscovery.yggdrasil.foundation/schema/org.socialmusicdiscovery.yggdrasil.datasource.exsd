@@ -3,14 +3,10 @@
 <schema targetNamespace="org.socialmusicdiscovery.yggdrasil.foundation" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.socialmusicdiscovery.yggdrasil.foundation" id="org.socialmusicdiscovery.yggdrasil.editordialogs" name="Editor Dialogs"/>
+         <meta.schema plugin="org.socialmusicdiscovery.yggdrasil.foundation" id="org.socialmusicdiscovery.yggdrasil.datasource" name="Data Source"/>
       </appinfo>
       <documentation>
-         &lt;p&gt;This extension point is used to add new editor dialogs to the workbench. An editor dialog is a visual component that is launched in a separate shell, not within a workbench page. It is typically used to edit or browse a dependend object that is a child of a parent; the editing is done in a modal dialog, and the changes are immediately save when the dialog is closed (the editing does not affect the parent&apos;s &quot;dirty&quot; status).&lt;/p&gt;
-
-&lt;p&gt;To open an editor dialog, the user will typically invoke &quot;Edit&quot; on an element that is visible as a child within a regular editor. When this action is performed the workbench registry is consulted to determine an appropriate editor dialog for the element type, and then a new instance of the editor dialog is created. The actual result depends on the type of the editor.&lt;/p&gt;
-
-&lt;p&gt;The standard Eclipse workbench provides support for editors launched in spearate frames, but has no direct support for editors built on modal dialogs. The SMD Yggdrasil foundation holds some utilities to deal with this. Like a regular Eclipse editor, the dialog must be declared with the content type that it handles; the SMD utils will use this to locate the approriate editor for the content, much like the Eclipse workbench does for a regular workbench editor.&lt;/p&gt;
+         &lt;p&gt;This extension point is used to add a data source to the Yggdrasil client. A data source connects to the SMD server to read and write entity objects (objects that implement SMDIdentity interface). The client must have exactly one data source to run.&lt;/p&gt;
       </documentation>
    </annotation>
 
@@ -21,8 +17,8 @@
          </appinfo>
       </annotation>
       <complexType>
-         <sequence minOccurs="1" maxOccurs="unbounded">
-            <element ref="Dialog"/>
+         <sequence>
+            <element ref="DataSource"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -51,25 +47,15 @@
       </complexType>
    </element>
 
-   <element name="Dialog">
+   <element name="DataSource">
       <complexType>
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  The dialog class to open on content that matches the specified type id.
+                  The DataSource implementation class that can communicate with the SMD server.
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.socialmusicdiscovery.rcp.editors.EditorDialog"/>
-               </appinfo>
-            </annotation>
-         </attribute>
-         <attribute name="contentTypeId" type="string" use="required">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-               <appinfo>
-                  <meta.attribute kind="identifier" basedOn="org.eclipse.core.contenttype.contentTypes/content-type/@id"/>
+                  <meta.attribute kind="java" basedOn=":org.socialmusicdiscovery.rcp.content.DataSource"/>
                </appinfo>
             </annotation>
          </attribute>
@@ -81,7 +67,7 @@
          <meta.section type="since"/>
       </appinfo>
       <documentation>
-         SMD Yggdrasil ALPHA, 2011-09-24 (no formal version number).
+         SMD Yggdrasil ALPHA, 2011-09-25 (no formal version number).
       </documentation>
    </annotation>
 
@@ -90,18 +76,7 @@
          <meta.section type="examples"/>
       </appinfo>
       <documentation>
-         The following is an example of an editor dialog extension definition: 
-&lt;p&gt;
-&lt;pre&gt;
-  &lt;extension
-        point=&quot;org.socialmusicdiscovery.yggdrasil.editordialogs&quot;&gt;
-     &lt;Dialog
-           class=&quot;org.socialmusicdiscovery.yggdrasil.core.editors.track.TrackDialog&quot;
-           contentTypeId=&quot;org.socialmusicdiscovery.server.business.model.core.Track&quot;&gt;
-     &lt;/Dialog&gt;
-  &lt;/extension&gt;
-&lt;/pre&gt;
-&lt;/p&gt;
+         [Enter extension point usage example here.]
       </documentation>
    </annotation>
 
@@ -110,8 +85,7 @@
          <meta.section type="apiinfo"/>
       </appinfo>
       <documentation>
-         &lt;p&gt;The &lt;b&gt;class&lt;/b&gt; attribute must refer to a class that implements the &lt;code&gt;EditorDialog&lt;/code&gt; interface.&lt;/p&gt;
-&lt;p&gt;The &lt;b&gt;contentTypeId&lt;/b&gt; works like the corresponding attribute in the standard Eclipse &lt;code&gt;org.eclipse.ui.editors&lt;/code&gt; extension, except that it is mandatory here. A corresponding &lt;code&gt;org.eclipse.core.contenttype.contentTypes&lt;/code&gt; extension must be declared with a &lt;b&gt;name&lt;/b&gt; that matches the SMD entity that the dialog operates on (example: &lt;code&gt;name=&quot;Track&quot;&lt;/code&gt;).&lt;/p&gt;
+         &lt;p&gt;The &lt;b&gt;class&lt;/b&gt; attribute must refer to a class that implements the &lt;code&gt;DataSource&lt;/code&gt; interface.&lt;/p&gt;
       </documentation>
    </annotation>
 
@@ -120,7 +94,7 @@
          <meta.section type="implementation"/>
       </appinfo>
       <documentation>
-         This plug-in provides no concrete implementation, but the &lt;code&gt;AbstractEditorDialog&lt;/code&gt; can be used to create usable dialogs.
+         This plug-in provides no concrete implementation, nor any abstract superclass.
       </documentation>
    </annotation>
 

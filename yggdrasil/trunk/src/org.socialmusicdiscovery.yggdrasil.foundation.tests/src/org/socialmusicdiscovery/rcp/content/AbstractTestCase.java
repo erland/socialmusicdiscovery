@@ -37,6 +37,7 @@ import junit.framework.TestCase;
 import org.eclipse.core.databinding.observable.Realm;
 import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.databinding.observable.set.IObservableSet;
+import org.socialmusicdiscovery.rcp.test.FakeDataSource;
 import org.socialmusicdiscovery.rcp.test.MultiPurposeListener;
 import org.socialmusicdiscovery.rcp.test.TestRealm;
 import org.socialmusicdiscovery.server.business.model.core.Track;
@@ -76,7 +77,7 @@ public abstract class AbstractTestCase extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		realm = new TestRealm();
-		dataSource = new DataSourceForTesting();
+		dataSource = new FakeDataSource();
 		listener = new MultiPurposeListener();
 		
 	}
@@ -88,11 +89,7 @@ public abstract class AbstractTestCase extends TestCase {
 		super.tearDown();
 		realm.dispose();
 	}
-
-	protected DataSource fakeDataSource() {
-		return new DataSource(false);
-	}
-
+	
 	protected ObservableTrack track(int trackNumber, ObservableRelease release, ObservableRecording recording) {
 		ObservableTrack t = new ObservableTrack();
 		t.setTestDataSource(dataSource);

@@ -116,7 +116,7 @@ public abstract class AbstractContributableEntity<T extends SMDIdentity>  extend
 	 * Override to listen for contributors.     
 	 */
 	@Override
-	protected void postCreate() {
+	public void postCreate() {
 		super.postCreate();
 		hookContributorsListener();
 	}

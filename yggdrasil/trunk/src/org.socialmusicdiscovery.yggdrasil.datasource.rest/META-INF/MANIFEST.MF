@@ -1,0 +1,23 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Yggdrasil RESTful Data Source
+Bundle-SymbolicName: org.socialmusicdiscovery.yggdrasil.datasource.rest;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: SMD, the Social Music Discovery Project
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.eclipse.ui;bundle-version="3.7.0",
+ org.socialmusicdiscovery.yggdrasil.foundation;bundle-version="1.0.0",
+ org.eclipse.core.runtime;bundle-version="3.7.0",
+ org.eclipse.core.databinding;bundle-version="1.4.0"
+Import-Package: com.google.gson.annotations,
+ com.google.inject,
+ com.sun.jersey.api.client,
+ com.sun.jersey.api.client.config,
+ com.sun.jersey.core.util,
+ javax.ws.rs.core,
+ org.socialmusicdiscovery.server.api,
+ org.socialmusicdiscovery.server.api.management.mediaimport,
+ org.socialmusicdiscovery.server.business.model,
+ org.socialmusicdiscovery.server.business.model.core,
+ org.socialmusicdiscovery.server.support.json
+Bundle-ActivationPolicy: lazy

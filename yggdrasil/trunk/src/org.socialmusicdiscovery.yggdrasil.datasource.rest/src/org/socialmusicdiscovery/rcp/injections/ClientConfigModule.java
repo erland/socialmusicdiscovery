@@ -39,7 +39,6 @@ import org.eclipse.core.databinding.observable.list.WritableList;
 import org.eclipse.core.databinding.observable.set.IObservableSet;
 import org.eclipse.core.databinding.observable.set.WritableSet;
 import org.socialmusicdiscovery.rcp.content.AbstractContributableEntity;
-import org.socialmusicdiscovery.rcp.content.DataSource;
 import org.socialmusicdiscovery.rcp.content.ObservableArtist;
 import org.socialmusicdiscovery.rcp.content.ObservableContributor;
 import org.socialmusicdiscovery.rcp.content.ObservableLabel;
@@ -49,11 +48,12 @@ import org.socialmusicdiscovery.rcp.content.ObservablePlayableElement;
 import org.socialmusicdiscovery.rcp.content.ObservableRecording;
 import org.socialmusicdiscovery.rcp.content.ObservableRecordingSession;
 import org.socialmusicdiscovery.rcp.content.ObservableRelease;
+import org.socialmusicdiscovery.rcp.content.ObservableSMDIdentityReference;
 import org.socialmusicdiscovery.rcp.content.ObservableTrack;
 import org.socialmusicdiscovery.rcp.content.ObservableWork;
-import org.socialmusicdiscovery.rcp.content.ObservableSMDIdentityReference;
 import org.socialmusicdiscovery.rcp.util.GenericWritableList;
 import org.socialmusicdiscovery.rcp.util.GenericWritableSet;
+import org.socialmusicdiscovery.server.business.model.SMDIdentityReference;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
 import org.socialmusicdiscovery.server.business.model.core.Label;
@@ -65,8 +65,8 @@ import org.socialmusicdiscovery.server.business.model.core.RecordingSession;
 import org.socialmusicdiscovery.server.business.model.core.Release;
 import org.socialmusicdiscovery.server.business.model.core.Track;
 import org.socialmusicdiscovery.server.business.model.core.Work;
-import org.socialmusicdiscovery.server.business.model.SMDIdentityReference;
 import org.socialmusicdiscovery.server.support.json.AbstractJSONProvider;
+import org.socialmusicdiscovery.yggdrasil.rest.RESTDataSource;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
@@ -165,7 +165,7 @@ public class ClientConfigModule extends AbstractModule {
 	@Provides
 	public ClientConfig provideClientConfig() {
 		if (clientConfig == null) {
-			clientConfig = DataSource.newClientConfig();
+			clientConfig = RESTDataSource.newClientConfig();
 		}
 		return clientConfig;
 	}
