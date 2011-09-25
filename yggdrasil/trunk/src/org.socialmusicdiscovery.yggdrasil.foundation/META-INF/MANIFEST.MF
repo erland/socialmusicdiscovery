@@ -16,13 +16,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jface.databinding,
  org.eclipse.core.expressions
 Import-Package: com.google.gson.annotations,
- com.google.inject,
- com.sun.jersey.api.client,
- com.sun.jersey.api.client.config,
- com.sun.jersey.core.util,
- javax.inject,
- javax.ws.rs.core,
- javax.ws.rs.ext,
  org.apache.commons.beanutils,
  org.apache.commons.lang.time,
  org.apache.commons.logging,
@@ -30,9 +23,7 @@ Import-Package: com.google.gson.annotations,
  org.socialmusicdiscovery.server.api.management.mediaimport,
  org.socialmusicdiscovery.server.business.model,
  org.socialmusicdiscovery.server.business.model.core,
- org.socialmusicdiscovery.server.support.copy,
- org.socialmusicdiscovery.server.support.format,
- org.socialmusicdiscovery.server.support.json
+ org.socialmusicdiscovery.server.support.copy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Activator: org.socialmusicdiscovery.rcp.Activator
 Bundle-Localization: plugin
@@ -54,7 +45,6 @@ Export-Package: org.eclipse.nebula.jface.gridviewer,
  org.socialmusicdiscovery.rcp.error,
  org.socialmusicdiscovery.rcp.event,
  org.socialmusicdiscovery.rcp.grid,
- org.socialmusicdiscovery.rcp.injections,
  org.socialmusicdiscovery.rcp.prefs,
  org.socialmusicdiscovery.rcp.util,
  org.socialmusicdiscovery.rcp.util.databinding,

@@ -32,6 +32,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.socialmusicdiscovery.rcp.content.DataSource;
 import org.socialmusicdiscovery.rcp.prefs.PreferenceConstants;
+import org.socialmusicdiscovery.rcp.util.ExtensionUtil;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -59,7 +60,8 @@ public class Activator extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-		dataSource = new DataSource(getPreferenceStore().getBoolean(PreferenceConstants.P_AUTOCONNECT));
+		dataSource = ExtensionUtil.resolveDataSource();
+		dataSource.setAutoConnect(getPreferenceStore().getBoolean(PreferenceConstants.P_AUTOCONNECT));
 	}
 
 	/*

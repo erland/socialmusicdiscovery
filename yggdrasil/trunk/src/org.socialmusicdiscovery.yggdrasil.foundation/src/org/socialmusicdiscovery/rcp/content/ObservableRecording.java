@@ -104,7 +104,7 @@ public class ObservableRecording extends AbstractContributableEntity<Recording> 
 	}
 
 	@Override
-	protected void postCreate() {
+	public void postCreate() {
 		super.postCreate();
 		hookNameListeners();
 	}

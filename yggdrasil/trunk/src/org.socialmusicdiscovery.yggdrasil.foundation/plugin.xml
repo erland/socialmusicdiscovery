@@ -2,6 +2,7 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension-point id="org.socialmusicdiscovery.yggdrasil.editordialogs" name="Editor Dialogs" schema="schema/org.socialmusicdiscovery.yggdrasil.editordialogs.exsd"/>
+   <extension-point id="org.socialmusicdiscovery.yggdrasil.datasource" name="Data Source" schema="schema/org.socialmusicdiscovery.yggdrasil.datasource.exsd"/>
 
    <extension
          point="org.eclipse.ui.views">

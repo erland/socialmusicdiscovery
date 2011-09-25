@@ -39,8 +39,6 @@ import org.socialmusicdiscovery.rcp.error.FatalApplicationException;
 import org.socialmusicdiscovery.server.api.OperationStatus;
 import org.socialmusicdiscovery.server.api.management.mediaimport.MediaImportStatus;
 
-import com.sun.jersey.api.client.UniformInterfaceException;
-
 /**
  * Runs a server import. Designed to be called from some kind of {@link Job} or other 
  * task that runs a {@link IProgressMonitor}. 
@@ -111,13 +109,6 @@ public class ImportWorker {
 			    }
 			    status = dataSource.getImportStatus(module);
 			}
-			monitor.done();
-    	} catch (UniformInterfaceException e) {
-            if (e.getResponse().getStatus() != 204) {
-                throw e;
-            }
-            // TODO fix a better exit - this is currently the normal end; 
-            // we get a URI exception with status 204 in response when server task is finished 
 			monitor.done();
        	} catch (RuntimeException e) {
        		dataSource.cancelImport(module);

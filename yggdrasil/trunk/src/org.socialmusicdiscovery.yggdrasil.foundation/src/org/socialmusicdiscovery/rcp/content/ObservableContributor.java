@@ -149,7 +149,7 @@ public class ObservableContributor extends AbstractDependentEntity<Contributor> 
 	}
 
 	@Override
-	protected void postCreate() {
+	public void postCreate() {
 		super.postCreate();
 		if (getOwner()!=null && getOwner().isInflated()) {
 			getOwner().getContributors().add(this);

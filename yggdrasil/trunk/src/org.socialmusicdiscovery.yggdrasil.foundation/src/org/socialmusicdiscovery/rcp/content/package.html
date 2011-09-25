@@ -1,0 +1,11 @@
+<p>The classes in this package implement or support the SMD model entities in various ways.</p> 
+<h1>Server Objects vs. Client Objects</h1>
+<p>The client side objects implement the server side interfaces, but are also observable to allow editors to detect changes in properties.</p>
+
+<h1>Server Communication</h1>
+<p>Ideally, the client-server communication protocol should not shine thru here (it should be encapsulated in the data source plug-in),
+but since we use the GSON <code>@Expose</code> annotation to define the properties we include in server objects, some implementation details leak thru.
+</p><p> 
+Alas, this plug-in depends on a GSON component (com.google.gson.annotations) despite not having any knowledge of the type of server interaction.</p> 
+
+   

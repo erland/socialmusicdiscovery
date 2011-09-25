@@ -25,7 +25,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.rcp.content;
+package org.socialmusicdiscovery.yggdrasil.rest;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -40,6 +40,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+import org.socialmusicdiscovery.rcp.content.AbstractObservableEntity;
+import org.socialmusicdiscovery.rcp.content.ObservableEntity;
 import org.socialmusicdiscovery.rcp.error.FatalApplicationException;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 
