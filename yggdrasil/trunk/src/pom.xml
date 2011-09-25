@@ -50,6 +50,7 @@
   <modules>
     <module>org.socialmusicdiscovery.yggdrasil.foundation</module>
     <module>org.socialmusicdiscovery.yggdrasil.foundation.tests</module>
+    <module>org.socialmusicdiscovery.yggdrasil.datasource.rest</module>
     <module>org.socialmusicdiscovery.yggdrasil.navigator</module>
     <module>org.socialmusicdiscovery.yggdrasil.core</module>
     <module>org.socialmusicdiscovery.yggdrasil.subjective</module>
