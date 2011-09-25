@@ -35,6 +35,7 @@ import org.eclipse.ui.statushandlers.AbstractStatusHandler;
 import org.eclipse.ui.statushandlers.StatusAdapter;
 import org.eclipse.ui.statushandlers.StatusManager;
 import org.eclipse.ui.statushandlers.WorkbenchErrorHandler;
+import org.eclipse.ui.statushandlers.WorkbenchStatusDialogManager;
 
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
@@ -43,7 +44,14 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 		@Override
 		public void handle(StatusAdapter statusAdapter, int style) {
 			// kludge, must be a way to tell the default handler to show error?
-			super.handle(statusAdapter, style|StatusManager.SHOW);
+			super.handle(statusAdapter, style | StatusManager.SHOW | StatusManager.BLOCK);
+		}
+
+		@Override
+		protected void configureStatusDialog(WorkbenchStatusDialogManager statusDialog) {
+			 statusDialog.enableDefaultSupportArea(true);
+//			 statusDialog.setDetailsAreaProvider(AbstractStatusAreaProvider);
+//			 statusDialog.setSupportAreaProvider(AbstractStatusAreaProvider);
 		}
 
 	}
