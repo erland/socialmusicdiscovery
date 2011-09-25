@@ -54,7 +54,7 @@
     <module>org.socialmusicdiscovery.yggdrasil.navigator</module>
     <module>org.socialmusicdiscovery.yggdrasil.core</module>
     <module>org.socialmusicdiscovery.yggdrasil.subjective</module>
-    <module>org.socialmusicdiscovery.yggdrasil.base-feature</module>
+    <module>org.socialmusicdiscovery.yggdrasil.base</module>
     <module>org.socialmusicdiscovery.yggdrasil-application</module>
     <module>org.socialmusicdiscovery.yggdrasil-product</module>
     <module>org.socialmusicdiscovery.yggdrasil-site</module>
