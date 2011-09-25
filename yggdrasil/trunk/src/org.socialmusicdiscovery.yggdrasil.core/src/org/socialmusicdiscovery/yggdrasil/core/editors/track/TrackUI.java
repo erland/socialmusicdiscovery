@@ -43,13 +43,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
-import org.socialmusicdiscovery.rcp.content.ObservableRecording;
-import org.socialmusicdiscovery.rcp.content.ObservableRelease;
-import org.socialmusicdiscovery.rcp.content.ObservableTrack;
-import org.socialmusicdiscovery.rcp.content.RecordingProvider;
-import org.socialmusicdiscovery.rcp.views.util.LabelProviderFactory;
 import org.socialmusicdiscovery.server.business.model.core.Medium;
 import org.socialmusicdiscovery.yggdrasil.core.editors.SelectionPanel;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservableRecording;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservableRelease;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservableTrack;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.RecordingProvider;
+import org.socialmusicdiscovery.yggdrasil.foundation.views.util.LabelProviderFactory;
 
 /**
  * Creates an {@link ObservableTrack} instance. Place on a container.

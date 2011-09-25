@@ -32,12 +32,12 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.swt.widgets.Shell;
-import org.socialmusicdiscovery.rcp.Activator;
-import org.socialmusicdiscovery.rcp.content.AbstractContributableEntity;
-import org.socialmusicdiscovery.rcp.content.ObservableContributor;
-import org.socialmusicdiscovery.rcp.util.CommandUtil;
-import org.socialmusicdiscovery.rcp.util.NotYetImplemented;
 import org.socialmusicdiscovery.yggdrasil.core.editors.contributor.ContributorDialog;
+import org.socialmusicdiscovery.yggdrasil.foundation.Activator;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.AbstractContributableEntity;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservableContributor;
+import org.socialmusicdiscovery.yggdrasil.foundation.util.CommandUtil;
+import org.socialmusicdiscovery.yggdrasil.foundation.util.NotYetImplemented;
 
 /**
  * Creates a new instance that is persisted immediately.

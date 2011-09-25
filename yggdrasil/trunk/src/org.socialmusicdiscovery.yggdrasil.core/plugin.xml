@@ -94,7 +94,7 @@
             allPopups="true"
             locationURI="org.socialmusicdiscovery.yggdrasil.core.editors.artist.ArtistEditor">
          <command
-               commandId="org.socialmusicdiscovery.rcp.commands.PlayElement"
+               commandId="org.socialmusicdiscovery.yggdrasil.foundation.commands.PlayElement"
                label="%popup.command.play.label"
                mnemonic="%popup.command.play.mnemonic"
                style="push">
@@ -116,7 +116,7 @@
                style="push">
          </command>
          <command
-               commandId="org.socialmusicdiscovery.rcp.commands.DeleteDependent"
+               commandId="org.socialmusicdiscovery.yggdrasil.foundation.commands.DeleteDependent"
                label="%popup.command.delete.label"
                mnemonic="%popup.command.delete.mnemonic"
                style="push">
@@ -138,7 +138,7 @@
                style="push">
          </command>
          <command
-               commandId="org.socialmusicdiscovery.rcp.commands.DeleteDependent"
+               commandId="org.socialmusicdiscovery.yggdrasil.foundation.commands.DeleteDependent"
                label="%popup.command.delete.label"
                mnemonic="%popup.command.delete.mnemonic"
                style="push">

@@ -36,15 +36,15 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-import org.socialmusicdiscovery.rcp.content.AbstractContributableEntity;
-import org.socialmusicdiscovery.rcp.content.ArtistProvider;
-import org.socialmusicdiscovery.rcp.content.ContributorRoleProvider;
-import org.socialmusicdiscovery.rcp.content.ObservableArtist;
-import org.socialmusicdiscovery.rcp.content.ObservableContributor;
-import org.socialmusicdiscovery.rcp.dialogs.FactoryDialog;
-import org.socialmusicdiscovery.rcp.editors.AbstractEditorDialog;
-import org.socialmusicdiscovery.rcp.util.ClassUtil;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.AbstractContributableEntity;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ArtistProvider;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ContributorRoleProvider;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservableArtist;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservableContributor;
+import org.socialmusicdiscovery.yggdrasil.foundation.dialogs.FactoryDialog;
+import org.socialmusicdiscovery.yggdrasil.foundation.editors.AbstractEditorDialog;
+import org.socialmusicdiscovery.yggdrasil.foundation.util.ClassUtil;
 
 /**
  * A dialog for creating a new {@link Contributor}.

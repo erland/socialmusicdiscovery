@@ -39,7 +39,7 @@ import org.eclipse.swt.widgets.ExpandBar;
 import org.eclipse.swt.widgets.ExpandItem;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
-import org.socialmusicdiscovery.rcp.content.DataSource;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.DataSource;
 
 /**
  * <p>This class is NOT maintained! It is saved as a reference and possible

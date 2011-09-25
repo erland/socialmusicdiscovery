@@ -32,9 +32,9 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.socialmusicdiscovery.rcp.util.ViewerUtil;
-import org.socialmusicdiscovery.rcp.util.WorkbenchUtil;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
+import org.socialmusicdiscovery.yggdrasil.foundation.util.ViewerUtil;
+import org.socialmusicdiscovery.yggdrasil.foundation.util.WorkbenchUtil;
 
 
 public class OpenArtistEditor extends AbstractHandler implements IHandler {

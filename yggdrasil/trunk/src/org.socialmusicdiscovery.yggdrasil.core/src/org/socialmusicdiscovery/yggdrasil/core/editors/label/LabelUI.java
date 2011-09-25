@@ -41,8 +41,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
-import org.socialmusicdiscovery.rcp.content.ObservableLabel;
-import org.socialmusicdiscovery.rcp.views.util.AbstractComposite;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservableLabel;
+import org.socialmusicdiscovery.yggdrasil.foundation.views.util.AbstractComposite;
 
 public class LabelUI extends AbstractComposite<ObservableLabel> {
 

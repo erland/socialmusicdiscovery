@@ -29,7 +29,7 @@ package org.socialmusicdiscovery.rcp.views.navigator;
 
 import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.databinding.observable.masterdetail.IObservableFactory;
-import org.socialmusicdiscovery.rcp.content.ModelObject;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ModelObject;
 
 class NavigatorObservableFactory implements IObservableFactory {
 

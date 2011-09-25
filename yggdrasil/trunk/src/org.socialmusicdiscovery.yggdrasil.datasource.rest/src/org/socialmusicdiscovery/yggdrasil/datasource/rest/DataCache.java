@@ -40,10 +40,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import org.socialmusicdiscovery.rcp.content.AbstractObservableEntity;
-import org.socialmusicdiscovery.rcp.content.ObservableEntity;
-import org.socialmusicdiscovery.rcp.error.FatalApplicationException;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.AbstractObservableEntity;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservableEntity;
+import org.socialmusicdiscovery.yggdrasil.foundation.error.FatalApplicationException;
 
 import com.google.gson.annotations.Expose;
 

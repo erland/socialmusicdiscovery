@@ -29,8 +29,8 @@ package org.socialmusicdiscovery.yggdrasil.core.editors.label;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.socialmusicdiscovery.rcp.content.ObservableLabel;
-import org.socialmusicdiscovery.rcp.editors.AbstractEditorPart;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservableLabel;
+import org.socialmusicdiscovery.yggdrasil.foundation.editors.AbstractEditorPart;
 
 public class LabelEditor extends AbstractEditorPart<ObservableLabel, LabelUI> {
 

@@ -4,7 +4,7 @@
    <extension
          point="org.socialmusicdiscovery.yggdrasil.foundation.datasource">
       <DataSource
-            class="org.socialmusicdiscovery.rcp.test.FakeDataSource">
+            class="org.socialmusicdiscovery.yggdrasil.foundation.test.FakeDataSource">
       </DataSource>
    </extension>
 

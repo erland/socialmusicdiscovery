@@ -43,8 +43,8 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
-import org.socialmusicdiscovery.rcp.content.ObservableArtist;
-import org.socialmusicdiscovery.rcp.views.util.AbstractComposite;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservableArtist;
+import org.socialmusicdiscovery.yggdrasil.foundation.views.util.AbstractComposite;
 
 public class ArtistUI extends AbstractComposite<ObservableArtist> {
 	private Text nameText;

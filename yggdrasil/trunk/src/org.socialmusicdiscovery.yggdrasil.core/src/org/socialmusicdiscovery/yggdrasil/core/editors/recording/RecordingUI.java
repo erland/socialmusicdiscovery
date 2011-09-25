@@ -51,17 +51,17 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
-import org.socialmusicdiscovery.rcp.content.ObservableRecording;
-import org.socialmusicdiscovery.rcp.content.ObservableTrack;
-import org.socialmusicdiscovery.rcp.content.ObservableWork;
-import org.socialmusicdiscovery.rcp.util.ViewerUtil;
-import org.socialmusicdiscovery.rcp.views.util.AbstractColumnLabelProviderDelegate;
-import org.socialmusicdiscovery.rcp.views.util.AbstractComposite;
-import org.socialmusicdiscovery.rcp.views.util.LabelProviderFactory;
-import org.socialmusicdiscovery.rcp.views.util.OpenListener;
 import org.socialmusicdiscovery.yggdrasil.core.editors.ContributorPanel;
 import org.socialmusicdiscovery.yggdrasil.core.editors.TrackMediumNumberComparator;
 import org.socialmusicdiscovery.yggdrasil.core.editors.TrackNumberComparator;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservableRecording;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservableTrack;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservableWork;
+import org.socialmusicdiscovery.yggdrasil.foundation.util.ViewerUtil;
+import org.socialmusicdiscovery.yggdrasil.foundation.views.util.AbstractColumnLabelProviderDelegate;
+import org.socialmusicdiscovery.yggdrasil.foundation.views.util.AbstractComposite;
+import org.socialmusicdiscovery.yggdrasil.foundation.views.util.LabelProviderFactory;
+import org.socialmusicdiscovery.yggdrasil.foundation.views.util.OpenListener;
 
 public class RecordingUI extends AbstractComposite<ObservableRecording> {
 

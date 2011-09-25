@@ -37,10 +37,10 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.part.ViewPart;
-import org.socialmusicdiscovery.rcp.content.DataSource;
-import org.socialmusicdiscovery.rcp.util.ViewerUtil;
-import org.socialmusicdiscovery.rcp.views.util.LabelProviderFactory;
-import org.socialmusicdiscovery.rcp.views.util.OpenListener;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.DataSource;
+import org.socialmusicdiscovery.yggdrasil.foundation.util.ViewerUtil;
+import org.socialmusicdiscovery.yggdrasil.foundation.views.util.LabelProviderFactory;
+import org.socialmusicdiscovery.yggdrasil.foundation.views.util.OpenListener;
 
 /**
  * A classic tree-based browser/navigator for a few traditional (and presumably

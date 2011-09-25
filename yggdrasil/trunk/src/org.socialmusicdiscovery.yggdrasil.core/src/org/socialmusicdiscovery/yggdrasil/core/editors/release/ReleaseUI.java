@@ -58,19 +58,19 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
-import org.socialmusicdiscovery.rcp.content.ObservableLabel;
-import org.socialmusicdiscovery.rcp.content.ObservableRelease;
-import org.socialmusicdiscovery.rcp.content.ObservableTrack;
-import org.socialmusicdiscovery.rcp.content.RecordLabelProvider;
-import org.socialmusicdiscovery.rcp.util.ViewerUtil;
-import org.socialmusicdiscovery.rcp.util.databinding.DateConverter;
-import org.socialmusicdiscovery.rcp.util.databinding.StringToYearValidator;
-import org.socialmusicdiscovery.rcp.views.util.AbstractComposite;
-import org.socialmusicdiscovery.rcp.views.util.OpenListener;
 import org.socialmusicdiscovery.server.business.model.core.Recording;
 import org.socialmusicdiscovery.yggdrasil.core.editors.ContributorPanel;
 import org.socialmusicdiscovery.yggdrasil.core.editors.TrackMediumNumberComparator;
 import org.socialmusicdiscovery.yggdrasil.core.editors.TrackNumberComparator;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservableLabel;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservableRelease;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservableTrack;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.RecordLabelProvider;
+import org.socialmusicdiscovery.yggdrasil.foundation.util.ViewerUtil;
+import org.socialmusicdiscovery.yggdrasil.foundation.util.databinding.DateConverter;
+import org.socialmusicdiscovery.yggdrasil.foundation.util.databinding.StringToYearValidator;
+import org.socialmusicdiscovery.yggdrasil.foundation.views.util.AbstractComposite;
+import org.socialmusicdiscovery.yggdrasil.foundation.views.util.OpenListener;
 
 public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 

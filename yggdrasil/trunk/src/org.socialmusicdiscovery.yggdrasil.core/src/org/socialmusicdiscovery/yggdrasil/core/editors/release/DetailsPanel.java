@@ -36,8 +36,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.socialmusicdiscovery.rcp.content.ObservableLabel;
 import org.socialmusicdiscovery.yggdrasil.core.editors.SelectionPanel;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservableLabel;
 
 /**
  * @author Peer Törngren

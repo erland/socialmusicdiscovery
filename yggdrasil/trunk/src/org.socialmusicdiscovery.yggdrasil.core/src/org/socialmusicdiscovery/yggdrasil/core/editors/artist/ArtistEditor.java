@@ -29,8 +29,8 @@ package org.socialmusicdiscovery.yggdrasil.core.editors.artist;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.socialmusicdiscovery.rcp.content.ObservableArtist;
-import org.socialmusicdiscovery.rcp.editors.AbstractEditorPart;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservableArtist;
+import org.socialmusicdiscovery.yggdrasil.foundation.editors.AbstractEditorPart;
 
 public class ArtistEditor extends AbstractEditorPart<ObservableArtist, ArtistUI> {
 
