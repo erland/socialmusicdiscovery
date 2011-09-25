@@ -29,10 +29,10 @@ package org.socialmusicdiscovery.yggdrasil.core.editors.recording;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.socialmusicdiscovery.rcp.content.ObservableRecording;
-import org.socialmusicdiscovery.rcp.editors.AbstractEditorPart;
-import org.socialmusicdiscovery.rcp.util.ViewerUtil;
 import org.socialmusicdiscovery.yggdrasil.core.editors.ContributorPanel;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservableRecording;
+import org.socialmusicdiscovery.yggdrasil.foundation.editors.AbstractEditorPart;
+import org.socialmusicdiscovery.yggdrasil.foundation.util.ViewerUtil;
 
 public class RecordingEditor extends AbstractEditorPart<ObservableRecording, RecordingUI> {
 

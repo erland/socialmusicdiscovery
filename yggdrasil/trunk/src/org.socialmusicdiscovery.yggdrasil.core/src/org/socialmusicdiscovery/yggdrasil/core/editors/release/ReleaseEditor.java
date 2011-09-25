@@ -30,10 +30,10 @@ package org.socialmusicdiscovery.yggdrasil.core.editors.release;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPartSite;
-import org.socialmusicdiscovery.rcp.content.ObservableRelease;
-import org.socialmusicdiscovery.rcp.editors.AbstractEditorPart;
-import org.socialmusicdiscovery.rcp.util.ViewerUtil;
 import org.socialmusicdiscovery.yggdrasil.core.editors.ContributorPanel;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservableRelease;
+import org.socialmusicdiscovery.yggdrasil.foundation.editors.AbstractEditorPart;
+import org.socialmusicdiscovery.yggdrasil.foundation.util.ViewerUtil;
 
 /**
  * <p>Menu IDs (suffix to the part name) are defined as constants, as recommended by {@link IWorkbenchPartSite#registerContextMenu(org.eclipse.jface.action.MenuManager, org.eclipse.jface.viewers.ISelectionProvider)}: 

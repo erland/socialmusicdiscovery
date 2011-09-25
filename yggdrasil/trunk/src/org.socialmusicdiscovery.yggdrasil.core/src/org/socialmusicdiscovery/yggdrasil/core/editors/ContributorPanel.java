@@ -46,14 +46,14 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.socialmusicdiscovery.rcp.content.AbstractContributableEntity;
-import org.socialmusicdiscovery.rcp.grid.GridTableColumnLayout;
-import org.socialmusicdiscovery.rcp.util.Debug;
-import org.socialmusicdiscovery.rcp.util.ViewerUtil;
-import org.socialmusicdiscovery.rcp.views.util.AbstractComposite;
-import org.socialmusicdiscovery.rcp.views.util.LabelProviderFactory;
-import org.socialmusicdiscovery.rcp.views.util.OpenListener;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.AbstractContributableEntity;
+import org.socialmusicdiscovery.yggdrasil.foundation.grid.GridTableColumnLayout;
+import org.socialmusicdiscovery.yggdrasil.foundation.util.Debug;
+import org.socialmusicdiscovery.yggdrasil.foundation.util.ViewerUtil;
+import org.socialmusicdiscovery.yggdrasil.foundation.views.util.AbstractComposite;
+import org.socialmusicdiscovery.yggdrasil.foundation.views.util.LabelProviderFactory;
+import org.socialmusicdiscovery.yggdrasil.foundation.views.util.OpenListener;
 
 /**
  * A reusable grid composite for maintaining any type of contributors in any

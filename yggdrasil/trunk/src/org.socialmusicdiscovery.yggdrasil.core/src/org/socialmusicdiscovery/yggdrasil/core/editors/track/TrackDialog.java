@@ -36,16 +36,16 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-import org.socialmusicdiscovery.rcp.content.ObservableRecording;
-import org.socialmusicdiscovery.rcp.content.ObservableRelease;
-import org.socialmusicdiscovery.rcp.content.ObservableTrack;
-import org.socialmusicdiscovery.rcp.content.RecordingProvider;
-import org.socialmusicdiscovery.rcp.dialogs.FactoryDialog;
-import org.socialmusicdiscovery.rcp.editors.AbstractEditorDialog;
-import org.socialmusicdiscovery.rcp.util.ClassUtil;
-import org.socialmusicdiscovery.rcp.util.Util;
 import org.socialmusicdiscovery.server.business.model.core.Medium;
 import org.socialmusicdiscovery.server.business.model.core.Track;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservableRecording;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservableRelease;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservableTrack;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.RecordingProvider;
+import org.socialmusicdiscovery.yggdrasil.foundation.dialogs.FactoryDialog;
+import org.socialmusicdiscovery.yggdrasil.foundation.editors.AbstractEditorDialog;
+import org.socialmusicdiscovery.yggdrasil.foundation.util.ClassUtil;
+import org.socialmusicdiscovery.yggdrasil.foundation.util.Util;
 
 /**
  * A dialog for editing or creating a new {@link Track}.

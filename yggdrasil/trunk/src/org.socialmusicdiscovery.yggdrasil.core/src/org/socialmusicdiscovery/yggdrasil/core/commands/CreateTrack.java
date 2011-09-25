@@ -32,12 +32,12 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.swt.widgets.Shell;
-import org.socialmusicdiscovery.rcp.Activator;
-import org.socialmusicdiscovery.rcp.content.ObservableRelease;
-import org.socialmusicdiscovery.rcp.content.ObservableTrack;
-import org.socialmusicdiscovery.rcp.util.CommandUtil;
-import org.socialmusicdiscovery.rcp.util.NotYetImplemented;
 import org.socialmusicdiscovery.yggdrasil.core.editors.track.TrackDialog;
+import org.socialmusicdiscovery.yggdrasil.foundation.Activator;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservableRelease;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservableTrack;
+import org.socialmusicdiscovery.yggdrasil.foundation.util.CommandUtil;
+import org.socialmusicdiscovery.yggdrasil.foundation.util.NotYetImplemented;
 
 /**
  * Creates a new instance.

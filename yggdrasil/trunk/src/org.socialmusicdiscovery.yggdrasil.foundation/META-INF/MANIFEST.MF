@@ -25,7 +25,7 @@ Import-Package: com.google.gson.annotations,
  org.socialmusicdiscovery.server.business.model.core,
  org.socialmusicdiscovery.server.support.copy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-Activator: org.socialmusicdiscovery.rcp.Activator
+Bundle-Activator: org.socialmusicdiscovery.yggdrasil.foundation.Activator
 Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
@@ -36,17 +36,17 @@ Export-Package: org.eclipse.nebula.jface.gridviewer,
  org.eclipse.nebula.widgets.grid,
  org.eclipse.nebula.widgets.grid.internal,
  org.eclipse.nebula.widgets.pshelf,
- org.socialmusicdiscovery.rcp,
- org.socialmusicdiscovery.rcp.FIX.ME,
- org.socialmusicdiscovery.rcp.commands,
- org.socialmusicdiscovery.rcp.content,
- org.socialmusicdiscovery.rcp.dialogs,
- org.socialmusicdiscovery.rcp.editors,
- org.socialmusicdiscovery.rcp.error,
- org.socialmusicdiscovery.rcp.event,
- org.socialmusicdiscovery.rcp.grid,
- org.socialmusicdiscovery.rcp.prefs,
- org.socialmusicdiscovery.rcp.util,
- org.socialmusicdiscovery.rcp.util.databinding,
- org.socialmusicdiscovery.rcp.views,
- org.socialmusicdiscovery.rcp.views.util
+ org.socialmusicdiscovery.yggdrasil.foundation,
+ org.socialmusicdiscovery.yggdrasil.foundation.FIX.ME,
+ org.socialmusicdiscovery.yggdrasil.foundation.commands,
+ org.socialmusicdiscovery.yggdrasil.foundation.content,
+ org.socialmusicdiscovery.yggdrasil.foundation.dialogs,
+ org.socialmusicdiscovery.yggdrasil.foundation.editors,
+ org.socialmusicdiscovery.yggdrasil.foundation.error,
+ org.socialmusicdiscovery.yggdrasil.foundation.event,
+ org.socialmusicdiscovery.yggdrasil.foundation.grid,
+ org.socialmusicdiscovery.yggdrasil.foundation.prefs,
+ org.socialmusicdiscovery.yggdrasil.foundation.util,
+ org.socialmusicdiscovery.yggdrasil.foundation.util.databinding,
+ org.socialmusicdiscovery.yggdrasil.foundation.views,
+ org.socialmusicdiscovery.yggdrasil.foundation.views.util

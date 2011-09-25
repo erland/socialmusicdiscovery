@@ -15,25 +15,25 @@
          </view>
    </extension>
    <extension
-         id="org.socialmusicdiscovery.rcp.prefs"
+         id="org.socialmusicdiscovery.yggdrasil.foundation.prefs"
          name="%preferences.name"
          point="org.eclipse.ui.preferencePages">
       <page
-            category="org.socialmusicdiscovery.rcp.prefs.Main"
-            class="org.socialmusicdiscovery.rcp.prefs.ServerConnection"
-            id="org.socialmusicdiscovery.rcp.prefs.ServerConnection"
+            category="org.socialmusicdiscovery.yggdrasil.foundation.prefs.Main"
+            class="org.socialmusicdiscovery.yggdrasil.foundation.prefs.ServerConnection"
+            id="org.socialmusicdiscovery.yggdrasil.foundation.prefs.ServerConnection"
             name="%preferences.server.connection.name">
       </page>
       <page
-            class="org.socialmusicdiscovery.rcp.prefs.Main"
-            id="org.socialmusicdiscovery.rcp.prefs.Main"
+            class="org.socialmusicdiscovery.yggdrasil.foundation.prefs.Main"
+            id="org.socialmusicdiscovery.yggdrasil.foundation.prefs.Main"
             name="%preferences.main.name">
       </page>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer
-            class="org.socialmusicdiscovery.rcp.prefs.PreferenceInitializer">
+            class="org.socialmusicdiscovery.yggdrasil.foundation.prefs.PreferenceInitializer">
       </initializer>
    </extension>
    <extension
@@ -50,7 +50,7 @@
                   style="push">
             </command>
             <command
-                  commandId="org.socialmusicdiscovery.rcp.commands.OpenEntityEditor"
+                  commandId="org.socialmusicdiscovery.yggdrasil.foundation.commands.OpenEntityEditor"
                   label="%menu.command.edit.label"
                   mnemonic="%menu.command.edit.mnemonic"
                   style="push">
@@ -94,7 +94,7 @@
                label="%menu.server.label"
                mnemonic="%menu.server.mnemonic">
             <command
-                  commandId="org.socialmusicdiscovery.rcp.commands.ConnectDataSource"
+                  commandId="org.socialmusicdiscovery.yggdrasil.foundation.commands.ConnectDataSource"
                   label="%command.server.connect.label"
                   mnemonic="%command.server.connect.mnemonic"
                   style="push"
@@ -104,7 +104,7 @@
                </visibleWhen>
             </command>
             <command
-                  commandId="org.socialmusicdiscovery.rcp.commands.DisconnectDataSource"
+                  commandId="org.socialmusicdiscovery.yggdrasil.foundation.commands.DisconnectDataSource"
                   label="%command.server.disconnect.label"
                   mnemonic="%command.server.disconnect.mnemonic"
                   style="push"
@@ -114,7 +114,7 @@
                </visibleWhen>
             </command>
             <command
-                  commandId="org.socialmusicdiscovery.rcp.commands.ImportFromSBS"
+                  commandId="org.socialmusicdiscovery.yggdrasil.foundation.commands.ImportFromSBS"
                   label="%command.server.import.sbs.label"
                   mnemonic="%command.server.import.sbs.mnemonic"
                   style="push"
@@ -171,7 +171,7 @@
             allPopups="true"
             locationURI="popup:org.eclipse.ui.popup.any">
          <command
-               commandId="org.socialmusicdiscovery.rcp.commands.Create"
+               commandId="org.socialmusicdiscovery.yggdrasil.foundation.commands.Create"
                label="%popup.command.create.label"
                mnemonic="%popup.command.create.mnemonic"
                style="push">
@@ -180,7 +180,7 @@
             </visibleWhen>
          </command>
          <command
-               commandId="org.socialmusicdiscovery.rcp.commands.Delete"
+               commandId="org.socialmusicdiscovery.yggdrasil.foundation.commands.Delete"
                label="%popup.command.delete.label"
                mnemonic="%popup.command.delete.mnemonic"
                style="push">
@@ -189,7 +189,7 @@
             </visibleWhen>
          </command>
          <command
-               commandId="org.socialmusicdiscovery.rcp.commands.OpenEntityEditor"
+               commandId="org.socialmusicdiscovery.yggdrasil.foundation.commands.OpenEntityEditor"
                label="%popup.command.edit.label"
                mnemonic="%popup.command.edit.mnemonic"
                style="push">
@@ -202,103 +202,103 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
-            id="org.socialmusicdiscovery.rcp.commands.ConnectDataSource"
+            id="org.socialmusicdiscovery.yggdrasil.foundation.commands.ConnectDataSource"
             name="Connect Data Source">
       </command>
       <command
-            id="org.socialmusicdiscovery.rcp.commands.Create"
+            id="org.socialmusicdiscovery.yggdrasil.foundation.commands.Create"
             name="Create">
       </command>
       <command
-            id="org.socialmusicdiscovery.rcp.commands.Delete"
+            id="org.socialmusicdiscovery.yggdrasil.foundation.commands.Delete"
             name="Delete">
       </command>
       <command
-            id="org.socialmusicdiscovery.rcp.commands.DeleteDependent"
+            id="org.socialmusicdiscovery.yggdrasil.foundation.commands.DeleteDependent"
             name="Delete Dependent">
       </command>
       <command
-            id="org.socialmusicdiscovery.rcp.commands.DisconnectDataSource"
+            id="org.socialmusicdiscovery.yggdrasil.foundation.commands.DisconnectDataSource"
             name="Disconnect Data Source">
       </command>
       <command
-            id="org.socialmusicdiscovery.rcp.commands.OpenEntityEditor"
+            id="org.socialmusicdiscovery.yggdrasil.foundation.commands.OpenEntityEditor"
             name="Edit">
       </command>
       <command
-            id="org.socialmusicdiscovery.rcp.commands.ImportFromSBS"
+            id="org.socialmusicdiscovery.yggdrasil.foundation.commands.ImportFromSBS"
             name="Import SBS">
       </command>
       <command
-            id="org.socialmusicdiscovery.rcp.commands.PlayElement"
+            id="org.socialmusicdiscovery.yggdrasil.foundation.commands.PlayElement"
             name="Play">
       </command>
    </extension>
    <extension
           point="org.eclipse.ui.handlers">
       <handler
-            class="org.socialmusicdiscovery.rcp.commands.OpenEntityEditor"
-            commandId="org.socialmusicdiscovery.rcp.commands.OpenEntityEditor">
+            class="org.socialmusicdiscovery.yggdrasil.foundation.commands.OpenEntityEditor"
+            commandId="org.socialmusicdiscovery.yggdrasil.foundation.commands.OpenEntityEditor">
           <enabledWhen>
                 <iterate
                       ifEmpty="false">
                   <instanceof
-                        value="org.socialmusicdiscovery.rcp.content.ObservableEntity">
+                        value="org.socialmusicdiscovery.yggdrasil.foundation.content.ObservableEntity">
                   </instanceof>
                </iterate>
          </enabledWhen>
       </handler>
       <handler
-            class="org.socialmusicdiscovery.rcp.commands.Delete"
-            commandId="org.socialmusicdiscovery.rcp.commands.Delete">
+            class="org.socialmusicdiscovery.yggdrasil.foundation.commands.Delete"
+            commandId="org.socialmusicdiscovery.yggdrasil.foundation.commands.Delete">
          <enabledWhen>
             <iterate
                   ifEmpty="false">
                <instanceof
-                     value="org.socialmusicdiscovery.rcp.content.Deletable">
+                     value="org.socialmusicdiscovery.yggdrasil.foundation.content.Deletable">
                </instanceof>
             </iterate>
          </enabledWhen>
       </handler>
       <handler
-            class="org.socialmusicdiscovery.rcp.commands.DeleteDependent"
-            commandId="org.socialmusicdiscovery.rcp.commands.DeleteDependent">
+            class="org.socialmusicdiscovery.yggdrasil.foundation.commands.DeleteDependent"
+            commandId="org.socialmusicdiscovery.yggdrasil.foundation.commands.DeleteDependent">
          <enabledWhen>
             <iterate
                   ifEmpty="false">
                <instanceof
-                     value="org.socialmusicdiscovery.rcp.content.AbstractDependentEntity">
+                     value="org.socialmusicdiscovery.yggdrasil.foundation.content.AbstractDependentEntity">
                </instanceof>
             </iterate>
          </enabledWhen>
       </handler>
       <handler
-            class="org.socialmusicdiscovery.rcp.commands.Create"
-            commandId="org.socialmusicdiscovery.rcp.commands.Create">
+            class="org.socialmusicdiscovery.yggdrasil.foundation.commands.Create"
+            commandId="org.socialmusicdiscovery.yggdrasil.foundation.commands.Create">
          <enabledWhen>
             <iterate
                   ifEmpty="false">
                <instanceof
-                     value="org.socialmusicdiscovery.rcp.content.ItemFactory">
+                     value="org.socialmusicdiscovery.yggdrasil.foundation.content.ItemFactory">
                </instanceof>
             </iterate>
          </enabledWhen>
       </handler>
      <handler
-           class="org.socialmusicdiscovery.rcp.commands.ConnectDataSource"
-           commandId="org.socialmusicdiscovery.rcp.commands.ConnectDataSource">
+           class="org.socialmusicdiscovery.yggdrasil.foundation.commands.ConnectDataSource"
+           commandId="org.socialmusicdiscovery.yggdrasil.foundation.commands.ConnectDataSource">
      </handler>
      <handler
-           class="org.socialmusicdiscovery.rcp.commands.DisconnectDataSource"
-           commandId="org.socialmusicdiscovery.rcp.commands.DisconnectDataSource">
+           class="org.socialmusicdiscovery.yggdrasil.foundation.commands.DisconnectDataSource"
+           commandId="org.socialmusicdiscovery.yggdrasil.foundation.commands.DisconnectDataSource">
      </handler>
      <handler
-           class="org.socialmusicdiscovery.rcp.commands.ImportFromSBS"
-           commandId="org.socialmusicdiscovery.rcp.commands.ImportFromSBS">
+           class="org.socialmusicdiscovery.yggdrasil.foundation.commands.ImportFromSBS"
+           commandId="org.socialmusicdiscovery.yggdrasil.foundation.commands.ImportFromSBS">
      </handler>
      <handler
-            class="org.socialmusicdiscovery.rcp.commands.PlayElement"
-            commandId="org.socialmusicdiscovery.rcp.commands.PlayElement">
+            class="org.socialmusicdiscovery.yggdrasil.foundation.commands.PlayElement"
+            commandId="org.socialmusicdiscovery.yggdrasil.foundation.commands.PlayElement">
           <enabledWhen>
                 <iterate
                       ifEmpty="false">

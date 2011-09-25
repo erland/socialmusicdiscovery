@@ -33,8 +33,8 @@ import java.beans.PropertyChangeListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
-import org.socialmusicdiscovery.rcp.Activator;
-import org.socialmusicdiscovery.rcp.content.DataSource;
+import org.socialmusicdiscovery.yggdrasil.foundation.Activator;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.DataSource;
 
 public class NavigatorView extends ViewPart {
 

@@ -44,11 +44,11 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ListDialog;
-import org.socialmusicdiscovery.rcp.content.ElementProvider;
-import org.socialmusicdiscovery.rcp.content.ModelObject;
-import org.socialmusicdiscovery.rcp.event.Observable;
-import org.socialmusicdiscovery.rcp.views.util.LabelProviderFactory;
-import org.socialmusicdiscovery.rcp.views.util.ObservableComposite;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ElementProvider;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ModelObject;
+import org.socialmusicdiscovery.yggdrasil.foundation.event.Observable;
+import org.socialmusicdiscovery.yggdrasil.foundation.views.util.LabelProviderFactory;
+import org.socialmusicdiscovery.yggdrasil.foundation.views.util.ObservableComposite;
 
 /**
  * <p>

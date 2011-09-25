@@ -42,12 +42,12 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.socialmusicdiscovery.rcp.content.AbstractContributableEntity;
-import org.socialmusicdiscovery.rcp.content.ArtistProvider;
-import org.socialmusicdiscovery.rcp.content.ContributorRoleProvider;
-import org.socialmusicdiscovery.rcp.content.ObservableArtist;
-import org.socialmusicdiscovery.rcp.content.ObservableContributor;
 import org.socialmusicdiscovery.yggdrasil.core.editors.SelectionPanel;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.AbstractContributableEntity;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ArtistProvider;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ContributorRoleProvider;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservableArtist;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservableContributor;
 
 /**
  * Creates an {@link ObservableContributor} instance. Place on a container.

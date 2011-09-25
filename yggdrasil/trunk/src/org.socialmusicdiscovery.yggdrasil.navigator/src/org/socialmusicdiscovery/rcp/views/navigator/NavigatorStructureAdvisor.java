@@ -28,7 +28,7 @@
 package org.socialmusicdiscovery.rcp.views.navigator;
 
 import org.eclipse.jface.databinding.viewers.TreeStructureAdvisor;
-import org.socialmusicdiscovery.rcp.content.ModelObject;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ModelObject;
 
 class NavigatorStructureAdvisor extends TreeStructureAdvisor {
 

@@ -29,8 +29,8 @@ package org.socialmusicdiscovery.yggdrasil.core.editors;
 
 import java.util.Comparator;
 
-import org.socialmusicdiscovery.rcp.util.Util;
 import org.socialmusicdiscovery.server.business.model.core.Track;
+import org.socialmusicdiscovery.yggdrasil.foundation.util.Util;
 
 public final class TrackNumberComparator implements Comparator<Track> {
 	@Override

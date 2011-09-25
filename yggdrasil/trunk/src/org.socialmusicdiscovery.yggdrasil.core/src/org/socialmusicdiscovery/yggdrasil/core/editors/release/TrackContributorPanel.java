@@ -51,10 +51,6 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
-import org.socialmusicdiscovery.rcp.content.AbstractObservableEntity;
-import org.socialmusicdiscovery.rcp.content.ObservableContributor;
-import org.socialmusicdiscovery.rcp.content.ObservableTrack;
-import org.socialmusicdiscovery.rcp.views.util.AbstractComposite;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.model.core.Recording;
 import org.socialmusicdiscovery.server.business.model.core.RecordingSession;
@@ -62,6 +58,10 @@ import org.socialmusicdiscovery.server.business.model.core.Release;
 import org.socialmusicdiscovery.server.business.model.core.Track;
 import org.socialmusicdiscovery.server.business.model.core.Work;
 import org.socialmusicdiscovery.yggdrasil.core.editors.ContributorPanel;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.AbstractObservableEntity;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservableContributor;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservableTrack;
+import org.socialmusicdiscovery.yggdrasil.foundation.views.util.AbstractComposite;
 
 public class TrackContributorPanel extends AbstractComposite<ObservableTrack> {
 

@@ -36,7 +36,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
-import org.socialmusicdiscovery.rcp.content.DataSource;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.DataSource;
 
 public class ShelfNavigator extends Composite {
 
