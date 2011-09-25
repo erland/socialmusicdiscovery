@@ -49,7 +49,7 @@
       </intro>
       <introProductBinding
             introId="org.socialmusicdiscovery.yggdrasil.intro"
-            productId="org.socialmusicdiscovery.yggdrasil.product">
+            productId="org.socialmusicdiscovery.yggdrasil.application.product">
       </introProductBinding>
    </extension>
    <extension
