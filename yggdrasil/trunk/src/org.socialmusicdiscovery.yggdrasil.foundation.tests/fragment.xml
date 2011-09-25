@@ -2,7 +2,7 @@
 <?eclipse version="3.4"?>
 <fragment>
    <extension
-         point="org.socialmusicdiscovery.yggdrasil.datasource">
+         point="org.socialmusicdiscovery.yggdrasil.foundation.datasource">
       <DataSource
             class="org.socialmusicdiscovery.rcp.test.FakeDataSource">
       </DataSource>

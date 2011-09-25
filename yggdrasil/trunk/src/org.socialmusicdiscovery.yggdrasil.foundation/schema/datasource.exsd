@@ -3,7 +3,7 @@
 <schema targetNamespace="org.socialmusicdiscovery.yggdrasil.foundation" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.socialmusicdiscovery.yggdrasil.foundation" id="org.socialmusicdiscovery.yggdrasil.datasource" name="Data Source"/>
+         <meta.schema plugin="org.socialmusicdiscovery.yggdrasil.foundation" id="datasource" name="Data Source"/>
       </appinfo>
       <documentation>
          &lt;p&gt;This extension point is used to add a data source to the Yggdrasil client. A data source connects to the SMD server to read and write entity objects (objects that implement SMDIdentity interface). The client must have exactly one data source to run.&lt;/p&gt;

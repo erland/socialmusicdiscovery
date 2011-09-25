@@ -28,6 +28,7 @@
 package org.socialmusicdiscovery.rcp.dialogs;
 
 import org.eclipse.ui.IEditorInput;
+import org.socialmusicdiscovery.rcp.Activator;
 import org.socialmusicdiscovery.rcp.content.ObservableEntity;
 import org.socialmusicdiscovery.rcp.util.WorkbenchUtil;
 
@@ -50,7 +51,7 @@ public interface EditorDialog<T extends ObservableEntity> {
 	 * The ID of the editor dialog extension point, as declared in the plug-in
 	 * metadata.
 	 */
-	String ExtensionID = "org.socialmusicdiscovery.yggdrasil.editordialogs";
+	String ExtensionID = Activator.PLUGIN_ID+".editordialogs";
 
 
 	/**

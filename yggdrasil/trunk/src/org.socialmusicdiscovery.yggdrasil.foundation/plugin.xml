@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension-point id="org.socialmusicdiscovery.yggdrasil.editordialogs" name="Editor Dialogs" schema="schema/org.socialmusicdiscovery.yggdrasil.editordialogs.exsd"/>
-   <extension-point id="org.socialmusicdiscovery.yggdrasil.datasource" name="Data Source" schema="schema/org.socialmusicdiscovery.yggdrasil.datasource.exsd"/>
+   <extension-point id="org.socialmusicdiscovery.yggdrasil.foundation.editordialogs" name="Editor Dialogs" schema="schema/editordialogs.exsd"/>
+   <extension-point id="org.socialmusicdiscovery.yggdrasil.foundation.datasource" name="Data Source" schema="schema/datasource.exsd"/>
 
    <extension
          point="org.eclipse.ui.views">

@@ -3,7 +3,7 @@
 <schema targetNamespace="org.socialmusicdiscovery.yggdrasil.foundation" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.socialmusicdiscovery.yggdrasil.foundation" id="org.socialmusicdiscovery.yggdrasil.editordialogs" name="Editor Dialogs"/>
+         <meta.schema plugin="org.socialmusicdiscovery.yggdrasil.foundation" id="editordialogs" name="Editor Dialogs"/>
       </appinfo>
       <documentation>
          &lt;p&gt;This extension point is used to add new editor dialogs to the workbench. An editor dialog is a visual component that is launched in a separate shell, not within a workbench page. It is typically used to edit or browse a dependend object that is a child of a parent; the editing is done in a modal dialog, and the changes are immediately save when the dialog is closed (the editing does not affect the parent&apos;s &quot;dirty&quot; status).&lt;/p&gt;
