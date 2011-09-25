@@ -34,6 +34,7 @@ import java.util.Set;
 import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.databinding.observable.set.WritableSet;
 import org.eclipse.swt.widgets.Shell;
+import org.socialmusicdiscovery.rcp.Activator;
 import org.socialmusicdiscovery.server.api.OperationStatus;
 import org.socialmusicdiscovery.server.api.management.mediaimport.MediaImportStatus;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
@@ -51,7 +52,7 @@ public interface DataSource extends ModelObject {
 	 * The ID of the extension point where the implementation must be registered.
 	 * Only one implementation can be registered in an application.
 	 */
-	String ExtensionID = "org.socialmusicdiscovery.yggdrasil.datasource"; //$NON-NLS-1$
+	String ExtensionID = Activator.PLUGIN_ID+".datasource"; //$NON-NLS-1$
 
 	/** Property name of event that is fired when the {@link #isConnected()} property changes. */
 	String PROP_IS_CONNECTED = "isConnected"; //$NON-NLS-1$
