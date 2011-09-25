@@ -4,7 +4,7 @@
    <extension
          point="org.socialmusicdiscovery.yggdrasil.foundation.datasource">
       <DataSource
-            class="org.socialmusicdiscovery.yggdrasil.rest.RESTDataSource">
+            class="org.socialmusicdiscovery.yggdrasil.datasource.rest.RESTDataSource">
       </DataSource>
    </extension>
 

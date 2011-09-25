@@ -25,7 +25,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.yggdrasil.rest;
+package org.socialmusicdiscovery.yggdrasil.datasource.rest;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;

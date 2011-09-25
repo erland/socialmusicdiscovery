@@ -25,7 +25,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.yggdrasil.rest;
+package org.socialmusicdiscovery.yggdrasil.datasource.rest;
 
 import java.beans.PropertyChangeEvent;
 import java.lang.reflect.InvocationTargetException;
@@ -67,7 +67,6 @@ import org.socialmusicdiscovery.rcp.error.ExtendedErrorDialog;
 import org.socialmusicdiscovery.rcp.error.FatalApplicationException;
 import org.socialmusicdiscovery.rcp.error.RecoverableApplicationException;
 import org.socialmusicdiscovery.rcp.event.AbstractObservable;
-import org.socialmusicdiscovery.rcp.injections.ClientConfigModule;
 import org.socialmusicdiscovery.rcp.prefs.PreferenceConstants;
 import org.socialmusicdiscovery.rcp.prefs.ServerConnection;
 import org.socialmusicdiscovery.rcp.util.JobUtil;
