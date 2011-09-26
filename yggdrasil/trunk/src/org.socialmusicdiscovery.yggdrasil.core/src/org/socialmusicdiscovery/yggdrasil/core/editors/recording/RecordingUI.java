@@ -194,12 +194,6 @@ public class RecordingUI extends AbstractComposite<ObservableRecording> {
 		tracksGrid.setHeaderVisible(true);
 		formToolkit.paintBordersFor(tracksGrid);
 		
-		releaseGVC = new GridViewerColumn(tracksViewer, SWT.NONE);
-		releaseColumn = releaseGVC.getColumn();
-		releaseColumn.setMoveable(true);
-		releaseColumn.setWidth(200);
-		releaseColumn.setText("Release");
-		
 		mediumNumberGVC = new GridViewerColumn(tracksViewer, SWT.NONE);
 		mediumNumberColumn = mediumNumberGVC.getColumn();
 		mediumNumberColumn.setMoveable(true);
@@ -211,6 +205,12 @@ public class RecordingUI extends AbstractComposite<ObservableRecording> {
 		trackNumberColumn.setMoveable(true);
 		trackNumberColumn.setWidth(50);
 		trackNumberColumn.setText("Track #");
+		
+		releaseGVC = new GridViewerColumn(tracksViewer, SWT.NONE);
+		releaseColumn = releaseGVC.getColumn();
+		releaseColumn.setMoveable(true);
+		releaseColumn.setWidth(200);
+		releaseColumn.setText("Release");
 		
 		sctnRecordingData = formToolkit.createSection(scrldfrmRecording.getBody(), Section.TWISTIE | Section.TITLE_BAR);
 		sctnRecordingData.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
