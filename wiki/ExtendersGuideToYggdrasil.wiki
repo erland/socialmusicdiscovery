@@ -6,3 +6,8 @@ In time, this page will include a guide to help extension developers. For the ti
 
 = WARNING =
 *Yggdrasil is still unstable!*
+
+= Editors =
+The *foundation* plug-in declares *contentType* extensions and an *editordialogs* extension point in addition to the standard Eclipse *editors* extension point. By means of these, plug-ins can now register editors or editor dialogs for all content. 
+
+There is no support (yet) for having alternative editors for some content, but it is possible to add editors for contents that where no editor is registered, or to add a new set of editors, e.g. to replace the "core" plug-in altogether.
