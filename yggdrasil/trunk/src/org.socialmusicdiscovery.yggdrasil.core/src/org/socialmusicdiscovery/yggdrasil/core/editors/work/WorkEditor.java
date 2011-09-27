@@ -25,15 +25,13 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.yggdrasil.core.editors.release;
+package org.socialmusicdiscovery.yggdrasil.core.editors.work;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPartSite;
-import org.socialmusicdiscovery.yggdrasil.core.editors.ContributorPanel;
-import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservableRelease;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservableWork;
 import org.socialmusicdiscovery.yggdrasil.foundation.editors.AbstractEditorPart;
-import org.socialmusicdiscovery.yggdrasil.foundation.util.ViewerUtil;
 
 /**
  * <p>
@@ -42,35 +40,26 @@ import org.socialmusicdiscovery.yggdrasil.foundation.util.ViewerUtil;
  * {@link IWorkbenchPartSite#registerContextMenu(org.eclipse.jface.action.MenuManager, org.eclipse.jface.viewers.ISelectionProvider)}:
  * <ul>
  * <li>{@link #MENU_ID_CONTRIBUTORS}</li>
- * <li>{@link #MENU_ID_TRACKS}</li>
  * </ul>
  * 
  * @author Peer Törngren
  * 
  */
-public class ReleaseEditor extends AbstractEditorPart<ObservableRelease, ReleaseUI> {
+public class WorkEditor extends AbstractEditorPart<ObservableWork, WorkUI> {
 
-	public static final String ID = ReleaseEditor.class.getName();
-	private static final String MENU_ID_CONTRIBUTORS = ContributorPanel.MENU_ID;
-	private static final String MENU_ID_TRACKS = ID+".tracks";
+	public static final String ID = WorkEditor.class.getName();
+//	private static final String MENU_ID_CONTRIBUTORS = ContributorPanel.MENU_ID;
 
 	@Override
 	public void createPartControl(Composite parent) {
-		super.createPartControl(parent, new ReleaseUI(parent, SWT.NONE));
-		hookContextMenus();
+		super.createPartControl(parent, new WorkUI(parent, SWT.NONE));
+//		hookContextMenus();
 	}
 
-	private void hookContextMenus() {
-		hookContextMenus(
-			getUI().getPlayableElementsPanel().getGridTableViewer(),
-			getUI().getTrackContributorPanel().getContributorPanel().getGridViewer() 
-		);
-		ViewerUtil.hookContextMenu(this, MENU_ID_CONTRIBUTORS, 
-				getUI().getArtistPanel().getGridViewer()
-		);
-		ViewerUtil.hookContextMenu(this, MENU_ID_TRACKS, 
-				getUI().getGridViewerTracks()
-		);
-	}
-
+//	private void hookContextMenus() {
+//		ViewerUtil.hookContextMenu(this, MENU_ID_CONTRIBUTORS, 
+//				getUI().getArtistPanel().getGridViewer()
+//		);
+//	}
+//
 }
