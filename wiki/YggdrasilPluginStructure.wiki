@@ -11,7 +11,7 @@ What we want to achieve, and how we design the structure for this purpose:
   * Allow others to extend the basic client with new components, or to offer replacements for our defaults. 
     * Hence the separation between the navigator and the editors for the core and the subjective model. Intention is that we or someone else should be able to offer an alternative navigator, additional or better editors, or add plug-ins to offer new features by hooking into the navigator, the command framework an/or our standard editors.
   * Allow download from update site. 
-    * Hence the "yggdrasil-site" and "yggdrasil.base" projects - update sites seem to prefer features over plug-ins? These are mere container and hold no code. They also offer a way to repackage the client if/when the need arises; the feature defines a plug-in configuraton that can be used in several application configurations, either on its own, augmented by other features, or ignored and replace by a feature that composes the plugins in another way.
+    * Hence the "yggdrasil-site" and "yggdrasil.base" projects - update sites seem to prefer features over plug-ins? These are mere containers and hold no code. They also offer a way to repackage the client if/when the need arises; the feature defines a plug-in configuration that can be used in several application configurations, either on its own, augmented by other features, or ignored and replace by a feature that composes the plugins in another way.
 
 ==Overview==
 The sketch below illustrates the essential structure (the sketch is saved from a Visual Paradigm model in the SVN repository: https://socialmusicdiscovery.googlecode.com/svn/wiki/Yggdrasil/ProjectStructureDiagram.vpp)
