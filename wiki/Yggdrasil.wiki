@@ -66,7 +66,7 @@ Some brief and preliminary thoughts on the design principles for the RCP client.
     * Data Source (Server Connection) - abstracts the server facade and produces UI-friendly objects (lazily loaded, observable, named ...).
     * UI plugins:
       * Navigator UI - A PShelf presentation of "shallow" objects, with the ability to "inflate" any object and open an editor on it
-      * Core model editors - !EditorPart subclasses that operate on SMDEntity instances from the core model
+      * Core model editors - !EditorPart and !EditorDialog subclasses that operate on SMDIdentity instances from the core model
       * Subjective model editors - !EditorPart subclasses that operate on SMD instances from the subjective model
   * i18N 
     * At the time of writing, the prototype is not localizable. We should of course change this at some point in time, using the built-in Eclipse/Java mechanisms to do so.
