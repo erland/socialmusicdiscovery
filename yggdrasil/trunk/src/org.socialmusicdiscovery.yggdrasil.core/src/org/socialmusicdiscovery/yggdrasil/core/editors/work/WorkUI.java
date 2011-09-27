@@ -28,6 +28,12 @@
 package org.socialmusicdiscovery.yggdrasil.core.editors.work;
 
 import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.databinding.beans.BeansObservables;
+import org.eclipse.core.databinding.observable.value.IObservableValue;
+import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.nebula.jface.gridviewer.GridTreeViewer;
+import org.eclipse.nebula.jface.gridviewer.GridViewerColumn;
+import org.eclipse.nebula.widgets.grid.Grid;
 import org.eclipse.nebula.widgets.grid.GridColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
@@ -61,8 +67,12 @@ public class WorkUI extends AbstractComposite<ObservableWork> {
 	private ContributorPanel artistPanel;
 	private CTabItem tabItemRecordings;
 	private Composite reordingsArea;
-	private Label lblNewLabel;
+	private Label lblRecordings;
 	private NotYetImplementedUI notYetImplementedUI;
+	private Section sctnParts;
+	private Composite composite;
+	private CTabItem tbtmDetails;
+	private Composite detailsArea;
 
 	/**
 	 * Create the composite.
@@ -96,9 +106,31 @@ public class WorkUI extends AbstractComposite<ObservableWork> {
 		textName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		textName.setText("");
 		
+		sctnParts = formToolkit.createSection(formWork.getBody(), Section.TITLE_BAR);
+		sctnParts.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		formToolkit.paintBordersFor(sctnParts);
+		sctnParts.setText("Parts");
+		
+		composite = formToolkit.createComposite(sctnParts, SWT.NONE);
+		formToolkit.paintBordersFor(composite);
+		sctnParts.setClient(composite);
+		composite.setLayout(new GridLayout(1, false));
+		
+		GridTreeViewer gridTreeViewer = new GridTreeViewer(composite, SWT.BORDER);
+		Grid grid = gridTreeViewer.getGrid();
+		grid.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		grid.setHeaderVisible(true);
+		formToolkit.paintBordersFor(grid);
+		
+		GridViewerColumn partGVC = new GridViewerColumn(gridTreeViewer, SWT.NONE);
+		GridColumn partColumn = partGVC.getColumn();
+		partColumn.setTree(true);
+		partColumn.setWidth(400);
+		partColumn.setText("Part");
+		
 		
 		sectionWorkData = formToolkit.createSection(formWork.getBody(), Section.TWISTIE | Section.TITLE_BAR);
-		sectionWorkData.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
+		sectionWorkData.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, true, true, 1, 1));
 		formToolkit.paintBordersFor(sectionWorkData);
 		sectionWorkData.setText("Work Data");
 		sectionWorkData.setExpanded(true);
@@ -128,8 +160,19 @@ public class WorkUI extends AbstractComposite<ObservableWork> {
 		formToolkit.paintBordersFor(reordingsArea);
 		reordingsArea.setLayout(new GridLayout(1, false));
 		
-		lblNewLabel = formToolkit.createLabel(reordingsArea, "Place holder -  here we may show recordings  (etc)", SWT.NONE);
-		lblNewLabel.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, false, 1, 1));
+		lblRecordings = formToolkit.createLabel(reordingsArea, "Place holder -  here we may show recordings  (etc)", SWT.NONE);
+		lblRecordings.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, false, 1, 1));
+		
+		tbtmDetails = new CTabItem(workDataTabFolder, SWT.NONE);
+		tbtmDetails.setText("Details");
+		
+		detailsArea = formToolkit.createComposite(workDataTabFolder, SWT.NONE);
+		tbtmDetails.setControl(detailsArea);
+		formToolkit.paintBordersFor(detailsArea);
+		detailsArea.setLayout(new GridLayout(1, false));
+		
+		Label lblDetails = formToolkit.createLabel(detailsArea, "Placeholder - here we will show details about the work; originally composed, links to scores, etc", SWT.NONE);
+		lblDetails.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, false, 1, 1));
 
 		initUI();
 		}
@@ -170,10 +213,12 @@ public class WorkUI extends AbstractComposite<ObservableWork> {
 
 	protected void initManualDataBindings(DataBindingContext bindingContext) {
 	}
-
 	protected DataBindingContext initDataBindings() {
 		DataBindingContext bindingContext = new DataBindingContext();
 		//
+		IObservableValue textNameObserveTextObserveWidget = SWTObservables.observeText(textName, SWT.Modify);
+		IObservableValue getWorkNameObserveValue = BeansObservables.observeValue(getWork(), "name");
+		bindingContext.bindValue(textNameObserveTextObserveWidget, getWorkNameObserveValue, null, null);
 		//
 		return bindingContext;
 	}

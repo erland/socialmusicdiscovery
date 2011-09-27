@@ -202,9 +202,12 @@ public abstract class AbstractEditorPart<T extends AbstractEditableEntity, U ext
 	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
 		setSite(site);
 		setInput(input);
-		hookModelListener(getEntity());
-		this.original = getEntity().backup();
-		assert !original.isDirty() : "Original dirty on entry: "+original;
+		T entity = getEntity();
+		if (input!=null && entity!=null) { // will be null when opened in GUI designer
+			hookModelListener(entity);
+			this.original = entity.backup();
+			assert !original.isDirty() : "Original dirty on entry: "+original;
+		}
 	}
 
 	private void hookModelListener(T entity) {
@@ -225,9 +228,13 @@ public abstract class AbstractEditorPart<T extends AbstractEditableEntity, U ext
 	}
 
 	protected T getEntity() {
-		T entity = (T) getEditorInput().getAdapter(AbstractEditableEntity.class);
-		assert getEditorInput()==null || entity!=null : "Input is not an "+AbstractObservableEntity.class+": "+getEditorInput();
-		return entity;
+		IEditorInput editorInput = getEditorInput();
+		if (editorInput!=null) { // will be null in GUI designer
+			T entity = (T) editorInput.getAdapter(AbstractEditableEntity.class);
+			assert editorInput==null || entity!=null : "Input is not an "+AbstractObservableEntity.class+": "+editorInput;
+			return entity;
+		}
+		return null;
 	}
 
 	/**
