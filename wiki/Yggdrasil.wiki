@@ -33,6 +33,9 @@ The Yggdrasil client is designed to leverage the Eclipse extension architecture.
 
 More information on how to develop plug-ins can be found on the [ExtendersGuideToYggdrasil Extender's Guide To Yggdrasil].
 
+= To Do =
+Enhancements and defects are registered [here].
+
 = To Develop =
 The short story:
 
