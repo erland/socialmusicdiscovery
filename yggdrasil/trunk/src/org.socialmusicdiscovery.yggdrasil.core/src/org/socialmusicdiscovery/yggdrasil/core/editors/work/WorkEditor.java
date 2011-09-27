@@ -46,6 +46,8 @@ import org.socialmusicdiscovery.yggdrasil.foundation.editors.AbstractEditorPart;
  * 
  */
 public class WorkEditor extends AbstractEditorPart<ObservableWork, WorkUI> {
+	public WorkEditor() {
+	}
 
 	public static final String ID = WorkEditor.class.getName();
 //	private static final String MENU_ID_CONTRIBUTORS = ContributorPanel.MENU_ID;
