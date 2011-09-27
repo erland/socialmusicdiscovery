@@ -31,9 +31,9 @@ More info to be added ...
 Enhancements and defects are registered in our shared [http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=Component%3DUI-RCPClient "todo list"].
 
 Apart from a vast number of details to implement or fix, there are a few major features missing:
-* Editors for the remaining core model entities (Work and Part)
-* An installer and an update site (p2 repository)
-* Editors for the subjective model
+ * Editors for the remaining core model entities (Work and Part)
+ * An installer and an update site (p2 repository)
+ * Editors for the subjective model
 
 = To Extend =
 The Yggdrasil client is designed to leverage the Eclipse extension architecture. We hope that other developers will extend our platform and initial application by developing more or better plug-ins to enhance the end-user experience. 
