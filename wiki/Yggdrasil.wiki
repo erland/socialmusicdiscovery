@@ -27,14 +27,13 @@ Latest pre-compiled nightly builds of the yggdrasil can be found here:
 Download, unzip into desired location, drill down to find the launcher (on Windows, this will be called yggdrasil.exe).
 
 More info to be added ...
+= To Do =
+Enhancements and defects are registered in our shared [http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=Component%3DUI-RCPClient "todo list"].
 
 = To Extend =
 The Yggdrasil client is designed to leverage the Eclipse extension architecture. We hope that other developers will extend our platform and initial application by developing more or better plug-ins to enhance the end-user experience. 
 
 More information on how to develop plug-ins can be found on the [ExtendersGuideToYggdrasil Extender's Guide To Yggdrasil].
-
-= To Do =
-Enhancements and defects are registered in our shared [http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=Component%3DUI-RCPClient "todo list"].
 
 = To Develop =
 The short story:
