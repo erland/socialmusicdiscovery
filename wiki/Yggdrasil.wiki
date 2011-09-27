@@ -63,7 +63,7 @@ Some brief and preliminary thoughts on the design principles for the RCP client.
     * Product - splash screens, license, intro pages, etc
     * Feature - a configuration of the base plug-ins
     * Foundation - fundamental UI components; custom widgets, utils, common abstractions, ...
-    * Server Connection (Data Source) - abstracts the server facade and produces UI-friendly objects (lazily loaded, observable, named ...). At the time of writing, this is bundled with the foundation plug.
+    * Data Source (Server Connection) - abstracts the server facade and produces UI-friendly objects (lazily loaded, observable, named ...).
     * UI plugins:
       * Navigator UI - A PShelf presentation of "shallow" objects, with the ability to "inflate" any object and open an editor on it
       * Core model editors - !EditorPart subclasses that operate on SMDEntity instances from the core model
