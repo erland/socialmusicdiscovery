@@ -34,7 +34,7 @@ The Yggdrasil client is designed to leverage the Eclipse extension architecture.
 More information on how to develop plug-ins can be found on the [ExtendersGuideToYggdrasil Extender's Guide To Yggdrasil].
 
 = To Do =
-Enhancements and defects are registered [here].
+Enhancements and defects are registered in our shared [http://code.google.com/p/socialmusicdiscovery/issues/list?can=2&q=Component%3DUI-RCPClient "todo list"].
 
 = To Develop =
 The short story:
