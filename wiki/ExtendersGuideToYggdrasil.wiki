@@ -11,3 +11,5 @@ In time, this page will include a guide to help extension developers. For the ti
 The *foundation* plug-in declares *contentType* extensions and an *editordialogs* extension point in addition to the standard Eclipse *editors* extension point. By means of these, plug-ins can now register editors or editor dialogs for all content. 
 
 There is no support (yet) for having alternative editors for some content, but it is possible to add editors for contents that where no editor is registered, or to add a new set of editors, e.g. to replace the "core" plug-in altogether.
+= DataSource=
+The *foundation* plug-in declares a *datasource* extension point, and the *datasource.rest* plug-in uses this to register the default WS/JSON server connection. We don't really expect a significant need to register other data sources, this is more about separation of concerns and the ability to register mock data sources for testing.
