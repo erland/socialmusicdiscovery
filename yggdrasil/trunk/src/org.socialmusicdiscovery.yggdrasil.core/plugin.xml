@@ -39,6 +39,15 @@
                contentTypeId="org.socialmusicdiscovery.server.business.model.core.Label">
          </contentTypeBinding>
       </editor>
+      <editor
+            class="org.socialmusicdiscovery.yggdrasil.core.editors.work.WorkEditor"
+            default="false"
+            id="org.sociaorg.socialmusicdiscovery.yggdrasil.core.editors.label.WorkEditor"
+            name="%editor.work.name">
+         <contentTypeBinding
+               contentTypeId="org.socialmusicdiscovery.server.business.model.core.Work">
+         </contentTypeBinding>
+      </editor>
    </extension>
     <extension
          point="org.eclipse.ui.commands">
