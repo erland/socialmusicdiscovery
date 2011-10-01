@@ -33,9 +33,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.core.databinding.observable.IObservableCollection;
+import org.eclipse.core.databinding.observable.list.IObservableList;
+import org.eclipse.core.databinding.observable.set.IObservableSet;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.databinding.viewers.ObservableListContentProvider;
 import org.eclipse.jface.databinding.viewers.ObservableMapLabelProvider;
 import org.eclipse.jface.databinding.viewers.ObservableSetContentProvider;
 import org.eclipse.jface.viewers.CellLabelProvider;
@@ -257,11 +259,9 @@ public class ViewerUtil {
 	 * Bind to property names using an observable {@link CellLabelProvider} to render elements.
 	 * @param viewer
 	 * @param input
-	 * @param releaseProvider 
-	 * @param trackNumberProvider 
-	 * @param properties
+	 * @param providers 
 	 */
-	public static void bind(StructuredViewer viewer, IObservableCollection input, AbstractColumnLabelProviderDelegate... providers) {
+	public static void bind(StructuredViewer viewer, IObservableSet input, AbstractColumnLabelProviderDelegate... providers) {
 		if (viewer.getInput() != null) {
 			viewer.setInput(null);
 		}
@@ -272,8 +272,25 @@ public class ViewerUtil {
 		ObservableMapLabelProvider labelProvider = new DelegatingObservableMapLabelProvider(contentProvider.getKnownElements(), providers);
 		viewer.setLabelProvider(labelProvider);
 		viewer.setInput(input);
+	}
+
+	/**
+	 * Bind to property names using an observable {@link CellLabelProvider} to render elements.
+	 * @param viewer
+	 * @param input
+	 * @param providers 
+	 */
+	public static void bind(StructuredViewer viewer, IObservableList input, AbstractColumnLabelProviderDelegate... providers) {
+		if (viewer.getInput() != null) {
+			viewer.setInput(null);
+		}
 		
-//		roleGVC.setLabelProvider(LabelProviderFactory.forTable(gridTableViewer));
+		ObservableListContentProvider contentProvider = new ObservableListContentProvider();
+		viewer.setContentProvider(contentProvider);
+		
+		ObservableMapLabelProvider labelProvider = new DelegatingObservableMapLabelProvider(contentProvider.getKnownElements(), providers);
+		viewer.setLabelProvider(labelProvider);
+		viewer.setInput(input);
 	}
 
 	public static int resolveColumnIndex(GridViewerColumn gvc) {

@@ -28,10 +28,10 @@
 package org.socialmusicdiscovery.yggdrasil.foundation.content;
 
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 
 import org.socialmusicdiscovery.server.business.model.core.Work;
+import org.socialmusicdiscovery.yggdrasil.foundation.util.GenericWritableSet;
 
 import com.google.gson.annotations.Expose;
 
@@ -42,7 +42,7 @@ public class ObservableWork extends AbstractContributableEntity<Work> implements
 	public static final String PROP_parent = "parent";
 	
 	@Expose private Date date;
-	@Expose private Set<Work> parts = new HashSet<Work>();
+	@Expose private GenericWritableSet<Work> parts = new GenericWritableSet<Work>();
 	@Expose private Work parent;
 	
 	public ObservableWork() {
@@ -53,8 +53,9 @@ public class ObservableWork extends AbstractContributableEntity<Work> implements
 	public Date getDate() {
 		return date;
 	}
+	
 	@Override
-	public Set<Work> getParts() {
+	public GenericWritableSet<Work> getParts() {
 		return parts;
 	}
 
@@ -66,8 +67,9 @@ public class ObservableWork extends AbstractContributableEntity<Work> implements
 		firePropertyChange(PROP_date, this.date, this.date = date);
 	}
 	public void setParts(Set<Work> parts) {
-		firePropertyChange(PROP_parts, this.parts, this.parts = parts);
+		updateSet(PROP_parts, this.parts, parts);
 	}
+	
 	public void setParent(Work parent) {
 		firePropertyChange(PROP_parent, this.parent, this.parent = parent);
 	}
