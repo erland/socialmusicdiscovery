@@ -40,6 +40,7 @@ public interface WorkRepository extends SMDIdentityRepository<WorkEntity> {
     Collection<WorkEntity> findByPartialNameWithRelations(String name, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
     Collection<WorkEntity> findByReleaseWithRelations(String releaseId, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
     Collection<WorkEntity> findByArtistWithRelations(String artistId, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
+    Collection<WorkEntity> findByWorkWithRelations(String workId, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
 
     /**
      * Refresh search relations for the specified entity, this method should be called after all modifications has been done on the entity

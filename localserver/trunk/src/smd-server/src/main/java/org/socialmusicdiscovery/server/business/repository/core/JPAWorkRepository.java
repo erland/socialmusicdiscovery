@@ -76,6 +76,14 @@ public class JPAWorkRepository extends AbstractJPASMDIdentityRepository<WorkEnti
         query.setParameter("artist", artistId);
         return query.getResultList();
     }
+
+    @Override
+    public Collection<WorkEntity> findByWorkWithRelations(String workId, Collection<String> mandatoryRelations, Collection<String> optionalRelations) {
+        Query query = entityManager.createQuery(queryStringFor("e",mandatoryRelations,optionalRelations) + " JOIN e.parent as parent where parent.id=:work order by e.name");
+        query.setParameter("work", workId);
+        return query.getResultList();
+    }
+
     @Override
     public void create(WorkEntity entity) {
         if (entity.getParent() != null && !entityManager.contains(entity.getParent())) {
