@@ -35,9 +35,7 @@ import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * See {@link Work}
@@ -58,11 +56,12 @@ public class WorkEntity extends AbstractSMDIdentityEntity implements Work, Contr
     private Date date;
     @OneToMany(targetEntity = WorkEntity.class)
     @JoinColumn(name = "parent_id")
-    private Set<Work> parts = new HashSet<Work>();
+    @OrderBy("sortAs")
+    private List<Work> parts = new ArrayList<Work>();
     @ManyToOne(targetEntity = WorkEntity.class)
     @JoinColumn(name = "parent_id")
     @Expose
-    private Work parent;
+    private Work parent;;
 
     @OneToMany(targetEntity = ContributorEntity.class, mappedBy = "work", cascade = {CascadeType.REMOVE}, orphanRemoval = true)
     private Set<Contributor> contributors = new HashSet<Contributor>();
@@ -83,11 +82,11 @@ public class WorkEntity extends AbstractSMDIdentityEntity implements Work, Contr
         this.date = date;
     }
 
-    public Set<Work> getParts() {
+    public List<Work> getParts() {
         return parts;
     }
 
-    public void setParts(Set<Work> parts) {
+    public void setParts(List<Work> parts) {
         this.parts = parts;
     }
 

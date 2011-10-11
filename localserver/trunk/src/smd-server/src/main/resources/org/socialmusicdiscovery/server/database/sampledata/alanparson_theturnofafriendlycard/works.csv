@@ -5,8 +5,8 @@ id,name,sort_as,parent_id,last_updated,last_updated_by
 51bbe63f-3cdc-4eb0-a878-ed00c050995c,I Don't Wanna Go Home,I Don't Wanna Go Home,NULL,2010-10-01,testdataloader
 b67e1fa3-845b-4eeb-bc79-628217f900c3,The Gold Bug,The Gold Bug,NULL,2010-10-01,testdataloader
 90bb08d9-43f5-42c8-affe-12d78baa9d45,The Turn Of A Friendly Card,The Turn Of A Friendly Card,NULL,2010-10-01,testdataloader
-06e53daf-525a-4dc1-95d8-faf1f5b99509,The Turn Of A Friendly Card (Part One),The Turn Of A Friendly Card (Part One),90bb08d9-43f5-42c8-affe-12d78baa9d45,2010-10-01,testdataloader
-44de35b0-b7b9-4c70-91fb-2f8477fd9176,Snake Eyes,Snake Eyes,90bb08d9-43f5-42c8-affe-12d78baa9d45,2010-10-01,testdataloader
-bb3f805e-7ffa-405f-963a-c1c1b7eb3d91,The Ace Of Swords,The Ace Of Swords,90bb08d9-43f5-42c8-affe-12d78baa9d45,2010-10-01,testdataloader
-ea6039c1-1da4-4cea-b113-9e157d5fc38d,Nothing Left To Lose,Nothing Left To Lose,90bb08d9-43f5-42c8-affe-12d78baa9d45,2010-10-01,testdataloader
-f8099974-2371-41a5-b295-49407af5b341,The Turn Of A Friendly Card (Part Two),The Turn Of A Friendly Card (Part Two),90bb08d9-43f5-42c8-affe-12d78baa9d45,2010-10-01,testdataloader
+06e53daf-525a-4dc1-95d8-faf1f5b99509,The Turn Of A Friendly Card (Part One),1. The Turn Of A Friendly Card (Part One),90bb08d9-43f5-42c8-affe-12d78baa9d45,2010-10-01,testdataloader
+44de35b0-b7b9-4c70-91fb-2f8477fd9176,Snake Eyes,2. Snake Eyes,90bb08d9-43f5-42c8-affe-12d78baa9d45,2010-10-01,testdataloader
+bb3f805e-7ffa-405f-963a-c1c1b7eb3d91,The Ace Of Swords,3. The Ace Of Swords,90bb08d9-43f5-42c8-affe-12d78baa9d45,2010-10-01,testdataloader
+ea6039c1-1da4-4cea-b113-9e157d5fc38d,Nothing Left To Lose,4. Nothing Left To Lose,90bb08d9-43f5-42c8-affe-12d78baa9d45,2010-10-01,testdataloader
+f8099974-2371-41a5-b295-49407af5b341,The Turn Of A Friendly Card (Part Two),5. The Turn Of A Friendly Card (Part Two),90bb08d9-43f5-42c8-affe-12d78baa9d45,2010-10-01,testdataloader

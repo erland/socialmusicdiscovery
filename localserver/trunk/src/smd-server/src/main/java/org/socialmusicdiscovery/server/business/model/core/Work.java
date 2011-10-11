@@ -30,6 +30,7 @@ package org.socialmusicdiscovery.server.business.model.core;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -47,9 +48,9 @@ public interface Work extends SMDIdentity {
 
     void setDate(Date date);
 
-    Set<Work> getParts();
+    List<Work> getParts();
 
-    void setParts(Set<Work> parts);
+    void setParts(List<Work> parts);
 
     Work getParent();
 
