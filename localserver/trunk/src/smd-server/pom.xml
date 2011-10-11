@@ -288,7 +288,6 @@
             </plugin>
 
             <!-- Generate SQL file for database creation -->
-            <!-- Temporarily disabled until java.sun.com becomes available again
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>hibernate3-maven-plugin</artifactId>
@@ -318,7 +317,6 @@
                     </componentProperties>
                 </configuration>
             </plugin>
-            -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
