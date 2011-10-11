@@ -54,32 +54,32 @@ public class JPAWorkRepository extends AbstractJPASMDIdentityRepository<WorkEnti
     }
 
     public Collection<WorkEntity> findByNameWithRelations(String name, Collection<String> mandatoryRelations, Collection<String> optionalRelations) {
-        Query query = entityManager.createQuery(queryStringFor("e", mandatoryRelations, optionalRelations) + " where lower(e.name)=:name order by e.name");
+        Query query = entityManager.createQuery(queryStringFor("e", mandatoryRelations, optionalRelations) + " where lower(e.name)=:name order by e.sortAs");
         query.setParameter("name", name.toLowerCase());
         return query.getResultList();
     }
 
     public Collection<WorkEntity> findByPartialNameWithRelations(String name, Collection<String> mandatoryRelations, Collection<String> optionalRelations) {
-        Query query = entityManager.createQuery(queryStringFor("e", mandatoryRelations, optionalRelations) + " where lower(e.name) like :name order by e.name");
+        Query query = entityManager.createQuery(queryStringFor("e", mandatoryRelations, optionalRelations) + " where lower(e.name) like :name order by e.sortAs");
         query.setParameter("name", "%" + name.toLowerCase() + "%");
         return query.getResultList();
     }
 
     public Collection<WorkEntity> findByReleaseWithRelations(String releaseId, Collection<String> mandatoryRelations, Collection<String> optionalRelations) {
-        Query query = entityManager.createQuery(recordingQueryStringFor("e", "work", "release", "relation", "searchRelation", mandatoryRelations, optionalRelations, true) + " WHERE searchRelation.reference=:release order by e.name");
+        Query query = entityManager.createQuery(recordingQueryStringFor("e", "work", "release", "relation", "searchRelation", mandatoryRelations, optionalRelations, true) + " WHERE searchRelation.reference=:release order by e.sortAs");
         query.setParameter("release", releaseId);
         return query.getResultList();
     }
 
     public Collection<WorkEntity> findByArtistWithRelations(String artistId, Collection<String> mandatoryRelations, Collection<String> optionalRelations) {
-        Query query = entityManager.createQuery(recordingQueryStringFor("e", "work", "artist", "relation", "searchRelation", mandatoryRelations, optionalRelations, true) + " WHERE searchRelation.reference=:artist order by e.name");
+        Query query = entityManager.createQuery(recordingQueryStringFor("e", "work", "artist", "relation", "searchRelation", mandatoryRelations, optionalRelations, true) + " WHERE searchRelation.reference=:artist order by e.sortAs");
         query.setParameter("artist", artistId);
         return query.getResultList();
     }
 
     @Override
     public Collection<WorkEntity> findByWorkWithRelations(String workId, Collection<String> mandatoryRelations, Collection<String> optionalRelations) {
-        Query query = entityManager.createQuery(queryStringFor("e",mandatoryRelations,optionalRelations) + " JOIN e.parent as parent where parent.id=:work order by e.name");
+        Query query = entityManager.createQuery(queryStringFor("e",mandatoryRelations,optionalRelations) + " JOIN e.parent as parent where parent.id=:work order by e.sortAs");
         query.setParameter("work", workId);
         return query.getResultList();
     }
