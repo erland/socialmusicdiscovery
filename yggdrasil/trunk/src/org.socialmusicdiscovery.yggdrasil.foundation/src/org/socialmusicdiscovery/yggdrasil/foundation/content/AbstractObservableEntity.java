@@ -160,9 +160,9 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 	 * <p>
 	 * Note: this method should <b>only</b> be called by {@link Root}, subclasses 
 	 * or test classes after creating a new instance. It must <b>not</b> be 
-	 * called from the constructor, but after creating a new instance in
-	 * that needs to be hooked up with listeners etc the same way an existing
-	 * instance is hooked up after being inflated.
+	 * called from the constructor, but after creating a new instance that needs 
+	 * to be hooked up with listeners etc the same way an existing instance is 
+	 * hooked up after being inflated.
 	 * </p>
 	 * @see #postInflate()
 	 */

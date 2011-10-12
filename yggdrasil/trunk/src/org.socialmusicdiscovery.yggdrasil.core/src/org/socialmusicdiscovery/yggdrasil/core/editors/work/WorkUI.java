@@ -30,10 +30,10 @@ package org.socialmusicdiscovery.yggdrasil.core.editors.work;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.observable.Realm;
-import org.eclipse.core.databinding.observable.set.IObservableSet;
+import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.SWTObservables;
-import org.eclipse.jface.databinding.viewers.ObservableSetTreeContentProvider;
+import org.eclipse.jface.databinding.viewers.ObservableListTreeContentProvider;
 import org.eclipse.nebula.jface.gridviewer.GridTreeViewer;
 import org.eclipse.nebula.jface.gridviewer.GridViewerColumn;
 import org.eclipse.nebula.widgets.grid.Grid;
@@ -42,6 +42,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -49,9 +50,10 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
-import org.eclipse.wb.rcp.databinding.BeansSetObservableFactory;
+import org.eclipse.wb.rcp.databinding.BeansListObservableFactory;
 import org.eclipse.wb.rcp.databinding.TreeBeanAdvisor;
 import org.eclipse.wb.rcp.databinding.TreeObservableLabelProvider;
 import org.socialmusicdiscovery.yggdrasil.core.editors.ContributorPanel;
@@ -85,6 +87,10 @@ public class WorkUI extends AbstractComposite<ObservableWork> {
 	private SashForm sashForm;
 	private Section partDetailsSection;
 	private Composite partsArea;
+	private Hyperlink parentLink;
+	private Composite parentArea;
+	private Label noParentInfo;
+	private Label parentLabel;
 
 	/**
 	 * Create the composite.
@@ -117,6 +123,21 @@ public class WorkUI extends AbstractComposite<ObservableWork> {
 		textName = formToolkit.createText(formWork.getBody(), "text", SWT.BORDER);
 		textName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		textName.setText("");
+		
+		parentLabel = formToolkit.createLabel(formWork.getBody(), "Parent", SWT.NONE);
+		
+		parentArea = new Composite(formWork.getBody(), SWT.NONE);
+		parentArea.setLayout(new StackLayout());
+		parentArea.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
+		formToolkit.adapt(parentArea);
+		formToolkit.paintBordersFor(parentArea);
+		
+		noParentInfo = formToolkit.createLabel(parentArea, "(none)", SWT.NONE);
+		noParentInfo.setToolTipText("This is a work in its own right, not a part of any other part or work. It may or mat not contain parts.");
+		
+		parentLink = formToolkit.createHyperlink(parentArea, "(?)", SWT.NONE);
+		parentLink.setToolTipText("The parent part is the container of this (and presumably more) parts. The parent may itself be part of some other work.");
+		formToolkit.paintBordersFor(parentLink);
 		
 		sctnParts = formToolkit.createSection(formWork.getBody(), Section.TITLE_BAR);
 		sctnParts.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
@@ -258,16 +279,25 @@ public class WorkUI extends AbstractComposite<ObservableWork> {
 		IObservableValue getWorkNameObserveValue = BeansObservables.observeValue(getWork(), "name");
 		bindingContext.bindValue(textNameObserveTextObserveWidget, getWorkNameObserveValue, null, null);
 		//
-		BeansSetObservableFactory treeObservableFactory = new BeansSetObservableFactory(ObservableWork.class, "parts");
+		BeansListObservableFactory treeObservableFactory = new BeansListObservableFactory(ObservableWork.class, "parts");
 		TreeBeanAdvisor treeAdvisor = new TreeBeanAdvisor(ObservableWork.class, "parent", "parts", null);
-		ObservableSetTreeContentProvider treeContentProvider = new ObservableSetTreeContentProvider(treeObservableFactory, treeAdvisor);
+		ObservableListTreeContentProvider treeContentProvider = new ObservableListTreeContentProvider(treeObservableFactory, treeAdvisor);
 		partsViewer.setContentProvider(treeContentProvider);
 		//
 		partsViewer.setLabelProvider(new TreeObservableLabelProvider(treeContentProvider.getKnownElements(), ObservableWork.class, "name", null));
 		//
-		IObservableSet getWorkPartsObserveSet = BeansObservables.observeSet(Realm.getDefault(), getWork(), "parts");
-		partsViewer.setInput(getWorkPartsObserveSet);
+		IObservableList getWorkPartsObserveList = BeansObservables.observeList(Realm.getDefault(), getWork(), "parts");
+		partsViewer.setInput(getWorkPartsObserveList);
 		//
 		return bindingContext;
+	}
+	public Label getNoParentInfo() {
+		return noParentInfo;
+	}
+	public Hyperlink getParentLink() {
+		return parentLink;
+	}
+	public Label getParentLabel() {
+		return parentLabel;
 	}
 }
