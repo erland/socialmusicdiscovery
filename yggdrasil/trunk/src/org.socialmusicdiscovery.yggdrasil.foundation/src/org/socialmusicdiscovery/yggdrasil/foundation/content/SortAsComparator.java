@@ -27,57 +27,33 @@
 
 package org.socialmusicdiscovery.yggdrasil.foundation.content;
 
-import java.util.Date;
-import java.util.List;
+import java.util.Comparator;
 
-import org.socialmusicdiscovery.server.business.model.core.Work;
-import org.socialmusicdiscovery.yggdrasil.foundation.util.GenericWritableList;
-import org.socialmusicdiscovery.yggdrasil.foundation.util.ListOrderManager;
+import org.socialmusicdiscovery.yggdrasil.foundation.util.Util;
 
-import com.google.gson.annotations.Expose;
+/**
+ * Compare {@link AbstractObservableEntity#getSortAs()} of two instances,
+ * observing that one or both objects or attributes may be <code>null</code>.
+ * Fails if called to compare objects of wrong type.
+ * 
+ * @author Peer Törngren
+ * 
+ */
+public class SortAsComparator implements Comparator<AbstractObservableEntity> {
 
-public class ObservableWork extends AbstractContributableEntity<Work> implements Work {
+	private static SortAsComparator instance;
 
-	public static final String PROP_date = "date";
-	public static final String PROP_parts = "parts";
-	public static final String PROP_parent = "parent";
-	
-	@Expose private Date date;
-	@Expose private GenericWritableList<Work> parts = new GenericWritableList<Work>();
-	@Expose private Work parent;
-	
-	public ObservableWork() {
-		super(Work.TYPE);
-	}
-	
-	@Override
-	protected void postInflate() {
-		getParts().addAll(asOrderedList(getRoot().findAll(this)));
-		ListOrderManager.manage(getParts());
+	public static SortAsComparator instance() {
+		if (instance==null) {
+			instance = new SortAsComparator();
+		}
+		return instance;
 	}
 
 	@Override
-	public Date getDate() {
-		return date;
-	}
-	
-	@Override
-	public GenericWritableList<Work> getParts() {
-		return parts;
+	public int compare(AbstractObservableEntity o1, AbstractObservableEntity o2) {
+		int nullComparion = Util.compareNull(o1, o2);
+		return nullComparion==0 ? Util.compare(o1.getSortAs(), o2.getSortAs())  : nullComparion;
 	}
 
-	@Override
-	public Work getParent() {
-		return parent;
-	}
-	public void setDate(Date date) {
-		firePropertyChange(PROP_date, this.date, this.date = date);
-	}
-	public void setParts(List<Work> parts) {
-		updateList(PROP_parts, this.parts, parts);
-	}
-	
-	public void setParent(Work parent) {
-		firePropertyChange(PROP_parent, this.parent, this.parent = parent);
-	}
 }

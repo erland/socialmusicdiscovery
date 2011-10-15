@@ -74,7 +74,7 @@ public interface DataSource extends ModelObject {
 		 * Find all objects that this root handles that have a relation to the supplied entity. 
 		 * @param <O>
 		 * @param entity
-		 * @return Collection, possibly empty 
+		 * @return {@link Set}, possibly empty 
 		 */
 		<O extends ObservableEntity<T>> Set<O> findAll(SMDIdentity entity);
 
@@ -127,8 +127,7 @@ public interface DataSource extends ModelObject {
 		 * 
 		 * @return boolean
 		 */
-		boolean isGreedyLoad();	
-
+		boolean isGreedyLoad();
 
 	}
 	

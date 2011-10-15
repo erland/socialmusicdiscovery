@@ -25,59 +25,42 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.yggdrasil.foundation.content;
+package org.socialmusicdiscovery.yggdrasil.foundation.util;
 
-import java.util.Date;
-import java.util.List;
+import java.text.MessageFormat;
 
+import org.eclipse.core.databinding.observable.list.IListChangeListener;
+import org.eclipse.core.databinding.observable.list.IObservableList;
+import org.eclipse.core.databinding.observable.list.ListChangeEvent;
 import org.socialmusicdiscovery.server.business.model.core.Work;
-import org.socialmusicdiscovery.yggdrasil.foundation.util.GenericWritableList;
-import org.socialmusicdiscovery.yggdrasil.foundation.util.ListOrderManager;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.AbstractObservableEntity;
 
-import com.google.gson.annotations.Expose;
+/**
+ * Observes an observable list of {@link AbstractObservableEntity} instances, 
+ * updating the {@link AbstractObservableEntity#setSortAs(String)} property 
+ * when the list order is changed. This approach will probably be very slow 
+ * if applied to large lists that change order frequently; primary objective 
+ * is to handle small lists such as {@link Work#getParts()}.   
+ * 
+ * @author Peer Törngren
+ *
+ */
+public class ListOrderManager implements IListChangeListener {
 
-public class ObservableWork extends AbstractContributableEntity<Work> implements Work {
-
-	public static final String PROP_date = "date";
-	public static final String PROP_parts = "parts";
-	public static final String PROP_parent = "parent";
-	
-	@Expose private Date date;
-	@Expose private GenericWritableList<Work> parts = new GenericWritableList<Work>();
-	@Expose private Work parent;
-	
-	public ObservableWork() {
-		super(Work.TYPE);
-	}
-	
-	@Override
-	protected void postInflate() {
-		getParts().addAll(asOrderedList(getRoot().findAll(this)));
-		ListOrderManager.manage(getParts());
-	}
+	private static final String SORT_AS_PATTERN = "{0,number,000}. {1}";
 
 	@Override
-	public Date getDate() {
-		return date;
-	}
-	
-	@Override
-	public GenericWritableList<Work> getParts() {
-		return parts;
+	public void handleListChange(ListChangeEvent event) {
+		int i = 1;
+		for (Object o: event.getObservableList()) {
+			AbstractObservableEntity e = (AbstractObservableEntity) o;
+			String sortAs = MessageFormat.format(SORT_AS_PATTERN, Integer.valueOf(i++), e.getName());
+			e.setSortAs(sortAs);
+		}
 	}
 
-	@Override
-	public Work getParent() {
-		return parent;
+	public static void manage(IObservableList list) {
+		list.addListChangeListener(new ListOrderManager());
 	}
-	public void setDate(Date date) {
-		firePropertyChange(PROP_date, this.date, this.date = date);
-	}
-	public void setParts(List<Work> parts) {
-		updateList(PROP_parts, this.parts, parts);
-	}
-	
-	public void setParent(Work parent) {
-		firePropertyChange(PROP_parent, this.parent, this.parent = parent);
-	}
+
 }
