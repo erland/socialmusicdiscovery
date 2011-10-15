@@ -1,0 +1,5 @@
+id,release_id,number,name,sort_as,last_updated,last_updated_by
+3c545dfe-57eb-48e9-84e8-43a8211de7d0,1c3da7e0-058c-42a9-a76c-491ec6519797,NULL,"A","A",2011-10-15,testdataloader
+0c3be1a7-8a9e-4c46-9053-59efb2a0094c,1c3da7e0-058c-42a9-a76c-491ec6519797,NULL,"B","B",2011-10-15,testdataloader
+002e6281-9350-49bf-ba20-0b80f4ecd949,1c3da7e0-058c-42a9-a76c-491ec6519797,NULL,"C","C",2011-10-15,testdataloader
+120c76a3-2022-40a7-bdb5-a4351b947b5c,1c3da7e0-058c-42a9-a76c-491ec6519797,NULL,"D","D",2011-10-15,testdataloader

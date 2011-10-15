@@ -1,0 +1,2 @@
+id,artist_id,release_id,session_id,recording_id,work_id,type,last_updated,last_updated_by
+5d0b567f-dac1-4a3c-aeb0-b76925a670dd,28fd10a1-584e-4c06-9bc5-8107ac015df6,1c3da7e0-058c-42a9-a76c-491ec6519797,NULL,NULL,NULL,performer,2011-10-15,testdataloader
