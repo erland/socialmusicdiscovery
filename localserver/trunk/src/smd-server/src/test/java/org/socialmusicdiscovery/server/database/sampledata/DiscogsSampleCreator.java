@@ -69,6 +69,7 @@ public class DiscogsSampleCreator extends SampleCreator {
         importedRoles.put("Saxophone", Contributor.PERFORMER);
         importedRoles.put("Orchestra", Contributor.PERFORMER);
     }
+    private static final String USER_AGENT = "Social Music Discovery";
 
     @Test(groups = {"manual"})
     public void importTheBodyguardRelease() throws Exception {
@@ -82,6 +83,13 @@ public class DiscogsSampleCreator extends SampleCreator {
         Map<String, List<String>> result = new HashMap<String, List<String>>();
         importRelease(result, "1794218");
         printCollectedDataAsDbUnit(result);
+    }
+
+    @Test(groups = {"manual"})
+    public void importCorneliusRelease() throws Exception {
+        Map<String, List<String>> result = new HashMap<String, List<String>>();
+        importRelease(result, "1992309");
+        printCollectedData(result);
     }
 
     @Test(groups = {"manual"})
@@ -131,7 +139,7 @@ public class DiscogsSampleCreator extends SampleCreator {
      */
     private String importPerson(Map<String, List<String>> result, Map<String, String> personCache, String discogsArtistId) throws ParserConfigurationException, IOException, SAXException {
         if (!personCache.containsKey(discogsArtistId)) {
-            String data = Client.create().resource("http://www.discogs.com/artist/" + URLEncoder.encode(discogsArtistId, "UTF-8") + "?f=xml&api_key=" + API_KEY).accept(MediaType.APPLICATION_XML).header("Accept-Encoding", "gzip").get(String.class);
+            String data = Client.create().resource("http://www.discogs.com/artist/" + URLEncoder.encode(discogsArtistId, "UTF-8") + "?f=xml&api_key=" + API_KEY).accept(MediaType.APPLICATION_XML).header("Accept-Encoding", "gzip").header("User-Agent",USER_AGENT).get(String.class);
             Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(data.getBytes()));
             NodeList artists = doc.getElementsByTagName("artist");
             if (artists.getLength() > 0) {
@@ -170,7 +178,7 @@ public class DiscogsSampleCreator extends SampleCreator {
     }
 
     private void importRelease(Map<String, List<String>> result, Map<String, String> artistCache, Map<String, String> personCache, Map<String, String> labelCache, Map<String, String> genreCache, Map<String, String> styleCache, String discogsReleaseId) throws ParserConfigurationException, IOException, SAXException {
-        String data = Client.create().resource("http://www.discogs.com/release/" + discogsReleaseId + "?f=xml&api_key=" + API_KEY).accept(MediaType.APPLICATION_XML).header("Accept-Encoding", "gzip").get(String.class);
+        String data = Client.create().resource("http://www.discogs.com/release/" + discogsReleaseId + "?f=xml&api_key=" + API_KEY).accept(MediaType.APPLICATION_XML).header("Accept-Encoding", "gzip").header("User-Agent",USER_AGENT).get(String.class);
 
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(data.getBytes()));
         NodeList releases = doc.getElementsByTagName("release");

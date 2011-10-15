@@ -2,6 +2,7 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    <include file="cornelis_poem_ballader/cornelis_poem_ballader.xml" relativeToChangelogFile="true"/>
     <include file="thebodyguard/thebodyguard.xml" relativeToChangelogFile="true"/>
     <include file="beethoven_bernstein/beethoven_bernstein.xml" relativeToChangelogFile="true"/>
     <include file="zappa_garageact/zappa_garageact.xml" relativeToChangelogFile="true"/>

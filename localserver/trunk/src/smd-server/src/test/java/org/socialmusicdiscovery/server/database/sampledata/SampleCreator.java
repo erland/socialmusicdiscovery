@@ -88,43 +88,43 @@ public abstract class SampleCreator {
     protected void addRelease(Map<String, List<String>> result, String id, String name) {
         if (result.get("releases") == null) {
             result.put("releases", new ArrayList<String>(Arrays.asList(
-                    "id,name,last_changed,last_changed_by")));
+                    "id,name,sort_as,last_updated,last_updated_by")));
         }
-        result.get("releases").add(id + ",\"" + name + "\","+getChangedTime()+","+ getChangedBy());
+        result.get("releases").add(id + ",\"" + name + "\",\"" + name + "\","+getChangedTime()+","+ getChangedBy());
         addSMDIdentityReference(result, id, SMDIdentityReferenceEntity.typeForClass(ReleaseEntity.class));
     }
 
     protected void addRelease(Map<String, List<String>> result, String id, String name, String labelId) {
         if (result.get("releases") == null) {
             result.put("releases", new ArrayList<String>(Arrays.asList(
-                    "id,name,label_id,last_changed,last_changed_by")));
+                    "id,name,sort_as,label_id,last_updated,last_updated_by")));
         }
-        result.get("releases").add(id + ",\"" + name + "\"," + labelId+","+getChangedTime()+","+ getChangedBy());
+        result.get("releases").add(id + ",\"" + name + "\",\"" + name + "\"," + labelId+","+getChangedTime()+","+ getChangedBy());
         addSMDIdentityReference(result, id, SMDIdentityReferenceEntity.typeForClass(ReleaseEntity.class));
     }
 
     protected void addLabel(Map<String, List<String>> result, String id, String name) {
         if (result.get("labels") == null) {
             result.put("labels", new ArrayList<String>(Arrays.asList(
-                    "id,name,last_changed,last_changed_by")));
+                    "id,name,sort_as,last_updated,last_updated_by")));
         }
-        result.get("labels").add(id + ",\"" + name + "\","+getChangedTime()+","+ getChangedBy());
+        result.get("labels").add(id + ",\"" + name + "\",\"" + name + "\","+getChangedTime()+","+ getChangedBy());
         addSMDIdentityReference(result, id, SMDIdentityReferenceEntity.typeForClass(LabelEntity.class));
     }
 
     protected void addClassification(Map<String, List<String>> result, String id, String name, String type) {
         if (result.get("classifications") == null) {
             result.put("classifications", new ArrayList<String>(Arrays.asList(
-                    "id,name,type,last_changed,last_changed_by")));
+                    "id,name,sort_as,type,last_updated,last_updated_by")));
         }
-        result.get("classifications").add(id + ",\"" + name + "\"," + type+","+getChangedTime()+","+ getChangedBy());
+        result.get("classifications").add(id + ",\"" + name + "\",\"" + name + "\"," + type+","+getChangedTime()+","+ getChangedBy());
         addSMDIdentityReference(result, id, SMDIdentityReferenceEntity.typeForClass(ClassificationEntity.class));
     }
 
     protected void addClassificationReference(Map<String, List<String>> result, String classificationId, String referenceId) {
         if (result.get("classification_references") == null) {
             result.put("classification_references", new ArrayList<String>(Arrays.asList(
-                    "id,classification_id,reference_id,last_changed,last_changed_by")));
+                    "id,classification_id,reference_id,last_updated,last_updated_by")));
         }
         String id = UUID.randomUUID().toString();
         result.get("classification_references").add(id+","+classificationId + "," + referenceId+","+getChangedTime()+","+ getChangedBy());
@@ -138,18 +138,18 @@ public abstract class SampleCreator {
     protected void addArtist(Map<String, List<String>> result, String id, String name, String personId) {
         if (result.get("artists") == null) {
             result.put("artists", new ArrayList<String>(Arrays.asList(
-                    "id,name,person_id,last_changed,last_changed_by")));
+                    "id,name,sort_as,person_id,last_updated,last_updated_by")));
         }
-        result.get("artists").add(id + ",\"" + name + "\",\"" + personId + "\","+getChangedTime()+","+ getChangedBy());
+        result.get("artists").add(id + ",\"" + name + "\",\"" + name + "\",\"" + personId + "\","+getChangedTime()+","+ getChangedBy());
         addSMDIdentityReference(result, id, SMDIdentityReferenceEntity.typeForClass(ArtistEntity.class));
     }
 
     protected void addPerson(Map<String, List<String>> result, String id, String name) {
         if (result.get("persons") == null) {
             result.put("persons", new ArrayList<String>(Arrays.asList(
-                    "id,name,last_changed,last_changed_by")));
+                    "id,name,sort_as,last_updated,last_updated_by")));
         }
-        result.get("persons").add(id + ",\"" + name + "\","+getChangedTime()+","+ getChangedBy());
+        result.get("persons").add(id + ",\"" + name + "\",\"" + name + "\","+getChangedTime()+","+ getChangedBy());
         addSMDIdentityReference(result, id, SMDIdentityReferenceEntity.typeForClass(PersonEntity.class));
     }
 
@@ -168,16 +168,16 @@ public abstract class SampleCreator {
     protected void addMedium(Map<String, List<String>> result, String releaseId, String id, String number, String name) {
         if (result.get("mediums") == null) {
             result.put("mediums", new ArrayList<String>(Arrays.asList(
-                    "id,release_id,number,name,last_changed,last_changed_by")));
+                    "id,release_id,number,name,sort_as,last_updated,last_updated_by")));
         }
-        result.get("mediums").add(id + "," + releaseId + "," + number + ",\"" + name + "\","+getChangedTime()+","+ getChangedBy());
+        result.get("mediums").add(id + "," + releaseId + "," + number + ",\"" + name + "\",\"" + name + "\","+getChangedTime()+","+ getChangedBy());
         addSMDIdentityReference(result, id, SMDIdentityReferenceEntity.typeForClass(MediumEntity.class));
     }
 
     protected void addTrack(Map<String, List<String>> result, String releaseId, String recordingId, String id, String mediumId, Integer number) {
         if (result.get("tracks") == null) {
             result.put("tracks", new ArrayList<String>(Arrays.asList(
-                    "id,release_id,recording_id,medium_id,number,last_changed,last_changed_by")));
+                    "id,release_id,recording_id,medium_id,number,last_updated,last_updated_by")));
         }
         result.get("tracks").add(id + "," + releaseId + "," + recordingId + "," + mediumId + "," + (number != null ? "" + number : "NULL")+","+getChangedTime()+","+ getChangedBy());
         addSMDIdentityReference(result, id, SMDIdentityReferenceEntity.typeForClass(TrackEntity.class));
@@ -186,7 +186,7 @@ public abstract class SampleCreator {
     protected void addRecording(Map<String, List<String>> result, String id, String workId, String name) {
         if (result.get("recordings") == null) {
             result.put("recordings", new ArrayList<String>(Arrays.asList(
-                    "id,name,last_changed,last_changed_by")));
+                    "id,name,last_updated,last_updated_by")));
         }
         result.get("recordings").add(id + ",NULL"+","+getChangedTime()+","+ getChangedBy());
         if (result.get("recording_works") == null) {
@@ -200,16 +200,16 @@ public abstract class SampleCreator {
     protected void addWork(Map<String, List<String>> result, String id, String name) {
         if (result.get("works") == null) {
             result.put("works", new ArrayList<String>(Arrays.asList(
-                    "id,name,last_changed,last_changed_by")));
+                    "id,name,sort_as,last_updated,last_updated_by")));
         }
-        result.get("works").add(id + ",\"" + name + "\","+getChangedTime()+","+ getChangedBy());
+        result.get("works").add(id + ",\"" + name + "\",\"" + name + "\","+getChangedTime()+","+ getChangedBy());
         addSMDIdentityReference(result, id, SMDIdentityReferenceEntity.typeForClass(WorkEntity.class));
     }
 
     protected void addReleaseContributor(Map<String, List<String>> result, String releaseId, String artistId, String type) {
         if (result.get("contributors") == null) {
             result.put("contributors", new ArrayList<String>(Arrays.asList(
-                    "id,artist_id,release_id,session_id,recording_id,work_id,type,last_changed,last_changed_by")));
+                    "id,artist_id,release_id,session_id,recording_id,work_id,type,last_updated,last_updated_by")));
         }
         String id = UUID.randomUUID().toString();
         addSMDIdentityReference(result, id, SMDIdentityReferenceEntity.typeForClass(ContributorEntity.class));
@@ -219,7 +219,7 @@ public abstract class SampleCreator {
     protected void addRecordingContributor(Map<String, List<String>> result, String recordingId, String artistId, String type) {
         if (result.get("contributors") == null) {
             result.put("contributors", new ArrayList<String>(Arrays.asList(
-                    "id,artist_id,release_id,session_id,recording_id,work_id,type,last_changed,last_changed_by")));
+                    "id,artist_id,release_id,session_id,recording_id,work_id,type,last_updated,last_updated_by")));
         }
         String id = UUID.randomUUID().toString();
         addSMDIdentityReference(result, id, SMDIdentityReferenceEntity.typeForClass(ContributorEntity.class));
@@ -229,7 +229,7 @@ public abstract class SampleCreator {
     protected void addWorkContributor(Map<String, List<String>> result, String workId, String artistId, String type) {
         if (result.get("contributors") == null) {
             result.put("contributors", new ArrayList<String>(Arrays.asList(
-                    "id,artist_id,release_id,session_id,recording_id,work_id,type,last_changed,last_changed_by")));
+                    "id,artist_id,release_id,session_id,recording_id,work_id,type,last_updated,last_updated_by")));
         }
         String id = UUID.randomUUID().toString();
         addSMDIdentityReference(result, id, SMDIdentityReferenceEntity.typeForClass(ContributorEntity.class));
