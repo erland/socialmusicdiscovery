@@ -29,8 +29,10 @@ package org.socialmusicdiscovery.yggdrasil.foundation.content;
 
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.databinding.beans.BeansObservables;
@@ -40,6 +42,7 @@ import org.eclipse.core.databinding.observable.set.IObservableSet;
 import org.eclipse.jface.util.Util;
 import org.eclipse.ui.PlatformUI;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
+import org.socialmusicdiscovery.server.business.model.core.Work;
 import org.socialmusicdiscovery.yggdrasil.foundation.Activator;
 import org.socialmusicdiscovery.yggdrasil.foundation.content.DataSource.Root;
 import org.socialmusicdiscovery.yggdrasil.foundation.event.AbstractObservable;
@@ -74,12 +77,17 @@ import com.google.gson.annotations.Expose;
  * @param <T> the core interface that the subclass implements
  */
 public abstract class AbstractObservableEntity<T extends SMDIdentity> extends AbstractObservable implements ObservableEntity<T> {
+	public static final String PROP_sortAs = "sortAs";
+
 	private DataSource dataSource;
 
 	private transient boolean isInflated = false;
 
 	@Expose
 	private String id;
+
+	@Expose
+	private String sortAs; 
 
 	@Expose
 	private String name;
@@ -104,6 +112,20 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 			}
 		}
 		return getClass();
+	}
+
+	/**
+	 * @return the sortAs
+	 */
+	public String getSortAs() {
+		return sortAs;
+	}
+
+	/**
+	 * @param sortAs the sortAs to set
+	 */
+	public void setSortAs(String sortAs) {
+		firePropertyChange(PROP_sortAs, this.sortAs, this.sortAs = sortAs);
 	}
 
 	@Override
@@ -363,5 +385,23 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 	protected void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
 		setDirty(true); // call before firing "real" change to let tooltip render dirty status
 		super.firePropertyChange(propertyName, oldValue, newValue);
+	}
+
+	/**
+	 * Return all objects as an ordered {@link List}. The ordering depends on the implementation, but a typical case is to order {@link Work#getParts()} 
+	 * based on the {@link AbstractObservableEntity#getSortAs()} value.  
+	 *  
+	 * @param entity
+	 * @return {@link List}, possibly empty
+	 */
+	@SuppressWarnings("unchecked")
+	protected <T> List<T> asOrderedList(Collection<T> set) {
+		// Since the lists we sort are typically typed with an SMDIdentity,
+		// and since the sorting depends on the abstract implementation,
+		// we cannot enforce strict type-checking and collection generics here
+		// :-(
+		List result = new ArrayList(set);
+		Collections.sort(result, SortAsComparator.instance());
+		return result;
 	}
 }
