@@ -1,0 +1,5 @@
+id,artist_id,release_id,session_id,recording_id,work_id,type,last_updated,last_updated_by
+5279fe87-589f-4361-9df2-495e957f870e,aba4ba39-e777-4806-8ebc-97f220aa3615,29a5faa9-027c-4f38-9550-7364d9d1a470,NULL,NULL,NULL,performer,2011-10-16,testdataloader
+2474abc7-026d-4a80-982f-246591e500c2,aba4ba39-e777-4806-8ebc-97f220aa3615,29a5faa9-027c-4f38-9550-7364d9d1a470,NULL,NULL,NULL,composer,2011-10-16,testdataloader
+e5f98fbf-70ca-41bc-a3bd-606de0588add,c76f38ee-f8bc-4530-91f9-e3f6f2a75829,29a5faa9-027c-4f38-9550-7364d9d1a470,NULL,NULL,NULL,conductor,2011-10-16,testdataloader
+24937302-5ae2-4dcd-8d43-6a93eb1eeef2,dc5d47a5-2379-4a04-8252-7e46e1d75c6a,29a5faa9-027c-4f38-9550-7364d9d1a470,NULL,NULL,NULL,performer,2011-10-16,testdataloader

@@ -1,0 +1,4 @@
+id,name,sort_as,person_id,last_updated,last_updated_by
+aba4ba39-e777-4806-8ebc-97f220aa3615,"Richard Wagner","Richard Wagner","7ddd9359-1e1d-484a-ba38-4e2287136d99",2011-10-16,testdataloader
+c76f38ee-f8bc-4530-91f9-e3f6f2a75829,"Daniel Barenboim","Daniel Barenboim","1ef73209-9a41-4f6c-a205-4f5f0185d6c5",2011-10-16,testdataloader
+dc5d47a5-2379-4a04-8252-7e46e1d75c6a,"Staatskapelle Berlin","Staatskapelle Berlin","039ad40e-c877-4f61-9660-73351f0c1115",2011-10-16,testdataloader

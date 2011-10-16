@@ -93,6 +93,13 @@ public class DiscogsSampleCreator extends SampleCreator {
     }
 
     @Test(groups = {"manual"})
+    public void importWagnerRelease() throws Exception {
+        Map<String, List<String>> result = new HashMap<String, List<String>>();
+        importRelease(result, "1586596");
+        printCollectedData(result);
+    }
+
+    @Test(groups = {"manual"})
     public void importAristaAndRCAReleasesAsDbUnit() throws Exception {
         Map<String, List<String>> result = new HashMap<String, List<String>>();
         Map<String, String> artistCache = new HashMap<String, String>();

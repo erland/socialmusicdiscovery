@@ -9,4 +9,5 @@
     <include file="crazyfrog_axelf/crazyfrog_axelf.xml" relativeToChangelogFile="true"/>
     <include file="alanparson_theturnofafriendlycard/alanparson_theturnofafriendlycard.xml"
              relativeToChangelogFile="true"/>
+    <include file="wagner_tannhauser/wagner_tannhauser.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
