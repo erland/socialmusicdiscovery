@@ -70,7 +70,7 @@
     <artists id="16" name="The S.O.U.L. S.Y.S.T.E.M." sort_as="S.O.U.L. S.Y.S.T.E.M., The" last_updated="2010-08-01" last_updated_by="JUnit" />
 
     <smdidentity_references id="30001" type="org.socialmusicdiscovery.server.business.model.core.WorkEntity"/>
-    <works id="30001" name="I Will Always Love You" sort_as="I Will Always Love You" last_updated="2010-08-01" last_updated_by="JUnit" />
+    <works id="30001" type="Work" name="I Will Always Love You" sort_as="I Will Always Love You" last_updated="2010-08-01" last_updated_by="JUnit" />
     <smdidentity_references id="40001" type="org.socialmusicdiscovery.server.business.model.core.RecordingEntity"/>
     <recordings id="40001" last_updated="2010-08-01" last_updated_by="JUnit" />
     <recording_works recording_id="40001" work_id="30001"/>
@@ -86,7 +86,7 @@
     <contributors id="40001003" type="conductor" recording_id="40001" artist_id="2" last_updated="2010-08-01" last_updated_by="JUnit" />
 
     <smdidentity_references id="30005" type="org.socialmusicdiscovery.server.business.model.core.WorkEntity"/>
-    <works id="30005" name="Queen Of The Night" sort_as="Queen Of The Night" last_updated="2010-08-01" last_updated_by="JUnit" />
+    <works id="30005" type="Work" name="Queen Of The Night" sort_as="Queen Of The Night" last_updated="2010-08-01" last_updated_by="JUnit" />
     <smdidentity_references id="40005" type="org.socialmusicdiscovery.server.business.model.core.RecordingEntity"/>
     <recordings id="40005" last_updated="2010-08-01" last_updated_by="JUnit" />
     <recording_works recording_id="40005" work_id="30005"/>
@@ -106,7 +106,7 @@
     <contributors id="40005005" type="performer" recording_id="40005" artist_id="6" last_updated="2010-08-01" last_updated_by="JUnit" />
 
     <smdidentity_references id="30009" type="org.socialmusicdiscovery.server.business.model.core.WorkEntity"/>
-    <works id="30009" name="It's Gonna Be A Lovely Day" sort_as="It's Gonna Be A Lovely Day" last_updated="2010-08-01" last_updated_by="JUnit" />
+    <works id="30009" type="Work" name="It's Gonna Be A Lovely Day" sort_as="It's Gonna Be A Lovely Day" last_updated="2010-08-01" last_updated_by="JUnit" />
     <smdidentity_references id="40009" type="org.socialmusicdiscovery.server.business.model.core.RecordingEntity"/>
     <recordings id="40009" last_updated="2010-08-01" last_updated_by="JUnit" />
     <recording_works recording_id="40009" work_id="30009"/>
@@ -130,7 +130,7 @@
     <contributors id="40009007" type="performer" recording_id="40009" artist_id="16" last_updated="2010-08-01" last_updated_by="JUnit" />
 
     <smdidentity_references id="30013" type="org.socialmusicdiscovery.server.business.model.core.WorkEntity"/>
-    <works id="30013" name="Theme From The Bodyguard" sort_as="Theme From The Bodyguard" last_updated="2010-08-01" last_updated_by="JUnit" />
+    <works id="30013" type="Work" name="Theme From The Bodyguard" sort_as="Theme From The Bodyguard" last_updated="2010-08-01" last_updated_by="JUnit" />
     <smdidentity_references id="40013" type="org.socialmusicdiscovery.server.business.model.core.RecordingEntity"/>
     <recordings id="40013" last_updated="2010-08-01" last_updated_by="JUnit" />
     <recording_works recording_id="40013" work_id="30013"/>

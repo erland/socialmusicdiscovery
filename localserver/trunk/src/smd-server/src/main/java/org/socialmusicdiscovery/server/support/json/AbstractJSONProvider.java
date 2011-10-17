@@ -60,7 +60,11 @@ public abstract class AbstractJSONProvider implements MessageBodyReader<Object>,
         }
 
         public JsonElement serialize(Object o, Type type, JsonSerializationContext jsonSerializationContext) {
-            return jsonSerializationContext.serialize(o, implementationClass);
+            if(implementationClass==null) {
+                return jsonSerializationContext.serialize(o, o.getClass());
+            }else {
+                return jsonSerializationContext.serialize(o, implementationClass);
+            }
         }
     }
 
@@ -206,6 +210,8 @@ public abstract class AbstractJSONProvider implements MessageBodyReader<Object>,
         for (Map.Entry<Class, Class> entry : converters.entrySet()) {
             if(!entry.getKey().equals(entry.getValue())) {
                 gsonBuilder.registerTypeAdapter(entry.getKey(), new ImplementationSerializer(entry.getValue()));
+            }else if(Modifier.isAbstract(entry.getKey().getModifiers())) {
+                gsonBuilder.registerTypeAdapter(entry.getKey(), new ImplementationSerializer(null));
             }
             if(!Modifier.isAbstract(entry.getValue().getModifiers())) {
                 gsonBuilder.registerTypeAdapter(entry.getKey(), new ImplementationCreator(entry.getValue()));

@@ -92,13 +92,16 @@ public class BrowseServiceManager {
      */
     public <T extends BrowseService> T getBrowseService(String objectType) {
         try {
-            T service = (T) browseServices.get(objectType).newInstance();
-            ConfigurationContext context = configurationContexts.get(objectType);
-            if (context == null) {
-                context = new MappedConfigurationContext(service.getClass().getName() + ".", new MergedConfigurationManager(new PersistentConfigurationManager()));
+            if(browseServices.containsKey(objectType)) {
+                T service = (T) browseServices.get(objectType).newInstance();
+                ConfigurationContext context = configurationContexts.get(objectType);
+                if (context == null) {
+                    context = new MappedConfigurationContext(service.getClass().getName() + ".", new MergedConfigurationManager(new PersistentConfigurationManager()));
+                }
+                service.setConfiguration(context);
+                return service;
             }
-            service.setConfiguration(context);
-            return service;
+            return null;
         } catch (InstantiationException e) {
             e.printStackTrace();
             return null;

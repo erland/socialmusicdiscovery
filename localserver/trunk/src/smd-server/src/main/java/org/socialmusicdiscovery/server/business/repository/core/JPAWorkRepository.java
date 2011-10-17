@@ -28,10 +28,7 @@
 package org.socialmusicdiscovery.server.business.repository.core;
 
 import com.google.inject.Inject;
-import org.socialmusicdiscovery.server.business.model.core.Contributor;
-import org.socialmusicdiscovery.server.business.model.core.ContributorEntity;
-import org.socialmusicdiscovery.server.business.model.core.RecordingEntity;
-import org.socialmusicdiscovery.server.business.model.core.WorkEntity;
+import org.socialmusicdiscovery.server.business.model.core.*;
 import org.socialmusicdiscovery.server.business.repository.AbstractJPASMDIdentityRepository;
 
 import javax.persistence.EntityManager;
@@ -79,15 +76,22 @@ public class JPAWorkRepository extends AbstractJPASMDIdentityRepository<WorkEnti
 
     @Override
     public Collection<WorkEntity> findByWorkWithRelations(String workId, Collection<String> mandatoryRelations, Collection<String> optionalRelations) {
-        Query query = entityManager.createQuery(queryStringFor("e",mandatoryRelations,optionalRelations) + " JOIN e.parent as parent where parent.id=:work order by e.sortAs");
-        query.setParameter("work", workId);
-        return query.getResultList();
+        if(workId.length()==0) {
+            Query query = entityManager.createQuery(queryStringFor("e",mandatoryRelations,optionalRelations) + " where e.parent is null order by e.number,e.sortAs");
+            return query.getResultList();
+        }else {
+            Query query = entityManager.createQuery(queryStringFor("e",mandatoryRelations,optionalRelations) + " JOIN e.parent as parent where parent.id=:work order by e.number,e.sortAs");
+            query.setParameter("work", workId);
+            return query.getResultList();
+        }
     }
 
     @Override
     public void create(WorkEntity entity) {
-        if (entity.getParent() != null && !entityManager.contains(entity.getParent())) {
-            entity.setParent(findById(entity.getParent().getId()));
+        if (entity instanceof Part) {
+            if(((Part)entity).getParent() != null && !entityManager.contains(((Part)entity).getParent())) {
+                ((Part)entity).setParent(findById(((Part) entity).getParent().getId()));
+            }
         }
         if(entity.getSortAs()==null) {
             entity.setSortAsAutomatically();
@@ -109,8 +113,8 @@ public class JPAWorkRepository extends AbstractJPASMDIdentityRepository<WorkEnti
 
     @Override
     public WorkEntity merge(WorkEntity entity) {
-        if (entity.getParent() != null && !entityManager.contains(entity.getParent())) {
-            entity.setParent(findById(entity.getParent().getId()));
+        if (entity instanceof Part && ((Part)entity).getParent() != null && !entityManager.contains(((Part)entity).getParent())) {
+            ((Part)entity).setParent(findById(((Part)entity).getParent().getId()));
         }
         for (Contributor contributor : entity.getContributors()) {
             if(!entityManager.contains(contributor)) {
@@ -133,6 +137,11 @@ public class JPAWorkRepository extends AbstractJPASMDIdentityRepository<WorkEnti
 
     @Override
     public void remove(WorkEntity entity) {
+        // Start by deleting all related parts
+        Collection<WorkEntity> parts = findByWorkWithRelations(entity.getId(),null,null);
+        for (WorkEntity part : parts) {
+            remove(part);
+        }
         Collection<RecordingEntity> recordings = recordingRepository.findBySearchRelation(entity);
         entityManager.createQuery("DELETE from RecordingWorkSearchRelationEntity where reference=:id").setParameter("id",entity.getId()).executeUpdate();
         entityManager.createQuery("DELETE from ReleaseSearchRelationEntity where reference=:id").setParameter("id",entity.getId()).executeUpdate();

@@ -80,7 +80,8 @@ public class BrowseFacadeTest extends BaseTestCase {
             converters.put(Track.class, TrackEntity.class);
             converters.put(RecordingSession.class, RecordingSessionEntity.class);
             converters.put(Recording.class, RecordingEntity.class);
-            converters.put(Work.class, WorkEntity.class);
+            converters.put(Work.class, Work.class);
+            converters.put(Part.class, Part.class);
             converters.put(SMDIdentityReference.class, SMDIdentityReferenceEntity.class);
             converters.put(Classification.class, ClassificationEntity.class);
             converters.put(GlobalIdentity.class, GlobalIdentityEntity.class);
@@ -89,6 +90,14 @@ public class BrowseFacadeTest extends BaseTestCase {
             converters.put(Series.class, SeriesEntity.class);
             converters.put(Image.class, ImageEntity.class);
 
+            return converters;
+        }
+        @Override
+        protected Map<String, Class> getObjectTypeConversionMap() {
+            Map<String, Class> converters = new HashMap<String,Class>();
+
+            converters.put(Work.TYPE, WorkEntity.class);
+            converters.put(Part.TYPE, PartEntity.class);
             return converters;
         }
     }

@@ -76,7 +76,7 @@ public class TitleFormatTest {
 
         WorkEntity work = new WorkEntity();
         work.setName("Work 1");
-        WorkEntity part = new WorkEntity();
+        PartEntity part = new PartEntity();
         part.setName("Part 1");
         part.setParent(work);
 
@@ -106,10 +106,10 @@ public class TitleFormatTest {
         track2.setMedium(new MediumEntity());
         track2.getMedium().setNumber(1);
         track2.setRecording(new RecordingEntity());
-        track2.getRecording().getWorks().add(new WorkEntity());
+        track2.getRecording().getWorks().add(new PartEntity());
         track2.getRecording().getWorks().iterator().next().setName("Part 1");
-        track2.getRecording().getWorks().iterator().next().setParent(new WorkEntity());
-        track2.getRecording().getWorks().iterator().next().getParent().setName("Work 3");
+        ((Part)track2.getRecording().getWorks().iterator().next()).setParent(new WorkEntity());
+        ((Part)track2.getRecording().getWorks().iterator().next()).getParent().setName("Work 3");
         assert parser.format(track2).equals("1-9. Work 3: Part 1");
 
         TrackEntity track3 = new TrackEntity();
@@ -117,10 +117,10 @@ public class TitleFormatTest {
         track3.setMedium(new MediumEntity());
         track3.getMedium().setName("A");
         track3.setRecording(new RecordingEntity());
-        track3.getRecording().getWorks().add(new WorkEntity());
+        track3.getRecording().getWorks().add(new PartEntity());
         track3.getRecording().getWorks().iterator().next().setName("Part 1");
-        track3.getRecording().getWorks().iterator().next().setParent(new WorkEntity());
-        track3.getRecording().getWorks().iterator().next().getParent().setName("Work 4");
+        ((Part)track3.getRecording().getWorks().iterator().next()).setParent(new WorkEntity());
+        ((Part)track3.getRecording().getWorks().iterator().next()).getParent().setName("Work 4");
         assert parser.format(track3).equals("A-13. Work 4: Part 1");
     }
 }

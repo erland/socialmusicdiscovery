@@ -42,6 +42,8 @@ import java.util.*;
  */
 @javax.persistence.Entity
 @Table(name = "works")
+@DiscriminatorColumn(name = "type")
+@DiscriminatorValue("Work")
 @SMDIdentityReferenceEntity.ReferenceType(type = Work.class)
 public class WorkEntity extends AbstractSMDIdentityEntity implements Work, ContributorOwner {
     @Expose
@@ -54,14 +56,10 @@ public class WorkEntity extends AbstractSMDIdentityEntity implements Work, Contr
     private String sortAs;
     @Expose
     private Date date;
-    @OneToMany(targetEntity = WorkEntity.class)
+    @OneToMany(targetEntity = PartEntity.class)
     @JoinColumn(name = "parent_id")
     @OrderBy("sortAs")
-    private List<Work> parts = new ArrayList<Work>();
-    @ManyToOne(targetEntity = WorkEntity.class)
-    @JoinColumn(name = "parent_id")
-    @Expose
-    private Work parent;;
+    private List<Part> parts = new ArrayList<Part>();
 
     @OneToMany(targetEntity = ContributorEntity.class, mappedBy = "work", cascade = {CascadeType.REMOVE}, orphanRemoval = true)
     private Set<Contributor> contributors = new HashSet<Contributor>();
@@ -82,20 +80,12 @@ public class WorkEntity extends AbstractSMDIdentityEntity implements Work, Contr
         this.date = date;
     }
 
-    public List<Work> getParts() {
+    public List<Part> getParts() {
         return parts;
     }
 
-    public void setParts(List<Work> parts) {
+    public void setParts(List<Part> parts) {
         this.parts = parts;
-    }
-
-    public Work getParent() {
-        return parent;
-    }
-
-    public void setParent(Work parent) {
-        this.parent = parent;
     }
 
     public String getSortAs() {

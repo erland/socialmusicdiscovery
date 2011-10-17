@@ -346,8 +346,8 @@ public class EditReleaseWindow extends Window implements Bindable {
             if (track.getRecording().getName() != null) {
                 trackData.title = track.getRecording().getName();
             } else if (work != null) {
-                if(work.getParent() != null) {
-                    trackData.title = work.getParent().getName()+": "+work.getName();
+                if(work instanceof Part && ((Part)work).getParent() != null) {
+                    trackData.title = ((Part)work).getParent().getName()+": "+work.getName();
                 }else {
                     trackData.title = work.getName();
                 }

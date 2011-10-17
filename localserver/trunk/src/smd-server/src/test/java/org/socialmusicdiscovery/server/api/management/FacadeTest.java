@@ -83,7 +83,8 @@ public class FacadeTest extends BaseTestCase {
             converters.put(Track.class, TrackEntity.class);
             converters.put(RecordingSession.class, RecordingSessionEntity.class);
             converters.put(Recording.class, RecordingEntity.class);
-            converters.put(Work.class, WorkEntity.class);
+            converters.put(Work.class, Work.class);
+            converters.put(Part.class, Part.class);
             converters.put(SMDIdentityReference.class, SMDIdentityReferenceEntity.class);
             converters.put(Classification.class, ClassificationEntity.class);
             converters.put(GlobalIdentity.class, GlobalIdentityEntity.class);
@@ -104,6 +105,7 @@ public class FacadeTest extends BaseTestCase {
 
             converters.put(Release.TYPE, ReleaseEntity.class);
             converters.put(Work.TYPE, WorkEntity.class);
+            converters.put(Part.TYPE, PartEntity.class);
             converters.put(Recording.TYPE, RecordingEntity.class);
             converters.put(RecordingSession.TYPE, RecordingSessionEntity.class);
             return converters;
@@ -1224,6 +1226,184 @@ public class FacadeTest extends BaseTestCase {
         assert !found;
     }
     
+    @Test
+    public void testWork() throws Exception {
+        Work myWork = new WorkEntity();
+        myWork.setName("Test Work");
+        Work w = Client.create(config).resource(HOSTURL+"/works").type(MediaType.APPLICATION_JSON).post(Work.class,myWork);
+
+        assert w!=null;
+        assert w.getName().equals(myWork.getName());
+        assert w.getId()!=null;
+
+        w = Client.create(config).resource(HOSTURL+"/works/"+w.getId()).accept(MediaType.APPLICATION_JSON).get(Work.class);
+
+        assert w!=null;
+        assert w.getName().equals(myWork.getName());
+        assert w.getId()!=null;
+
+        w.setName("Test Work 2");
+        w = Client.create(config).resource(HOSTURL+"/works/"+w.getId()).type(MediaType.APPLICATION_JSON).put(Work.class, w);
+        assert w!=null;
+        assert w.getName().equals("Test Work 2");
+        assert w.getId()!=null;
+
+        Collection<Work> works = Client.create(config).resource(HOSTURL+"/works").accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<Work>>() {});
+        assert works!=null;
+        assert works.size()>0;
+        boolean found = false;
+        for (Work work : works) {
+            if(work.getId().equals(w.getId())) {
+                found = true;
+            }
+        }
+        assert found;
+
+        Client.create(config).resource(HOSTURL+"/works/"+w.getId()).accept(MediaType.APPLICATION_JSON).delete();
+
+        works = Client.create(config).resource(HOSTURL+"/works").accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<Work>>() {});
+        assert works!=null;
+        found = false;
+        for (Work work : works) {
+            if(work.getId().equals(w.getId())) {
+                found = true;
+            }
+        }
+        assert !found;
+    }
+
+
+    @Test
+    public void testPart() throws Exception {
+        Work myWork = new WorkEntity();
+        myWork.setName("Test Work");
+        Work w = Client.create(config).resource(HOSTURL+"/works").type(MediaType.APPLICATION_JSON).post(Work.class,myWork);
+
+        assert w!=null;
+        assert w.getName().equals(myWork.getName());
+        assert w.getId()!=null;
+
+        Part myPart = new PartEntity();
+        myPart.setName("Test Part");
+        myPart.setParent(w);
+        myPart.setNumber(3);
+        Part p = Client.create(config).resource(HOSTURL+"/works").type(MediaType.APPLICATION_JSON).post(Part.class,myPart);
+
+        assert p!=null;
+        assert p.getName().equals(myPart.getName());
+        assert p.getNumber().equals(3);
+        assert p.getId()!=null;
+        assert p.getParent()!=null;
+        assert p.getParent().getName().equals(myWork.getName());
+
+        p = Client.create(config).resource(HOSTURL+"/works/"+p.getId()).accept(MediaType.APPLICATION_JSON).get(Part.class);
+
+        assert p!=null;
+        assert p.getName().equals(myPart.getName());
+        assert p.getNumber().equals(3);
+        assert p.getId()!=null;
+        assert p.getParent()!=null;
+        assert p.getParent().getName().equals(myWork.getName());
+
+        p.setName("Test Part 2");
+        p.setNumber(2);
+        p = Client.create(config).resource(HOSTURL+"/works/"+p.getId()).type(MediaType.APPLICATION_JSON).put(Part.class, p);
+        assert p!=null;
+        assert p.getName().equals("Test Part 2");
+        assert p.getNumber().equals(2);
+        assert p.getId()!=null;
+        assert p.getParent()!=null;
+        assert p.getParent().getName().equals(myWork.getName());
+
+        Collection<Work> works = Client.create(config).resource(HOSTURL+"/works").accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<Work>>() {});
+        assert works!=null;
+        assert works.size()>0;
+        boolean foundWork = false;
+        boolean foundPart = false;
+        for (Work work : works) {
+            if(work.getId().equals(w.getId()) && work.getClass().equals(WorkEntity.class)) {
+                foundWork = true;
+            }
+            if(work.getId().equals(p.getId()) && work.getClass().equals(PartEntity.class)) {
+                if(((Part)work).getParent().getId().equals(w.getId())) {
+                    foundPart = true;
+                }
+            }
+        }
+        assert foundWork;
+        assert foundPart;
+
+        Client.create(config).resource(HOSTURL+"/works/"+p.getId()).accept(MediaType.APPLICATION_JSON).delete();
+        Client.create(config).resource(HOSTURL+"/works/"+w.getId()).accept(MediaType.APPLICATION_JSON).delete();
+
+        works = Client.create(config).resource(HOSTURL+"/works").accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<Work>>() {});
+        assert works!=null;
+        foundPart = false;
+        foundWork = false;
+        for (Work work : works) {
+            if(work.getId().equals(w.getId())) {
+                foundWork = true;
+            }
+            if(work.getId().equals(p.getId())) {
+                foundPart = true;
+            }
+        }
+        assert !foundPart;
+        assert !foundWork;
+    }
+
+    @Test
+    public void testDeleteWorkWithPart() throws Exception {
+        Work myWork = new WorkEntity();
+        myWork.setName("Test Work");
+        Work w = Client.create(config).resource(HOSTURL+"/works").type(MediaType.APPLICATION_JSON).post(Work.class,myWork);
+
+        assert w!=null;
+        assert w.getName().equals(myWork.getName());
+        assert w.getId()!=null;
+
+        Part myPart = new PartEntity();
+        myPart.setName("Test Part");
+        myPart.setParent(w);
+        myPart.setNumber(3);
+        Part p = Client.create(config).resource(HOSTURL+"/works").type(MediaType.APPLICATION_JSON).post(Part.class,myPart);
+
+        Collection<Work> works = Client.create(config).resource(HOSTURL+"/works").accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<Work>>() {});
+        assert works!=null;
+        assert works.size()>0;
+        boolean foundWork = false;
+        boolean foundPart = false;
+        for (Work work : works) {
+            if(work.getId().equals(w.getId()) && work.getClass().equals(WorkEntity.class)) {
+                foundWork = true;
+            }
+            if(work.getId().equals(p.getId()) && work.getClass().equals(PartEntity.class)) {
+                if(((Part)work).getParent().getId().equals(w.getId())) {
+                    foundPart = true;
+                }
+            }
+        }
+        assert foundWork;
+        assert foundPart;
+
+        Client.create(config).resource(HOSTURL+"/works/"+w.getId()).accept(MediaType.APPLICATION_JSON).delete();
+
+        works = Client.create(config).resource(HOSTURL+"/works").accept(MediaType.APPLICATION_JSON).get(new GenericType<Collection<Work>>() {});
+        assert works!=null;
+        foundPart = false;
+        foundWork = false;
+        for (Work work : works) {
+            if(work.getId().equals(w.getId())) {
+                foundWork = true;
+            }
+            if(work.getId().equals(p.getId())) {
+                foundPart = true;
+            }
+        }
+        assert !foundPart;
+        assert !foundWork;
+    }
+
     @Test
     public void testImage() throws Exception {
         Image myImage = new ImageEntity();

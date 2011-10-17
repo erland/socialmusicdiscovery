@@ -27,32 +27,18 @@
 
 package org.socialmusicdiscovery.server.business.model.core;
 
-import org.socialmusicdiscovery.server.business.model.SMDIdentity;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
 /**
  * Represents a piece of music that may have been recorded several times in different ways by several
  * artists or conductors, often called song for pop/rock music.
  */
-public interface Work extends SMDIdentity {
-    final static String TYPE = Work.class.getSimpleName();
+public interface Part extends Work {
+    final static String TYPE = Part.class.getSimpleName();
 
-    String getName();
+    Work getParent();
 
-    void setName(String name);
+    void setParent(Work parent);
 
-    Date getDate();
+    Integer getNumber();
 
-    void setDate(Date date);
-
-    List<Part> getParts();
-
-    void setParts(List<Part> parts);
-
-    Set<Contributor> getContributors();
-
-    void setContributors(Set<Contributor> contributors);
+    void setNumber(Integer number);
 }
