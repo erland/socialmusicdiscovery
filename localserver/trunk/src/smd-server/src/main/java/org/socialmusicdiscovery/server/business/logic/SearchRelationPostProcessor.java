@@ -247,7 +247,11 @@ public class SearchRelationPostProcessor extends AbstractProcessingModule implem
                     // Need to use merge because a work can be part of multiple releases
                     entityManager.merge(relation);
                 }
-                work = work.getParent();
+                if(work instanceof Part) {
+                    work = ((Part)work).getParent();
+                }else {
+                    work = null;
+                }
             }
         }
         aggregatedTrackContributors.addAll(aggregatedWorkContributors);

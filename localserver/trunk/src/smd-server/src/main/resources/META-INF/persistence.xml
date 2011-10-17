@@ -15,6 +15,7 @@
         <class>org.socialmusicdiscovery.server.business.model.core.RecordingEntity</class>
         <class>org.socialmusicdiscovery.server.business.model.core.RecordingSessionEntity</class>
         <class>org.socialmusicdiscovery.server.business.model.core.WorkEntity</class>
+        <class>org.socialmusicdiscovery.server.business.model.core.PartEntity</class>
         <class>org.socialmusicdiscovery.server.business.model.core.ContributorEntity</class>
         <class>org.socialmusicdiscovery.server.business.model.core.ArtistEntity</class>
         <class>org.socialmusicdiscovery.server.business.model.core.PersonEntity</class>

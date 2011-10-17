@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+	<changeSet author="erland" id="23">
+        <addColumn tableName="works">
+            <column name="type" type="VARCHAR(255)">
+                <constraints nullable="true" primaryKey="false"/>
+            </column>
+        </addColumn>
+        <sql>update works set type='Work' where parent_id is null</sql>
+        <sql>update works set type='Part' where parent_id is not null</sql>
+        <addNotNullConstraint
+                tableName="works"
+                columnName="type"
+                columnDataType="VARCHAR(255)"/>
+        <addColumn tableName="works">
+            <column name="number" type="INT"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

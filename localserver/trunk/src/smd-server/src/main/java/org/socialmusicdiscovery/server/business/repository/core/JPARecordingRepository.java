@@ -196,7 +196,11 @@ public class JPARecordingRepository extends AbstractJPASMDIdentityRepository<Rec
                 aggregatedWorkContributors.addAll(work.getContributors());
                 aggregatedContributors.addAll(work.getContributors());
                 aggregatedWorks.add(work);
-                work = work.getParent();
+                if(work instanceof Part) {
+                    work = ((Part)work).getParent();
+                }else {
+                    work = null;
+                }
             }
         }
 

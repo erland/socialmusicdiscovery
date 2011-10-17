@@ -29,6 +29,7 @@ package org.socialmusicdiscovery.server.api.management.model.core;
 
 import com.google.gson.annotations.Expose;
 import org.socialmusicdiscovery.server.api.management.model.AbstractSMDIdentityCRUDFacade;
+import org.socialmusicdiscovery.server.business.model.core.Work;
 import org.socialmusicdiscovery.server.business.model.core.WorkEntity;
 import org.socialmusicdiscovery.server.business.repository.core.WorkRepository;
 import org.socialmusicdiscovery.server.support.copy.CopyHelper;
@@ -103,12 +104,12 @@ public class WorkFacade extends AbstractSMDIdentityCRUDFacade<WorkEntity, WorkRe
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public WorkEntity create(WorkEntity work) {
+    public WorkEntity create(Work work) {
         try {
             transactionManager.begin();
-            work.setLastUpdated(new Date());
-            work.setLastUpdatedBy(super.CHANGED_BY);
-            WorkEntity createdEntity = super.createEntity(work);
+            ((WorkEntity)work).setLastUpdated(new Date());
+            ((WorkEntity)work).setLastUpdatedBy(super.CHANGED_BY);
+            WorkEntity createdEntity = super.createEntity(((WorkEntity)work));
             getRepository().refresh(createdEntity);
             return new CopyHelper().copy(createdEntity, Expose.class);
         }catch (RuntimeException e) {
@@ -130,12 +131,12 @@ public class WorkFacade extends AbstractSMDIdentityCRUDFacade<WorkEntity, WorkRe
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
-    public WorkEntity update(@PathParam("id") String id, WorkEntity work) {
+    public WorkEntity update(@PathParam("id") String id, Work work) {
         try {
             transactionManager.begin();
-            work.setLastUpdated(new Date());
-            work.setLastUpdatedBy(super.CHANGED_BY);
-            WorkEntity updatedEntity = super.updateEntity(id, work);
+            ((WorkEntity)work).setLastUpdated(new Date());
+            ((WorkEntity)work).setLastUpdatedBy(super.CHANGED_BY);
+            WorkEntity updatedEntity = super.updateEntity(id, ((WorkEntity)work));
             getRepository().refresh(updatedEntity);
             return new CopyHelper().copy(updatedEntity, Expose.class);
         }catch (RuntimeException e) {

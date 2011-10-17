@@ -65,7 +65,8 @@ public class ClientConfigModule extends AbstractModule {
             converters.put(PlayableElement.class, PlayableElementEntity.class);
             converters.put(RecordingSession.class, RecordingSessionEntity.class);
             converters.put(Recording.class, RecordingEntity.class);
-            converters.put(Work.class, WorkEntity.class);
+            converters.put(Work.class, Work.class);
+            converters.put(Part.class, Part.class);
             converters.put(SMDIdentityReference.class, SMDIdentityReferenceEntity.class);
             converters.put(Classification.class, ClassificationEntity.class);
             converters.put(GlobalIdentity.class, GlobalIdentityEntity.class);
@@ -86,6 +87,7 @@ public class ClientConfigModule extends AbstractModule {
 
             converters.put(Release.TYPE, ReleaseEntity.class);
             converters.put(Work.TYPE, WorkEntity.class);
+            converters.put(Part.TYPE, PartEntity.class);
             converters.put(Recording.TYPE, RecordingEntity.class);
             converters.put(RecordingSession.TYPE, RecordingSessionEntity.class);
             return converters;

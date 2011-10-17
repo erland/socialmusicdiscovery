@@ -43,7 +43,9 @@
         </loadData>
         <loadData tableName="works" file="org/socialmusicdiscovery/server/database/sampledata/wagner_tannhauser/works.csv">
             <column header="id" type="STRING"/>
+            <column header="type" type="STRING"/>
             <column header="parent_id" type="STRING"/>
+            <column header="number" type="NUMERIC"/>
             <column header="name" type="STRING"/>
             <column header="sort_as" type="STRING"/>
             <column header="last_updated" type="DATE"/>

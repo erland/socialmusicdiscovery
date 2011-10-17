@@ -27,32 +27,42 @@
 
 package org.socialmusicdiscovery.server.business.model.core;
 
-import org.socialmusicdiscovery.server.business.model.SMDIdentity;
+import com.google.gson.annotations.Expose;
+import org.socialmusicdiscovery.server.business.model.SMDIdentityReferenceEntity;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 /**
- * Represents a piece of music that may have been recorded several times in different ways by several
- * artists or conductors, often called song for pop/rock music.
+ * See {@link org.socialmusicdiscovery.server.business.model.core.Work}
  */
-public interface Work extends SMDIdentity {
-    final static String TYPE = Work.class.getSimpleName();
+@Entity
+@DiscriminatorValue("Part")
+@SMDIdentityReferenceEntity.ReferenceType(type = Part.class)
+public class PartEntity extends WorkEntity implements Part, ContributorOwner {
+    @ManyToOne(targetEntity = WorkEntity.class)
+    @JoinColumn(name = "parent_id")
+    @Expose
+    private Work parent;
 
-    String getName();
+    @Expose
+    private Integer number;
 
-    void setName(String name);
+    public Work getParent() {
+        return parent;
+    }
 
-    Date getDate();
+    public void setParent(Work parent) {
+        this.parent = parent;
+    }
 
-    void setDate(Date date);
+    public Integer getNumber() {
+        return number;
+    }
 
-    List<Part> getParts();
-
-    void setParts(List<Part> parts);
-
-    Set<Contributor> getContributors();
-
-    void setContributors(Set<Contributor> contributors);
+    public void setNumber(Integer number) {
+        this.number = number;
+    }
 }
