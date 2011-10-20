@@ -27,40 +27,48 @@
 
 package org.socialmusicdiscovery.yggdrasil.foundation.util;
 
-import java.text.MessageFormat;
-
 import org.eclipse.core.databinding.observable.list.IListChangeListener;
 import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.databinding.observable.list.ListChangeEvent;
-import org.socialmusicdiscovery.server.business.model.core.Work;
-import org.socialmusicdiscovery.yggdrasil.foundation.content.AbstractObservableEntity;
+import org.socialmusicdiscovery.server.business.model.core.Part;
 
 /**
- * Observes an observable list of {@link AbstractObservableEntity} instances, 
- * updating the {@link AbstractObservableEntity#setSortAs(String)} property 
- * when the list order is changed. This approach will probably be very slow 
- * if applied to large lists that change order frequently; primary objective 
- * is to handle small lists such as {@link Work#getParts()}.   
+ * Observes an observable list of {@link Part} instances, updating the
+ * {@link Part#setNumber(Integer)} property when the list order is changed. This
+ * approach will probably be very slow if applied to large lists that change
+ * order frequently, but we expect reasonable number of parts in works
+ * (typically 1-10, certainly less than 100).
  * 
  * @author Peer Törngren
- *
+ * 
  */
-public class ListOrderManager implements IListChangeListener {
-
-	private static final String SORT_AS_PATTERN = "{0,number,000}. {1}";
+public class PartOrderManager implements IListChangeListener {
 
 	@Override
 	public void handleListChange(ListChangeEvent event) {
 		int i = 1;
 		for (Object o: event.getObservableList()) {
-			AbstractObservableEntity e = (AbstractObservableEntity) o;
-			String sortAs = MessageFormat.format(SORT_AS_PATTERN, Integer.valueOf(i++), e.getName());
-			e.setSortAs(sortAs);
+			Part e = (Part) o;
+			e.setNumber(Integer.valueOf(i++));
 		}
 	}
 
 	public static void manage(IObservableList list) {
-		list.addListChangeListener(new ListOrderManager());
+		assert allElementsAreParts(list);
+		list.addListChangeListener(new PartOrderManager());
+	}
+
+	/*
+	 * Assert that all elements in supplied list are {@link Part}s, 
+	 * or we will get strange error later on. Should only be called 
+	 * from within an assert statement, we don't want this to be called 
+	 * in normal runtime context.  
+	 */
+	private static boolean allElementsAreParts(IObservableList list) {
+		for (Object object : list) {
+			assert object instanceof Part : "Not a Part: "+object;
+		}
+		return true;
 	}
 
 }

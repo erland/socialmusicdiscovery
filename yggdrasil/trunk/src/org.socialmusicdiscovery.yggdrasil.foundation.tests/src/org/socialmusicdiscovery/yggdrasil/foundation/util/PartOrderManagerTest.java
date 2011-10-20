@@ -35,25 +35,24 @@ import org.eclipse.core.databinding.observable.list.WritableList;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.socialmusicdiscovery.yggdrasil.foundation.content.AbstractObservableEntity;
 import org.socialmusicdiscovery.yggdrasil.foundation.content.AbstractTestCase;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservablePart;
 import org.socialmusicdiscovery.yggdrasil.foundation.content.SortAsComparator;
-import org.socialmusicdiscovery.yggdrasil.foundation.util.ListOrderManager;
 
 /**
  * @author Peer Törngren
  *
  */
-public class ListOrderManagerTest extends AbstractTestCase {
+public class PartOrderManagerTest extends AbstractTestCase {
 
-	private class MyEntity extends AbstractObservableEntity {
-		public MyEntity(int i) {
+	private class MyPart extends ObservablePart {
+		public MyPart(int i) {
 			setName("Entity#"+i);
 		}
 
 		@Override
 		public String toString() {
-			return "'"+getName()+"/"+getSortAs()+"'";
+			return "'"+getName()+"/"+getNumber()+"'";
 		}
 		
 	}
@@ -65,7 +64,7 @@ public class ListOrderManagerTest extends AbstractTestCase {
 		super.setUp();
 		list = new WritableList();
 		for (int i = 0; i < 12; i++) {
-			list.add(new MyEntity(i));
+			list.add(new MyPart(i));
 		}
 	}
 	
@@ -76,21 +75,21 @@ public class ListOrderManagerTest extends AbstractTestCase {
 	}
 
 	/**
-	 * Test method for {@link org.socialmusicdiscovery.yggdrasil.foundation.util.ListOrderManager#manage(org.eclipse.core.databinding.observable.list.IObservableList)}.
+	 * Test method for {@link org.socialmusicdiscovery.yggdrasil.foundation.util.PartOrderManager#manage(org.eclipse.core.databinding.observable.list.IObservableList)}.
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testManage() {
-		ListOrderManager.manage(list);
-		MyEntity e0 = (MyEntity) list.get(0);
-		MyEntity a = (MyEntity) list.get(4);
-		MyEntity b = new MyEntity(6);
-		MyEntity c = (MyEntity) list.get(5);
+		PartOrderManager.manage(list);
+		MyPart e0 = (MyPart) list.get(0);
+		MyPart a = (MyPart) list.get(4);
+		MyPart b = new MyPart(6);
+		MyPart c = (MyPart) list.get(5);
 		
 		list.add(5, b);
 		List sortableClone = new ArrayList(list);
 		
-		assertTrue("Not properly rewritten, maybe listener did not get event? "+e0, e0.getSortAs().startsWith("001"));
+		assertTrue("Not properly rewritten, maybe listener did not get event? "+e0, e0.getNumber().intValue()==1);
 		
 		assertOrder(sortableClone, a, 4);
 		assertOrder(sortableClone, b, 5);
@@ -104,7 +103,7 @@ public class ListOrderManagerTest extends AbstractTestCase {
 		
 	}
 
-	private void assertOrder(List list, MyEntity entity, int expectedOrder) {
+	private void assertOrder(List list, MyPart entity, int expectedOrder) {
 		assertEquals(entity+", list="+list, expectedOrder, list.indexOf(entity));
 	}
 

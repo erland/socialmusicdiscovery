@@ -342,6 +342,12 @@
             priority="normal">
       </content-type>
       <content-type
+            file-names="Part"
+            id="org.socialmusicdiscovery.server.business.model.core.Part"
+            name="Part"
+            priority="normal">
+      </content-type>
+      <content-type
             file-names="Person"
             id="org.socialmusicdiscovery.server.business.model.core.Person"
             name="Person"
