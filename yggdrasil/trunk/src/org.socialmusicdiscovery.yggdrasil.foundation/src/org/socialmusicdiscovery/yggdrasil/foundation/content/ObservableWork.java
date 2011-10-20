@@ -30,6 +30,7 @@ package org.socialmusicdiscovery.yggdrasil.foundation.content;
 import java.util.Date;
 import java.util.List;
 
+import org.socialmusicdiscovery.server.business.model.core.Part;
 import org.socialmusicdiscovery.server.business.model.core.Work;
 import org.socialmusicdiscovery.yggdrasil.foundation.util.GenericWritableList;
 import org.socialmusicdiscovery.yggdrasil.foundation.util.ListOrderManager;
@@ -40,11 +41,9 @@ public class ObservableWork extends AbstractContributableEntity<Work> implements
 
 	public static final String PROP_date = "date";
 	public static final String PROP_parts = "parts";
-	public static final String PROP_parent = "parent";
 	
 	@Expose private Date date;
-	@Expose private GenericWritableList<Work> parts = new GenericWritableList<Work>();
-	@Expose private Work parent;
+	@Expose private GenericWritableList<Part> parts = new GenericWritableList<Part>();
 	
 	public ObservableWork() {
 		super(Work.TYPE);
@@ -62,22 +61,15 @@ public class ObservableWork extends AbstractContributableEntity<Work> implements
 	}
 	
 	@Override
-	public GenericWritableList<Work> getParts() {
+	public GenericWritableList<Part> getParts() {
 		return parts;
 	}
 
-	@Override
-	public Work getParent() {
-		return parent;
-	}
 	public void setDate(Date date) {
 		firePropertyChange(PROP_date, this.date, this.date = date);
 	}
-	public void setParts(List<Work> parts) {
+	public void setParts(List<Part> parts) {
 		updateList(PROP_parts, this.parts, parts);
 	}
 	
-	public void setParent(Work parent) {
-		firePropertyChange(PROP_parent, this.parent, this.parent = parent);
-	}
 }
