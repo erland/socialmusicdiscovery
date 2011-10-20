@@ -154,16 +154,6 @@ public final class WorkbenchUtil {
 		return null;
 	}
 
-//	private static ObservableEntity openDialog(Object input) {
-//		if (input instanceof ObservableContributor) {
-//			return ContributorDialog.open((ObservableContributor) input);
-//		}
-//		if (input instanceof ObservableTrack) {
-//			return TrackDialog.open((ObservableTrack) input);
-//		}
-//		return null;
-//	}
-
 	private static IEditorInput resolveEditableElement(Object selectedElement) {
 		if (selectedElement instanceof IEditorInput) {
 			return (IEditorInput) selectedElement;
