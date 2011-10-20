@@ -280,7 +280,7 @@ public class WorkUI extends AbstractComposite<ObservableWork> {
 		bindingContext.bindValue(textNameObserveTextObserveWidget, getWorkNameObserveValue, null, null);
 		//
 		BeansListObservableFactory treeObservableFactory = new BeansListObservableFactory(ObservableWork.class, "parts");
-		TreeBeanAdvisor treeAdvisor = new TreeBeanAdvisor(ObservableWork.class, "parent", "parts", null);
+		TreeBeanAdvisor treeAdvisor = new TreeBeanAdvisor(ObservableWork.class, null, "parts", null);
 		ObservableListTreeContentProvider treeContentProvider = new ObservableListTreeContentProvider(treeObservableFactory, treeAdvisor);
 		partsViewer.setContentProvider(treeContentProvider);
 		//

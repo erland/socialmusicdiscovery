@@ -43,6 +43,7 @@ import org.socialmusicdiscovery.server.business.model.core.Artist;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
 import org.socialmusicdiscovery.server.business.model.core.Label;
 import org.socialmusicdiscovery.server.business.model.core.Medium;
+import org.socialmusicdiscovery.server.business.model.core.Part;
 import org.socialmusicdiscovery.server.business.model.core.Person;
 import org.socialmusicdiscovery.server.business.model.core.PlayableElement;
 import org.socialmusicdiscovery.server.business.model.core.Recording;
@@ -56,6 +57,7 @@ import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservableArtist;
 import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservableContributor;
 import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservableLabel;
 import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservableMedium;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservablePart;
 import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservablePerson;
 import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservablePlayableElement;
 import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservableRecording;
@@ -72,34 +74,7 @@ import com.google.inject.Provides;
 import com.sun.jersey.api.client.config.ClientConfig;
 
 /**
- * <p>
  * Configure how to map from server API classes to concrete client classes.
- * </p>
- * <p>
- * <b>Note on collection conversion:</b><br>
- * We need to do a seemingly strange mapping where we convert a concrete class
- * to itself. This is logic buried deeply inside Gson so there is no obvious or
- * easy way around it.
- * 
- * The logic is that Gson:
- * <ol>
- * <li>Tries to find an exact mapping among the converters we provide.</li>
- * <li>If it can't find an exact mapping it tries to find a mapping from the
- * standard type converters for {@link Collection}, {@link List}, {@link Set}
- * etc.</li>
- * </ol>
- * 
- * 
- * We need to make it match in point 1 because else it will create a
- * {@link LinkedList} instead of {@link GenericWritableList}, and the only way
- * to do that is to register a converter for the exact match, which would be
- * {@link GenericWritableList}. Converters have to be specified for a specific
- * class/interface, you can't register generic converters that have logic inside
- * them that decide what to convert and what to not convert. So it looks a bit
- * strange to have a mapping from {@link GenericWritableList} to
- * {@link GenericWritableList} but it's needed to make Gson do what we want.
- * </p>
- * 
  * 
  * @author Peer Törngren
  * 
@@ -107,6 +82,46 @@ import com.sun.jersey.api.client.config.ClientConfig;
 public class ClientConfigModule extends AbstractModule {
 	private static ClientConfig clientConfig;
 
+	/**
+	 * <p>
+	 * The concrete implemwentation of the provider.
+	 * </p>
+	 * <p>
+	 * <b>Note on Work and Part conversion:</b><br>
+	 * The {@link AbstractJSONProvider} needs the value to be an abstract class
+	 * and will then use the {@link #getObjectTypeConversionMap()} and the
+	 * objectType attribute to create the correct object during deserialization
+	 * </p>
+	 * <p>
+	 * <b>Note on collection conversion:</b><br>
+	 * We need to do a seemingly strange mapping where we convert a concrete
+	 * class to itself. This is logic buried deeply inside Gson so there is no
+	 * obvious or easy way around it.
+	 * 
+	 * The logic is that Gson:
+	 * <ol>
+	 * <li>Tries to find an exact mapping among the converters we provide.</li>
+	 * <li>If it can't find an exact mapping it tries to find a mapping from the
+	 * standard type converters for {@link Collection}, {@link List},
+	 * {@link Set} etc.</li>
+	 * </ol>
+	 * 
+	 * 
+	 * We need to make it match in point 1 because else it will create a
+	 * {@link LinkedList} instead of {@link GenericWritableList}, and the only
+	 * way to do that is to register a converter for the exact match, which
+	 * would be {@link GenericWritableList}. Converters have to be specified for
+	 * a specific class/interface, you can't register generic converters that
+	 * have logic inside them that decide what to convert and what to not
+	 * convert. So it looks a bit strange to have a mapping from
+	 * {@link GenericWritableList} to {@link GenericWritableList} but it's
+	 * needed to make Gson do what we want.
+	 * </p>
+	 * 
+	 * 
+	 * @author Peer Törngren
+	 * 
+	 */
 	public static class JSONProvider extends AbstractJSONProvider {
 		public JSONProvider() {
 			super(true);
@@ -122,6 +137,7 @@ public class ClientConfigModule extends AbstractModule {
 			// converters.put(Credit.class, ObservableCredit.class);
 			converters.put(Label.class, ObservableLabel.class);
 			converters.put(Medium.class, ObservableMedium.class);
+			converters.put(Part.class, Part.class);
 			converters.put(Person.class, ObservablePerson.class);
 			converters.put(PlayableElement.class, ObservablePlayableElement.class);
 			converters.put(Recording.class, ObservableRecording.class);
@@ -130,7 +146,7 @@ public class ClientConfigModule extends AbstractModule {
 			converters.put(Release.class, ObservableRelease.class);
 			// converters.put(Series.class, ObservableSeries.class);
 			converters.put(Track.class, ObservableTrack.class);
-			converters.put(Work.class, ObservableWork.class);
+			converters.put(Work.class, Work.class);
 			converters.put(SMDIdentityReference.class, ObservableSMDIdentityReference.class);
 			
 			// handle type conversion of abstract classes
@@ -151,6 +167,7 @@ public class ClientConfigModule extends AbstractModule {
 		
 		    converters.put(Release.class.getSimpleName(), ObservableRelease.class);
 		    converters.put(Work.class.getSimpleName(), ObservableWork.class);
+		    converters.put(Part.class.getSimpleName(), ObservablePart.class);
 		    converters.put(Recording.class.getSimpleName(), ObservableRecording.class);
 		    converters.put(RecordingSession.class.getSimpleName(), ObservableRecordingSession.class);
 		    return converters;

@@ -30,6 +30,7 @@ package org.socialmusicdiscovery.yggdrasil.foundation.util;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.content.IContentType;
 import org.socialmusicdiscovery.yggdrasil.foundation.content.DataSource;
 import org.socialmusicdiscovery.yggdrasil.foundation.dialogs.EditorDialog;
 import org.socialmusicdiscovery.yggdrasil.foundation.error.FatalApplicationException;
@@ -63,7 +64,8 @@ public final class ExtensionUtil {
 	}
 
 	private static String resolveContentTypeId(String contentName) {
-		return Platform.getContentTypeManager().findContentTypeFor(contentName).getId();
+		IContentType contentType = Platform.getContentTypeManager().findContentTypeFor(contentName);
+		return contentType==null ? null : contentType.getId();
 	}
 
 	public static DataSource resolveDataSource() {
