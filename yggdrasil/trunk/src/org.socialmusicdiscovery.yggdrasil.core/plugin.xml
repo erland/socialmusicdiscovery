@@ -47,6 +47,9 @@
          <contentTypeBinding
                contentTypeId="org.socialmusicdiscovery.server.business.model.core.Work">
          </contentTypeBinding>
+         <contentTypeBinding
+               contentTypeId="org.socialmusicdiscovery.server.business.model.core.Part">
+         </contentTypeBinding>
       </editor>
    </extension>
     <extension

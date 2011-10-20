@@ -33,7 +33,7 @@ import java.util.List;
 import org.socialmusicdiscovery.server.business.model.core.Part;
 import org.socialmusicdiscovery.server.business.model.core.Work;
 import org.socialmusicdiscovery.yggdrasil.foundation.util.GenericWritableList;
-import org.socialmusicdiscovery.yggdrasil.foundation.util.ListOrderManager;
+import org.socialmusicdiscovery.yggdrasil.foundation.util.PartOrderManager;
 
 import com.google.gson.annotations.Expose;
 
@@ -55,7 +55,7 @@ public class ObservableWork extends AbstractContributableEntity<Work> implements
 	@Override
 	protected void postInflate() {
 		getParts().addAll(asOrderedList(getRoot().findAll(this)));
-		ListOrderManager.manage(getParts());
+		PartOrderManager.manage(getParts());
 	}
 
 	@Override
