@@ -39,57 +39,65 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
-import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservableWork;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservablePart;
 import org.socialmusicdiscovery.yggdrasil.foundation.views.util.AbstractComposite;
 import org.socialmusicdiscovery.yggdrasil.foundation.views.util.NotYetImplementedUI;
 
-public class WorkUI extends AbstractComposite<ObservableWork> {
+public class PartUI extends AbstractComposite<ObservablePart> {
 	private Text textName;
 	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
-	protected ScrolledForm formWork;
+	protected ScrolledForm formPart;
 	protected Text text;
 	private NotYetImplementedUI notYetImplementedUI;
 	private WorkPanel workPanel;
+	private Label parentLabel;
+	private Hyperlink parentLink;
 
 	/**
 	 * Create the composite.
 	 * @param parent
 	 * @param style
 	 */
-	public WorkUI(Composite parent, int style) {
+	public PartUI(Composite parent, int style) {
 		super(parent, style);
 		GridLayout gridLayout = new GridLayout(1, false);
 		gridLayout.marginHeight = 0;
 		gridLayout.marginWidth = 0;
 		setLayout(gridLayout);
 		
-		formWork = formToolkit.createScrolledForm(this);
-		GridData gd_formWork = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
-		gd_formWork.widthHint = 1143;
-		formWork.setLayoutData(gd_formWork);
-		formToolkit.paintBordersFor(formWork);
-		formWork.setText("Work");
-		formWork.getBody().setLayout(new GridLayout(1, false));
+		formPart = formToolkit.createScrolledForm(this);
+		GridData gd_formPart = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+		gd_formPart.widthHint = 1143;
+		formPart.setLayoutData(gd_formPart);
+		formToolkit.paintBordersFor(formPart);
+		formPart.setText("Part");
+		formPart.getBody().setLayout(new GridLayout(1, false));
 		
-		notYetImplementedUI = new NotYetImplementedUI(formWork.getBody(), SWT.NONE);
+		notYetImplementedUI = new NotYetImplementedUI(formPart.getBody(), SWT.NONE);
 		notYetImplementedUI.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
 		formToolkit.adapt(notYetImplementedUI);
 		formToolkit.paintBordersFor(notYetImplementedUI);
 		
-		Label lblName = formToolkit.createLabel(formWork.getBody(), "Name", SWT.NONE);
+		Label lblName = formToolkit.createLabel(formPart.getBody(), "Name", SWT.NONE);
 		lblName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
-		textName = formToolkit.createText(formWork.getBody(), "text", SWT.BORDER);
+		textName = formToolkit.createText(formPart.getBody(), "text", SWT.BORDER);
 		textName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		textName.setText("");
 		
-		workPanel = new WorkPanel(formWork.getBody(), SWT.NONE);
-		workPanel.dataSection.setText("Work Data");
+		parentLabel = formToolkit.createLabel(formPart.getBody(), "Parent (Part or Work)", SWT.NONE);
+		
+		parentLink = formToolkit.createHyperlink(formPart.getBody(), "(?)", SWT.NONE);
+		parentLink.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		parentLink.setToolTipText("The parent part is the container of this (and presumably more) parts. The parent may itself be part of some other work.");
+		
+		formToolkit.paintBordersFor(parentLink);
+		workPanel = new WorkPanel(formPart.getBody(), SWT.NONE);
+		workPanel.dataSection.setText("Part Data");
 		workPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		formToolkit.adapt(workPanel );
-		formToolkit.paintBordersFor(workPanel );
-	}
+		}
 
 
 	@Override
@@ -98,23 +106,16 @@ public class WorkUI extends AbstractComposite<ObservableWork> {
 	}
 
 	@Override
-	public void afterSetModel(ObservableWork release) {
+	public void afterSetModel(ObservablePart part) {
 		getWorkPanel().setModel(getModel());
-	}
-
-	/**
-	 * @return {@link ObservableWork}
-	 * @see #getModel()
-	 */
-	public ObservableWork getWork() {
-		return getModel();
+		getParentLink().setText(part.getParent().getName()); // FIXME - listen to changes!
 	}
 
 	protected DataBindingContext initDataBindings() {
 		DataBindingContext bindingContext = new DataBindingContext();
 		//
 		IObservableValue textNameObserveTextObserveWidget = SWTObservables.observeText(textName, SWT.Modify);
-		IObservableValue getWorkNameObserveValue = BeansObservables.observeValue(getWork(), "name");
+		IObservableValue getWorkNameObserveValue = BeansObservables.observeValue(getModel(), "name");
 		bindingContext.bindValue(textNameObserveTextObserveWidget, getWorkNameObserveValue, null, null);
 		//
 		return bindingContext;
@@ -122,5 +123,11 @@ public class WorkUI extends AbstractComposite<ObservableWork> {
 
 	public WorkPanel getWorkPanel() {
 		return workPanel;
+	}
+	public Label getParentLabel() {
+		return parentLabel;
+	}
+	public Hyperlink getParentLink() {
+		return parentLink;
 	}
 }

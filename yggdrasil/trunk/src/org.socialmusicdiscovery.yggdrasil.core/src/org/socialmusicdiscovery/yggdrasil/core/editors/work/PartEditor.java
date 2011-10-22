@@ -30,11 +30,11 @@ package org.socialmusicdiscovery.yggdrasil.core.editors.work;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPartSite;
-import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservableWork;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservablePart;
 import org.socialmusicdiscovery.yggdrasil.foundation.editors.AbstractEditorPart;
 
 /**
- * <p>
+* <p>
  * Menu IDs (suffix to the part name) are defined as constants, as recommended
  * by
  * {@link IWorkbenchPartSite#registerContextMenu(org.eclipse.jface.action.MenuManager, org.eclipse.jface.viewers.ISelectionProvider)}:
@@ -42,20 +42,19 @@ import org.socialmusicdiscovery.yggdrasil.foundation.editors.AbstractEditorPart;
  * <li>{@link #MENU_ID_CONTRIBUTORS}</li>
  * </ul>
  * </p>
- * 
  * @author Peer Törngren
  * 
  */
-public class WorkEditor extends AbstractEditorPart<ObservableWork, WorkUI> {
-	public WorkEditor() {
+public class PartEditor extends AbstractEditorPart<ObservablePart, PartUI> {
+	public PartEditor() {
 	}
 
-	public static final String ID = WorkEditor.class.getName();
+	public static final String ID = PartEditor.class.getName();
 //	private static final String MENU_ID_CONTRIBUTORS = ContributorPanel.MENU_ID;
 
 	@Override
 	public void createPartControl(Composite parent) {
-		super.createPartControl(parent, new WorkUI(parent, SWT.NONE));
+		super.createPartControl(parent, new PartUI(parent, SWT.NONE));
 //		hookContextMenus();
 	}
 
