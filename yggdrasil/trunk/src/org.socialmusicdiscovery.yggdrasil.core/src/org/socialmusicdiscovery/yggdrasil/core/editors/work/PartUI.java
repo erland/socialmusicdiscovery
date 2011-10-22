@@ -28,6 +28,7 @@
 package org.socialmusicdiscovery.yggdrasil.core.editors.work;
 
 import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.SWTObservables;
@@ -67,6 +68,8 @@ public class PartUI extends AbstractComposite<ObservablePart> {
 	private WorkPanel workPanel;
 	private Label parentLabel;
 	private Hyperlink parentLink;
+	
+	private String parentName = null;
 
 	/**
 	 * Create the composite.
@@ -130,9 +133,14 @@ public class PartUI extends AbstractComposite<ObservablePart> {
 	@Override
 	public void afterSetModel(ObservablePart part) {
 		getWorkPanel().setModel(getModel());
-		getParentLink().setText(part.getParent().getName()); // FIXME - listen to changes!
 	}
 
+	protected void initManualDataBindings(DataBindingContext bindingContext) {
+		IObservableValue modelValue = BeansObservables.observeValue(getModel(), "parent.name"); // pick up changed parent or change name of parent! 
+		IObservableValue targetValue = BeansObservables.observeValue(this, "parentName");
+		bindingContext.bindValue(targetValue, modelValue, new UpdateValueStrategy(UpdateValueStrategy.POLICY_NEVER), null);
+	}
+	
 	protected DataBindingContext initDataBindings() {
 		DataBindingContext bindingContext = new DataBindingContext();
 		//
@@ -151,5 +159,20 @@ public class PartUI extends AbstractComposite<ObservablePart> {
 	}
 	public Hyperlink getParentLink() {
 		return parentLink;
+	}
+
+	public String getParentName() {
+		return parentName;
+	}
+
+	/**
+	 * This is just a little trick to let us use standard databinding to monitor
+	 * changes in parent or parent's name and keep the parent hyperlink updated.
+	 * 
+	 * @param parentName
+	 */
+	public void setParentName(String parentName) {
+		this.parentName = parentName;
+		getParentLink().setText(parentName);
 	}
 }
