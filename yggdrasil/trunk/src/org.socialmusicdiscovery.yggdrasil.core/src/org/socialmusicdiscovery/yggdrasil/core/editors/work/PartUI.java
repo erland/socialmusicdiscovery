@@ -38,14 +38,27 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.forms.events.HyperlinkAdapter;
+import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservablePart;
+import org.socialmusicdiscovery.yggdrasil.foundation.util.WorkbenchUtil;
 import org.socialmusicdiscovery.yggdrasil.foundation.views.util.AbstractComposite;
 import org.socialmusicdiscovery.yggdrasil.foundation.views.util.NotYetImplementedUI;
 
 public class PartUI extends AbstractComposite<ObservablePart> {
+	private class MyParentLinkListener extends HyperlinkAdapter {
+
+		@Override
+		public void linkActivated(HyperlinkEvent e) {
+			if (getModel()!=null && getModel().getParent()!=null) {
+				WorkbenchUtil.openDistinct(getModel().getParent());
+			}
+		}
+
+	}
 	private Text textName;
 	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
 	protected ScrolledForm formPart;
@@ -97,7 +110,16 @@ public class PartUI extends AbstractComposite<ObservablePart> {
 		workPanel = new WorkPanel(formPart.getBody(), SWT.NONE);
 		workPanel.dataSection.setText("Part Data");
 		workPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		formToolkit.adapt(workPanel );
+		formToolkit.paintBordersFor(workPanel );
+		
+		initUI();
 		}
+
+
+	private void initUI() {
+		getParentLink().addHyperlinkListener(new MyParentLinkListener());
+	}
 
 
 	@Override
