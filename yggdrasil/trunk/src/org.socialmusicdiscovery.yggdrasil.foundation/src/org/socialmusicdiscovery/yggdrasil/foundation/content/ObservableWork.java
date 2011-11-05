@@ -32,6 +32,7 @@ import java.util.List;
 
 import org.socialmusicdiscovery.server.business.model.core.Part;
 import org.socialmusicdiscovery.server.business.model.core.Work;
+import org.socialmusicdiscovery.yggdrasil.foundation.util.ChangeReplicator;
 import org.socialmusicdiscovery.yggdrasil.foundation.util.GenericWritableList;
 import org.socialmusicdiscovery.yggdrasil.foundation.util.PartOrderManager;
 
@@ -46,7 +47,7 @@ public class ObservableWork extends AbstractContributableEntity<Work> implements
 	public static final String PROP_parts = "parts";
 	
 	@Expose private Date date;
-	@Expose private GenericWritableList<Part> parts = new GenericWritableList<Part>();
+	private GenericWritableList<Part> parts = new GenericWritableList<Part>();
 	
 	public ObservableWork() {
 		super(Work.TYPE);
@@ -55,6 +56,7 @@ public class ObservableWork extends AbstractContributableEntity<Work> implements
 	@Override
 	protected void postInflate() {
 		getParts().addAll(asOrderedList(getRoot().findAll(this)));
+		ChangeReplicator.replicate(getParts(), this, PROP_parts);
 		PartOrderManager.manage(getParts());
 	}
 

@@ -29,6 +29,7 @@ package org.socialmusicdiscovery.yggdrasil.foundation.content;
 
 import org.socialmusicdiscovery.server.business.model.core.Part;
 import org.socialmusicdiscovery.server.business.model.core.Work;
+import org.socialmusicdiscovery.yggdrasil.foundation.util.NotYetImplemented;
 
 import com.google.gson.annotations.Expose;
 
@@ -59,5 +60,21 @@ public class ObservablePart extends ObservableWork implements Part {
 	public void setParent(Work parent) {
 		firePropertyChange(PROP_parent, this.parent, this.parent = parent);
 	}
+
+	public ObservablePart newInstance() {
+		if (NotYetImplemented.confirm("Add")) {
+			ObservablePart newInstance = getRoot().newInstance(getClass());
+			newInstance.setParent(getParent());
+			getParent().getParts().add(newInstance);
+			return newInstance;
+		}
+		return null;
+	}
+	@Override
+	public void delete() {
+		super.delete();
+		getParent().getParts().remove(this);
+	}
+
 
 }

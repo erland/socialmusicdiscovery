@@ -81,4 +81,13 @@ public interface ObservableEntity<T extends SMDIdentity> extends ModelObject, Co
 	 * @see Class#getSimpleName()  
 	 */
 	String getTypeName();
+
+	/**
+	 * Get the persistent root type that this entity implements. This type is required 
+	 * in order to save news instance as the appropriate type when posted to the server.
+	 * 
+	 * @return An interface that this instance implements and that extends {@link SMDIdentity}
+	 * @see Class#getSimpleName()  
+	 */
+	Class<? extends SMDIdentity> getPersistentType();
 }

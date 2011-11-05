@@ -217,6 +217,7 @@ public class WorkPanel extends AbstractComposite<ObservableWork> {
 		//
 		IObservableList getWorkPartsObserveList = BeansObservables.observeList(Realm.getDefault(), getModel(), "parts");
 		partsViewer.setInput(getWorkPartsObserveList);
+//		partsViewer.setInput(getModel().getParts());
 		//
 		return bindingContext;
 	}

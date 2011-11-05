@@ -55,8 +55,9 @@ public class Delete extends AbstractHandler implements IHandler {
 		List<? extends Deletable> victims = CommandUtil.getDefaultVariable(event);
 		List<? extends AbstractDependentEntity> dependents = resolveDependents(victims);
 		
-		boolean isConfirmed = MessageDialog.openConfirm(null, "Delete", "Delete "+victims.size()+" element(s) and " +dependents.size() + "dependents? This action can NOT be undone!");
-		isConfirmed &= NotYetImplemented.confirm("Delete");
+		String qn = dependents.isEmpty() ? "Delete "+victims.size()+" element(s)?" : "Delete "+victims.size()+" element(s) and " +dependents.size() + " dependents?";
+		boolean isConfirmed = MessageDialog.openConfirm(null, "Delete", qn + " Note: This action can NOT be undone!");
+		isConfirmed = isConfirmed && NotYetImplemented.confirm("Delete");
 		if (isConfirmed) {
 			if (WorkbenchUtil.closeEditors(victims)) {
 				for (AbstractDependentEntity d : dependents) {
