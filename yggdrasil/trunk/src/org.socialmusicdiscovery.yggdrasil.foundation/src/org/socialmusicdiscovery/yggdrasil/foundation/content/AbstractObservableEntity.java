@@ -91,7 +91,7 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 
 	@Expose
 	private String name;
-	private final Class rootType;
+	private final Class<T>  rootType;
 
 	private transient boolean isDirty;
 
@@ -104,14 +104,14 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 	}
 
 	@SuppressWarnings("unchecked")
-	private Class<? extends AbstractObservableEntity> resolveRootType() {
+	private Class<T> resolveRootType() {
 		for (Class type : getClass().getInterfaces()) {
 			//			Class superclass = type.getSuperclass(); // null!?
 			if (SMDIdentity.class.isAssignableFrom(type)) {
 				return type;
 			}
 		}
-		return getClass();
+		return (Class<T>) getClass();
 	}
 
 	/**
@@ -272,6 +272,10 @@ public abstract class AbstractObservableEntity<T extends SMDIdentity> extends Ab
 		return rootType.getSimpleName();
 	}
 
+	@Override
+	public Class<T> getPersistentType() {
+		return rootType;
+	}
 	/**
 	 * Is this instance fully loaded? If not, it will only hold fundamental
 	 * identity properties like {@link #getId()} and {@link #getName()}.

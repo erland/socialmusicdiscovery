@@ -25,46 +25,42 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.yggdrasil.core.editors.work;
+package org.socialmusicdiscovery.yggdrasil.core.commands;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.IWorkbenchPartSite;
-import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservableWork;
-import org.socialmusicdiscovery.yggdrasil.foundation.editors.AbstractEditorPart;
-import org.socialmusicdiscovery.yggdrasil.foundation.util.ViewerUtil;
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.IHandler;
+import org.eclipse.swt.widgets.Shell;
+import org.socialmusicdiscovery.yggdrasil.core.editors.contributor.ContributorDialog;
+import org.socialmusicdiscovery.yggdrasil.foundation.Activator;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.AbstractContributableEntity;
+import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservableContributor;
+import org.socialmusicdiscovery.yggdrasil.foundation.util.CommandUtil;
+import org.socialmusicdiscovery.yggdrasil.foundation.util.NotYetImplemented;
 
 /**
- * <p>
- * Menu IDs (suffix to the part name) are defined as constants, as recommended
- * by
- * {@link IWorkbenchPartSite#registerContextMenu(org.eclipse.jface.action.MenuManager, org.eclipse.jface.viewers.ISelectionProvider)}:
- * <ul>
- * <li>{@link #MENU_ID_CONTRIBUTORS}</li>
- * </ul>
- * </p>
+ * Creates a new instance that is persisted immediately.
  * 
  * @author Peer Törngren
- * 
+ *
  */
-public class WorkEditor extends AbstractEditorPart<ObservableWork, WorkUI> {
-	public WorkEditor() {
-	}
-
-	public static final String ID = WorkEditor.class.getName();
-//	private static final String MENU_ID_CONTRIBUTORS = ContributorPanel.MENU_ID;
+public class CreatePart extends AbstractHandler implements IHandler {
 
 	@Override
-	public void createPartControl(Composite parent) {
-		super.createPartControl(parent, new WorkUI(parent, SWT.NONE));
-		hookContextMenus();
+	public Object execute(ExecutionEvent event) throws ExecutionException {
+		AbstractContributableEntity r = (AbstractContributableEntity) CommandUtil.resolveEditorInput(event); 
+		return newInstance(r);
 	}
 
-	private void hookContextMenus() {
-		ViewerUtil.hookContextMenu(this, getUI().getWorkPanel().getPartsViewer());
-//		ViewerUtil.hookContextMenu(this, MENU_ID_CONTRIBUTORS, 
-//				getUI().getArtistPanel().getGridViewer()
-//		);
+	private ObservableContributor newInstance(AbstractContributableEntity r) {
+		if (NotYetImplemented.confirm("Create new Contributor")) {
+			ObservableContributor c = new ContributorDialog().createChild(r);
+			if (c!=null) {
+				Activator.getDefault().getDataSource().persist(new Shell(), c);
+			}
+			return c;
+		}
+		return null;
 	}
-
 }

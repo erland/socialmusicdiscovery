@@ -129,8 +129,17 @@ public interface DataSource extends ModelObject {
 		 */
 		boolean isGreedyLoad();
 
+		/**
+		 * Create a new instance of supplied type (assuming that root handles
+		 * instances of several types). Fire events and take necessary actions to
+		 * ensure that the model stays consistent and all listeners are notified.
+		 * 
+		 * @param type
+		 */
+		<U extends AbstractObservableEntity> U newInstance(Class<U> type);
+		
 	}
-	
+
 	/**
 	 * <p>
 	 * A subset of a {@link Root}, primarily created in order to improve

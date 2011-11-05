@@ -564,7 +564,9 @@ public class RESTDataSource extends AbstractObservable implements ModelObject, D
 		 */
 		private void create(ObservableEntity entity) {
 			assert isNew(entity) : "Not a new entity: "+entity;
-			T echo = resource(getPath()).type(MediaType.APPLICATION_JSON).post(getType(), entity);
+			Class<T> type = entity.getPersistentType();
+			T echo = resource(getPath()).type(MediaType.APPLICATION_JSON).post(type, entity);
+			assert echo.getClass().equals(entity.getClass()) : "Bad post; echo did not return proper type. Expected: "+entity.getClass()+", actual: "+echo.getClass();
 			entity.setId(echo.getId());
 			entity.setDirty(false);
 			cache.add(entity);
@@ -689,24 +691,32 @@ public class RESTDataSource extends AbstractObservable implements ModelObject, D
 		@SuppressWarnings("unchecked")
 		@Override
 		public T newInstance() {
-			AbstractObservableEntity<T> newInstance = createInstance();
-			newInstance.postCreate();
-			newInstance.setName("<new>");
-			if (sortedEntities!=null) {
-				sortedEntities.add(newInstance);
-				sectionAdd(newInstance);
-			}
-			
-			return (T) newInstance;
+			return (T) createInstance(observableType);
+		}
+
+		/**
+		 * CRUD: <b>C</b>reate
+		 * @return entity
+		 */
+		@Override
+		public <U extends AbstractObservableEntity> U newInstance(Class<U> type) {
+			return createInstance(type);
 		}
 
 //		private String newId() {
 //			return UUID.randomUUID().toString();
 //		}
 
-		private AbstractObservableEntity<T> createInstance() {
+		private <U extends AbstractObservableEntity> U createInstance(Class<U> type) {
 			try {
-				return observableType.newInstance();
+				U newInstance = type.newInstance();
+				newInstance.postCreate();
+				newInstance.setName("<new>");
+				if (sortedEntities!=null) {
+					sortedEntities.add(newInstance);
+					sectionAdd(newInstance);
+				}
+				return newInstance;
 			} catch (InstantiationException e) {
 				throw new FatalApplicationException("Unable to create new instance of type "+observableType, e);  //$NON-NLS-1$
 			} catch (IllegalAccessException e) {

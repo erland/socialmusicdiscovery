@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.socialmusicdiscovery.yggdrasil.foundation.content.ObservablePart;
 import org.socialmusicdiscovery.yggdrasil.foundation.editors.AbstractEditorPart;
+import org.socialmusicdiscovery.yggdrasil.foundation.util.ViewerUtil;
 
 /**
 * <p>
@@ -55,13 +56,14 @@ public class PartEditor extends AbstractEditorPart<ObservablePart, PartUI> {
 	@Override
 	public void createPartControl(Composite parent) {
 		super.createPartControl(parent, new PartUI(parent, SWT.NONE));
-//		hookContextMenus();
+		hookContextMenus();
 	}
 
-//	private void hookContextMenus() {
+	private void hookContextMenus() {
+		ViewerUtil.hookContextMenu(this, getUI().getWorkPanel().getPartsViewer());
 //		ViewerUtil.hookContextMenu(this, MENU_ID_CONTRIBUTORS, 
 //				getUI().getArtistPanel().getGridViewer()
 //		);
-//	}
-//
+	}
+
 }
