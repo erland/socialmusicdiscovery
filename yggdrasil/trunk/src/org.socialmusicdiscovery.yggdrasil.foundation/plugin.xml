@@ -203,10 +203,7 @@
                mnemonic="%popup.command.play.mnemonic"
                style="push">
             <visibleWhen
-                  checkEnabled="false">
-               <instanceof
-                     value="org.socialmusicdiscovery.server.business.model.core.PlayableElement">
-               </instanceof>
+                  checkEnabled="true">
             </visibleWhen>
          </command>
       </menuContribution>
