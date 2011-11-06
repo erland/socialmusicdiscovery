@@ -356,7 +356,9 @@ public class RESTDataSource extends AbstractObservable implements ModelObject, D
 		private final class MyEntityCollectionListener implements IListChangeListener {
 			@Override
 			public void handleListChange(ListChangeEvent event) {
-				firePropertyChange(PROP_name);  // update number of children in name
+				if (!event.getObservableList().isDisposed()) {
+					firePropertyChange(PROP_name);  // update number of children in name
+				}
 			}
 		}
 
@@ -464,6 +466,8 @@ public class RESTDataSource extends AbstractObservable implements ModelObject, D
 		public IObservableList getObservableChildren() {
 			if (!isLoaded && (isConnected || isAutoConnect)) {
 				JobUtil.run(new MyLoader(this), "Load content: "+name, false);
+//				Disable to avoid "Reentrant exception" - but where do we fire the event?
+//				firePropertyChange(PROP_name); // update number of children
 			}
 			return sortedEntities==null || sortedEntities.size()<mimimumSectionSize ? sortedEntities : sections;
 		}
@@ -471,7 +475,7 @@ public class RESTDataSource extends AbstractObservable implements ModelObject, D
 		@SuppressWarnings("unchecked")
 		private void load() {
 			List<ObservableEntity> all = new ArrayList<ObservableEntity>(findAll());
-			Collections.sort(all);
+			Collections.sort(all); 
 			sortedEntities = new WritableList(all, getType());
 			isLoaded = true;
 			sortedEntities.addListChangeListener(new MyEntityCollectionListener());
@@ -653,8 +657,7 @@ public class RESTDataSource extends AbstractObservable implements ModelObject, D
 				List<MySection> reversedSections = new ArrayList<MySection>(getSections());
 				Collections.reverse(reversedSections);
 				for (MySection s : reversedSections) {
-					boolean sortsAfterFirstChild = element.getName().compareTo(s.getFirstName()) >= 0;
-					if (sortsAfterFirstChild) {
+					if (s.sortsAfterFirstChild(element)) {
 						return s;
 					}
 				}
@@ -779,13 +782,13 @@ public class RESTDataSource extends AbstractObservable implements ModelObject, D
 	private class MySection<T extends SMDIdentity> extends AbstractObservable implements ModelObject, ItemFactory<T> {
 		
 		private final MyRoot<T> root;
-		private final String name;
-		private final String firstName;
-		private IObservableList children;
+		private final IObservableList children;
+		private final boolean isFirstSection;
 		
 		@SuppressWarnings("unchecked")
 		private MySection(MyRoot<T> root, List list, boolean isFirstSection) {
 			this.root = root;
+			this.isFirstSection = isFirstSection;
 			
 			// Must wrap wrapped list since WritableList updates backed list, which is an unmodifiable subset.
 			// If we change this to a WritableSet, the extra wrapping is not required (compare the 
@@ -793,11 +796,14 @@ public class RESTDataSource extends AbstractObservable implements ModelObject, D
 			ArrayList wrappedWrapped = new ArrayList(list);
 			this.children = new WritableList(wrappedWrapped, null);
 			
-			ModelObject firstChild = (ModelObject) list.get(0);
-			this.name = firstChild.getName() + " >>"; // TODO replace with icon/decorator? 
-			this.firstName = isFirstSection ? "" : firstChild.getName(); 
 //			int max = Math.min(10, n.length());
 //			String string = n.substring(0, max);
+		}
+
+		public boolean sortsAfterFirstChild(ModelObject element) {
+			String prospect = element.getName();
+			String threshold = isFirstSection ? "" : getFirstChild().getName();
+			return prospect.compareTo(threshold) >= 0;
 		}
 
 		public boolean contains(ModelObject entity) {
@@ -817,10 +823,6 @@ public class RESTDataSource extends AbstractObservable implements ModelObject, D
 			return !contains(element) && getObservableChildren().add(element);
 		}
 
-		public String getFirstName() {
-			return this.firstName;
-		}
-
 		@Override
 		public Object getAdapter(Class adapter) {
 			return adapter.isInstance(this) ? this : root.getAdapter(adapter);
@@ -833,7 +835,9 @@ public class RESTDataSource extends AbstractObservable implements ModelObject, D
 
 		@Override
 		public String getName() {
-			return name;
+			ModelObject child1 = getFirstChild();
+			String childName1 = child1==null ? "" : child1.getName();
+			return childName1 + " >>"; // TODO replace with icon/decorator? 
 		}
 
 		@Override
@@ -844,6 +848,11 @@ public class RESTDataSource extends AbstractObservable implements ModelObject, D
 		@Override
 		public boolean hasChildren() {
 			return children!=null && !children.isEmpty();
+		}
+
+		private ModelObject getFirstChild() {
+			// avoid WidgetDisposed exception when shutting down UI
+			return children.isDisposed() || children.isEmpty() ? null : (ModelObject) children.get(0);
 		}
 
 	}
