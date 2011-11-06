@@ -78,6 +78,10 @@
             id="org.socialmusicdiscovery.yggdrasil.core.commands.EditArtist"
             name="%command.editArtist.name">
       </command>
+      <command
+            id="org.socialmusicdiscovery.yggdrasil.core.commands.EditContributableEntity"
+            name="%command.editContributableEntity.name">
+      </command>
    </extension>
   <extension
           point="org.eclipse.ui.handlers">
@@ -105,25 +109,21 @@
            </iterate>
         </enabledWhen>
      </handler>
+     <handler
+           class="org.socialmusicdiscovery.yggdrasil.core.commands.OpenContributableEntityEditor"
+           commandId="org.socialmusicdiscovery.yggdrasil.core.commands.EditContributableEntity">
+        <enabledWhen>
+           <iterate
+                 ifEmpty="false">
+              <instanceof
+                    value="org.socialmusicdiscovery.server.business.model.core.Contributor">
+              </instanceof>
+           </iterate>
+        </enabledWhen>
+     </handler>
    </extension>
   <extension
         point="org.eclipse.ui.menus">
-      <menuContribution
-            allPopups="true"
-            locationURI="org.socialmusicdiscovery.yggdrasil.core.editors.artist.ArtistEditor">
-         <command
-               commandId="org.socialmusicdiscovery.yggdrasil.foundation.commands.PlayElement"
-               label="%popup.command.play.label"
-               mnemonic="%popup.command.play.mnemonic"
-               style="push">
-            <visibleWhen
-                  checkEnabled="false">
-               <instanceof
-                     value="org.socialmusicdiscovery.server.business.model.core.PlayableElement">
-               </instanceof>
-            </visibleWhen>
-         </command>
-      </menuContribution>
       <menuContribution
             allPopups="true"
             locationURI="popup:org.socialmusicdiscovery.yggdrasil.core.editors.ContributorPanel">
@@ -165,6 +165,16 @@
                commandId="org.socialmusicdiscovery.yggdrasil.core.commands.EditRecording"
                label="%popup.command.editRecording.label"
                mnemonic="%popup.command.editRecording.mnemonic"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.socialmusicdiscovery.yggdrasil.core.editors.artist.ArtistEditor">
+         <command
+               commandId="org.socialmusicdiscovery.yggdrasil.core.commands.EditContributableEntity"
+               label="%popup.command.editContributedEntity.label"
+               mnemonic="%popup.command.editContributedEntity.mnemonic"
                style="push">
          </command>
       </menuContribution>

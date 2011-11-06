@@ -197,6 +197,18 @@
                   checkEnabled="true">
             </visibleWhen>
          </command>
+         <command
+               commandId="org.socialmusicdiscovery.yggdrasil.foundation.commands.PlayElement"
+               label="%popup.command.play.label"
+               mnemonic="%popup.command.play.mnemonic"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <instanceof
+                     value="org.socialmusicdiscovery.server.business.model.core.PlayableElement">
+               </instanceof>
+            </visibleWhen>
+         </command>
       </menuContribution>
    </extension>
    <extension
