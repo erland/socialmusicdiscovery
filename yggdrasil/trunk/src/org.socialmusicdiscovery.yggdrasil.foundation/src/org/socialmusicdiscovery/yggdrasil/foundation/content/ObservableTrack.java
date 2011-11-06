@@ -65,8 +65,8 @@ public class ObservableTrack extends AbstractDependentEntity<Track> implements T
 	 * us control if and when to update dependencies; if we have no listeners,
 	 * the setter is free of side effects.
 	 */
-	private class MyRecordingChangeListener implements PropertyChangeListener {
-		public MyRecordingChangeListener(ObservableRecording recording) {
+	private class MyRecordingManager implements PropertyChangeListener {
+		public MyRecordingManager(ObservableRecording recording) {
 			addTo(recording);
 		}
 
@@ -86,7 +86,8 @@ public class ObservableTrack extends AbstractDependentEntity<Track> implements T
 		private void addTo(ObservableRecording r) {
 			if (r!=null && r.isTracksLoaded()) {
 				boolean added = r.getTracks().add(ObservableTrack.this);
-				assert added : "Not added to recording: "+r;
+				// Track may already be added, e.g. if we load the Recording first and then navigate to the Track's release
+				assert added || r.getTracks().contains(ObservableTrack.this): "Not added to recording: "+r;
 			}
 		}
 	}
@@ -332,7 +333,7 @@ public class ObservableTrack extends AbstractDependentEntity<Track> implements T
 		titleManager.run();
 		ChangeMonitor.observe(titleManager, this, PROP_recording, PROP_name);
 		contributorFacade = new MyContributorFacade();
-		addPropertyChangeListener(PROP_recording, new MyRecordingChangeListener(getRecording()));
+		addPropertyChangeListener(PROP_recording, new MyRecordingManager(getRecording()));
 	}
 
 	@Override
