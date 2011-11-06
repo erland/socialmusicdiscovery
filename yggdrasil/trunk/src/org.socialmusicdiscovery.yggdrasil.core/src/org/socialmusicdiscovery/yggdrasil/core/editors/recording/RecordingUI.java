@@ -349,4 +349,42 @@ public class RecordingUI extends AbstractComposite<ObservableRecording> {
 	public GridTableViewer getTracksViewer() {
 		return tracksViewer;
 	}
+	public CTabFolder getTabFolder() {
+		return tabFolder;
+	}
+
+	/**
+	 * @return the artistTab
+	 */
+	public CTabItem getArtistTab() {
+		return artistTab;
+	}
+
+	/**
+	 * @return the workTab
+	 */
+	public CTabItem getWorkTab() {
+		return workTab;
+	}
+
+	/**
+	 * @return the sessionTab
+	 */
+	public CTabItem getSessionTab() {
+		return sessionTab;
+	}
+
+	/**
+	 * @return the workGrid
+	 */
+	public Grid getWorkGrid() {
+		return workGrid;
+	}
+
+	/**
+	 * @return the worksViewer
+	 */
+	public GridTableViewer getWorksViewer() {
+		return worksViewer;
+	}
 }
