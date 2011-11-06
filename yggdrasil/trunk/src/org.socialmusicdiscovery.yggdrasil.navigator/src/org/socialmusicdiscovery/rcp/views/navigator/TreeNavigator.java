@@ -31,7 +31,7 @@ package org.socialmusicdiscovery.rcp.views.navigator;
 import org.eclipse.jface.databinding.viewers.ObservableListTreeContentProvider;
 import org.eclipse.jface.databinding.viewers.ViewerSupport;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -71,7 +71,7 @@ public class TreeNavigator extends Composite {
 		ObservableListTreeContentProvider contentProvider = new ObservableListTreeContentProvider(new NavigatorObservableFactory(), new NavigatorStructureAdvisor());
 		treeViewer.setContentProvider(contentProvider);
 		treeViewer.setLabelProvider(LabelProviderFactory.forNavigator(contentProvider));
-		treeViewer.setSorter(new ViewerSorter()); // list is initially sorted, but we need to handle additions,removals and name changes
+		treeViewer.setComparator(new ViewerComparator()); // list is initially sorted, but we need to handle additions,removals and name changes
 	}
 
 	@Override
