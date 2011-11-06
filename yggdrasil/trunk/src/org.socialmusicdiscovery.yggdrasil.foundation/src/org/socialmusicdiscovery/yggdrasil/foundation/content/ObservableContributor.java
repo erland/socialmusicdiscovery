@@ -33,11 +33,20 @@ import java.beans.PropertyChangeListener;
 import org.socialmusicdiscovery.server.business.model.SMDIdentity;
 import org.socialmusicdiscovery.server.business.model.core.Artist;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
+import org.socialmusicdiscovery.server.business.model.core.Recording;
 
 import com.google.gson.annotations.Expose;
 
 public class ObservableContributor extends AbstractDependentEntity<Contributor> implements Contributor {
 
+	/**
+	 * Some owners must be explicitly inflated in order to reveal their derived names. 
+	 */
+	private static final Class[] OWNERS_TO_INFLATE = {
+		Recording.class,
+//		RecordingSession.class, // TODO implement (need Root for this)
+	};
+	
 	/**
 	 * Listen to my own property change events to update affected
 	 * {@link ObservableArtist} whenever the artist property changes. We
@@ -145,7 +154,19 @@ public class ObservableContributor extends AbstractDependentEntity<Contributor> 
 	@Override
 	protected void postInflate() {
 		super.postInflate();
+		if (!getOwner().isInflated() && ownerMustBeInflated()) {
+			getOwner().inflate();
+		}
 		hookListeners();
+	}
+
+	private boolean ownerMustBeInflated() {
+		for (Class type : OWNERS_TO_INFLATE) {
+			if (type.isInstance(getOwner())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override
