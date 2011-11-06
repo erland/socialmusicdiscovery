@@ -169,7 +169,6 @@ public class ReleaseUI extends AbstractComposite<ObservableRelease> {
 		
 		gridViewerTracks = new GridTableViewer(tracksArea, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
 		gridTracks = gridViewerTracks.getGrid();
-		gridTracks.setCellSelectionEnabled(true);
 		gridTracks.setHeaderVisible(true);
 		formToolkit.paintBordersFor(gridTracks);
 		

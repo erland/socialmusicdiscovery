@@ -109,9 +109,7 @@ public class ContributorPanel extends AbstractComposite<AbstractContributableEnt
 		
 		gridTableViewer = new GridTableViewer(this, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI);
 		Grid grid = gridTableViewer.getGrid();
-		grid.setRowHeaderVisible(true);
 		grid.setHeaderVisible(true);
-		grid.setCellSelectionEnabled(true);
 		gridTableViewer.setContentProvider(new ArrayContentProvider());
 		toolkit.paintBordersFor(grid);
 		
