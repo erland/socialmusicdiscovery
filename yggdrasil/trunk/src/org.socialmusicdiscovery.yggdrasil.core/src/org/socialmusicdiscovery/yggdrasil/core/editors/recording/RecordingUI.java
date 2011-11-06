@@ -190,7 +190,6 @@ public class RecordingUI extends AbstractComposite<ObservableRecording> {
 		
 		tracksViewer = new GridTableViewer(tracksArea, SWT.BORDER | SWT.V_SCROLL);
 		tracksGrid = tracksViewer.getGrid();
-		tracksGrid.setCellSelectionEnabled(true);
 		tracksGrid.setHeaderVisible(true);
 		formToolkit.paintBordersFor(tracksGrid);
 		
