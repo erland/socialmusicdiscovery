@@ -113,7 +113,7 @@ public class GridViewerColumnComparator extends ViewerComparator implements Sele
 	 * Creates and registers a sorter with supplied comparator.  
 	 */
 	public static GridViewerColumnComparator hook(GridViewerColumn gvc, Comparator comparator) {
-		return new GridViewerColumnComparator(gvc, null);
+		return new GridViewerColumnComparator(gvc, comparator);
 	}
 
 	/**
