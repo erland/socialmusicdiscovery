@@ -48,7 +48,8 @@ public class RecordingEditor extends AbstractEditorPart<ObservableRecording, Rec
 	private void hookAllContextMenus() {
 		hookContextMenus(
 			getUI().getTracksViewer(),
-			getUI().getArtistPanel().getGridViewer()
+			getUI().getArtistPanel().getGridViewer(),
+			getUI().getWorkGridViewer()
 		);
 		ViewerUtil.hookContextMenu(this, MENU_ID_CONTRIBUTORS, 
 			getUI().getArtistPanel().getGridViewer()
