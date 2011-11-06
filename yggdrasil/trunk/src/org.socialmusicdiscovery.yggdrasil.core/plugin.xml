@@ -82,6 +82,10 @@
             id="org.socialmusicdiscovery.yggdrasil.core.commands.EditContributableEntity"
             name="%command.editContributableEntity.name">
       </command>
+      <command
+            id="org.socialmusicdiscovery.yggdrasil.core.commands.EditTrackRelease"
+            name="%command.editTrackRelease.name">
+      </command>
    </extension>
   <extension
           point="org.eclipse.ui.handlers">
@@ -117,6 +121,18 @@
                  ifEmpty="false">
               <instanceof
                     value="org.socialmusicdiscovery.server.business.model.core.Contributor">
+              </instanceof>
+           </iterate>
+        </enabledWhen>
+     </handler>
+     <handler
+           class="org.socialmusicdiscovery.yggdrasil.core.commands.OpenTrackReleaseEditor"
+           commandId="org.socialmusicdiscovery.yggdrasil.core.commands.EditTrackRelease">
+        <enabledWhen>
+           <iterate
+                 ifEmpty="false">
+              <instanceof
+                    value="org.socialmusicdiscovery.server.business.model.core.Track">
               </instanceof>
            </iterate>
         </enabledWhen>
@@ -175,6 +191,16 @@
                commandId="org.socialmusicdiscovery.yggdrasil.core.commands.EditContributableEntity"
                label="%popup.command.editContributedEntity.label"
                mnemonic="%popup.command.editContributedEntity.mnemonic"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.socialmusicdiscovery.yggdrasil.core.editors.recording.RecordingEditor">
+         <command
+               commandId="org.socialmusicdiscovery.yggdrasil.core.commands.EditTrackRelease"
+               label="%popup.command.editTrackRelease.label"
+               mnemonic="%popup.command.editTrackRelease.mnemonic"
                style="push">
          </command>
       </menuContribution>
