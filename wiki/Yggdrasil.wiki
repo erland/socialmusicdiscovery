@@ -15,9 +15,11 @@ Yggdrasil is not primarily an instrument for enjoying music, more about paving t
 
 The preliminary logo was downloaded from [http://commons.wikimedia.org/wiki WikiMedia] and slightly augmented with text. Credits and license details can be found [http://socialmusicdiscovery.googlecode.com/svn/yggdrasil/trunk/src/org.socialmusicdiscovery.yggdrasil.foundation/icons/logo/License.txt here].
 
-The client itself is provided under the same license as the SMD project, i.e the [http://www.opensource.org/licenses/bsd-license.php New BSD license].
-
 Eclipse RCP is licensed under the [http://www.eclipse.org/legal/epl-v10.html Eclipse Public license].
+
+
+The Yggdrasil client itself is provided under the same license as the SMD project ([http://www.opensource.org/licenses/bsd-license.php New BSD license]).
+
 
 *The Prototype RCP Client*
 
