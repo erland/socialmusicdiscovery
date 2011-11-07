@@ -30,7 +30,6 @@ package org.socialmusicdiscovery.yggdrasil.foundation.util;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -71,13 +70,6 @@ import org.socialmusicdiscovery.yggdrasil.foundation.util.ChangeMonitor.Property
 	private final Set<LinkedListener> links = new HashSet<LinkedListener>();
 	private final  Observable observed;
 
-	/**
-	 * Convenience constructor, primarily for testing.
-	 */
-	public LinkedListener(Observable observable, Runnable runner, PropertyData... allData) {
-		this(observable, Arrays.asList(allData), runner);
-		
-	}
 	public LinkedListener(Observable observable, List<PropertyData> allData, Runnable runner) {
 		assert !allData.isEmpty() : "Must have data to register listeners";
 		this.runner = runner;
@@ -85,11 +77,16 @@ import org.socialmusicdiscovery.yggdrasil.foundation.util.ChangeMonitor.Property
 		this.tail = allData.subList(1, allData.size());
 		this.observed = observable;
 		
-		assert data.propertyName!=null : "No property name";
-		assert data.propertyType!=null : "No property type";
+		assert tail.isEmpty() || !data.isAnyProperty : "anyProperty set on intermediate element: "+allData;
+		assert data.isAnyProperty || data.propertyName!=null : "No property name";
+		assert data.isAnyProperty || data.propertyType!=null : "No property type";
 
-		observable.addPropertyChangeListener(data.propertyName, this);
-		chain(observable, tail, runner);
+		if (data.isAnyProperty) {
+			observable.addPropertyChangeListener(this);
+		} else {
+			observable.addPropertyChangeListener(data.propertyName, this);
+			chain(observable, tail, runner);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -116,7 +113,9 @@ import org.socialmusicdiscovery.yggdrasil.foundation.util.ChangeMonitor.Property
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		if (data.isCollection) {
+		if (data.isAnyProperty) {
+			// no-op - we only need to notify
+		} else if (data.isCollection) {
 			handleChangedCollection(evt);
 		} else if (Observable.class.isAssignableFrom(data.propertyType)) {
 			handleChangedObservable(evt);
@@ -163,11 +162,15 @@ import org.socialmusicdiscovery.yggdrasil.foundation.util.ChangeMonitor.Property
 	}
 
 	private void release(Observable observed) {
-		observed.removePropertyChangeListener(data.propertyName, this);
-		for (LinkedListener c : links) {
-			c.release();
+		if (data.isAnyProperty) {
+			observed.removePropertyChangeListener(this);
+		} else {
+			observed.removePropertyChangeListener(data.propertyName, this);
+			for (LinkedListener c : links) {
+				c.release();
+			}
+			links.clear();
 		}
-		links.clear();
 	}
 
 	@Override

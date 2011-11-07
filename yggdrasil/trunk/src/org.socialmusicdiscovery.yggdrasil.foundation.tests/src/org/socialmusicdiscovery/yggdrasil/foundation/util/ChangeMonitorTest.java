@@ -67,8 +67,9 @@ public class ChangeMonitorTest extends AbstractTestCase {
 
 	private AnObservable root;
 	private MyObserver observer;
-	private AnObservable child1;
-	private AnObservable child2;
+	private AnObservable rootChild;
+	private AnObservable grandChild;
+	private AnObservable grandGrandChild;
 
 	private class MyObserver implements Runnable {
 
@@ -92,17 +93,18 @@ public class ChangeMonitorTest extends AbstractTestCase {
 		observer = new MyObserver();
 		
 		root = new AnObservable("root");
-		child1 = new AnObservable("child1");
-		child2 = new AnObservable("child2");
+		rootChild = new AnObservable("childOfRoot");
+		grandChild = new AnObservable("grandChildOfRoot");
+		grandGrandChild = new AnObservable("grandGrandChildOfRoot");
 		
-		root.setChild(child1);
-		root.add(child1);
+		root.setChild(rootChild);
+		root.add(rootChild);
 		
-		child1.setChild(child2);
-		child1.add(child2);
+		rootChild.setChild(grandChild);
+		rootChild.add(grandChild);
 		
-		child2.setChild(root);
-		child2.add(root);
+		grandChild.setChild(grandGrandChild);
+		grandChild.add(grandGrandChild);
 	}
 
 	@Test
@@ -117,64 +119,91 @@ public class ChangeMonitorTest extends AbstractTestCase {
 	@Test
 	public void testNestedProperty() {
 		ChangeMonitor.observe(observer, root, CHILD, NAME);
-		child1.changeName();
+		rootChild.changeName();
 		assertChanged();
 		
 		ChangeMonitor.observe(observer, root, CHILD, CHILD, NAME);
-		child2.changeName();
+		grandChild.changeName();
 		assertChanged();
 	}
 
 	@Test
 	public void testObjectChange() {
 		ChangeMonitor.observe(observer, root, CHILD);
-		root.setChild(child2);
+		root.setChild(grandChild);
 		assertChanged();
-		root.setChild(child1);
+		root.setChild(rootChild);
 		assertChanged();
 		root.setChild(null);
 		assertChanged();
-		root.setChild(child1);
+		root.setChild(rootChild);
 		assertChanged();
 	}
 
 	@Test
 	public void testNestedObjectChange() {
 		ChangeMonitor.observe(observer, root, CHILD, CHILD);
-		child1.setChild(null);
+		rootChild.setChild(null);
 		assertChanged();
-		child1.setChild(child1);
+		rootChild.setChild(rootChild);
 		assertChanged();
-		child1.setChild(child2);
+		rootChild.setChild(grandChild);
 		assertChanged();
 
 		ChangeMonitor.observe(observer, root, CHILD, CHILD, CHILD);
-		child2.setChild(child1);
+		grandChild.setChild(rootChild);
 		assertChanged();
-		child1.setChild(child1);
+		rootChild.setChild(rootChild);
 		assertChanged();
 	}
 	
 	@Test
-	public void testNestedObjectAnNameChange() {
+	public void testNestedObjectAndNameChange() {
 		ChangeMonitor.observe(observer, root, CHILD, CHILD, NAME);
-		child1.setChild(null);
+		rootChild.setChild(null);
 		assertChanged();
-		child1.setChild(child1);
+		rootChild.setChild(rootChild);
 		assertChanged();
-		child1.setChild(child2);
+		rootChild.setChild(grandChild);
 		assertChanged();
+		
+		grandChild.changeName();
+		assertChanged();
+		
+		rootChild.changeName();
+		assertUnchanged();
+	}
+	
+	@Test
+	public void testAnyChange() {
+		ChangeMonitor.observe(observer, root, (String) null);
 
-		ChangeMonitor.observe(observer, root, CHILD, CHILD, CHILD);
-		child2.setChild(child1);
-		assertChanged();
-		child1.setChild(child1);
+		root.changeName();
 		assertChanged();
 		
-		child2.changeName();
+		rootChild.changeName();
+		assertUnchanged();
+	}
+	
+	@Test
+	public void testNestedObjectAndAnyChange() {
+		ChangeMonitor.observe(observer, root, CHILD, CHILD, null);
+
+		grandChild.changeName();
 		assertChanged();
 		
-		child1.changeName();
+		rootChild.changeName();
+		assertUnchanged();
+	}
+
+	@Test
+	public void testCollectionAndAnyChange() {
+		ChangeMonitor.observe(observer, root, CHILDREN, null);
+
+		rootChild.changeName();
+		assertChanged();
+		
+		grandChild.changeName();
 		assertUnchanged();
 	}
 	
@@ -206,21 +235,21 @@ public class ChangeMonitorTest extends AbstractTestCase {
 	@Test
 	public void testElementInCollection() {
 		ChangeMonitor.observe(observer, root, CHILDREN);
-		root.remove(child1);
+		root.remove(rootChild);
 		assertChanged();
-		root.add(child1);
+		root.add(rootChild);
 		assertChanged();
 		
 		ChangeMonitor.observe(observer, root, CHILD, CHILDREN);
-		child1.remove(child2);
+		rootChild.remove(grandChild);
 		assertChanged();
-		child1.add(child2);
+		rootChild.add(grandChild);
 		assertChanged();
 
 		ChangeMonitor.observe(observer, root, CHILD, CHILD, CHILDREN);
-		child2.remove(root);
+		grandChild.remove(grandGrandChild);
 		assertChanged();
-		child2.add(root);
+		grandChild.add(grandGrandChild);
 		assertChanged();
 	}
 
@@ -228,64 +257,64 @@ public class ChangeMonitorTest extends AbstractTestCase {
 	public void testPropertyInCollection() {
 		ChangeMonitor.observe(observer, root, CHILDREN, NAME);
 		
-		child1.changeName();
+		rootChild.changeName();
 		assertChanged();
 	}
 
 	@Test
 	public void testPropertyInCollectionAfterAdd() {
 		ChangeMonitor.observe(observer, root, CHILDREN, NAME);
-		root.remove(child1);
+		root.remove(rootChild);
 		assertChanged();
-		root.add(child1);
+		root.add(rootChild);
 		assertChanged();
 //		assertListener(child1, NAME);
 
-		child1.changeName();
+		rootChild.changeName();
 		assertChanged();
 		
 		ChangeMonitor.observe(observer, root, CHILD, CHILDREN, NAME);
-		child1.remove(child2);
+		rootChild.remove(grandChild);
 		assertChanged();
-		child1.add(child2);
+		rootChild.add(grandChild);
 		assertChanged();
-		child2.changeName();
+		grandChild.changeName();
 		assertChanged();
 
 		ChangeMonitor.observe(observer, root, CHILD, CHILD, CHILDREN, NAME);
-		child2.remove(root);
+		grandChild.remove(grandGrandChild);
 		assertChanged();
-		child2.add(root);
+		grandChild.add(grandGrandChild);
 		assertChanged();
-		root.changeName();
+		grandGrandChild.changeName();
 		assertChanged();
-		root.changeName();
+		grandGrandChild.changeName();
 		assertChanged();
 	}
 
 	@Test
 	public void testCollectionInCollection() {
 		ChangeMonitor.observe(observer, root, CHILDREN, CHILDREN, CHILDREN);
-		child2.remove(root);
+		grandChild.remove(grandGrandChild);
 		assertChanged();
-		child2.add(root);
+		grandChild.add(grandGrandChild);
 		assertChanged();
 	}
 	
 	@Test
 	public void testCollectionInCollectionAfterAdd() {
 		ChangeMonitor.observe(observer, root, CHILDREN, CHILDREN, CHILDREN);
-		root.remove(child1);
+		root.remove(rootChild);
 		assertChanged();
-		root.add(child1);
+		root.add(rootChild);
 		assertChanged();
-		child1.remove(child2);
+		rootChild.remove(grandChild);
 		assertChanged();
-		child1.add(child2);
+		rootChild.add(grandChild);
 		assertChanged();
-		child2.remove(root);
+		grandChild.remove(grandGrandChild);
 		assertChanged();
-		child2.add(root);
+		grandChild.add(grandGrandChild);
 		assertChanged();
 	}
 	
@@ -293,10 +322,10 @@ public class ChangeMonitorTest extends AbstractTestCase {
 	public void testPropertyInCollectionInCollection() {
 		ChangeMonitor.observe(observer, root, CHILDREN, CHILDREN, NAME);
 		
-		child2.changeName();
+		grandChild.changeName();
 		assertChanged();
 		
-		child1.changeName();
+		rootChild.changeName();
 		assertUnchanged();
 		root.changeName();
 		assertUnchanged();
@@ -305,12 +334,12 @@ public class ChangeMonitorTest extends AbstractTestCase {
 	@Test
 	public void testPopertyInCollectionInCollectionAfterAdd() {
 		ChangeMonitor.observe(observer, root, CHILDREN, CHILDREN, NAME);
-		child1.remove(child2);
+		rootChild.remove(grandChild);
 		assertChanged();
-		child1.add(child2);
+		rootChild.add(grandChild);
 		assertChanged();
 		
-		child2.changeName();
+		grandChild.changeName();
 		assertChanged();
 	}
 
@@ -324,7 +353,7 @@ public class ChangeMonitorTest extends AbstractTestCase {
 
 
 	private String dump() {
-		return dump(root, child1, child2);
+		return dump(root, rootChild, grandChild);
 	}
 	
 	private static String dump(AnObservable... observables) {
