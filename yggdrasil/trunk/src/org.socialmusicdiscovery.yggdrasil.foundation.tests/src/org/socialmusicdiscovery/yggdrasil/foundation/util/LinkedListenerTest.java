@@ -31,6 +31,7 @@ import static org.socialmusicdiscovery.yggdrasil.foundation.test.AnObservable.CH
 import static org.socialmusicdiscovery.yggdrasil.foundation.test.AnObservable.CHILDREN;
 import static org.socialmusicdiscovery.yggdrasil.foundation.test.AnObservable.NAME;
 
+import java.util.Arrays;
 import java.util.Set;
 
 import org.junit.Test;
@@ -169,6 +170,14 @@ public class LinkedListenerTest extends AbstractTestCase {
 		assertEquals(2, testee.getChain().size());
 	}
 	
+	@Test
+	public void testAnyData() {
+		PropertyData anyProperty = new PropertyData(AnObservable.class);
+		anyProperty.isAnyProperty = true;
+		LinkedListener testee = testee(anyProperty);
+		assertEquals(0, testee.getChain().size());
+	}
+	
 	/**
 	 * Make sure we can handle property change events with <code>null</code>
 	 * values.
@@ -181,6 +190,6 @@ public class LinkedListenerTest extends AbstractTestCase {
 	}
 	
 	private LinkedListener testee(PropertyData... data) {
-		return new LinkedListener(root, runnable, data);
+		return new LinkedListener(root, Arrays.asList(data), runnable);
 	}			
 }

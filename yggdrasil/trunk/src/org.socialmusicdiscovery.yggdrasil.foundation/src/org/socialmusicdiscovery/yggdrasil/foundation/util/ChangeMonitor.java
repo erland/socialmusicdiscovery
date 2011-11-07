@@ -28,6 +28,7 @@
 package org.socialmusicdiscovery.yggdrasil.foundation.util;
 
 import java.beans.Introspector;
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -58,6 +59,9 @@ public class ChangeMonitor {
 		public Class<?> propertyType;
 		public Class<?> elementType;
 
+		/** If <code>true</code>, listeners is notified of all {@link PropertyChangeEvent}s. */
+		public boolean isAnyProperty = false;
+
 		public PropertyData(Class<?> type) {
 			this.beanType = type;
 		}
@@ -69,7 +73,8 @@ public class ChangeMonitor {
 				+"\n\tproperty name: "+propertyName
 				+"\n\tproperty type: "+propertyType
 				+"\n\telement type: "+elementType
-				+"\n\tisCollection: "+isCollection;
+				+"\n\tisCollection: "+isCollection
+				+"\n\tisAnyProperty: "+isAnyProperty;
 		}
 
 	}
@@ -79,22 +84,38 @@ public class ChangeMonitor {
 		hook(observable, data, listener);
 	}
 	
+	/**
+	 * Get the data for setting up listeners to a chain of nested properties.
+	 * The last property name may be <code>null</code>, indicating that listener
+	 * should be notified of all {@link PropertyChangeEvent}s (when any property 
+	 * of the last element changes).
+	 * 
+	 * @param type
+	 *            of the bean we should listen to
+	 * @param propertyNames
+	 *            propertynames to listen to.
+	 * @return {@link List} of {@link PropertyData}
+	 */
 	public static List<PropertyData> getPropertyData(Class type, String... propertyNames) {
 		List<PropertyData> result = new ArrayList<PropertyData>();
 		Class currentType = type; 
 		for (String name : propertyNames) {
-			PropertyDescriptor descriptor = getDescriptor(currentType, name);
-			boolean isCollection = isCollectionType(descriptor.getPropertyType());
-			
 			PropertyData data = new PropertyData(currentType);
-			data.isCollection = isCollection;
-			data.propertyName = descriptor.getName();
-			data.propertyType = descriptor.getPropertyType();
-			if (isCollection) {
-				data.elementType = resolveElementType(currentType, descriptor);
-				currentType = data.elementType;
+			if (name==null) {
+				data.isAnyProperty = true;
 			} else {
-				currentType = data.propertyType;
+				PropertyDescriptor descriptor = getDescriptor(currentType, name);
+				boolean isCollection = isCollectionType(descriptor.getPropertyType());
+				
+				data.isCollection = isCollection;
+				data.propertyName = descriptor.getName();
+				data.propertyType = descriptor.getPropertyType();
+				if (isCollection) {
+					data.elementType = resolveElementType(currentType, descriptor);
+					currentType = data.elementType;
+				} else {
+					currentType = data.propertyType;
+				}
 			}
 			result.add(data);
 		}
