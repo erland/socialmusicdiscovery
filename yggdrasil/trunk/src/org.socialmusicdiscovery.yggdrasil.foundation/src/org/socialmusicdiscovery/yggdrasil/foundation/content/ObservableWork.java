@@ -50,7 +50,14 @@ public class ObservableWork extends AbstractContributableEntity<Work> implements
 	private GenericWritableList<Part> parts = new GenericWritableList<Part>();
 	
 	public ObservableWork() {
-		super(Work.TYPE);
+		this(Work.TYPE);
+	}
+	
+	/**
+	 * Exposed for subclasses that need to declare their specific type.
+	 */
+	protected ObservableWork(String type) {
+		super(type);
 	}
 	
 	@Override

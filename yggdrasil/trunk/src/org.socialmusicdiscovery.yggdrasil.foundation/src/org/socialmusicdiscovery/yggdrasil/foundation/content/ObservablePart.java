@@ -45,6 +45,9 @@ public class ObservablePart extends ObservableWork implements Part {
 	@Expose	private Integer number;
 	@Expose	private Work parent;
 
+	public ObservablePart() {
+		super(Part.TYPE);
+	}
 	public Integer getNumber() {
 		return number;
 	}
