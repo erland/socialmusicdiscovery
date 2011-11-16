@@ -92,10 +92,10 @@ public class ObservableTrack extends AbstractDependentEntity<Track> implements T
 		}
 	}
 
-	private class MyTitleManager implements Runnable {
+	private class MyTitleManager implements PropertyChangeListener {
 
 		@Override
-		public void run() {
+		public void propertyChange(PropertyChangeEvent evt) {
 			Recording r = getRecording();
 			String t = r==null ? null : r.getName();
 			setTitle(t);
@@ -107,7 +107,7 @@ public class ObservableTrack extends AbstractDependentEntity<Track> implements T
 	 * @param contributables
 	 */
 	@SuppressWarnings("unchecked")
-	private class MyContributorFacade extends AbstractContributableEntity implements Runnable {
+	private class MyContributorFacade extends AbstractContributableEntity implements PropertyChangeListener {
 		private EffectiveContributorsResolver<ObservableContributor> effectiveContributorsResolver;
 		private MyContributorFacade() {
 			super(MyContributorFacade.class.getSimpleName()); //s dummy
@@ -127,7 +127,7 @@ public class ObservableTrack extends AbstractDependentEntity<Track> implements T
 		}
 
 		@Override
-		public void run() {
+		public void propertyChange(PropertyChangeEvent evt) {
 			update(); // TODO refine, only update the affected set of contributors
 		}
 		
@@ -330,8 +330,7 @@ public class ObservableTrack extends AbstractDependentEntity<Track> implements T
 	}
 
 	private void hookListeners() {
-		titleManager.run();
-		ChangeMonitor.observe(titleManager, this, PROP_recording, PROP_name);
+		ChangeMonitor.observe(titleManager, this, PROP_recording, PROP_name).run();
 		contributorFacade = new MyContributorFacade();
 		addPropertyChangeListener(PROP_recording, new MyRecordingManager(getRecording()));
 	}

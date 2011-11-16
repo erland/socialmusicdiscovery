@@ -56,9 +56,9 @@ import com.google.gson.annotations.Expose;
  */
 public class ObservableRecording extends AbstractContributableEntity<Recording> implements Recording {
 
-	private class MyDerivedNameUpdater implements Runnable {
+	private class MyDerivedNameUpdater implements PropertyChangeListener {
 		@Override
-		public void run() {
+		public void propertyChange(PropertyChangeEvent evt) {
 			setDerivedName(resolveDerivedName());
 		}
 	}
@@ -121,8 +121,7 @@ public class ObservableRecording extends AbstractContributableEntity<Recording> 
 
 	private void hookDerivedName() {
 		MyDerivedNameUpdater listener = new MyDerivedNameUpdater();
-		ChangeMonitor.observe(listener, this, PROP_works, ObservableWork.PROP_name);
-		listener.run();
+		ChangeMonitor.observe(listener, this, PROP_works, ObservableWork.PROP_name).run();
 	}
 
 	@Override

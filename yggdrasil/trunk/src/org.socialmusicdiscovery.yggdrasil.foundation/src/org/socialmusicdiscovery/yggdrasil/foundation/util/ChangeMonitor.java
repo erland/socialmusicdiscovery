@@ -29,6 +29,7 @@ package org.socialmusicdiscovery.yggdrasil.foundation.util;
 
 import java.beans.Introspector;
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -79,9 +80,31 @@ public class ChangeMonitor {
 
 	}
 
-	public static void observe(final Runnable listener, Observable observable, String... propertyNames) {
+	/**
+	 * <p>
+	 * Hook listener to {@link PropertyChangeEvent}s in observable using nested
+	 * property names as specified.
+	 * </p>
+	 * 
+	 * <p>
+	 * The method returns a {@link Runnable} instance; when the
+	 * {@link Runnable#run()} method is invoked, the
+	 * {@link PropertyChangeListener} will receive a {@link PropertyChangeEvent}
+	 * for the observed bean, possibly with a property name, but without any old
+	 * or new property values. Listener must be able to handle such events..
+	 * This intended for triggering some initial update actions on the listener,
+	 * e.g. to read initial data into some UI control.
+	 * </p>
+	 * 
+	 * @param listener
+	 * @param observable
+	 * @param propertyNames
+	 * @return {@link Runnable} instance that fires a
+	 *         {@link PropertyChangeEvent} on the listener when run
+	 */
+	public static Runnable observe(final PropertyChangeListener listener, Observable observable, String... propertyNames) {
 		List<PropertyData> data = getPropertyData(observable.getClass(), propertyNames);
-		hook(observable, data, listener);
+		return hook(observable, data, listener);
 	}
 	
 	/**
@@ -212,8 +235,8 @@ public class ChangeMonitor {
 		throw new IllegalArgumentException("Property with name "+propertyName+" not found in class "+beanClass);
 	}
 
-	static void hook(Observable observable, List<PropertyData> data, Runnable listener) {
-			new LinkedListener(observable, data, listener);
+	static LinkedListener hook(Observable observable, List<PropertyData> data, PropertyChangeListener listener) {
+		return new LinkedListener(observable, data, listener);
 	}
 
 

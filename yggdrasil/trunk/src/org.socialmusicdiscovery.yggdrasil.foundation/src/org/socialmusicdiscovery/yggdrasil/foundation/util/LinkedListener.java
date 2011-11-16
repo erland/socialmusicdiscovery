@@ -62,17 +62,17 @@ import org.socialmusicdiscovery.yggdrasil.foundation.util.ChangeMonitor.Property
  * 
  * @author Peer Törngren
  */
-/* package */ class LinkedListener implements PropertyChangeListener {
+/* package */ class LinkedListener implements PropertyChangeListener, Runnable {
 
-	private final Runnable runner;
+	private final PropertyChangeListener listener;
 	private final PropertyData data;
 	private final List<PropertyData> tail;
 	private final Set<LinkedListener> links = new HashSet<LinkedListener>();
 	private final  Observable observed;
 
-	public LinkedListener(Observable observable, List<PropertyData> allData, Runnable runner) {
+	public LinkedListener(Observable observable, List<PropertyData> allData, PropertyChangeListener listener) {
 		assert !allData.isEmpty() : "Must have data to register listeners";
-		this.runner = runner;
+		this.listener = listener;
 		this.data = allData.get(0);
 		this.tail = allData.subList(1, allData.size());
 		this.observed = observable;
@@ -85,21 +85,21 @@ import org.socialmusicdiscovery.yggdrasil.foundation.util.ChangeMonitor.Property
 			observable.addPropertyChangeListener(this);
 		} else {
 			observable.addPropertyChangeListener(data.propertyName, this);
-			chain(observable, tail, runner);
+			chain(observable, tail, listener);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	private void chain(Observable observable, List<PropertyData> chain, Runnable runner) {
+	private void chain(Observable observable, List<PropertyData> chain, PropertyChangeListener listener) {
 		try {
 			Object property = PropertyUtils.getProperty(observable, data.propertyName);
 			if (property!=null && !chain.isEmpty()) {
 				if (data.isCollection) {
 					for (Observable o : ((Collection<Observable>) property)) {
-						createListener(o, chain, runner);
+						createListener(o, chain, listener);
 					}
 				} else {
-					createListener((Observable) property, chain, runner);
+					createListener((Observable) property, chain, listener);
 				}
 			}
 		} catch (Exception e) {
@@ -107,10 +107,25 @@ import org.socialmusicdiscovery.yggdrasil.foundation.util.ChangeMonitor.Property
 		}
 	}
 
-	private void createListener(Observable observable, List<PropertyData> tail, Runnable runner) {
-		links.add(new LinkedListener((Observable) observable, tail, runner));
+	private void createListener(Observable observable, List<PropertyData> tail, PropertyChangeListener listener) {
+		links.add(new LinkedListener(observable, tail, listener));
 	}
 
+	/**
+	 * Offer a generic method to trigger a "refresh event". Use for forcing the
+	 * listener to run any initial actions for a property change event (perhaps
+	 * read initial property values into some UI control). The method will fire
+	 * a {@link PropertyChangeEvent} for the observed source, possibly with a
+	 * property name, but without any old or new property values. Listener must
+	 * be able to handle such events.
+	 */
+	@Override
+	public void run() {
+		String propertyName = data.isAnyProperty ? null : data.propertyName;
+		PropertyChangeEvent evt = new PropertyChangeEvent(observed, propertyName, null, null);
+		listener.propertyChange(evt);
+	}
+	
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (data.isAnyProperty) {
@@ -122,7 +137,7 @@ import org.socialmusicdiscovery.yggdrasil.foundation.util.ChangeMonitor.Property
 		} else {
 			// no-op - we only need to notify
 		}
-		runner.run();
+		listener.propertyChange(evt);
 	}
 
 	private void handleChangedCollection(PropertyChangeEvent evt) {
@@ -140,7 +155,7 @@ import org.socialmusicdiscovery.yggdrasil.foundation.util.ChangeMonitor.Property
 		if (!tail.isEmpty()) {
 			if (newValue!=null) {
 				for (Observable observable : newValue) {
-					createListener(observable, tail, runner);
+					createListener(observable, tail, listener);
 				}
 			}
 		}
@@ -153,7 +168,7 @@ import org.socialmusicdiscovery.yggdrasil.foundation.util.ChangeMonitor.Property
 			release(oldValue);
 		}
 		if (newValue!=null && !tail.isEmpty()) {
-			createListener(newValue, tail, runner);
+			createListener(newValue, tail, listener);
 		}
 	}
 
@@ -187,4 +202,5 @@ import org.socialmusicdiscovery.yggdrasil.foundation.util.ChangeMonitor.Property
 		}
 		return list;
 	}
+
 }

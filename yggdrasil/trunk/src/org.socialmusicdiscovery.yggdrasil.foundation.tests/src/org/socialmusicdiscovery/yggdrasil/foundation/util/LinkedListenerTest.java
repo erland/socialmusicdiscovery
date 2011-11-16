@@ -31,6 +31,8 @@ import static org.socialmusicdiscovery.yggdrasil.foundation.test.AnObservable.CH
 import static org.socialmusicdiscovery.yggdrasil.foundation.test.AnObservable.CHILDREN;
 import static org.socialmusicdiscovery.yggdrasil.foundation.test.AnObservable.NAME;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 import java.util.Set;
 
@@ -51,9 +53,9 @@ public class LinkedListenerTest extends AbstractTestCase {
 	private PropertyData child;
 
 	private AnObservable root;
-	private Runnable runnable = new Runnable() {
+	private PropertyChangeListener listener = new PropertyChangeListener() {
 		@Override
-		public void run() {
+		public void propertyChange(PropertyChangeEvent evt) {
 			// no-op, we just need something to feed to the constructor
 		}
 	};
@@ -190,6 +192,6 @@ public class LinkedListenerTest extends AbstractTestCase {
 	}
 	
 	private LinkedListener testee(PropertyData... data) {
-		return new LinkedListener(root, Arrays.asList(data), runnable);
+		return new LinkedListener(root, Arrays.asList(data), listener);
 	}			
 }
