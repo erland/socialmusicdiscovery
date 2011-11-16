@@ -31,6 +31,8 @@ import static org.socialmusicdiscovery.yggdrasil.foundation.test.AnObservable.CH
 import static org.socialmusicdiscovery.yggdrasil.foundation.test.AnObservable.CHILDREN;
 import static org.socialmusicdiscovery.yggdrasil.foundation.test.AnObservable.NAME;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyDescriptor;
 import java.util.Arrays;
 import java.util.List;
@@ -39,8 +41,6 @@ import java.util.Set;
 import org.junit.Test;
 import org.socialmusicdiscovery.yggdrasil.foundation.content.AbstractTestCase;
 import org.socialmusicdiscovery.yggdrasil.foundation.test.AnObservable;
-import org.socialmusicdiscovery.yggdrasil.foundation.util.ChangeMonitor;
-import org.socialmusicdiscovery.yggdrasil.foundation.util.GenericWritableSet;
 import org.socialmusicdiscovery.yggdrasil.foundation.util.ChangeMonitor.PropertyData;
 
 /**
@@ -71,12 +71,12 @@ public class ChangeMonitorTest extends AbstractTestCase {
 	private AnObservable grandChild;
 	private AnObservable grandGrandChild;
 
-	private class MyObserver implements Runnable {
+	private class MyObserver implements PropertyChangeListener {
 
 		private boolean isChanged = false;
 
 		@Override
-		public void run() {
+		public void propertyChange(PropertyChangeEvent event) {
 			this.isChanged  = true;
 		}
 
@@ -332,7 +332,7 @@ public class ChangeMonitorTest extends AbstractTestCase {
 	}
 
 	@Test
-	public void testPopertyInCollectionInCollectionAfterAdd() {
+	public void testPropertyInCollectionInCollectionAfterAdd() {
 		ChangeMonitor.observe(observer, root, CHILDREN, CHILDREN, NAME);
 		rootChild.remove(grandChild);
 		assertChanged();
@@ -343,6 +343,12 @@ public class ChangeMonitorTest extends AbstractTestCase {
 		assertChanged();
 	}
 
+	@Test
+	public void testInitialRefresh() {
+		assertUnchanged();
+		ChangeMonitor.observe(observer, root, CHILDREN, CHILDREN, NAME).run();
+		assertChanged();
+	}
 	private void assertUnchanged() {
 		assertFalse("Unexpected change detected"+dump(), observer.isChanged());
 	}
