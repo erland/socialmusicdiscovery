@@ -5,7 +5,7 @@
 		<title lang="EN">Social Music Discovery (Development versions)</title>
 	</details>
 	<plugins>
-		<plugin name="SocialMusicDiscovery" version="${buildNumber}" minTarget="7.5.0" maxTarget="7.6+">
+		<plugin name="SocialMusicDiscovery" version="${buildNumber}" minTarget="7.5.0" maxTarget="7.7+">
 			<title lang="EN">Social Music Discovery (perl only) *Alpha*</title>
 			<desc lang="EN">Support plugin for the Social Music Discovery application</desc>
 			<creator>Social Music Discovery project</creator>
