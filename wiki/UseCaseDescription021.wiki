@@ -1,0 +1,17 @@
+#summary Use case: 021 Add songs to static playlist
+
+=== Purpose ===
+Add one or more songs to an existing static playlist 
+=== Actors ===
+    * Library Maintainer
+    * Music Listener
+
+=== Description ===
+
+<br/> *Narrative 1:* The user (music explorer) is browsing its collection by a
+given type of entity and he selects one or more songs that do not belong to a playlist. The user is offered the option to add the selected songs to an existing static playlist.
+answer. The actor is offered an action to "delete this unused entity".
+<br/> *Narrative 2*: The user (music explorer) selects one or more songs that belong to a playlist. The user is offered the option to add the selected songs to another existing static playlist. 
+
+=== Additional Information ===
+  * ?
