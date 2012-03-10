@@ -1,4 +1,4 @@
-#summary Use case: 023-Remove Playlists from the SMD Data library.
+#summary Use case: 023: Remove Playlists from the SMD Data library.
 
 ===Purpose===
 Remove one or more playlists from the SMD data library
