@@ -1,0 +1,17 @@
+#summary Use case: 023-Remove Playlists from the SMD Data library.
+
+===Purpose===
+Remove one or more playlists from the SMD data library
+
+===Actors===
+Music Listener
+===Description===
+Playlists can become stale or unused as the user adds and edits content to the library or becomes tired of the existing playlists.  By ""removing playlists that aren't used anymore", the music listener can do some cleanup of the library. 
+
+<br/> *Narrative 1:* The user (music explorer) is browsing playlists and is given the option to "remove" the playlist from the library. 
+
+
+Additional Information
+<Some alternative scenario>
+<Some exception that could happen and needs to be handled>
+<Some extra information to make the use case easier to understand>
