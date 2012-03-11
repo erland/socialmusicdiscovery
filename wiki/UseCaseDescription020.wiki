@@ -1,0 +1,20 @@
+#summary Use case: 020: Add Static Playlist.
+
+===Purpose===
+Create and add a static playlist to the  SMD data library
+
+===Actors===
+Music Listener
+Library Maintainer
+
+===Description===
+A music listener wants to create a playlist that can be used to group music tracks together for future listening.
+
+*Narrative 1:* The user (music listener) makes the decision to create a new static playlist. 
+
+*Narrative 2:* The user (music listener) is browsing or listening to music tracks and is given the option to create a new static playlist that contains the music track being listened to or browsed. 
+
+
+Additional Information
+<Some alternative scenario>
+<Some exception that could happen and needs to be handled>
