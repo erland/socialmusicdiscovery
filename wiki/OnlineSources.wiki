@@ -46,7 +46,10 @@ This section contains online metadata sources that would be interesting to integ
   * *Wikipedia*
     * http://en.wikipedia.org/wiki/Template:Infobox_musical_artist
     * Special template for music artists where information could be retrieved
-  * 
+  * *Echo Nest*
+    * http://developer.echonest.com/
+    * Huge metadata base
+    * Have API (free for non commercial usage)
 
 
 = Online streaming sources =
