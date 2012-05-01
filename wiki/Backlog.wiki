@@ -18,7 +18,7 @@ Read more on User Stories in [http://en.wikipedia.org/wiki/User_story Wikipedia'
 = User Stories =
 
   # *Continuous Import from SBS*: As Adam, I want to setup a simple and dynamic schedule for incremental import from SBS into SMD, so that all SMD users see all music present in the SBS database within a few hours after the SBS has scanned the local discs.
-  # *Register Spotify Premium*: As Libby, I want to define and register my Spotify premium account so that my online library is transparently included in my music collection the same way my local music is.
+  # *Continuous Import from Spotify Premium*: As Libby, I want to define and register my Spotify premium account so that my online library is transparently included in my music collection the same way my local music is.
   # *Play Known Music*: As Paul, I want to find and play specific music by Artist, Album or Track name, irrespective of source (online or local), and without knowing the exact full name, so that I can quickly play some specific song to my friends.
   # *Classify Works*: As Erica, I want to classify and categorize all Works in my catalog so that I can browse and listen to music based on Genre irrespective of location (online or local).
   # *Classify Artists*: As Erica, I want the ability to classify Artists so that each Track by this Artist fall in this default category unless something else is specified; Run DMC is classified as "Rap", but the Work "Christmas in Hollies" is also classified as "Christmas", and the Work "Walk This Way" is actually classified as Rock (not Rap).
