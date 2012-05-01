@@ -3,7 +3,7 @@
 = Introduction =
 In the agile spirit, this is a backlog of prioritized user stories that we intend to implement. It is not comprehensive (it does not list all features we want), nor is it detailed and exact (we do not yet know exactly how things should work), nor is it stable (our visions and desires will change as we move forward and gain insight).
 
-A user story is a brief statement describing a specific way that a specific user wants to use the system. It follows the style "As a <role>, I want <goal/desire> so that <benefit>", where <role> typically refers to one of our personas (http://code.google.com/p/socialmusicdiscovery/wiki/Personas).
+A user story is a brief statement describing a specific way that a specific user wants to use the system. It follows the style "As a _role_, I want _goal/desire_ so that _benefit_", where _role_ typically refers to one of our personas (http://code.google.com/p/socialmusicdiscovery/wiki/Personas).
 
 Read more on User Stories here: http://en.wikipedia.org/wiki/User_story
 
