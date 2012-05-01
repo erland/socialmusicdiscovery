@@ -4,18 +4,18 @@
 Although we do not run this project according to any specific process or method, we adopt the agile mindset where possible. In the agile spirit, this is a backlog of prioritized user stories that we intend to implement. It is not comprehensive (it does not list all features we want), nor is it detailed and exact (we do not yet know exactly how things should work), nor is it stable (our visions and desires will change as we move forward and gain insight).
 
 == What Is a Backlog? ==
-We "borrow" this term from the Scrum method; The product backlog is an ordered list of "requirements" that is maintained for a product. It contains Product Backlog Items that are ordered based on considerations like risk, end user value, dependencies, date needed, etc. The features added to the backlog are commonly written in story format. The product backlog is the “What” that will be built, sorted in the relative order it should be built in. 
+We "borrow" this term from the Scrum method; the product backlog is an ordered list of "requirements" that is maintained for a product. It contains Product Backlog Items that are ordered based on considerations like risk, end user value, dependencies, date needed, etc. The features added to the backlog are commonly written in story format. The product backlog is the “What” that will be built, sorted in the relative order it should be built in. 
 
 Read more in [http://en.wikipedia.org/wiki/Scrum_%28development%29#Product_Backlog Wikipedia's article on Scrum]
 
 == What Is a User Story ==
 A user story is a brief statement describing a specific way that a specific user wants to use the system. It follows the style "As a _role_, I want _goal/desire_ so that _benefit_", where _role_ typically refers to one of our [http://code.google.com/p/socialmusicdiscovery/wiki/Personas Personas].
 
+Stories are listed in priority order - we want to realize the topmost first. The further down the list we go, the more uncertain is the order. Realistically, only the top 5 or 10 stories can be considered  to have an order, the remaining ones are very much subject to change.
+
 Read more on User Stories in [http://en.wikipedia.org/wiki/User_story Wikipedia's article on User Stories].
 
 = User Stories =
-
-Stories are listed in priority order; we want to realize the topmost first. The further down the list we go, the more uncertain is the order. realistically, only the top 5 or 10 can actually be said to have an order, the remaining ones are very much subject to change.
 
   # *Register Spotify Premium*: As Libby, I want to define and register my Spotify premium account so that my online library is transparently included in my music collection the same way my local music is.
   # *Classify Works*: As Erica, I want to classify and categorize all Works in my catalog so that I can browse and listen to music based on Genre irrespective of location (online or local).
