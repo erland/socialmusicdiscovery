@@ -17,10 +17,10 @@ Read more on User Stories in [http://en.wikipedia.org/wiki/User_story Wikipedia'
 
 = User Stories =
 
+  # *Import Existing SBS Metadata*: As Libby, I want the ability to import existing metadata from the SBS database, so that I don't have to re-do all the tagging I already did. All Artists, Albums and Genres are automatically added to my SMD database if they do not exist.
   # *Continuous Import from SBS*: As Adam, I want to setup a simple schedule for incremental import from SBS into SMD, so that all SMD users see all music present in the SBS database shortly after SBS has scanned the local discs.
   # *Continuous Import from Spotify Premium*: As Libby, I want to define and register my Spotify premium account so that my online library is transparently included in my music collection the same way my local music is.
   # *Play Known Music*: As Paul, I want to find and play specific music by Artist, Album or Track name, irrespective of source (online or local), and without knowing the exact full name, so that I can quickly play some specific song to my friends.
-  # *Import Existing SBS Metadata*: As Libby, I want the ability to import existing metadata from the SBS database, so that I don't have to re-do all the tagging I already did. All Artists, Albums and Genres are automatically added to my SMD database if they do not exist.
   # *Abstract Imported Metadata*: As Libby, I want the ability to abstract imported metadata, so that common tags are placed on Artist or Album rather than the individual Work. If all tracks on an Album is tagged "Miles Davis", the Album (not each Track) is marked with "Miles Davis" as the main artist.
   # *Import Online Metadata*: As Libby, I want the ability to import online metadata, so that I don't have to manually classify all music I add (online or local).
   # *Classify Artists*: As Libby, I want the ability to classify Artists so that each Track by this Artist fall in this default category unless something else is specified; Run DMC is classified as "Rap", but the Work "Christmas in Hollies" is also classified as "Christmas", and the Work "Walk This Way" is actually classified as Rock (not Rap).
