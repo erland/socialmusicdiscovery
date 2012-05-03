@@ -17,7 +17,7 @@ Read more on User Stories in [http://en.wikipedia.org/wiki/User_story Wikipedia'
 
 = User Stories =
 
-  # *Continuous Import from SBS*: As Adam, I want to setup a simple and dynamic schedule for incremental import from SBS into SMD, so that all SMD users see all music present in the SBS database within a few hours after the SBS has scanned the local discs.
+  # *Continuous Import from SBS*: As Adam, I want to setup a simple schedule for incremental import from SBS into SMD, so that all SMD users see all music present in the SBS database shortly after SBS has scanned the local discs.
   # *Continuous Import from Spotify Premium*: As Libby, I want to define and register my Spotify premium account so that my online library is transparently included in my music collection the same way my local music is.
   # *Play Known Music*: As Paul, I want to find and play specific music by Artist, Album or Track name, irrespective of source (online or local), and without knowing the exact full name, so that I can quickly play some specific song to my friends.
   # *Import Existing SBS Metadata*: As Libby, I want the ability to import existing metadata from the SBS database, so that I don't have to re-do all the tagging I already did. All Artists, Albums and Genres are automatically added to my SMD database if they do not exist.
