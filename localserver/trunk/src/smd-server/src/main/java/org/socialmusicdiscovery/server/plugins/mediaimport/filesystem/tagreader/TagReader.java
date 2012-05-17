@@ -25,38 +25,23 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.server.plugins.mediaimport.squeezeboxserver;
+package org.socialmusicdiscovery.server.plugins.mediaimport.filesystem.tagreader;
 
 import org.socialmusicdiscovery.server.plugins.mediaimport.TrackData;
 
-import java.util.List;
+import java.io.File;
+import java.io.IOException;
 
-public class TrackListData {
-    private Long count;
-    private Long offset;
-    private List<TrackData> tracks;
-
-    public Long getCount() {
-        return count;
-    }
-
-    public void setCount(Long count) {
-        this.count = count;
-    }
-
-    public Long getOffset() {
-        return offset;
-    }
-
-    public void setOffset(Long offset) {
-        this.offset = offset;
-    }
-
-    public List<TrackData> getTracks() {
-        return tracks;
-    }
-
-    public void setTracks(List<TrackData> tracks) {
-        this.tracks = tracks;
-    }
+/**
+ * Interface which all tag readers must implement
+ */
+public interface TagReader {
+    /**
+     * Read and return tags from the specified file
+     *
+     * @param file The file to read tags from
+     * @return The read tags or null if tagging format supported by this tag reader couldn't be found in the file
+     * @throws IOException If the file can't be accessed or an error happens when reading tags
+     */
+    TrackData getTrackData(File file) throws IOException;
 }

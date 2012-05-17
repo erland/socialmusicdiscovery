@@ -82,6 +82,17 @@ sub start {
 		push @opts, "-Dsqueezeboxserver.passwordhash=" . $sprefs->get('password');
 	}
 
+    my @paths = preferences('server')->get('mediadirs') || [];
+    if(scalar @paths == 0) {
+        my $path = preferences('server')->get('audiodir');
+        if($path) {
+            push @paths,$path;
+        }
+    }
+    if(scalar @paths > 0) {
+        push @opts, "-Dorg.socialmusicdiscovery.server.plugins.mediaimport.filesystem.musicfolders=".join(',', @paths);
+    }
+
 	# use server to search for java and convert to short path if windows
 	my $javaPath = Slim::Utils::Misc::findbin("java");
 	$javaPath = Slim::Utils::OSDetect::getOS->decodeExternalHelperPath($javaPath);

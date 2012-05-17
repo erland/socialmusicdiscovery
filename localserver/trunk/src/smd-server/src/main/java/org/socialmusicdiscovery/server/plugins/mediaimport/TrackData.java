@@ -25,7 +25,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.server.plugins.mediaimport.squeezeboxserver;
+package org.socialmusicdiscovery.server.plugins.mediaimport;
 
 import java.util.List;
 
