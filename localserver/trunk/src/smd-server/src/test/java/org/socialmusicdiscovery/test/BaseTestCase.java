@@ -187,7 +187,7 @@ public abstract class BaseTestCase {
      * @param path The path to get parent directory for
      * @return The parent directory
      */
-    protected String getParentDirectory(String path) {
+    public static String getParentDirectory(String path) {
         String parentDir = "/";
         int lastIndex;
 
@@ -217,10 +217,10 @@ public abstract class BaseTestCase {
      * Get the directory where the DbUnit test data files can be found
      * @return The DbUnit test data file directory
      */
-    protected String getTestDataDiretory() {
+    public static String getTestDataDiretory() {
         // We need to get the directory from the classpath to make sure the test case works the same independent of the current directory
         // when running the test case. This is required to make the test case easy to run both from Eclipse, IntelliJ IDEA and maven.
-        String path = getClass().getResource("/META-INF/persistence.xml").getPath();
+        String path = BaseTestCase.class.getResource("/META-INF/persistence.xml").getPath();
         if (path != null) {
             path = getParentDirectory(path);
             if (path != null) {
@@ -238,6 +238,53 @@ public abstract class BaseTestCase {
         } else {
             return "src/test/test-data/";
         }
+    }
+
+    /**
+     * Get the directory where the test resource files can be found
+     * @return The test resource file directory
+     */
+    public static String getTestResourceDiretory() {
+        // We need to get the directory from the classpath to make sure the test case works the same independent of the current directory
+        // when running the test case. This is required to make the test case easy to run both from Eclipse, IntelliJ IDEA and maven.
+        String path = BaseTestCase.class.getResource("/META-INF/persistence.xml").getPath();
+        if (path != null) {
+            path = getParentDirectory(path);
+            if (path != null) {
+                path = getParentDirectory(path);
+            }
+            if (path != null) {
+                path = getParentDirectory(path);
+            }
+            if (path != null) {
+                path = getParentDirectory(path);
+            }
+        }
+        if (path != null) {
+            return path + "/" + "src/test/resources/";
+        } else {
+            return "src/test/resources/";
+        }
+    }
+
+    /**
+     * Get the directory where the build files can be found
+     * @return The build directory
+     */
+    public static String getOutputDiretory() {
+        // We need to get the directory from the classpath to make sure the test case works the same independent of the current directory
+        // when running the test case. This is required to make the test case easy to run both from Eclipse, IntelliJ IDEA and maven.
+        String path = BaseTestCase.class.getResource("/META-INF/persistence.xml").getPath();
+        if (path != null) {
+            path = getParentDirectory(path);
+            if (path != null) {
+                path = getParentDirectory(path);
+            }
+            if (path != null) {
+                path = getParentDirectory(path);
+            }
+        }
+        return path;
     }
 
     /**
