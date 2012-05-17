@@ -143,6 +143,12 @@ public class MediaImportManager {
                 if(!entity.getId().startsWith(pluginConfigurationPath)) {
                     entity.setId(pluginConfigurationPath+entity.getId());
                 }
+                ConfigurationParameter defaultValue = defaultValueConfigurationManager.getParameter(entity.getId());
+                if(defaultValue!=null) {
+                    entity.setValue(defaultValue.getValue());
+                }else if(System.getProperty(entity.getId())!=null) {
+                    entity.setValue(System.getProperty(entity.getId()));
+                }
                 entity.setDefaultValue(true);
                 defaultConfiguration.add(entity);
             }
