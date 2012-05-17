@@ -73,6 +73,11 @@
             <artifactId>commons-lang</artifactId>
             <version>2.6</version>
         </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.1</version>
+        </dependency>
 
         <!-- @Inject support -->
         <dependency>
@@ -138,18 +143,18 @@
             <version>1.6</version>
 
         </dependency>
-        
-		<!-- Cling UPnP stack -->
-	  	<dependency>
-	  		<groupId>org.teleal.cling</groupId>
-	  		<artifactId>cling-core</artifactId>
-	  		<version>1.0.3</version>
-	  	</dependency>
-	  	<dependency>
-	  		<groupId>org.teleal.cling</groupId>
-	  		<artifactId>cling-support</artifactId>
-	  		<version>1.0.3</version>
-	  	</dependency>
+
+        <!-- Cling UPnP stack -->
+        <dependency>
+            <groupId>org.teleal.cling</groupId>
+            <artifactId>cling-core</artifactId>
+            <version>1.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.teleal.cling</groupId>
+            <artifactId>cling-support</artifactId>
+            <version>1.0.3</version>
+        </dependency>
 
         <!-- ANTLR, required for title format parsing -->
         <dependency>
@@ -163,6 +168,12 @@
             <groupId>xom</groupId>
             <artifactId>xom</artifactId>
             <version>1.2.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.jthink</groupId>
+            <artifactId>jaudiotagger</artifactId>
+            <version>2.0.4-20111207.115108-15</version>
         </dependency>
     </dependencies>
 
@@ -194,13 +205,21 @@
             <url>http://google-gson.googlecode.com/svn/mavenrepo/</url>
             <layout>default</layout>
         </repository>
-    <repository>
-        <id>teleal.org-repo</id>
-        <url>http://teleal.org/m2</url>
-        <snapshots>
-            <enabled>false</enabled>
-        </snapshots>
-    </repository>
+        <repository>
+            <id>teleal.org-repo</id>
+            <url>http://teleal.org/m2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>java.net-snapshots</id>
+            <url>https://maven.java.net/content/groups/public/</url>
+            <layout>default</layout>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
     </repositories>
 
     <build>
@@ -267,12 +286,12 @@
                     <configuration>
                         <targetJdk>1.6</targetJdk>
                     </configuration>
-               </plugin>
-               <plugin>
-                   <groupId>org.apache.maven.plugins</groupId>
-                   <artifactId>maven-javadoc-plugin</artifactId>
-                   <version>2.4</version>
-               </plugin>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>2.4</version>
+                </plugin>
             </plugins>
         </pluginManagement>
 
@@ -485,26 +504,26 @@
             </build>
         </profile>
         <profile>
-             <id>extradata</id>
-             <activation>
-                 <property>
-                     <name>BUILD_NUMBER</name> 
-                 </property>
-             </activation>
-             <build>
-                 <plugins>
-                     <!--
-                     <plugin>
-                         <groupId>org.codehaus.mojo</groupId>
-                         <artifactId>cobertura-maven-plugin</artifactId>
-                     </plugin>
-                     -->
-                     <plugin>
-                         <groupId>org.apache.maven.plugins</groupId>
-                         <artifactId>maven-pmd-plugin</artifactId>
-                     </plugin>
-                 </plugins>
-             </build>
+            <id>extradata</id>
+            <activation>
+                <property>
+                    <name>BUILD_NUMBER</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <!--
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>cobertura-maven-plugin</artifactId>
+                    </plugin>
+                    -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-pmd-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 </project>

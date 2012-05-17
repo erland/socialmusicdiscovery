@@ -25,10 +25,11 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.server.plugins.mediaimport.squeezeboxserver;
+package org.socialmusicdiscovery.server.plugins.mediaimport;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
+import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
 import org.socialmusicdiscovery.server.business.logic.config.MappedConfigurationContext;
 import org.socialmusicdiscovery.server.business.logic.config.MemoryConfigurationManager;
 import org.socialmusicdiscovery.server.business.model.GlobalIdentity;
@@ -49,7 +50,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class SqueezeboxServerTest extends BaseTestCase {
+public class AbstractTagImporterTest extends BaseTestCase {
     @Inject
     ReleaseRepository releaseRepository;
     @Inject
@@ -57,7 +58,7 @@ public class SqueezeboxServerTest extends BaseTestCase {
     @Inject
     GlobalIdentityRepository globalIdentityRepository;
 
-    SqueezeboxServer squeezeboxServer;
+    AbstractTagImporter tagImporter;
 
     @Inject
     @Named("default-value")
@@ -65,27 +66,52 @@ public class SqueezeboxServerTest extends BaseTestCase {
 
     @BeforeClass
     public void setUp() {
-        squeezeboxServer = new SqueezeboxServer();
-        String pluginConfigurationPath = "org.socialmusicdiscovery.server.plugins.mediaimport."+squeezeboxServer.getId()+".";
+        tagImporter = new AbstractTagImporter() {
+            @Override
+            protected void executeImport(ProcessingStatusCallback progressHandler) {
+                // Do nothing
+            }
+
+            @Override
+            public String getId() {
+                return "someid";
+            }
+
+            @Override
+            protected ImageEntity getReleaseImage(TrackData data) {
+                if (data.getFile().contains("Bodyguard")) {
+                    ImageEntity defaultImage = new ImageEntity();
+                    defaultImage.setProviderId("someimageid");
+                    defaultImage.setProviderImageId("1234");
+                    defaultImage.setType(Image.TYPE_COVER_FRONT);
+                    defaultImage.setUri("http://example.org/image.png");
+                    return defaultImage;
+                } else {
+                    return null;
+                }
+            }
+
+        };
+        String pluginConfigurationPath = "org.socialmusicdiscovery.server.plugins.mediaimport." + tagImporter.getId() + ".";
 
         Set<ConfigurationParameter> defaultConfiguration = new HashSet<ConfigurationParameter>();
-        for (ConfigurationParameter parameter : squeezeboxServer.getDefaultConfiguration()) {
+        for (ConfigurationParameter parameter : tagImporter.getDefaultConfiguration()) {
             ConfigurationParameterEntity entity = new ConfigurationParameterEntity(parameter);
-            if(!entity.getId().startsWith(pluginConfigurationPath)) {
-                entity.setId(pluginConfigurationPath+entity.getId());
+            if (!entity.getId().startsWith(pluginConfigurationPath)) {
+                entity.setId(pluginConfigurationPath + entity.getId());
             }
             entity.setDefaultValue(true);
             defaultConfiguration.add(entity);
         }
         defaultValueConfigurationManager.setParametersForPath(pluginConfigurationPath, defaultConfiguration);
-        squeezeboxServer.setConfiguration(new MappedConfigurationContext(pluginConfigurationPath, defaultValueConfigurationManager));
-        squeezeboxServer.init(null);
+        tagImporter.setConfiguration(new MappedConfigurationContext(pluginConfigurationPath, defaultValueConfigurationManager));
+        tagImporter.init(null);
     }
 
     @BeforeMethod
     public void setUpMethod() {
         em.clear();
-        squeezeboxServer.init(null);
+        tagImporter.init(null);
     }
 
     @Test
@@ -115,7 +141,7 @@ public class SqueezeboxServerTest extends BaseTestCase {
                     new TagData(TagData.COMPOSER, "Dolly Parton", "Dolly, Parton"),
                     new TagData(TagData.SBS_COVER_ID, "1234")
             ));
-            squeezeboxServer.importNewPlayableElement(trackData);
+            tagImporter.importNewPlayableElement(trackData);
 
             trackData = new TrackData();
             trackData.setFile("/music/The Bodyguard/Queen Of The Night.flac");
@@ -141,7 +167,7 @@ public class SqueezeboxServerTest extends BaseTestCase {
                     new TagData(TagData.COMPOSER, "Whitney Houston"),
                     new TagData(TagData.SBS_COVER_ID, "1234")
             ));
-            squeezeboxServer.importNewPlayableElement(trackData);
+            tagImporter.importNewPlayableElement(trackData);
 
             trackData = new TrackData();
             trackData.setFile("/music/The Bodyguard/It's Gonna Be A Lovely Day.flac");
@@ -168,7 +194,7 @@ public class SqueezeboxServerTest extends BaseTestCase {
                     new TagData(TagData.COMPOSER, "Tommy Never"),
                     new TagData(TagData.SBS_COVER_ID, "1234")
             ));
-            squeezeboxServer.importNewPlayableElement(trackData);
+            tagImporter.importNewPlayableElement(trackData);
 
             trackData = new TrackData();
             trackData.setFile("/music/The Bodyguard/Theme From The Bodyguard");
@@ -192,7 +218,7 @@ public class SqueezeboxServerTest extends BaseTestCase {
                     new TagData(TagData.PERFORMER, "Gary Grant"),
                     new TagData(TagData.SBS_COVER_ID, "1234")
             ));
-            squeezeboxServer.importNewPlayableElement(trackData);
+            tagImporter.importNewPlayableElement(trackData);
 
             trackData = new TrackData();
             trackData.setFile("/music/Joe's Garage Act I/The Central Scrutinizer.flac");
@@ -203,11 +229,11 @@ public class SqueezeboxServerTest extends BaseTestCase {
                     new TagData(TagData.ALBUM, "Joe's Garage Act I"),
                     new TagData(TagData.TITLE, "The Central Scrutinizer"),
                     new TagData(TagData.TRACKNUM, "1"),
-                    new TagData(TagData.DISC,"A"),
+                    new TagData(TagData.DISC, "A"),
                     new TagData(TagData.ARTIST, "Frank Zappa"),
                     new TagData(TagData.ARTIST, "Ike Willis")
             ));
-            squeezeboxServer.importNewPlayableElement(trackData);
+            tagImporter.importNewPlayableElement(trackData);
 
             trackData = new TrackData();
             trackData.setFile("/music/Joe's Garage Act I/Joe's Garage.flac");
@@ -218,11 +244,11 @@ public class SqueezeboxServerTest extends BaseTestCase {
                     new TagData(TagData.ALBUM, "Joe's Garage Act I"),
                     new TagData(TagData.TITLE, "Joe's Garage"),
                     new TagData(TagData.TRACKNUM, "2"),
-                    new TagData(TagData.DISC,"A"),
+                    new TagData(TagData.DISC, "A"),
                     new TagData(TagData.ARTIST, "Frank Zappa"),
                     new TagData(TagData.ARTIST, "Ike Willis")
             ));
-            squeezeboxServer.importNewPlayableElement(trackData);
+            tagImporter.importNewPlayableElement(trackData);
 
             trackData = new TrackData();
             trackData.setFile("/music/Joe's Garage Act I/Wet T-Shirt Nite.flac");
@@ -233,11 +259,11 @@ public class SqueezeboxServerTest extends BaseTestCase {
                     new TagData(TagData.ALBUM, "Joe's Garage Act I"),
                     new TagData(TagData.TITLE, "Wet T-Shirt Nite"),
                     new TagData(TagData.TRACKNUM, "1"),
-                    new TagData(TagData.DISC,"B"),
+                    new TagData(TagData.DISC, "B"),
                     new TagData(TagData.ARTIST, "Frank Zappa"),
                     new TagData(TagData.ARTIST, "Ike Willis")
             ));
-            squeezeboxServer.importNewPlayableElement(trackData);
+            tagImporter.importNewPlayableElement(trackData);
             em.getTransaction().commit();
             updateSearchRelations();
             em.getTransaction().begin();
@@ -248,30 +274,31 @@ public class SqueezeboxServerTest extends BaseTestCase {
             assert releases.size() == 2;
 
             for (ReleaseEntity release : releases) {
-                if(release.getName().equals("Joe's Garage Act I")) {
+                if (release.getName().equals("Joe's Garage Act I")) {
                     validateJoesGarageAct(release);
-                }else {
+                } else {
                     validateTheBodyguard(release);
                 }
             }
 
             em.clear();
             Collection<ArtistEntity> artists = artistRepository.findAll();
-            assert artists.size()>0;
+            assert artists.size() > 0;
             for (ArtistEntity artist : artists) {
-                Collection<ReleaseEntity> artistReleases = releaseRepository.findByArtistWithRelations(artist.getId(),null,null);
-                assert artistReleases.size()>0;
+                Collection<ReleaseEntity> artistReleases = releaseRepository.findByArtistWithRelations(artist.getId(), null, null);
+                assert artistReleases.size() > 0;
             }
 
 
         } finally {
-            if(em.getTransaction().getRollbackOnly()) {
+            if (em.getTransaction().getRollbackOnly()) {
                 em.getTransaction().rollback();
-            }else {
+            } else {
                 em.getTransaction().commit();
             }
         }
     }
+
     @Test
     public void testImportLongAlbumTitle() throws Exception {
         loadTestData("org.socialmusicdiscovery.server.business.model", "Empty Tables.xml");
@@ -285,7 +312,7 @@ public class SqueezeboxServerTest extends BaseTestCase {
             trackData.setSmdID("00000000000000000000000000000001-00000000-00000000");
             trackData.setUrl("file://" + trackData.getFile());
             String albumTitle = "";
-            for(int i=0;i<255;i++) {
+            for (int i = 0; i < 255; i++) {
                 albumTitle += "\u00d4";
             }
             trackData.setTags(Arrays.asList(
@@ -294,23 +321,23 @@ public class SqueezeboxServerTest extends BaseTestCase {
                     new TagData(TagData.ARTIST, "Some Artist"),
                     new TagData(TagData.GENRE, "Some Genre")
             ));
-            squeezeboxServer.importNewPlayableElement(trackData);
+            tagImporter.importNewPlayableElement(trackData);
             gotSuccess = true;
             em.getTransaction().commit();
             em.getTransaction().begin();
             trackData.setSmdID("00000000000000000000000000000002-00000000-00000000");
             trackData.setTags(Arrays.asList(
-                    new TagData(TagData.ALBUM, "a"+albumTitle),
+                    new TagData(TagData.ALBUM, "a" + albumTitle),
                     new TagData(TagData.TITLE, "Some Title"),
                     new TagData(TagData.ARTIST, "Some Artist"),
                     new TagData(TagData.GENRE, "Some Genre")
             ));
-            squeezeboxServer.importNewPlayableElement(trackData);
+            tagImporter.importNewPlayableElement(trackData);
             em.getTransaction().commit();
         } catch (ConstraintViolationException e) {
             gotError = true;
         } finally {
-            if(em.getTransaction().isActive()) {
+            if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
             }
         }
@@ -331,7 +358,7 @@ public class SqueezeboxServerTest extends BaseTestCase {
             trackData.setSmdID("00000000000000000000000000000001-00000000-00000000");
             trackData.setUrl("file://" + trackData.getFile());
             String trackTitle = "";
-            for(int i=0;i<511;i++) {
+            for (int i = 0; i < 511; i++) {
                 trackTitle += "\u00d4";
             }
             trackData.setTags(Arrays.asList(
@@ -343,20 +370,20 @@ public class SqueezeboxServerTest extends BaseTestCase {
             gotSuccess = true;
             em.getTransaction().commit();
             em.getTransaction().begin();
-            squeezeboxServer.importNewPlayableElement(trackData);
+            tagImporter.importNewPlayableElement(trackData);
             trackData.setTags(Arrays.asList(
                     new TagData(TagData.ALBUM, "Some album"),
-                    new TagData(TagData.TITLE, "a"+trackTitle),
+                    new TagData(TagData.TITLE, "a" + trackTitle),
                     new TagData(TagData.ARTIST, "Some Artist"),
                     new TagData(TagData.GENRE, "Some Genre")
             ));
             trackData.setSmdID("00000000000000000000000000000002-00000000-00000000");
-            squeezeboxServer.importNewPlayableElement(trackData);
+            tagImporter.importNewPlayableElement(trackData);
             em.getTransaction().commit();
         } catch (ConstraintViolationException e) {
             gotError = true;
         } finally {
-            if(em.getTransaction().isActive()) {
+            if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
             }
         }
@@ -377,7 +404,7 @@ public class SqueezeboxServerTest extends BaseTestCase {
             trackData.setSmdID("00000000000000000000000000000001-00000000-00000000");
             trackData.setUrl("file://" + trackData.getFile());
             String artistTitle = "";
-            for(int i=0;i<255;i++) {
+            for (int i = 0; i < 255; i++) {
                 artistTitle += "\u00d4";
             }
             trackData.setTags(Arrays.asList(
@@ -386,7 +413,7 @@ public class SqueezeboxServerTest extends BaseTestCase {
                     new TagData(TagData.ARTIST, artistTitle),
                     new TagData(TagData.GENRE, "Some Genre")
             ));
-            squeezeboxServer.importNewPlayableElement(trackData);
+            tagImporter.importNewPlayableElement(trackData);
             gotSuccess = true;
             em.getTransaction().commit();
             em.getTransaction().begin();
@@ -394,15 +421,15 @@ public class SqueezeboxServerTest extends BaseTestCase {
             trackData.setTags(Arrays.asList(
                     new TagData(TagData.ALBUM, "Some album"),
                     new TagData(TagData.TITLE, "Some title"),
-                    new TagData(TagData.ARTIST, "a"+artistTitle),
+                    new TagData(TagData.ARTIST, "a" + artistTitle),
                     new TagData(TagData.GENRE, "Some Genre")
             ));
-            squeezeboxServer.importNewPlayableElement(trackData);
+            tagImporter.importNewPlayableElement(trackData);
             em.getTransaction().commit();
         } catch (ConstraintViolationException e) {
             gotError = true;
         } finally {
-            if(em.getTransaction().isActive()) {
+            if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
             }
         }
@@ -423,7 +450,7 @@ public class SqueezeboxServerTest extends BaseTestCase {
             trackData.setSmdID("00000000000000000000000000000001-00000000-00000000");
             trackData.setUrl("file://" + trackData.getFile());
             String genreTitle = "";
-            for(int i=0;i<255;i++) {
+            for (int i = 0; i < 255; i++) {
                 genreTitle += "\u00d4";
             }
             trackData.setTags(Arrays.asList(
@@ -432,7 +459,7 @@ public class SqueezeboxServerTest extends BaseTestCase {
                     new TagData(TagData.ARTIST, "Some artist"),
                     new TagData(TagData.GENRE, genreTitle)
             ));
-            squeezeboxServer.importNewPlayableElement(trackData);
+            tagImporter.importNewPlayableElement(trackData);
             gotSuccess = true;
             em.getTransaction().commit();
             em.getTransaction().begin();
@@ -441,14 +468,14 @@ public class SqueezeboxServerTest extends BaseTestCase {
                     new TagData(TagData.ALBUM, "Some album"),
                     new TagData(TagData.TITLE, "Some title"),
                     new TagData(TagData.ARTIST, "Some artist"),
-                    new TagData(TagData.GENRE, "a"+genreTitle)
+                    new TagData(TagData.GENRE, "a" + genreTitle)
             ));
-            squeezeboxServer.importNewPlayableElement(trackData);
+            tagImporter.importNewPlayableElement(trackData);
             em.getTransaction().commit();
         } catch (ConstraintViolationException e) {
             gotError = true;
         } finally {
-            if(em.getTransaction().isActive()) {
+            if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
             }
         }
@@ -464,11 +491,11 @@ public class SqueezeboxServerTest extends BaseTestCase {
         em.getTransaction().begin();
         try {
             String file = "";
-            for(int i=0;i<1024-5-7;i++) {
+            for (int i = 0; i < 1024 - 5 - 7; i++) {
                 file += "\u00d4";
             }
             TrackData trackData = new TrackData();
-            trackData.setFile(file+".flac");
+            trackData.setFile(file + ".flac");
             trackData.setFormat("flc");
             trackData.setSmdID("00000000000000000000000000000001-00000000-00000000");
             trackData.setUrl("file://" + trackData.getFile());
@@ -478,19 +505,19 @@ public class SqueezeboxServerTest extends BaseTestCase {
                     new TagData(TagData.ARTIST, "Some artist"),
                     new TagData(TagData.GENRE, "Some Genre")
             ));
-            squeezeboxServer.importNewPlayableElement(trackData);
+            tagImporter.importNewPlayableElement(trackData);
             gotSuccess = true;
             em.getTransaction().commit();
             em.getTransaction().begin();
-            trackData.setFile(file+"a.flac");
+            trackData.setFile(file + "a.flac");
             trackData.setSmdID("00000000000000000000000000000002-00000000-00000000");
             trackData.setUrl("file://" + trackData.getFile());
-            squeezeboxServer.importNewPlayableElement(trackData);
+            tagImporter.importNewPlayableElement(trackData);
             em.getTransaction().commit();
         } catch (ConstraintViolationException e) {
             gotError = true;
         } finally {
-            if(em.getTransaction().isActive()) {
+            if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
             }
         }
@@ -511,7 +538,7 @@ public class SqueezeboxServerTest extends BaseTestCase {
             trackData.setSmdID("00000000000000000000000000000001-00000000-00000000");
             trackData.setUrl("file://" + trackData.getFile());
             String workTitle = "";
-            for(int i=0;i<511;i++) {
+            for (int i = 0; i < 511; i++) {
                 workTitle += "\u00d4";
             }
             trackData.setTags(Arrays.asList(
@@ -521,7 +548,7 @@ public class SqueezeboxServerTest extends BaseTestCase {
                     new TagData(TagData.ARTIST, "Some Artist"),
                     new TagData(TagData.GENRE, "Some Genre")
             ));
-            squeezeboxServer.importNewPlayableElement(trackData);
+            tagImporter.importNewPlayableElement(trackData);
             gotSuccess = true;
             em.getTransaction().commit();
             em.getTransaction().begin();
@@ -529,16 +556,16 @@ public class SqueezeboxServerTest extends BaseTestCase {
             trackData.setTags(Arrays.asList(
                     new TagData(TagData.ALBUM, "Some album"),
                     new TagData(TagData.TITLE, "Some title"),
-                    new TagData(TagData.WORK, "a"+workTitle),
+                    new TagData(TagData.WORK, "a" + workTitle),
                     new TagData(TagData.ARTIST, "Some Artist"),
                     new TagData(TagData.GENRE, "Some Genre")
             ));
-            squeezeboxServer.importNewPlayableElement(trackData);
+            tagImporter.importNewPlayableElement(trackData);
             em.getTransaction().commit();
         } catch (ConstraintViolationException e) {
             gotError = true;
         } finally {
-            if(em.getTransaction().isActive()) {
+            if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
             }
         }
@@ -552,36 +579,37 @@ public class SqueezeboxServerTest extends BaseTestCase {
         assert release.getMediums() != null;
         assert release.getMediums().size() == 2;
         assert release.getContributors().size() == 0;
-        assert ((ReleaseEntity)release).getDefaultImage() == null;
+        assert ((ReleaseEntity) release).getDefaultImage() == null;
         assert release.getTracks().size() == 3;
         for (Track track : release.getTracks()) {
-            assert track.getRecording()!=null;
-            assert track.getRecording().getContributors().size()==2;
+            assert track.getRecording() != null;
+            assert track.getRecording().getContributors().size() == 2;
             for (Contributor contributor : track.getRecording().getContributors()) {
-                assert contributor.getArtist()!=null;
+                assert contributor.getArtist() != null;
                 assert contributor.getType().equals(Contributor.PERFORMER);
             }
         }
     }
+
     void validateTheBodyguard(Release release) {
         assert release.getTracks() != null;
         assert release.getTracks().size() == 4;
         assert release.getContributors().size() == 1;
-        assert ((ArtistEntity)release.getContributors().iterator().next().getArtist()).getSortAs().equals("Houston, Whitney");
-        assert ((ReleaseEntity)release).getDefaultImage() != null;
-        assert ((ReleaseEntity)release).getDefaultImage().getProviderId().equals(SqueezeboxServerImageProvider.PROVIDER_ID);
-        assert ((ReleaseEntity)release).getDefaultImage().getProviderImageId().equals("1234");
+        assert ((ArtistEntity) release.getContributors().iterator().next().getArtist()).getSortAs().equals("Houston, Whitney");
+        assert ((ReleaseEntity) release).getDefaultImage() != null;
+        assert ((ReleaseEntity) release).getDefaultImage().getProviderId().equals("someimageid");
+        assert ((ReleaseEntity) release).getDefaultImage().getProviderImageId().equals("1234");
 
         for (Track track : release.getTracks()) {
             assert track.getNumber() != null;
             assert track.getRecording() != null;
             assert track.getRecording().getWorks() != null;
-            assert track.getRecording().getWorks().size()==1;
+            assert track.getRecording().getWorks().size() == 1;
 
             if (track.getNumber().equals(1)) {
                 assert track.getRecording().getWorks().iterator().next().getName().equals("I Will Always Love You");
                 assert track.getRecording().getContributors().size() == 1;
-                assert ((ArtistEntity)track.getRecording().getContributors().iterator().next().getArtist()).getSortAs().equals("Minor, Ricky");
+                assert ((ArtistEntity) track.getRecording().getContributors().iterator().next().getArtist()).getSortAs().equals("Minor, Ricky");
                 assert track.getRecording().getWorks().iterator().next().getContributors().size() == 1;
             } else if (track.getNumber().equals(5)) {
                 assert track.getRecording().getWorks().iterator().next().getName().equals("Queen Of The Night");
