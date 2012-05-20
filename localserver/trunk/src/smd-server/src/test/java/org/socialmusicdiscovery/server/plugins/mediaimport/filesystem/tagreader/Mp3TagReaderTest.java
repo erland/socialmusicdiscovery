@@ -177,4 +177,54 @@ public class Mp3TagReaderTest {
         Assert.assertTrue(foundAlbumArtist);
         Assert.assertEquals(foundStyle, 3);
     }
+
+    @Test
+    public void testMp3SortTags() throws IOException {
+        String filename = BaseTestCase.getTestResourceDiretory() + "org/socialmusicdiscovery/server/plugins/mediaimport/filesystem/testfile1v2withsort.mp3";
+        TrackData data = new Mp3TagReader(null).getTrackData(new File(filename));
+        assert data != null;
+        assert data.getFile().equals(filename);
+        assert data.getUrl().startsWith("file:/");
+        assert data.getUrl().endsWith("testfile1v2withsort.mp3");
+        assert data.getFormat().equals("mp3");
+        assert data.getSmdID().equals("ab2dbe29c46c1668b89cf4bd17e34a59-000004e4");
+        assert data.getTags() != null;
+        assert data.getTags().size() == 10;
+        boolean foundAlbumArtist = false;
+        boolean foundArtist = false;
+        boolean foundPerformer = false;
+        boolean foundConductor = false;
+        boolean foundComposer = false;
+        boolean foundSong = false;
+        boolean foundGenre = false;
+        boolean foundAlbum = false;
+        for (TagData tagData : data.getTags()) {
+            if (tagData.getName().equals("ARTIST") && tagData.getValue().equals("The Artist") && tagData.getSortValue().equals("Artist, The")) {
+                foundArtist = true;
+            } else if (tagData.getName().equals("BAND") && tagData.getValue().equals("The Album Artist") && tagData.getSortValue().equals("Album Artist, The")) {
+                foundAlbumArtist = true;
+            } else if (tagData.getName().equals("PERFORMER") && tagData.getValue().equals("The Performer") && tagData.getSortValue().equals("Performer, The")) {
+                foundPerformer = true;
+            } else if (tagData.getName().equals("CONDUCTOR") && tagData.getValue().equals("The Conductor") && tagData.getSortValue().equals("Conductor, The")) {
+                foundConductor = true;
+            } else if (tagData.getName().equals("COMPOSER") && tagData.getValue().equals("The Composer") && tagData.getSortValue().equals("Composer, The")) {
+                foundComposer = true;
+            } else if (tagData.getName().equals("TITLE") && tagData.getValue().equals("The Song") && tagData.getSortValue().equals("Song, The")) {
+                foundSong = true;
+            } else if (tagData.getName().equals("GENRE") && tagData.getValue().equals("The Interesting") && tagData.getSortValue().equals("Interesting, The")) {
+                foundGenre = true;
+            } else if (tagData.getName().equals("ALBUM") && tagData.getValue().equals("The Album") && tagData.getSortValue().equals("Album, The")) {
+                foundAlbum = true;
+            }
+        }
+        assert foundArtist;
+        assert foundAlbumArtist;
+        assert foundPerformer;
+        assert foundConductor;
+        assert foundComposer;
+        assert foundSong;
+        assert foundGenre;
+        assert foundAlbum;
+    }
+
 }
