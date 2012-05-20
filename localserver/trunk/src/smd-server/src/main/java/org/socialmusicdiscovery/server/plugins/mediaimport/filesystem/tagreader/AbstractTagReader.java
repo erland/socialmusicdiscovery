@@ -63,6 +63,7 @@ public abstract class AbstractTagReader implements TagReader {
         mappedTags.put("DISCNUMBER", "DISC");
 
         mappedTags.put("ARTIST", "ARTIST");
+        mappedTags.put("CONDUCTOR", "CONDUCTOR");
         mappedTags.put("COMPOSER", "COMPOSER");
         mappedTags.put("BAND", "BAND");
         mappedTags.put("ENSEMBLE", "BAND");
