@@ -48,6 +48,11 @@ import java.util.*;
  */
 public abstract class AbstractTagReader implements TagReader {
     /**
+     * Characters which are used to separate multiple values in a tag
+     */
+    private String separatorCharacters;
+
+    /**
      * Mapping between tag name and SMD name
      */
     private static final Map<String, String> mappedTags = new HashMap<String, String>();
@@ -135,6 +140,10 @@ public abstract class AbstractTagReader implements TagReader {
         sortTags.put("MOVEMENTSORT", "MOVEMENT");
 
         sortTags.put("MUSICBRAINZ_ALBUMARTISTSORT", "ALBUMARTIST");
+    }
+
+    protected AbstractTagReader(String separatorCharacters) {
+        this.separatorCharacters = separatorCharacters;
     }
 
     /**
@@ -237,19 +246,27 @@ public abstract class AbstractTagReader implements TagReader {
                 TagField tf = it.next();
                 TagData tagData = getTagData(tf);
                 if (tagData != null) {
-                    String name = getMappedTagName(tagData.getName());
-                    if (name != null) {
-                        if (normalTags.containsKey(name)) {
-                            normalTags.get(name).add(tagData.getValue());
-                        } else {
-                            normalTags.put(name, new ArrayList<String>(Arrays.asList(tagData.getValue())));
-                        }
-                    } else if (getSortTag(tagData.getName()) != null) {
-                        String sortName = getSortTag(tagData.getName());
-                        if (sortTags.containsKey(sortName)) {
-                            sortTags.get(sortName).add(tagData.getValue());
-                        } else {
-                            sortTags.put(sortName, new ArrayList<String>(Arrays.asList(tagData.getValue())));
+                    String[] values;
+                    if (separatorCharacters != null && separatorCharacters.trim().length() > 0) {
+                        values = tagData.getValue().split("[" + separatorCharacters + "]");
+                    } else {
+                        values = new String[]{tagData.getValue()};
+                    }
+                    for (String value : values) {
+                        String name = getMappedTagName(tagData.getName());
+                        if (name != null) {
+                            if (normalTags.containsKey(name)) {
+                                normalTags.get(name).add(value);
+                            } else {
+                                normalTags.put(name, new ArrayList<String>(Arrays.asList(value)));
+                            }
+                        } else if (getSortTag(tagData.getName()) != null) {
+                            String sortName = getSortTag(tagData.getName());
+                            if (sortTags.containsKey(sortName)) {
+                                sortTags.get(sortName).add(value);
+                            } else {
+                                sortTags.put(sortName, new ArrayList<String>(Arrays.asList(value)));
+                            }
                         }
                     }
                 }

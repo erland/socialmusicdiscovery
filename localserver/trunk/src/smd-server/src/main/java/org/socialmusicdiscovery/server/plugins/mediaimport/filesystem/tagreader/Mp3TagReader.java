@@ -100,6 +100,10 @@ public class Mp3TagReader extends AbstractTagReader {
         sortTags.put("XSOP", "ARTISTSORT");
     }
 
+    public Mp3TagReader(String separatorCharacters) {
+        super(separatorCharacters);
+    }
+
     @Override
     protected String getSortTag(String tag) {
         tag = tag.toUpperCase();

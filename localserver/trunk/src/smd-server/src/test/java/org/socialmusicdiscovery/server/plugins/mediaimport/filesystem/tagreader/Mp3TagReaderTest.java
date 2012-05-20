@@ -40,7 +40,7 @@ public class Mp3TagReaderTest {
     @Test
     public void testSimple() throws IOException {
         String filename = BaseTestCase.getTestResourceDiretory() + "org/socialmusicdiscovery/server/plugins/mediaimport/filesystem/testfile1.mp3";
-        TrackData data = new Mp3TagReader().getTrackData(new File(filename));
+        TrackData data = new Mp3TagReader(null).getTrackData(new File(filename));
         assert data != null;
         assert data.getFile().equals(filename);
         assert data.getUrl().startsWith("file:/");
@@ -65,7 +65,7 @@ public class Mp3TagReaderTest {
     @Test(enabled = false)
     public void testSimplev1() throws IOException {
         String filename = BaseTestCase.getTestResourceDiretory() + "org/socialmusicdiscovery/server/plugins/mediaimport/filesystem/testfile1v1.mp3";
-        TrackData data = new Mp3TagReader().getTrackData(new File(filename));
+        TrackData data = new Mp3TagReader(null).getTrackData(new File(filename));
         assert data != null;
         assert data.getFile().equals(filename);
         assert data.getUrl().startsWith("file:/");
@@ -90,7 +90,7 @@ public class Mp3TagReaderTest {
     @Test
     public void testSimplev2() throws IOException {
         String filename = BaseTestCase.getTestResourceDiretory() + "org/socialmusicdiscovery/server/plugins/mediaimport/filesystem/testfile1v2.mp3";
-        TrackData data = new Mp3TagReader().getTrackData(new File(filename));
+        TrackData data = new Mp3TagReader(null).getTrackData(new File(filename));
         assert data != null;
         assert data.getFile().equals(filename);
         assert data.getUrl().startsWith("file:/");
@@ -115,11 +115,44 @@ public class Mp3TagReaderTest {
     @Test
     public void testMultipleCustomTagsv2() throws IOException {
         String filename = BaseTestCase.getTestResourceDiretory() + "org/socialmusicdiscovery/server/plugins/mediaimport/filesystem/testfile2v2.mp3";
-        TrackData data = new Mp3TagReader().getTrackData(new File(filename));
+        TrackData data = new Mp3TagReader(null).getTrackData(new File(filename));
         assert data != null;
         assert data.getFile().equals(filename);
         assert data.getUrl().startsWith("file:/");
         assert data.getUrl().endsWith("testfile2v2.mp3");
+        assert data.getFormat().equals("mp3");
+        assert data.getSmdID().equals("b3ee93a0e9c037d22a2220d994f8a1a4-000004e4");
+        assert data.getTags() != null;
+        assert data.getTags().size() == 9;
+        boolean foundAlbumArtist = false;
+        boolean foundArtist = false;
+        int foundStyle = 0;
+        for (TagData tagData : data.getTags()) {
+            if (tagData.getName().equals("ARTIST")) {
+                foundArtist = true;
+            } else if (tagData.getName().equals("BAND") && tagData.getValue().equals("Model 500")) {
+                foundAlbumArtist = true;
+            } else if (tagData.getName().equals("STYLE") && tagData.getValue().equals("Techno")) {
+                foundStyle++;
+            } else if (tagData.getName().equals("STYLE") && tagData.getValue().equals("Drum n Bass")) {
+                foundStyle++;
+            } else if (tagData.getName().equals("STYLE") && tagData.getValue().equals("Electro")) {
+                foundStyle++;
+            }
+        }
+        Assert.assertFalse(foundArtist);
+        Assert.assertTrue(foundAlbumArtist);
+        Assert.assertEquals(foundStyle, 3);
+    }
+
+    @Test
+    public void testMultipleSeparatedCustomTagsv2() throws IOException {
+        String filename = BaseTestCase.getTestResourceDiretory() + "org/socialmusicdiscovery/server/plugins/mediaimport/filesystem/testfile2v2separated.mp3";
+        TrackData data = new Mp3TagReader(";").getTrackData(new File(filename));
+        assert data != null;
+        assert data.getFile().equals(filename);
+        assert data.getUrl().startsWith("file:/");
+        assert data.getUrl().endsWith("testfile2v2separated.mp3");
         assert data.getFormat().equals("mp3");
         assert data.getSmdID().equals("b3ee93a0e9c037d22a2220d994f8a1a4-000004e4");
         assert data.getTags() != null;
