@@ -45,7 +45,7 @@ public class FlacTagReaderTest {
         assert data.getUrl().startsWith("file:/");
         assert data.getUrl().endsWith("testfile1.flac");
         assert data.getFormat().equals("flc");
-        assert data.getSmdID().equals("fa5a51e838417f9ba57185973fd3ff8-000001a5");
+        assert data.getSmdID().equals("fa05a51e838417f9ba57185973fd3ff8-000000d3");
         assert data.getTags() != null;
         assert data.getTags().size() == 8;
         boolean foundAlbumArtist = false;
@@ -70,7 +70,7 @@ public class FlacTagReaderTest {
         assert data.getUrl().startsWith("file:/");
         assert data.getUrl().endsWith("testfile2.flac");
         assert data.getFormat().equals("flc");
-        assert data.getSmdID().equals("e8143bb472c39b208a1b8ccb5b6666ad-000001b3");
+        assert data.getSmdID().equals("e8143bb472c39b208a1b8ccb5b6666ad-000000d3");
         assert data.getTags() != null;
         assert data.getTags().size() == 9;
         boolean foundAlbumArtist = false;
@@ -103,7 +103,7 @@ public class FlacTagReaderTest {
         assert data.getUrl().startsWith("file:/");
         assert data.getUrl().endsWith("testfile2separated.flac");
         assert data.getFormat().equals("flc");
-        assert data.getSmdID().equals("e8143bb472c39b208a1b8ccb5b6666ad-000001b3");
+        assert data.getSmdID().equals("e8143bb472c39b208a1b8ccb5b6666ad-000000d3");
         assert data.getTags() != null;
         assert data.getTags().size() == 9;
         boolean foundAlbumArtist = false;
@@ -136,7 +136,7 @@ public class FlacTagReaderTest {
         assert data.getUrl().startsWith("file:/");
         assert data.getUrl().endsWith("testfile1withsort.flac");
         assert data.getFormat().equals("flc");
-        //     assert data.getSmdID().equals("fa5a51e838417f9ba57185973fd3ff8-000001a5");
+        assert data.getSmdID().equals("fa05a51e838417f9ba57185973fd3ff8-000000d3");
         assert data.getTags() != null;
         assert data.getTags().size() == 10;
         boolean foundAlbumArtist = false;

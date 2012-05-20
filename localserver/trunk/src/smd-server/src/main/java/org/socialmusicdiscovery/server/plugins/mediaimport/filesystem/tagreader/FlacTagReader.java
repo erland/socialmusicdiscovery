@@ -76,14 +76,15 @@ public class FlacTagReader extends AbstractTagReader {
                     StringBuilder sb = new StringBuilder();
                     for (int i = 18; i < 34; i++) {
                         byte dataByte = rawdata.get(i);
-                        sb.append(String.format("%x", dataByte));
+                        sb.append(String.format("%02x", dataByte));
                     }
-                    checksum = sb.toString() + String.format("-%08x", randomAccessFile.length() - mbh.getDataLength());
+                    checksum = sb.toString();
                 } else {
                     randomAccessFile.seek(randomAccessFile.getFilePointer() + mbh.getDataLength());
                 }
                 isLastBlock = mbh.isLastBlock();
             }
+            checksum = checksum + String.format("-%08x", randomAccessFile.length() - randomAccessFile.getFilePointer());
             randomAccessFile.close();
             return checksum;
         } catch (CannotReadException e) {
