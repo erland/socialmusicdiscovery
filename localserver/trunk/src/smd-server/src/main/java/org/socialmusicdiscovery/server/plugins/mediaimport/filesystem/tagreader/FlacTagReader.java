@@ -41,6 +41,11 @@ import java.nio.ByteBuffer;
  * Tag reader implementation for FLAC files
  */
 public class FlacTagReader extends AbstractTagReader {
+
+    public FlacTagReader(String separatorCharacters) {
+        super(separatorCharacters);
+    }
+
     @Override
     protected Boolean isSupportedFileType(File file) throws IOException {
         return file.getCanonicalPath().toUpperCase().endsWith(".FLAC");

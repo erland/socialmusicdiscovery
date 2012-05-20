@@ -27,25 +27,61 @@
 
 package org.socialmusicdiscovery.server.plugins.mediaimport.filesystem;
 
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import org.apache.commons.io.FileUtils;
+import org.socialmusicdiscovery.server.business.logic.InjectHelper;
+import org.socialmusicdiscovery.server.business.logic.config.MappedConfigurationContext;
+import org.socialmusicdiscovery.server.business.logic.config.MemoryConfigurationManager;
+import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameter;
+import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameterEntity;
 import org.socialmusicdiscovery.server.plugins.mediaimport.TrackData;
 import org.socialmusicdiscovery.test.BaseTestCase;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class FileSystemTest {
+    FileSystem fileSystem;
+
+    @Inject
+    @Named("default-value")
+    MemoryConfigurationManager defaultValueConfigurationManager;
+
+    @BeforeClass
+    public void setUp() {
+        InjectHelper.injectMembers(this);
+        fileSystem = new FileSystem();
+
+        String pluginConfigurationPath = "org.socialmusicdiscovery.server.plugins.mediaimport." + fileSystem.getId() + ".";
+        Set<ConfigurationParameter> defaultConfiguration = new HashSet<ConfigurationParameter>();
+        for (ConfigurationParameter parameter : fileSystem.getDefaultConfiguration()) {
+            ConfigurationParameterEntity entity = new ConfigurationParameterEntity(parameter);
+            if (!entity.getId().startsWith(pluginConfigurationPath)) {
+                entity.setId(pluginConfigurationPath + entity.getId());
+            }
+            entity.setDefaultValue(true);
+            defaultConfiguration.add(entity);
+        }
+        defaultValueConfigurationManager.setParametersForPath(pluginConfigurationPath, defaultConfiguration);
+        fileSystem.setConfiguration(new MappedConfigurationContext(pluginConfigurationPath, defaultValueConfigurationManager));
+        fileSystem.init(null);
+    }
+
     @Test
     public void testScanFileFlac() throws IOException {
-        TrackData trackData = new FileSystem().scanFile(new File(BaseTestCase.getTestResourceDiretory() + "/org/socialmusicdiscovery/server/plugins/mediaimport/filesystem/testfile1.flac"));
+        TrackData trackData = fileSystem.scanFile(new File(BaseTestCase.getTestResourceDiretory() + "/org/socialmusicdiscovery/server/plugins/mediaimport/filesystem/testfile1.flac"));
         assert trackData != null;
     }
 
     @Test
     public void testScanFileMp3() throws IOException {
-        TrackData trackData = new FileSystem().scanFile(new File(BaseTestCase.getTestResourceDiretory() + "/org/socialmusicdiscovery/server/plugins/mediaimport/filesystem/testfile1.mp3"));
+        TrackData trackData = fileSystem.scanFile(new File(BaseTestCase.getTestResourceDiretory() + "/org/socialmusicdiscovery/server/plugins/mediaimport/filesystem/testfile1.mp3"));
         assert trackData != null;
     }
 

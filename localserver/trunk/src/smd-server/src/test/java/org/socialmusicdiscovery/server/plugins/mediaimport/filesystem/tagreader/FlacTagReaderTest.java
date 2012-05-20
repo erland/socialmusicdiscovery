@@ -39,7 +39,7 @@ public class FlacTagReaderTest {
     @Test
     public void testFlacSimpleFlac() throws IOException {
         String filename = BaseTestCase.getTestResourceDiretory() + "org/socialmusicdiscovery/server/plugins/mediaimport/filesystem/testfile1.flac";
-        TrackData data = new FlacTagReader().getTrackData(new File(filename));
+        TrackData data = new FlacTagReader(null).getTrackData(new File(filename));
         assert data != null;
         assert data.getFile().equals(filename);
         assert data.getUrl().startsWith("file:/");
@@ -64,11 +64,44 @@ public class FlacTagReaderTest {
     @Test
     public void testFlacMultipleCustomTags() throws IOException {
         String filename = BaseTestCase.getTestResourceDiretory() + "org/socialmusicdiscovery/server/plugins/mediaimport/filesystem/testfile2.flac";
-        TrackData data = new FlacTagReader().getTrackData(new File(filename));
+        TrackData data = new FlacTagReader(null).getTrackData(new File(filename));
         assert data != null;
         assert data.getFile().equals(filename);
         assert data.getUrl().startsWith("file:/");
         assert data.getUrl().endsWith("testfile2.flac");
+        assert data.getFormat().equals("flc");
+        assert data.getSmdID().equals("e8143bb472c39b208a1b8ccb5b6666ad-000001b3");
+        assert data.getTags() != null;
+        assert data.getTags().size() == 9;
+        boolean foundAlbumArtist = false;
+        boolean foundArtist = false;
+        int foundStyle = 0;
+        for (TagData tagData : data.getTags()) {
+            if (tagData.getName().equals("ARTIST")) {
+                foundArtist = true;
+            } else if (tagData.getName().equals("ALBUMARTIST") && tagData.getValue().equals("Model 500")) {
+                foundAlbumArtist = true;
+            } else if (tagData.getName().equals("STYLE") && tagData.getValue().equals("Techno")) {
+                foundStyle++;
+            } else if (tagData.getName().equals("STYLE") && tagData.getValue().equals("Drum n Bass")) {
+                foundStyle++;
+            } else if (tagData.getName().equals("STYLE") && tagData.getValue().equals("Electro")) {
+                foundStyle++;
+            }
+        }
+        assert !foundArtist;
+        assert foundAlbumArtist;
+        assert foundStyle == 3;
+    }
+
+    @Test
+    public void testFlacMultipleSeparatedCustomTags() throws IOException {
+        String filename = BaseTestCase.getTestResourceDiretory() + "org/socialmusicdiscovery/server/plugins/mediaimport/filesystem/testfile2separated.flac";
+        TrackData data = new FlacTagReader(";").getTrackData(new File(filename));
+        assert data != null;
+        assert data.getFile().equals(filename);
+        assert data.getUrl().startsWith("file:/");
+        assert data.getUrl().endsWith("testfile2separated.flac");
         assert data.getFormat().equals("flc");
         assert data.getSmdID().equals("e8143bb472c39b208a1b8ccb5b6666ad-000001b3");
         assert data.getTags() != null;

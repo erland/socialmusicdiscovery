@@ -183,7 +183,8 @@ public class FileSystem extends AbstractTagImporter implements MediaImporter {
      * @throws IOException If tags can't be read of file can't be accessed
      */
     TrackData scanFile(File file) throws IOException {
-        TagReader[] tagReaders = {new FlacTagReader(), new Mp3TagReader()};
+        String separatorCharacters = getConfiguration().getStringParameter("separatorCharacters");
+        TagReader[] tagReaders = {new FlacTagReader(separatorCharacters), new Mp3TagReader(separatorCharacters)};
         for (TagReader tagReader : tagReaders) {
             TrackData data = tagReader.getTrackData(file);
             if (data != null) {
@@ -197,6 +198,7 @@ public class FileSystem extends AbstractTagImporter implements MediaImporter {
     public Collection<ConfigurationParameter> getDefaultConfiguration() {
         Collection<ConfigurationParameter> parameters = super.getDefaultConfiguration();
         parameters.add(new ConfigurationParameterEntity("musicfolders", ConfigurationParameter.Type.STRING, ""));
+        parameters.add(new ConfigurationParameterEntity("separatorCharacters", ConfigurationParameter.Type.STRING, ";"));
         return parameters;
     }
 }
