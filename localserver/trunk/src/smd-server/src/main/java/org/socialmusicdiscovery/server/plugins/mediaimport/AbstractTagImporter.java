@@ -217,6 +217,7 @@ public abstract class AbstractTagImporter extends AbstractProcessingModule {
                 if (playableElement.getFormat().equals(data.getFormat()) &&
                         !playableElement.getUri().equals(data.getUrl())) {
                     playableElement.setUri(data.getUrl());
+                    playableElement.setLastModified(data.getLastModified());
                     playableElement.setLastUpdated(new Date());
                     playableElement.setLastUpdatedBy(getId());
                     validate(playableElement);
@@ -228,6 +229,7 @@ public abstract class AbstractTagImporter extends AbstractProcessingModule {
             playableElement.setUri(data.getUrl());
             playableElement.setFormat(data.getFormat());
             playableElement.setSmdID(data.getSmdID());
+            playableElement.setLastModified(data.getLastModified());
             playableElement.setLastUpdated(new Date());
             playableElement.setLastUpdatedBy(getId());
             validate(playableElement);

@@ -54,6 +54,8 @@ public class PlayableElementEntity extends AbstractSMDIdentityEntity implements 
     private String format;
     @Expose
     private Integer bitrate;
+    @Column(name = "last_modified")
+    private Long lastModified;
 
     public String getSmdID() {
         return smdID;
@@ -85,5 +87,13 @@ public class PlayableElementEntity extends AbstractSMDIdentityEntity implements 
 
     public void setBitrate(Integer bitrate) {
         this.bitrate = bitrate;
+    }
+
+    public Long getLastModified() {
+        return lastModified;
+    }
+
+    public void setLastModified(Long lastModified) {
+        this.lastModified = lastModified;
     }
 }

@@ -33,6 +33,7 @@ public class TrackData {
     private String url;
     private String smdID;
     private String file;
+    private Long lastModified;
     private String format;
     private List<TagData> tags;
 
@@ -74,5 +75,13 @@ public class TrackData {
 
     public void setTags(List<TagData> tags) {
         this.tags = tags;
+    }
+
+    public Long getLastModified() {
+        return lastModified;
+    }
+
+    public void setLastModified(Long lastModified) {
+        this.lastModified = lastModified;
     }
 }

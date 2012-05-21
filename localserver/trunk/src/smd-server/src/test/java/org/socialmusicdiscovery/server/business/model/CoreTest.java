@@ -117,7 +117,7 @@ public class CoreTest extends BaseTestCase {
 
     @Test
     public void testModelCreation() throws Exception {
-        loadTestData(getClass().getPackage().getName(),"Empty Tables.xml");
+        loadTestData(getClass().getPackage().getName(), "Empty Tables.xml");
         em.getTransaction().begin();
         try {
             ReleaseEntity release = new ReleaseEntity();
@@ -125,14 +125,14 @@ public class CoreTest extends BaseTestCase {
             release.setDate(DATE_FORMAT.parse("1992"));
             setLastChanged(release);
             releaseRepository.create(release);
-            
+
             ImageEntity image = new ImageEntity();
             image.setUri("foo://nowhere.to/image");
             image.setProviderId("JUnit");
             setLastChanged(image);
             image.setRelatedTo(release.getReference());
             imageRepository.create(image);
-            
+
             WorkEntity work = new WorkEntity();
             work.setName("I Will Always Love You");
             setLastChanged(work);
@@ -156,9 +156,9 @@ public class CoreTest extends BaseTestCase {
             setLastChanged(recording);
             recordingRepository.create(recording);
 
-            ContributorEntity contributorWhitneyHouston= new ContributorEntity();
+            ContributorEntity contributorWhitneyHouston = new ContributorEntity();
             contributorWhitneyHouston.setType("artist");
-            ArtistEntity artistWhitneyHouston= new ArtistEntity();
+            ArtistEntity artistWhitneyHouston = new ArtistEntity();
             artistWhitneyHouston.setName("Whitney Houston");
             setLastChanged(artistWhitneyHouston);
             artistRepository.create(artistWhitneyHouston);
@@ -166,9 +166,9 @@ public class CoreTest extends BaseTestCase {
             setLastChanged(contributorWhitneyHouston);
             contributorRepository.create(contributorWhitneyHouston);
 
-            ContributorEntity contributorRickyMinor= new ContributorEntity();
+            ContributorEntity contributorRickyMinor = new ContributorEntity();
             contributorRickyMinor.setType("conductor");
-            ArtistEntity artistRickyMinor= new ArtistEntity();
+            ArtistEntity artistRickyMinor = new ArtistEntity();
             artistRickyMinor.setName("Ricky Minor");
             setLastChanged(artistRickyMinor);
             artistRepository.create(artistRickyMinor);
@@ -197,124 +197,124 @@ public class CoreTest extends BaseTestCase {
             track.getPlayableElements().add(playableElement);
             trackRepository.create(track);
 
-            release.setTracks(Arrays.asList((Track)track));
+            release.setTracks(Arrays.asList((Track) track));
             releaseRepository.create(release);
-        }
-        finally{
-            if(!em.getTransaction().getRollbackOnly()) {
+        } finally {
+            if (!em.getTransaction().getRollbackOnly()) {
                 em.getTransaction().commit();
             }
         }
         em.getTransaction().begin();
         Query query = em.createQuery("from ReleaseEntity where name=:name");
-        query.setParameter("name","The Bodyguard (Original Soundtrack Album)");
+        query.setParameter("name", "The Bodyguard (Original Soundtrack Album)");
         Release release = (Release) query.getSingleResult();
-        assert(release != null);
+        assert (release != null);
 
         printRelease(release);
 
-        assert ((ReleaseEntity)release).getLastUpdated() != null;
-        assert ((ReleaseEntity)release).getLastUpdatedBy() != null;
-        assert(release.getName().equals("The Bodyguard (Original Soundtrack Album)"));
-        assert(DATE_FORMAT.format(release.getDate()).equals("1992"));
-        assert(release.getTracks() != null);
-        assert(release.getTracks().size() == 1);
+        assert ((ReleaseEntity) release).getLastUpdated() != null;
+        assert ((ReleaseEntity) release).getLastUpdatedBy() != null;
+        assert (release.getName().equals("The Bodyguard (Original Soundtrack Album)"));
+        assert (DATE_FORMAT.format(release.getDate()).equals("1992"));
+        assert (release.getTracks() != null);
+        assert (release.getTracks().size() == 1);
         Track track = release.getTracks().iterator().next();
-        assert(track.getNumber().equals(1));
-        assert ((TrackEntity)track).getLastUpdated() != null;
-        assert ((TrackEntity)track).getLastUpdatedBy() != null;
+        assert (track.getNumber().equals(1));
+        assert ((TrackEntity) track).getLastUpdated() != null;
+        assert ((TrackEntity) track).getLastUpdatedBy() != null;
         assert (track.getPlayableElements() != null);
         assert (track.getPlayableElements().size() == 2);
         PlayableElement playableElement = track.getPlayableElements().iterator().next();
         assert playableElement.getSmdID().equals("1000") || playableElement.getSmdID().equals("1001");
-        assert(track.getRecording() != null);
-        assert(track.getRecording().getContributors() != null);
-        assert(track.getRecording().getContributors().size()==2);
-        assert ((RecordingEntity)track.getRecording()).getLastUpdated() != null;
-        assert ((RecordingEntity)track.getRecording()).getLastUpdatedBy() != null;
+        assert (track.getRecording() != null);
+        assert (track.getRecording().getContributors() != null);
+        assert (track.getRecording().getContributors().size() == 2);
+        assert ((RecordingEntity) track.getRecording()).getLastUpdated() != null;
+        assert ((RecordingEntity) track.getRecording()).getLastUpdatedBy() != null;
         Iterator<Contributor> iterator = track.getRecording().getContributors().iterator();
         Contributor contributor1 = iterator.next();
-        assert(contributor1.getType() != null);
-        assert(contributor1.getArtist() != null);
-        assert(contributor1.getType().equals("conductor") || contributor1.getType().equals("artist"));
-        assert ((ContributorEntity)contributor1).getLastUpdated() != null;
-        assert ((ContributorEntity)contributor1).getLastUpdatedBy() != null;
-        if(contributor1.getType().equals("conductor")) {
-            assert(contributor1.getArtist() != null);
-            assert(contributor1.getArtist().getName().equals("Ricky Minor"));
+        assert (contributor1.getType() != null);
+        assert (contributor1.getArtist() != null);
+        assert (contributor1.getType().equals("conductor") || contributor1.getType().equals("artist"));
+        assert ((ContributorEntity) contributor1).getLastUpdated() != null;
+        assert ((ContributorEntity) contributor1).getLastUpdatedBy() != null;
+        if (contributor1.getType().equals("conductor")) {
+            assert (contributor1.getArtist() != null);
+            assert (contributor1.getArtist().getName().equals("Ricky Minor"));
             Contributor contributor2 = iterator.next();
-            assert(contributor2.getType() != null);
-            assert(contributor2.getType().equals("artist"));
-            assert(contributor2.getArtist() != null);
-            assert(contributor2.getArtist().getName().equals("Whitney Houston"));
-            assert ((ContributorEntity)contributor2).getLastUpdated() != null;
-            assert ((ContributorEntity)contributor2).getLastUpdatedBy() != null;
-        }else {
-            assert(contributor1.getArtist() != null);
-            assert(contributor1.getArtist().getName().equals("Whitney Houston"));
+            assert (contributor2.getType() != null);
+            assert (contributor2.getType().equals("artist"));
+            assert (contributor2.getArtist() != null);
+            assert (contributor2.getArtist().getName().equals("Whitney Houston"));
+            assert ((ContributorEntity) contributor2).getLastUpdated() != null;
+            assert ((ContributorEntity) contributor2).getLastUpdatedBy() != null;
+        } else {
+            assert (contributor1.getArtist() != null);
+            assert (contributor1.getArtist().getName().equals("Whitney Houston"));
             Contributor contributor2 = iterator.next();
-            assert(contributor2.getType() != null);
-            assert(contributor2.getType().equals("conductor"));
-            assert(contributor2.getArtist() != null);
-            assert(contributor2.getArtist().getName().equals("Ricky Minor"));
-            assert ((ContributorEntity)contributor2).getLastUpdated() != null;
-            assert ((ContributorEntity)contributor2).getLastUpdatedBy() != null;
+            assert (contributor2.getType() != null);
+            assert (contributor2.getType().equals("conductor"));
+            assert (contributor2.getArtist() != null);
+            assert (contributor2.getArtist().getName().equals("Ricky Minor"));
+            assert ((ContributorEntity) contributor2).getLastUpdated() != null;
+            assert ((ContributorEntity) contributor2).getLastUpdatedBy() != null;
         }
         em.getTransaction().commit();
     }
 
     @Test
     public void testModelPlayableElementUpdate() throws Exception {
-        loadTestData(getClass().getPackage().getName(),"The Bodyguard.xml");
+        loadTestData(getClass().getPackage().getName(), "The Bodyguard.xml");
         em.getTransaction().begin();
-        
+
         Query query = em.createQuery("from ReleaseEntity where name=:name");
-        query.setParameter("name","The Bodyguard (Original Soundtrack Album)");
+        query.setParameter("name", "The Bodyguard (Original Soundtrack Album)");
         Release release = (Release) query.getSingleResult();
-        assert(release != null);
-        
+        assert (release != null);
+
         TrackEntity track = (TrackEntity) release.getTracks().get(0);
         PlayableElementEntity playableElement = new PlayableElementEntity();
         playableElement.setFormat("mp3");
         playableElement.setSmdID("1000");
         playableElement.setUri("someservice://sometrackidentifier");
+        playableElement.setLastModified(DATE_FORMAT.parse("2010-01-01").getTime());
         setLastChanged(playableElement);
         playableElementRepository.create(playableElement);
         track.getPlayableElements().add(playableElement);
         trackRepository.merge(track);
-        
+
         query = em.createQuery("from ReleaseEntity where name=:name");
-        query.setParameter("name","The Bodyguard (Original Soundtrack Album)");
+        query.setParameter("name", "The Bodyguard (Original Soundtrack Album)");
         release = (Release) query.getSingleResult();
-        assert(release != null);
+        assert (release != null);
         track = (TrackEntity) release.getTracks().get(0);
-        assert track.getPlayableElements().size()==2;
+        assert track.getPlayableElements().size() == 2;
 
         boolean found = false;
         for (PlayableElement element : track.getPlayableElements()) {
-            if(element.getSmdID().equals("1000")) {
+            if (element.getSmdID().equals("1000")) {
                 found = true;
             }
         }
         assert found;
 
         Collection<PlayableElementEntity> previousPlayableElements = playableElementRepository.findBySmdID("fd4fe48417dd941af53799619ecf1a40-10000000");
-        assert previousPlayableElements.size()>0;
+        assert previousPlayableElements.size() > 0;
         playableElement = previousPlayableElements.iterator().next();
         playableElement.setFormat("mp3");
         playableElement.setUri("someservice://sometrackidentifier");
         setLastChanged(playableElement);
 
         query = em.createQuery("from ReleaseEntity where name=:name");
-        query.setParameter("name","The Bodyguard (Original Soundtrack Album)");
+        query.setParameter("name", "The Bodyguard (Original Soundtrack Album)");
         release = (Release) query.getSingleResult();
-        assert(release != null);
+        assert (release != null);
         track = (TrackEntity) release.getTracks().get(0);
-        assert track.getPlayableElements().size()==2;
+        assert track.getPlayableElements().size() == 2;
 
         found = false;
         for (PlayableElement element : track.getPlayableElements()) {
-            if(element.getSmdID().equals("fd4fe48417dd941af53799619ecf1a40-10000000")) {
+            if (element.getSmdID().equals("fd4fe48417dd941af53799619ecf1a40-10000000")) {
                 assert element.getUri().equals("someservice://sometrackidentifier");
                 found = true;
             }
@@ -322,7 +322,7 @@ public class CoreTest extends BaseTestCase {
         assert found;
 
         for (PlayableElement element : track.getPlayableElements()) {
-            if(element.getSmdID().equals("1000")) {
+            if (element.getSmdID().equals("1000")) {
                 track.getPlayableElements().remove(element);
                 playableElementRepository.remove((PlayableElementEntity) element);
                 break;
@@ -330,24 +330,24 @@ public class CoreTest extends BaseTestCase {
         }
 
         query = em.createQuery("from ReleaseEntity where name=:name");
-        query.setParameter("name","The Bodyguard (Original Soundtrack Album)");
+        query.setParameter("name", "The Bodyguard (Original Soundtrack Album)");
         release = (Release) query.getSingleResult();
-        assert(release != null);
+        assert (release != null);
         track = (TrackEntity) release.getTracks().get(0);
-        assert track.getPlayableElements().size()==1;
+        assert track.getPlayableElements().size() == 1;
 
         em.getTransaction().commit();
     }
-    
+
     @Test
     public void testModelRead() throws Exception {
-        loadTestData(getClass().getPackage().getName(),"The Bodyguard.xml");
+        loadTestData(getClass().getPackage().getName(), "The Bodyguard.xml");
         em.getTransaction().begin();
 
         Query query = em.createQuery("from ReleaseEntity where name=:name");
-        query.setParameter("name","The Bodyguard (Original Soundtrack Album)");
+        query.setParameter("name", "The Bodyguard (Original Soundtrack Album)");
         Release release = (Release) query.getSingleResult();
-        assert(release != null);
+        assert (release != null);
 
         printRelease(release);
         em.getTransaction().commit();
@@ -355,56 +355,55 @@ public class CoreTest extends BaseTestCase {
 
     @Test
     public void testImageRead() throws Exception {
-        loadTestData(getClass().getPackage().getName(),"The Bodyguard.xml");
+        loadTestData(getClass().getPackage().getName(), "The Bodyguard.xml");
         em.getTransaction().begin();
 
         Query query = em.createQuery("from ReleaseEntity where name=:name");
-        query.setParameter("name","The Bodyguard (Original Soundtrack Album)");
+        query.setParameter("name", "The Bodyguard (Original Soundtrack Album)");
         Release release = (Release) query.getSingleResult();
-        assert(release != null);
+        assert (release != null);
 
         // Find by direct query to relatedTo "reference" object
         query = em.createQuery("from ImageEntity where relatedTo=:relatedTo");
-        query.setParameter("relatedTo",((ReleaseEntity)release).getReference());
+        query.setParameter("relatedTo", ((ReleaseEntity) release).getReference());
         Image image = (Image) query.getSingleResult();
-        assert(image != null);
-		assert("http://s.dsimg.com/image/R-1794218-1260432856.jpeg".equals(image.getUri()));
-		assert("JUnit".equals(image.getProviderId()));
-		assert("JUnit_007".equals(image.getProviderImageId()));
+        assert (image != null);
+        assert ("http://s.dsimg.com/image/R-1794218-1260432856.jpeg".equals(image.getUri()));
+        assert ("JUnit".equals(image.getProviderId()));
+        assert ("JUnit_007".equals(image.getProviderImageId()));
 
-		// Find by Release
-		image = (Image) imageRepository.findByRelease(release).iterator().next();
-		assert(image != null);
-		assert("http://s.dsimg.com/image/R-1794218-1260432856.jpeg".equals(image.getUri()));
-		assert("JUnit".equals(image.getProviderId()));
-		assert("JUnit_007".equals(image.getProviderImageId()));
+        // Find by Release
+        image = (Image) imageRepository.findByRelease(release).iterator().next();
+        assert (image != null);
+        assert ("http://s.dsimg.com/image/R-1794218-1260432856.jpeg".equals(image.getUri()));
+        assert ("JUnit".equals(image.getProviderId()));
+        assert ("JUnit_007".equals(image.getProviderImageId()));
 
-		// Find by ReleaseId
-		image = (Image) imageRepository.findByReleaseId(release.getId()).iterator().next();
-		assert(image != null);
-		assert("http://s.dsimg.com/image/R-1794218-1260432856.jpeg".equals(image.getUri()));
-		assert("JUnit".equals(image.getProviderId()));
-		assert("JUnit_007".equals(image.getProviderImageId()));
+        // Find by ReleaseId
+        image = (Image) imageRepository.findByReleaseId(release.getId()).iterator().next();
+        assert (image != null);
+        assert ("http://s.dsimg.com/image/R-1794218-1260432856.jpeg".equals(image.getUri()));
+        assert ("JUnit".equals(image.getProviderId()));
+        assert ("JUnit_007".equals(image.getProviderImageId()));
 
-		// Find by relatedTo SMDId
-		image = (Image) imageRepository.findByRelatedToSMDId(release.getId()).iterator().next();
-		assert(image != null);
-		assert("http://s.dsimg.com/image/R-1794218-1260432856.jpeg".equals(image.getUri()));
-		assert("JUnit".equals(image.getProviderId()));
-		assert("JUnit_007".equals(image.getProviderImageId()));
-		
-		// Find by image SMDId
-		image = (Image) imageRepository.findBySMDId("bf87a7ad-88fa-4ec4-8da0-dfec05d7cf5e").iterator().next();
-		assert(image != null);
-		assert("http://s.dsimg.com/image/R-1794218-1260432856.jpeg".equals(image.getUri()));
-		assert("JUnit".equals(image.getProviderId()));
-		assert("JUnit_007".equals(image.getProviderImageId()));
-		
+        // Find by relatedTo SMDId
+        image = (Image) imageRepository.findByRelatedToSMDId(release.getId()).iterator().next();
+        assert (image != null);
+        assert ("http://s.dsimg.com/image/R-1794218-1260432856.jpeg".equals(image.getUri()));
+        assert ("JUnit".equals(image.getProviderId()));
+        assert ("JUnit_007".equals(image.getProviderImageId()));
 
-        
+        // Find by image SMDId
+        image = (Image) imageRepository.findBySMDId("bf87a7ad-88fa-4ec4-8da0-dfec05d7cf5e").iterator().next();
+        assert (image != null);
+        assert ("http://s.dsimg.com/image/R-1794218-1260432856.jpeg".equals(image.getUri()));
+        assert ("JUnit".equals(image.getProviderId()));
+        assert ("JUnit_007".equals(image.getProviderImageId()));
+
+
         em.getTransaction().commit();
     }
- 
+
     @Test
     public void testModelDeleteRelease() throws Exception {
         loadTestData(getClass().getPackage().getName(), "The Bodyguard.xml");
@@ -412,41 +411,41 @@ public class CoreTest extends BaseTestCase {
 
         em.getTransaction().begin();
         Query query = em.createQuery("from ReleaseEntity where name=:name");
-        query.setParameter("name","The Bodyguard (Original Soundtrack Album)");
+        query.setParameter("name", "The Bodyguard (Original Soundtrack Album)");
         ReleaseEntity release = (ReleaseEntity) query.getSingleResult();
-        assert(release != null);
+        assert (release != null);
 
         String releaseId = release.getId();
-        assert 0 < em.createQuery("from TrackEntity where release_id=:release").setParameter("release",releaseId).getResultList().size();
-        assert 0 < em.createQuery("from TrackEntity as t JOIN t.playableElements where t.release=:release").setParameter("release",release).getResultList().size();
+        assert 0 < em.createQuery("from TrackEntity where release_id=:release").setParameter("release", releaseId).getResultList().size();
+        assert 0 < em.createQuery("from TrackEntity as t JOIN t.playableElements where t.release=:release").setParameter("release", release).getResultList().size();
         assert 0 < em.createQuery("from PlayableElementEntity").getResultList().size();
-        assert 0 < em.createQuery("from ReleaseSearchRelationEntity where id=:release").setParameter("release",releaseId).getResultList().size();
+        assert 0 < em.createQuery("from ReleaseSearchRelationEntity where id=:release").setParameter("release", releaseId).getResultList().size();
 
         // release must be related to at least one image
         assert 0 < imageRepository.findByReleaseId(releaseId).size();
-        
+
         int recordings = em.createQuery("from RecordingEntity").getResultList().size();
 
         releaseRepository.remove(release);
         //em.flush();
 
         query = em.createQuery("from ReleaseEntity where name=:name");
-        query.setParameter("name","The Bodyguard (Original Soundtrack Album)");
+        query.setParameter("name", "The Bodyguard (Original Soundtrack Album)");
         try {
             release = (ReleaseEntity) query.getSingleResult();
         } catch (NoResultException e) {
             release = null;
         }
-        assert(release == null);
+        assert (release == null);
 
-        assert 0 == em.createQuery("from TrackEntity where release_id=:release").setParameter("release",releaseId).getResultList().size();
+        assert 0 == em.createQuery("from TrackEntity where release_id=:release").setParameter("release", releaseId).getResultList().size();
         assert 0 == em.createQuery("from PlayableElementEntity").getResultList().size();
-        assert 0 == em.createQuery("from ReleaseSearchRelationEntity where id=:release").setParameter("release",releaseId).getResultList().size();
+        assert 0 == em.createQuery("from ReleaseSearchRelationEntity where id=:release").setParameter("release", releaseId).getResultList().size();
         assert recordings == em.createQuery("from RecordingEntity").getResultList().size();
 
         // all images related to that release should have disappeared
         assert 0 == imageRepository.findByReleaseId(releaseId).size();
-        
+
         em.getTransaction().commit();
     }
 
@@ -457,78 +456,78 @@ public class CoreTest extends BaseTestCase {
 
         em.getTransaction().begin();
         Query query = em.createQuery("from PersonEntity where name=:name");
-        query.setParameter("name","Dolly Rebecca Parton");
+        query.setParameter("name", "Dolly Rebecca Parton");
         PersonEntity person = (PersonEntity) query.getSingleResult();
-        assert(person != null);
+        assert (person != null);
 
         personRepository.remove(person);
         em.flush();
 
         query = em.createQuery("from PersonEntity where name=:name");
-        query.setParameter("name","Dolly Rebecca Parton");
+        query.setParameter("name", "Dolly Rebecca Parton");
         try {
             person = (PersonEntity) query.getSingleResult();
         } catch (NoResultException e) {
             person = null;
         }
-        assert(person == null);
+        assert (person == null);
 
         query = em.createQuery("from ArtistEntity where name=:name");
-        query.setParameter("name","Dolly Parton");
+        query.setParameter("name", "Dolly Parton");
         Artist artist = (Artist) query.getSingleResult();
-        assert(artist != null);
-        assert(artist.getPerson() == null);
+        assert (artist != null);
+        assert (artist.getPerson() == null);
 
         em.getTransaction().commit();
     }
 
     @Test
     public void testModelDeleteArtist() throws Exception {
-        loadTestData(getClass().getPackage().getName(),"The Bodyguard.xml");
+        loadTestData(getClass().getPackage().getName(), "The Bodyguard.xml");
         updateSearchRelations();
 
         em.getTransaction().begin();
         Query query = em.createQuery("from ArtistEntity where name=:name");
-        query.setParameter("name","Dolly Parton");
+        query.setParameter("name", "Dolly Parton");
         Artist artist = (Artist) query.getSingleResult();
-        assert(artist != null);
+        assert (artist != null);
 
-        artistRepository.remove((ArtistEntity)artist);
+        artistRepository.remove((ArtistEntity) artist);
         em.flush();
 
         query = em.createQuery("from ArtistEntity where name=:name");
-        query.setParameter("name","Dolly Parton");
+        query.setParameter("name", "Dolly Parton");
         try {
             artist = (Artist) query.getSingleResult();
         } catch (NoResultException e) {
             artist = null;
         }
-        assert(artist == null);
+        assert (artist == null);
 
         query = em.createQuery("from PersonEntity where name=:name");
-        query.setParameter("name","Dolly Rebecca Parton");
+        query.setParameter("name", "Dolly Rebecca Parton");
         Person person = (Person) query.getSingleResult();
-        assert(person != null);
+        assert (person != null);
         em.getTransaction().commit();
     }
 
     @Test
     public void testModelDeleteTrackRecordingFailure() throws Exception {
-        loadTestData(getClass().getPackage().getName(),"The Bodyguard.xml");
+        loadTestData(getClass().getPackage().getName(), "The Bodyguard.xml");
         updateSearchRelations();
 
         em.getTransaction().begin();
         Query query = em.createQuery("from ReleaseEntity where name=:name");
-        query.setParameter("name","The Bodyguard (Original Soundtrack Album)");
+        query.setParameter("name", "The Bodyguard (Original Soundtrack Album)");
         Release release = (Release) query.getSingleResult();
-        assert(release != null);
+        assert (release != null);
 
         Track trackForRecording = null;
         Recording recording = null;
         for (Track track : release.getTracks()) {
-            if(track.getNumber().equals(1)) {
+            if (track.getNumber().equals(1)) {
                 trackForRecording = track;
-                recording=track.getRecording();
+                recording = track.getRecording();
             }
         }
         assert trackForRecording != null;
@@ -536,11 +535,11 @@ public class CoreTest extends BaseTestCase {
 
         boolean error = false;
         try {
-            recordingRepository.remove((RecordingEntity)recording);
+            recordingRepository.remove((RecordingEntity) recording);
             em.flush();
             em.getTransaction().commit();
         } catch (Exception e) {
-            if(em.getTransaction().isActive()) {
+            if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
             }
             error = true;
@@ -552,46 +551,46 @@ public class CoreTest extends BaseTestCase {
 
     @Test
     public void testModelDeleteTrackRecording() throws Exception {
-        loadTestData(getClass().getPackage().getName(),"The Bodyguard.xml");
+        loadTestData(getClass().getPackage().getName(), "The Bodyguard.xml");
         updateSearchRelations();
 
         em.getTransaction().begin();
         Query query = em.createQuery("from ReleaseEntity where name=:name");
-        query.setParameter("name","The Bodyguard (Original Soundtrack Album)");
+        query.setParameter("name", "The Bodyguard (Original Soundtrack Album)");
         Release release = (Release) query.getSingleResult();
-        assert(release != null);
+        assert (release != null);
 
         int playableElements = em.createQuery("from PlayableElementEntity").getResultList().size();
 
         Track trackForRecording = null;
         Recording recording = null;
         for (Track track : release.getTracks()) {
-            if(track.getNumber().equals(1)) {
+            if (track.getNumber().equals(1)) {
                 trackForRecording = track;
-                recording=track.getRecording();
+                recording = track.getRecording();
             }
         }
         assert trackForRecording != null;
         assert recording != null;
 
-        trackRepository.remove((TrackEntity)trackForRecording);
+        trackRepository.remove((TrackEntity) trackForRecording);
         em.flush();
-        recordingRepository.remove((RecordingEntity)recording);
+        recordingRepository.remove((RecordingEntity) recording);
         em.flush();
 
-        assert playableElements == em.createQuery("from PlayableElementEntity").getResultList().size()+1;
+        assert playableElements == em.createQuery("from PlayableElementEntity").getResultList().size() + 1;
 
         query = em.createQuery("from ReleaseEntity where name=:name");
-        query.setParameter("name","The Bodyguard (Original Soundtrack Album)");
+        query.setParameter("name", "The Bodyguard (Original Soundtrack Album)");
         release = (Release) query.getSingleResult();
-        assert(release != null);
+        assert (release != null);
 
         trackForRecording = null;
         recording = null;
         for (Track track : release.getTracks()) {
-            if(track.getNumber().equals(1)) {
+            if (track.getNumber().equals(1)) {
                 trackForRecording = track;
-                recording=track.getRecording();
+                recording = track.getRecording();
             }
         }
         assert trackForRecording == null;
@@ -601,22 +600,22 @@ public class CoreTest extends BaseTestCase {
 
     @Test
     public void testModelDeleteRecordingWorkFailure() throws Exception {
-        loadTestData(getClass().getPackage().getName(),"The Bodyguard.xml");
+        loadTestData(getClass().getPackage().getName(), "The Bodyguard.xml");
         updateSearchRelations();
 
         em.getTransaction().begin();
         Query query = em.createQuery("from ReleaseEntity where name=:name");
-        query.setParameter("name","The Bodyguard (Original Soundtrack Album)");
+        query.setParameter("name", "The Bodyguard (Original Soundtrack Album)");
         Release release = (Release) query.getSingleResult();
-        assert(release != null);
+        assert (release != null);
 
         Track trackForRecording = null;
         Recording recordingForWork = null;
         Work work = null;
         for (Track track : release.getTracks()) {
-            if(track.getNumber().equals(1)) {
+            if (track.getNumber().equals(1)) {
                 trackForRecording = track;
-                recordingForWork=track.getRecording();
+                recordingForWork = track.getRecording();
                 work = recordingForWork.getWorks().iterator().next();
             }
         }
@@ -626,11 +625,11 @@ public class CoreTest extends BaseTestCase {
 
         boolean error = false;
         try {
-            workRepository.remove((WorkEntity)work);
+            workRepository.remove((WorkEntity) work);
             em.flush();
             em.getTransaction().commit();
         } catch (Exception e) {
-            if(em.getTransaction().isActive()) {
+            if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
             }
             error = true;
@@ -646,17 +645,17 @@ public class CoreTest extends BaseTestCase {
 
         em.getTransaction().begin();
         Query query = em.createQuery("from ReleaseEntity where name=:name");
-        query.setParameter("name","The Bodyguard (Original Soundtrack Album)");
+        query.setParameter("name", "The Bodyguard (Original Soundtrack Album)");
         Release release = (Release) query.getSingleResult();
-        assert(release != null);
+        assert (release != null);
 
         Track trackForRecording = null;
         Recording recordingForWork = null;
         Work work = null;
         for (Track track : release.getTracks()) {
-            if(track.getNumber().equals(1)) {
+            if (track.getNumber().equals(1)) {
                 trackForRecording = track;
-                recordingForWork=track.getRecording();
+                recordingForWork = track.getRecording();
                 work = recordingForWork.getWorks().iterator().next();
             }
         }
@@ -664,25 +663,25 @@ public class CoreTest extends BaseTestCase {
         assert recordingForWork != null;
         assert work != null;
 
-        trackRepository.remove((TrackEntity)trackForRecording);
+        trackRepository.remove((TrackEntity) trackForRecording);
         em.flush();
-        recordingRepository.remove((RecordingEntity)recordingForWork);
+        recordingRepository.remove((RecordingEntity) recordingForWork);
         em.flush();
-        workRepository.remove((WorkEntity)work);
+        workRepository.remove((WorkEntity) work);
         em.flush();
 
         query = em.createQuery("from ReleaseEntity where name=:name");
-        query.setParameter("name","The Bodyguard (Original Soundtrack Album)");
+        query.setParameter("name", "The Bodyguard (Original Soundtrack Album)");
         release = (Release) query.getSingleResult();
-        assert(release != null);
+        assert (release != null);
 
         trackForRecording = null;
         recordingForWork = null;
         work = null;
         for (Track track : release.getTracks()) {
-            if(track.getNumber().equals(1)) {
+            if (track.getNumber().equals(1)) {
                 trackForRecording = track;
-                recordingForWork=track.getRecording();
+                recordingForWork = track.getRecording();
                 work = recordingForWork.getWorks().iterator().next();
             }
         }
