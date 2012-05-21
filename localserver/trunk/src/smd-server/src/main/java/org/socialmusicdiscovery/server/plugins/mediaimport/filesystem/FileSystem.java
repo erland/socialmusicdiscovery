@@ -27,10 +27,13 @@
 
 package org.socialmusicdiscovery.server.plugins.mediaimport.filesystem;
 
+import com.google.inject.Inject;
 import org.socialmusicdiscovery.server.api.mediaimport.MediaImporter;
 import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameter;
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameterEntity;
+import org.socialmusicdiscovery.server.business.model.core.PlayableElementEntity;
+import org.socialmusicdiscovery.server.business.repository.core.PlayableElementRepository;
 import org.socialmusicdiscovery.server.plugins.mediaimport.AbstractTagImporter;
 import org.socialmusicdiscovery.server.plugins.mediaimport.TrackData;
 import org.socialmusicdiscovery.server.plugins.mediaimport.filesystem.tagreader.FlacTagReader;
@@ -48,6 +51,8 @@ import java.util.*;
  * Media import module for that scans file system for music
  */
 public class FileSystem extends AbstractTagImporter implements MediaImporter {
+    @Inject
+    private PlayableElementRepository playableElementRepository;
 
     /**
      * @inherit
@@ -101,7 +106,18 @@ public class FileSystem extends AbstractTagImporter implements MediaImporter {
             files.addAll(Arrays.asList(directory.listFiles(new FileFilter() {
                 @Override
                 public boolean accept(File file) {
-                    return !file.isDirectory() &&
+                    Boolean shouldScan = true;
+                    if (getExecutionConfiguration().getBooleanParameter("incremental", Boolean.FALSE)) {
+                        Collection<PlayableElementEntity> playableElements = playableElementRepository.findByURIWithRelations(file.toURI().toString(), null, null);
+                        for (PlayableElementEntity playableElement : playableElements) {
+                            if (playableElement != null && playableElement.getLastModified().equals(file.lastModified())) {
+                                shouldScan = false;
+                                break;
+                            }
+                        }
+                    }
+                    return shouldScan &&
+                            !file.isDirectory() &&
                             !file.isHidden() && (
                             file.getName().toUpperCase().endsWith(".FLAC") ||
                                     file.getName().toUpperCase().endsWith(".MP3"));
@@ -188,6 +204,7 @@ public class FileSystem extends AbstractTagImporter implements MediaImporter {
         for (TagReader tagReader : tagReaders) {
             TrackData data = tagReader.getTrackData(file);
             if (data != null) {
+                data.setLastModified(file.lastModified());
                 return data;
             }
         }

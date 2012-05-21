@@ -42,9 +42,7 @@ import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class FileSystemTest {
     FileSystem fileSystem;
@@ -70,7 +68,8 @@ public class FileSystemTest {
         }
         defaultValueConfigurationManager.setParametersForPath(pluginConfigurationPath, defaultConfiguration);
         fileSystem.setConfiguration(new MappedConfigurationContext(pluginConfigurationPath, defaultValueConfigurationManager));
-        fileSystem.init(null);
+        Map<String, String> parameters = new HashMap<String, String>();
+        fileSystem.init(parameters);
     }
 
     @Test
@@ -96,7 +95,7 @@ public class FileSystemTest {
         FileUtils.copyFile(new File(BaseTestCase.getTestResourceDiretory() + "/org/socialmusicdiscovery/server/plugins/mediaimport/filesystem/testfile1.flac"), new File(BaseTestCase.getOutputDiretory() + "/scan-test/testfile1.flac"));
         FileUtils.copyFile(new File(BaseTestCase.getTestResourceDiretory() + "/org/socialmusicdiscovery/server/plugins/mediaimport/filesystem/testfile1.mp3"), new File(BaseTestCase.getOutputDiretory() + "/scan-test/testfile1.txt"));
 
-        List<File> files = new FileSystem().scanDirectory(new File(BaseTestCase.getOutputDiretory() + "/scan-test"));
+        List<File> files = fileSystem.scanDirectory(new File(BaseTestCase.getOutputDiretory() + "/scan-test"));
         assert files != null;
         assert files.size() == 2;
     }
@@ -128,7 +127,7 @@ public class FileSystemTest {
         FileUtils.copyFile(new File(BaseTestCase.getTestResourceDiretory() + "/org/socialmusicdiscovery/server/plugins/mediaimport/filesystem/testfile1.flac"), new File(BaseTestCase.getOutputDiretory() + "/scan-test/testfile1.flac"));
         FileUtils.copyFile(new File(BaseTestCase.getTestResourceDiretory() + "/org/socialmusicdiscovery/server/plugins/mediaimport/filesystem/testfile1.mp3"), new File(BaseTestCase.getOutputDiretory() + "/scan-test/testfile1.txt"));
 
-        List<File> files = new FileSystem().scanDirectory(new File(BaseTestCase.getOutputDiretory() + "/scan-test"));
+        List<File> files = fileSystem.scanDirectory(new File(BaseTestCase.getOutputDiretory() + "/scan-test"));
         assert files != null;
         assert files.size() == 8;
     }
@@ -140,7 +139,7 @@ public class FileSystemTest {
         }
         new File(BaseTestCase.getOutputDiretory() + "/scan-test").mkdir();
 
-        List<File> files = new FileSystem().scanDirectory(new File(BaseTestCase.getOutputDiretory() + "/scan-test"));
+        List<File> files = fileSystem.scanDirectory(new File(BaseTestCase.getOutputDiretory() + "/scan-test"));
         assert files != null;
         assert files.size() == 0;
     }
@@ -156,7 +155,7 @@ public class FileSystemTest {
         new File(BaseTestCase.getOutputDiretory() + "/scan-test/subdir2").mkdir();
         new File(BaseTestCase.getOutputDiretory() + "/scan-test/subdir2/subdir21").mkdir();
 
-        List<File> files = new FileSystem().scanDirectory(new File(BaseTestCase.getOutputDiretory() + "/scan-test"));
+        List<File> files = fileSystem.scanDirectory(new File(BaseTestCase.getOutputDiretory() + "/scan-test"));
         assert files != null;
         assert files.size() == 0;
     }
@@ -167,7 +166,7 @@ public class FileSystemTest {
             FileUtils.deleteDirectory(new File(BaseTestCase.getOutputDiretory() + "/scan-test"));
         }
 
-        List<File> files = new FileSystem().scanDirectory(new File(BaseTestCase.getOutputDiretory() + "/scan-test"));
+        List<File> files = fileSystem.scanDirectory(new File(BaseTestCase.getOutputDiretory() + "/scan-test"));
         assert files != null;
         assert files.size() == 0;
     }

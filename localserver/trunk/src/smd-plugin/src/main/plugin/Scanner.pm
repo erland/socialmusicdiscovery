@@ -690,6 +690,7 @@ sub getDirectTagsAsJSON {
 			'smdID' => $smdID,
 			'url' => $track->url,
 			'file' => $file,
+			'lastModified' => $track->timestamp*1000,
 			'format' => $type,
 		};
 
