@@ -106,18 +106,7 @@ public class FileSystem extends AbstractTagImporter implements MediaImporter {
             files.addAll(Arrays.asList(directory.listFiles(new FileFilter() {
                 @Override
                 public boolean accept(File file) {
-                    Boolean shouldScan = true;
-                    if (getExecutionConfiguration().getBooleanParameter("incremental", Boolean.FALSE)) {
-                        Collection<PlayableElementEntity> playableElements = playableElementRepository.findByURIWithRelations(file.toURI().toString(), null, null);
-                        for (PlayableElementEntity playableElement : playableElements) {
-                            if (playableElement != null && playableElement.getLastModified().equals(file.lastModified())) {
-                                shouldScan = false;
-                                break;
-                            }
-                        }
-                    }
-                    return shouldScan &&
-                            !file.isDirectory() &&
+                    return !file.isDirectory() &&
                             !file.isHidden() && (
                             file.getName().toUpperCase().endsWith(".FLAC") ||
                                     file.getName().toUpperCase().endsWith(".MP3"));
@@ -148,39 +137,57 @@ public class FileSystem extends AbstractTagImporter implements MediaImporter {
         final long CHUNK_SIZE = 20;
         for (File file : files) {
             if (!isAborted()) {
-                if (i == 0) {
-                    entityManager.getTransaction().begin();
-                }
-                try {
-                    TrackData track = scanFile(file);
-                    progressHandler.progress(getId(), track.getFile(), offset + 1, (long) files.size());
-                    if (track != null) {
-                        try {
-                            importNewPlayableElement(track);
-                        } catch (ConstraintViolationException e) {
-                            //TODO: Change this so it uses the logging framework
-                            System.err.println("ERROR when importing: " + track.getFile() + ": ");
-                            for (ConstraintViolation<?> violation : e.getConstraintViolations()) {
-                                System.err.println("- " + violation.getLeafBean().getClass().getSimpleName() + "." + violation.getPropertyPath().toString() + ": " + violation.getMessage());
-                            }
+                Boolean shouldScan = true;
+                if (getExecutionConfiguration().getBooleanParameter("incremental", Boolean.FALSE)) {
+                    Collection<PlayableElementEntity> playableElements = playableElementRepository.findByURIWithRelations(file.toURI().toString(), null, null);
+                    for (PlayableElementEntity playableElement : playableElements) {
+                        if (playableElement != null && playableElement.getLastModified().equals(file.lastModified())) {
+                            shouldScan = false;
+                            break;
                         }
-                    } else {
-                        System.err.println("ERROR when importing: " + file.getCanonicalPath() + ": ");
-                        System.err.println("- Unable to read tags");
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    //progressHandler.failed(getId(), e.getLocalizedMessage());
                 }
+                if (shouldScan) {
+                    if (i == 0) {
+                        entityManager.getTransaction().begin();
+                    }
+                    try {
+                        TrackData track = scanFile(file);
+                        progressHandler.progress(getId(), track.getFile(), offset + 1, (long) files.size());
+                        if (track != null) {
+                            try {
+                                importNewPlayableElement(track);
+                            } catch (ConstraintViolationException e) {
+                                //TODO: Change this so it uses the logging framework
+                                System.err.println("ERROR when importing: " + track.getFile() + ": ");
+                                for (ConstraintViolation<?> violation : e.getConstraintViolations()) {
+                                    System.err.println("- " + violation.getLeafBean().getClass().getSimpleName() + "." + violation.getPropertyPath().toString() + ": " + violation.getMessage());
+                                }
+                            }
+                        } else {
+                            System.err.println("ERROR when importing: " + file.getCanonicalPath() + ": ");
+                            System.err.println("- Unable to read tags");
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        //progressHandler.failed(getId(), e.getLocalizedMessage());
+                    }
 
-                i++;
-                offset++;
-                if (i >= CHUNK_SIZE) {
-                    entityManager.flush();
-                    entityManager.clear();
-                    entityManager.getTransaction().commit();
-                    i = 0;
+                    i++;
+                    if (i >= CHUNK_SIZE) {
+                        entityManager.flush();
+                        entityManager.clear();
+                        entityManager.getTransaction().commit();
+                        i = 0;
+                    }
+                } else {
+                    try {
+                        progressHandler.progress(getId(), file.getCanonicalPath(), offset + 1, (long) files.size());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
+                offset++;
             }
         }
         if (entityManager.getTransaction().isActive()) {
