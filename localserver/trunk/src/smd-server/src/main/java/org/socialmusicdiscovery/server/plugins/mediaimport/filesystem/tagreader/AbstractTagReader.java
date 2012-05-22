@@ -254,19 +254,21 @@ public abstract class AbstractTagReader implements TagReader {
                         values = new String[]{tagData.getValue()};
                     }
                     for (String value : values) {
-                        String name = getMappedTagName(tagData.getName());
-                        if (name != null) {
-                            if (normalTags.containsKey(name)) {
-                                normalTags.get(name).add(value);
-                            } else {
-                                normalTags.put(name, new ArrayList<String>(Arrays.asList(value)));
-                            }
-                        } else if (getSortTag(tagData.getName()) != null) {
-                            String sortName = getSortTag(tagData.getName());
-                            if (sortTags.containsKey(sortName)) {
-                                sortTags.get(sortName).add(value);
-                            } else {
-                                sortTags.put(sortName, new ArrayList<String>(Arrays.asList(value)));
+                        if (value != null && value.trim().length() > 0) {
+                            String name = getMappedTagName(tagData.getName());
+                            if (name != null) {
+                                if (normalTags.containsKey(name)) {
+                                    normalTags.get(name).add(value);
+                                } else {
+                                    normalTags.put(name, new ArrayList<String>(Arrays.asList(value)));
+                                }
+                            } else if (getSortTag(tagData.getName()) != null) {
+                                String sortName = getSortTag(tagData.getName());
+                                if (sortTags.containsKey(sortName)) {
+                                    sortTags.get(sortName).add(value);
+                                } else {
+                                    sortTags.put(sortName, new ArrayList<String>(Arrays.asList(value)));
+                                }
                             }
                         }
                     }
