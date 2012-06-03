@@ -52,7 +52,7 @@ public class ServerConnection
 	implements IWorkbenchPreferencePage {
 
 	public ServerConnection() {
-		super(GRID);
+		super(FieldEditorPreferencePage.FLAT);
 		setMessage("SMD Server Configuration");
 		setTitle("SMD (Social Music Discovery)");
 		setPreferenceStore(Activator.getDefault().getPreferenceStore());
@@ -88,6 +88,12 @@ public class ServerConnection
 				PreferenceConstants.P_AUTOCONNECT,
 				"&Autoconnect",
 				getFieldEditorParent()));
+		{
+			Composite composite = getFieldEditorParent();
+			PathEditor pathEditor = new PathEditor(PreferenceConstants.P_HOST_PATHS, "Music Directories (on server)", "Select directory:", composite);
+			pathEditor.getLabelControl(composite).setToolTipText("The directories to scan in server.");
+			addField(pathEditor);
+		}
 	}
 
 	/* (non-Javadoc)
