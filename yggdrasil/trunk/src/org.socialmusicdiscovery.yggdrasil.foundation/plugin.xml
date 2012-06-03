@@ -123,6 +123,13 @@
                      checkEnabled="true">
                </visibleWhen>
             </command>
+            <command
+                  commandId="org.socialmusicdiscovery.yggdrasil.foundation.commands.configureServer"
+                  label="%command.server.configure.label"
+                  mnemonic="%command.server.configure.mnemonic"
+                  style="push"
+                  tooltip="Configure SMD Server">
+            </command>
          </menu>
          <separator
                name="additions"
@@ -242,6 +249,10 @@
             id="org.socialmusicdiscovery.yggdrasil.foundation.commands.PlayElement"
             name="Play">
       </command>
+      <command
+            id="org.socialmusicdiscovery.yggdrasil.foundation.commands.configureServer"
+            name="Configure SMD Server">
+      </command>
    </extension>
    <extension
           point="org.eclipse.ui.handlers">
@@ -317,6 +328,10 @@
                </iterate>
          </enabledWhen>
       </handler>
+     <handler
+           class="org.socialmusicdiscovery.yggdrasil.foundation.commands.ConfigureServer"
+           commandId="org.socialmusicdiscovery.yggdrasil.foundation.commands.configureServer">
+     </handler>
     </extension>
    <extension
          point="org.eclipse.core.contenttype.contentTypes">

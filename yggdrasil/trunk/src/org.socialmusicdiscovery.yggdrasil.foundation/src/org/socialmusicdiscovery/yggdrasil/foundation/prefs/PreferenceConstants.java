@@ -37,6 +37,4 @@ public class PreferenceConstants {
 	public static final String P_PORT = "server.port";
 
 	public static final String P_HOSTNAME = "server.hostName";
-	
-	public static final String P_HOST_PATHS = "server.fileSystemRoots";
 }
