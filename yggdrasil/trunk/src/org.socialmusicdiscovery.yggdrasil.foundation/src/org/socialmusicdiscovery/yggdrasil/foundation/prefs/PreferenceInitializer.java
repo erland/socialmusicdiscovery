@@ -41,7 +41,6 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(PreferenceConstants.P_AUTOCONNECT, true);
 		store.setDefault(PreferenceConstants.P_PORT, "9998");
 		store.setDefault(PreferenceConstants.P_HOSTNAME, "localhost");
-		store.setDefault(PreferenceConstants.P_HOST_PATHS, ""); // don't know what a sane default is, depends on server O/S
 	}
 
 }

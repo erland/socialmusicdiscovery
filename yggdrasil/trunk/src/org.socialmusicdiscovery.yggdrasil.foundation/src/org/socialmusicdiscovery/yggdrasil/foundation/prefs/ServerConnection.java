@@ -27,11 +27,15 @@
 
 package org.socialmusicdiscovery.yggdrasil.foundation.prefs;
 
-import org.eclipse.jface.preference.*;
-import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.eclipse.ui.IWorkbench;
-import org.socialmusicdiscovery.yggdrasil.foundation.Activator;
+import org.eclipse.jface.preference.BooleanFieldEditor;
+import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.IntegerFieldEditor;
+import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.socialmusicdiscovery.yggdrasil.foundation.Activator;
 
 /**
  * This class represents a preference page that
@@ -88,12 +92,6 @@ public class ServerConnection
 				PreferenceConstants.P_AUTOCONNECT,
 				"&Autoconnect",
 				getFieldEditorParent()));
-		{
-			Composite composite = getFieldEditorParent();
-			PathEditor pathEditor = new PathEditor(PreferenceConstants.P_HOST_PATHS, "Music Directories (on server)", "Select directory:", composite);
-			pathEditor.getLabelControl(composite).setToolTipText("The directories to scan in server.");
-			addField(pathEditor);
-		}
 	}
 
 	/* (non-Javadoc)
