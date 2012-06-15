@@ -41,7 +41,7 @@ my $sprefs = preferences('server');
 my $server;
 
 sub start {
-	my ($class, $plugin) = @_;
+	my $class = shift;
 
 	if ($prefs->get('hostname') ne 'localhost') {
 		$log->info("not starting smd-server as hostname is not set to localhost");
@@ -92,6 +92,13 @@ sub start {
     if(scalar @$paths > 0) {
         push @opts, "-Dorg.socialmusicdiscovery.server.plugins.mediaimport.filesystem.musicfolders=".join(',',@$paths);
     }
+
+	# if 3rd party spotify plugin is available pass details of spotifyd to server
+	if (UNIVERSAL::can("Plugins::Spotify::Spotifyd", "uri")) {
+		my ($host, $port) = Plugins::Spotify::Spotifyd->uri =~ /http:\/\/(.*):(.*)\//;
+		push @opts, "-Dspotifyd.host=$host";
+		push @opts, "-Dspotifyd.port=$port";
+	}
 
 	# use server to search for java and convert to short path if windows
 	my $javaPath = Slim::Utils::Misc::findbin("java");
