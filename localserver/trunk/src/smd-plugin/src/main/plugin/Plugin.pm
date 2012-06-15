@@ -62,11 +62,15 @@ sub initPlugin {
 		Plugins::SocialMusicDiscovery::Settings->new;
 	}
 
-	Plugins::SocialMusicDiscovery::Server->start($class);
 	Plugins::SocialMusicDiscovery::Browse->init;
 	Plugins::SocialMusicDiscovery::ContextMenu->init;
 	Plugins::SocialMusicDiscovery::Scanner::init();
 	Plugins::SocialMusicDiscovery::Importer::init();
+}
+
+sub postinitPlugin {
+	# defer starting server to allow other plugins to load first
+	Plugins::SocialMusicDiscovery::Server->start;
 }
 
 sub shutdownPlugin {
