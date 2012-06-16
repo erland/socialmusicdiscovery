@@ -82,6 +82,12 @@ sub start {
 		push @opts, "-Dsqueezeboxserver.passwordhash=" . $sprefs->get('password');
 	}
 
+	# plugins are started before the server http port is finalised, so this value may be stale
+	push @opts, "-Dsqueezeboxserver.port=" . preferences('server')->get('httpport');
+	if ($::httpaddr) {
+		push @opts, "-Dsqueezeboxserver.host=" . $::httpaddr;
+	}
+
     my $paths = preferences('server')->get('mediadirs') || [];
     if(scalar @$paths == 0) {
         my $path = preferences('server')->get('audiodir');
