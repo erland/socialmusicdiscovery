@@ -25,25 +25,44 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.server.business.model;
+package org.socialmusicdiscovery.server.plugins.mediaimport.spotify;
+
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
+import org.socialmusicdiscovery.server.api.mediaimport.AbstractImageProvider;
+import org.socialmusicdiscovery.server.business.model.core.Image;
 
 /**
- * Represents a relation to a globally unique identity, this is typically a relation to a unique identity in an online source
+ * Image provider that resolve image urls for Squeezebox Server album covers
  */
-public interface GlobalIdentity extends SMDIdentity {
-    final static String SOURCE_MUSICBRAINZ = "musicbrainz";
-    final static String SOURCE_DISCOGS = "discogs";
-    final static String SOURCE_SPOTIFY = "spotify";
+public class SpotifyImageProvider extends AbstractImageProvider {
+    @Inject
+    @Named("squeezeboxserver.host")
+    private String squeezeboxServerHost;
 
-    String getSource();
+    @Inject
+    @Named("squeezeboxserver.port")
+    private String squeezeboxServerPort;
 
-    void setSource(String source);
+    public static final String PROVIDER_ID = "spotify";
 
-    String getUri();
+    public SpotifyImageProvider() {
+        super(PROVIDER_ID);
+    }
 
-    void setUri(String uri);
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public String getImageURL(Image image) {
+        return "http://" + squeezeboxServerHost + ":" + squeezeboxServerPort + "/spotifyimage/" + image.getProviderImageId() + "/cover.jpg";
+    }
 
-    String getEntityId();
-
-    void setEntityId(String entityId);
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public String getImageURL(Image image, Integer maxWidth, Integer maxHeight) {
+        return "http://" + squeezeboxServerHost + ":" + squeezeboxServerPort + "/spotifyimage/" + image.getProviderImageId() + "/cover_" + maxWidth + "x" + maxHeight + "_.jpg";
+    }
 }

@@ -25,25 +25,36 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.server.business.model;
+package org.socialmusicdiscovery.server.plugins.mediaimport.spotify;
 
-/**
- * Represents a relation to a globally unique identity, this is typically a relation to a unique identity in an online source
- */
-public interface GlobalIdentity extends SMDIdentity {
-    final static String SOURCE_MUSICBRAINZ = "musicbrainz";
-    final static String SOURCE_DISCOGS = "discogs";
-    final static String SOURCE_SPOTIFY = "spotify";
+import java.util.List;
 
-    String getSource();
+public class SpotifyPlaylistData {
+    private String name;
+    private String uri;
+    private List<SpotifyPlaylistTrackData> tracks;
 
-    void setSource(String source);
+    public String getName() {
+        return name;
+    }
 
-    String getUri();
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    void setUri(String uri);
+    public String getUri() {
+        return uri;
+    }
 
-    String getEntityId();
+    public void setUri(String uri) {
+        this.uri = uri;
+    }
 
-    void setEntityId(String entityId);
+    public List<SpotifyPlaylistTrackData> getTracks() {
+        return tracks;
+    }
+
+    public void setTracks(List<SpotifyPlaylistTrackData> tracks) {
+        this.tracks = tracks;
+    }
 }

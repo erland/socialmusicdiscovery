@@ -25,25 +25,70 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.server.business.model;
+package org.socialmusicdiscovery.server.plugins.mediaimport.spotify;
 
-/**
- * Represents a relation to a globally unique identity, this is typically a relation to a unique identity in an online source
- */
-public interface GlobalIdentity extends SMDIdentity {
-    final static String SOURCE_MUSICBRAINZ = "musicbrainz";
-    final static String SOURCE_DISCOGS = "discogs";
-    final static String SOURCE_SPOTIFY = "spotify";
+public class SpotifyPlaylistTrackData {
+    private String name;
+    private String uri;
+    private String artist;
+    private String album;
+    private Integer duration;
+    private String cover;
+    private Integer starred;
 
-    String getSource();
+    public String getName() {
+        return name;
+    }
 
-    void setSource(String source);
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    String getUri();
+    public String getUri() {
+        return uri;
+    }
 
-    void setUri(String uri);
+    public void setUri(String uri) {
+        this.uri = uri;
+    }
 
-    String getEntityId();
+    public String getArtist() {
+        return artist;
+    }
 
-    void setEntityId(String entityId);
+    public void setArtist(String artist) {
+        this.artist = artist;
+    }
+
+    public String getAlbum() {
+        return album;
+    }
+
+    public void setAlbum(String album) {
+        this.album = album;
+    }
+
+    public Integer getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Integer duration) {
+        this.duration = duration;
+    }
+
+    public String getCover() {
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
+    }
+
+    public Integer getStarred() {
+        return starred;
+    }
+
+    public void setStarred(Integer starred) {
+        this.starred = starred;
+    }
 }

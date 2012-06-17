@@ -319,42 +319,8 @@ public abstract class AbstractTagImporter extends AbstractProcessingModule {
                 }
                 Set<Contributor> recordingContributors = new HashSet<Contributor>();
 
-                if (artistContributors.size() == 1 && tags.containsKey(TagData.MUSICBRAINZ_ARTIST_ID)) {
-                    String artistId = tags.get(TagData.MUSICBRAINZ_ARTIST_ID).iterator().next();
-                    if (!artistMusicbrainzCache.contains(artistId)) {
-                        Artist artist = artistRepository.findById(artistCache.get(tags.get(TagData.ARTIST).iterator().next().toLowerCase()).iterator().next());
-                        GlobalIdentityEntity identity = globalIdentityRepository.findBySourceAndEntity(GlobalIdentity.SOURCE_MUSICBRAINZ, artist);
-                        if (identity == null) {
-                            identity = new GlobalIdentityEntity();
-                            identity.setSource(GlobalIdentity.SOURCE_MUSICBRAINZ);
-                            identity.setEntityId(artist.getId());
-                            identity.setUri(artistId);
-                            identity.setLastUpdated(new Date());
-                            identity.setLastUpdatedBy(getId());
-                            validate(identity);
-                            globalIdentityRepository.create(identity);
-                        }
-                        artistMusicbrainzCache.add(artistId);
-                    }
-                }
-                if (albumArtistContributors.size() == 1 && tags.containsKey(TagData.MUSICBRAINZ_ALBUMARTIST_ID)) {
-                    String artistId = tags.get(TagData.MUSICBRAINZ_ALBUMARTIST_ID).iterator().next();
-                    if (!artistMusicbrainzCache.contains(artistId)) {
-                        Artist artist = artistRepository.findById(artistCache.get(tags.get(TagData.ALBUMARTIST).iterator().next().toLowerCase()).iterator().next());
-                        GlobalIdentityEntity identity = globalIdentityRepository.findBySourceAndEntity(GlobalIdentity.SOURCE_MUSICBRAINZ, artist);
-                        if (identity == null) {
-                            identity = new GlobalIdentityEntity();
-                            identity.setSource(GlobalIdentity.SOURCE_MUSICBRAINZ);
-                            identity.setEntityId(artist.getId());
-                            identity.setUri(artistId);
-                            identity.setLastUpdated(new Date());
-                            identity.setLastUpdatedBy(getId());
-                            validate(identity);
-                            globalIdentityRepository.create(identity);
-                        }
-                        artistMusicbrainzCache.add(artistId);
-                    }
-                }
+                handleArtistIdentities(tags, artistContributors);
+                handleAlbumArtistIdentities(tags, albumArtistContributors);
 
                 // Don't use ARTIST contributors on Recording if they are exactly the same as those on Release level
                 if (!equalContributors(albumArtistContributors, artistContributors)) {
@@ -447,40 +413,7 @@ public abstract class AbstractTagImporter extends AbstractProcessingModule {
                         validate(release);
                     }
 
-                    if (tags.containsKey(TagData.MUSICBRAINZ_ALBUM_ID)) {
-                        String releaseId = tags.get(TagData.MUSICBRAINZ_ALBUM_ID).iterator().next();
-                        if (!releaseMusicbrainzCache.contains(releaseId)) {
-                            GlobalIdentityEntity identity = globalIdentityRepository.findBySourceAndEntity(GlobalIdentity.SOURCE_MUSICBRAINZ, release);
-                            if (identity == null) {
-                                identity = new GlobalIdentityEntity();
-                                identity.setSource(GlobalIdentity.SOURCE_MUSICBRAINZ);
-                                identity.setEntityId(release.getId());
-                                identity.setUri(releaseId);
-                                identity.setLastUpdated(new Date());
-                                identity.setLastUpdatedBy(getId());
-                                validate(identity);
-                                globalIdentityRepository.create(identity);
-                            }
-                            releaseMusicbrainzCache.add(releaseId);
-                        }
-                    }
-                    if (tags.containsKey(TagData.DISCOGS_RELEASE_ID)) {
-                        String releaseId = tags.get(TagData.DISCOGS_RELEASE_ID).iterator().next();
-                        if (!releaseDiscogsCache.contains(releaseId)) {
-                            GlobalIdentityEntity identity = globalIdentityRepository.findBySourceAndEntity(GlobalIdentity.SOURCE_DISCOGS, release);
-                            if (identity == null) {
-                                identity = new GlobalIdentityEntity();
-                                identity.setSource(GlobalIdentity.SOURCE_DISCOGS);
-                                identity.setEntityId(release.getId());
-                                identity.setUri(releaseId);
-                                identity.setLastUpdated(new Date());
-                                identity.setLastUpdatedBy(getId());
-                                validate(identity);
-                                globalIdentityRepository.create(identity);
-                            }
-                            releaseDiscogsCache.add(releaseId);
-                        }
-                    }
+                    handleReleaseIdentities(tags, release);
 
                     // Create a Track entity if there is a TRACKNUM tag
                     TrackEntity track = new TrackEntity();
@@ -506,16 +439,7 @@ public abstract class AbstractTagImporter extends AbstractProcessingModule {
                     validate(track);
                     trackRepository.create(track);
 
-                    if (tags.containsKey(TagData.MUSICBRAINZ_TRACK_ID)) {
-                        GlobalIdentityEntity identity = new GlobalIdentityEntity();
-                        identity.setSource(GlobalIdentity.SOURCE_MUSICBRAINZ);
-                        identity.setEntityId(track.getId());
-                        identity.setUri(tags.get(TagData.MUSICBRAINZ_TRACK_ID).iterator().next());
-                        identity.setLastUpdated(new Date());
-                        identity.setLastUpdatedBy(getId());
-                        validate(identity);
-                        globalIdentityRepository.create(identity);
-                    }
+                    handleTrackIdentities(tags, track);
 
                     // Create a Media entity if there is a DISC tag
                     if (tags.containsKey(TagData.DISC)) {
@@ -563,6 +487,98 @@ public abstract class AbstractTagImporter extends AbstractProcessingModule {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    protected void handleTrackIdentities(Map<String, Collection<String>> tags, TrackEntity track) {
+        if (tags.containsKey(TagData.MUSICBRAINZ_TRACK_ID)) {
+            GlobalIdentityEntity identity = new GlobalIdentityEntity();
+            identity.setSource(GlobalIdentity.SOURCE_MUSICBRAINZ);
+            identity.setEntityId(track.getId());
+            identity.setUri(tags.get(TagData.MUSICBRAINZ_TRACK_ID).iterator().next());
+            identity.setLastUpdated(new Date());
+            identity.setLastUpdatedBy(getId());
+            validate(identity);
+            globalIdentityRepository.create(identity);
+        }
+    }
+
+    protected void handleReleaseIdentities(Map<String, Collection<String>> tags, ReleaseEntity release) {
+        if (tags.containsKey(TagData.MUSICBRAINZ_ALBUM_ID)) {
+            String releaseId = tags.get(TagData.MUSICBRAINZ_ALBUM_ID).iterator().next();
+            if (!releaseMusicbrainzCache.contains(releaseId)) {
+                GlobalIdentityEntity identity = globalIdentityRepository.findBySourceAndEntity(GlobalIdentity.SOURCE_MUSICBRAINZ, release);
+                if (identity == null) {
+                    identity = new GlobalIdentityEntity();
+                    identity.setSource(GlobalIdentity.SOURCE_MUSICBRAINZ);
+                    identity.setEntityId(release.getId());
+                    identity.setUri(releaseId);
+                    identity.setLastUpdated(new Date());
+                    identity.setLastUpdatedBy(getId());
+                    validate(identity);
+                    globalIdentityRepository.create(identity);
+                }
+                releaseMusicbrainzCache.add(releaseId);
+            }
+        }
+        if (tags.containsKey(TagData.DISCOGS_RELEASE_ID)) {
+            String releaseId = tags.get(TagData.DISCOGS_RELEASE_ID).iterator().next();
+            if (!releaseDiscogsCache.contains(releaseId)) {
+                GlobalIdentityEntity identity = globalIdentityRepository.findBySourceAndEntity(GlobalIdentity.SOURCE_DISCOGS, release);
+                if (identity == null) {
+                    identity = new GlobalIdentityEntity();
+                    identity.setSource(GlobalIdentity.SOURCE_DISCOGS);
+                    identity.setEntityId(release.getId());
+                    identity.setUri(releaseId);
+                    identity.setLastUpdated(new Date());
+                    identity.setLastUpdatedBy(getId());
+                    validate(identity);
+                    globalIdentityRepository.create(identity);
+                }
+                releaseDiscogsCache.add(releaseId);
+            }
+        }
+    }
+
+    protected void handleAlbumArtistIdentities(Map<String, Collection<String>> tags, Set<Contributor> albumArtistContributors) {
+        if (albumArtistContributors.size() == 1 && tags.containsKey(TagData.MUSICBRAINZ_ALBUMARTIST_ID)) {
+            String artistId = tags.get(TagData.MUSICBRAINZ_ALBUMARTIST_ID).iterator().next();
+            if (!artistMusicbrainzCache.contains(artistId)) {
+                Artist artist = artistRepository.findById(artistCache.get(tags.get(TagData.ALBUMARTIST).iterator().next().toLowerCase()).iterator().next());
+                GlobalIdentityEntity identity = globalIdentityRepository.findBySourceAndEntity(GlobalIdentity.SOURCE_MUSICBRAINZ, artist);
+                if (identity == null) {
+                    identity = new GlobalIdentityEntity();
+                    identity.setSource(GlobalIdentity.SOURCE_MUSICBRAINZ);
+                    identity.setEntityId(artist.getId());
+                    identity.setUri(artistId);
+                    identity.setLastUpdated(new Date());
+                    identity.setLastUpdatedBy(getId());
+                    validate(identity);
+                    globalIdentityRepository.create(identity);
+                }
+                artistMusicbrainzCache.add(artistId);
+            }
+        }
+    }
+
+    protected void handleArtistIdentities(Map<String, Collection<String>> tags, Set<Contributor> artistContributors) {
+        if (artistContributors.size() == 1 && tags.containsKey(TagData.MUSICBRAINZ_ARTIST_ID)) {
+            String artistId = tags.get(TagData.MUSICBRAINZ_ARTIST_ID).iterator().next();
+            if (!artistMusicbrainzCache.contains(artistId)) {
+                Artist artist = artistRepository.findById(artistCache.get(tags.get(TagData.ARTIST).iterator().next().toLowerCase()).iterator().next());
+                GlobalIdentityEntity identity = globalIdentityRepository.findBySourceAndEntity(GlobalIdentity.SOURCE_MUSICBRAINZ, artist);
+                if (identity == null) {
+                    identity = new GlobalIdentityEntity();
+                    identity.setSource(GlobalIdentity.SOURCE_MUSICBRAINZ);
+                    identity.setEntityId(artist.getId());
+                    identity.setUri(artistId);
+                    identity.setLastUpdated(new Date());
+                    identity.setLastUpdatedBy(getId());
+                    validate(identity);
+                    globalIdentityRepository.create(identity);
+                }
+                artistMusicbrainzCache.add(artistId);
             }
         }
     }
@@ -743,7 +759,7 @@ public abstract class AbstractTagImporter extends AbstractProcessingModule {
         }
     }
 
-    private <T extends SMDIdentity> void validate(T entity) {
+    protected <T extends SMDIdentity> void validate(T entity) {
         Set<ConstraintViolation<T>> errors = validator.validate(entity);
         if (errors.size() > 0) {
             throw new ConstraintViolationException(new HashSet<ConstraintViolation<?>>(errors));
