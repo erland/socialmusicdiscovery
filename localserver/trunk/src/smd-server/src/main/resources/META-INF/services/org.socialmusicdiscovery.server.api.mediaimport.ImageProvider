@@ -1,2 +1,3 @@
 org.socialmusicdiscovery.server.plugins.mediaimport.squeezeboxserver.SqueezeboxServerImageProvider
 org.socialmusicdiscovery.server.business.logic.InternetImageProvider
+org.socialmusicdiscovery.server.plugins.mediaimport.spotify.SpotifyImageProvider
