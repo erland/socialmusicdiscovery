@@ -61,7 +61,7 @@ public class JSONPlugin extends AbstractPlugin {
         //initParams.put("com.sun.jersey.config.property.WadlGeneratorConfig", "org.socialmusicdiscovery.server.business.logic.jersey.SMDWadlGeneratorConfig");
 
         System.out.println("Starting grizzly...");
-        URI uri = UriBuilder.fromUri("http://localhost/").port(Integer.parseInt(serverPort)).build();
+        URI uri = UriBuilder.fromUri("http://0.0.0.0/").port(Integer.parseInt(serverPort)).build();
         try {
             threadSelector = GrizzlyWebContainerFactory.create(uri, initParams);
         } catch (IOException e) {

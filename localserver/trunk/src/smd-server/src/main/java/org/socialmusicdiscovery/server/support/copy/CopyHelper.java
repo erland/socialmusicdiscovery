@@ -27,8 +27,8 @@
 
 package org.socialmusicdiscovery.server.support.copy;
 
-import org.hibernate.collection.PersistentCollection;
-import org.hibernate.collection.PersistentMap;
+import org.hibernate.collection.internal.PersistentMap;
+import org.hibernate.collection.spi.PersistentCollection;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;

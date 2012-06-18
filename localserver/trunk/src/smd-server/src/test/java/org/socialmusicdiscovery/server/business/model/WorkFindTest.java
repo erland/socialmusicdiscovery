@@ -28,7 +28,7 @@
 package org.socialmusicdiscovery.server.business.model;
 
 import com.google.inject.Inject;
-import org.hibernate.collection.PersistentCollection;
+import org.hibernate.collection.spi.PersistentCollection;
 import org.socialmusicdiscovery.server.business.model.core.*;
 import org.socialmusicdiscovery.server.business.repository.core.ArtistRepository;
 import org.socialmusicdiscovery.server.business.repository.core.ReleaseRepository;
@@ -50,30 +50,30 @@ public class WorkFindTest extends BaseTestCase {
 
     @BeforeClass
     public void setUpClass() {
-        loadTestData(getClass().getPackage().getName(),"The Bodyguard.xml");
+        loadTestData(getClass().getPackage().getName(), "The Bodyguard.xml");
         updateSearchRelations();
     }
 
     @Test
     public void testFind() {
         Collection<ArtistEntity> artists = artistRepository.findByName("Whitney Houston");
-        assert artists.size()==1;
+        assert artists.size() == 1;
         Artist artist = artists.iterator().next();
 
         Collection<ReleaseEntity> releases = releaseRepository.findByName("The Bodyguard (Original Soundtrack Album)");
-        assert releases.size()==1;
+        assert releases.size() == 1;
         Release release = releases.iterator().next();
 
         em.clear();
         Collection<WorkEntity> works = workRepository.findAll();
-        assert works.size()==4;
+        assert works.size() == 4;
         Work work = works.iterator().next();
         assert !((PersistentCollection) work.getContributors()).wasInitialized();
-        assert work.getContributors().size()==1;
+        assert work.getContributors().size() == 1;
 
         em.clear();
-        works = workRepository.findAllWithRelations(null,Arrays.asList("contributors"));
-        assert works.size()==4;
+        works = workRepository.findAllWithRelations(null, Arrays.asList("contributors"));
+        assert works.size() == 4;
         work = works.iterator().next();
         assert ((PersistentCollection) work.getContributors()).wasInitialized();
 
@@ -82,31 +82,31 @@ public class WorkFindTest extends BaseTestCase {
         assert work != null;
 
         works = workRepository.findByName("I Will Always Love You");
-        assert works.size()==1;
+        assert works.size() == 1;
         assert works.iterator().next().getName().equals("I Will Always Love You");
 
         em.clear();
-        works = workRepository.findByNameWithRelations("I Will Always Love You", Arrays.asList("contributors"),null);
-        assert works.size()==1;
+        works = workRepository.findByNameWithRelations("I Will Always Love You", Arrays.asList("contributors"), null);
+        assert works.size() == 1;
         work = works.iterator().next();
         assert work.getName().equals("I Will Always Love You");
         assert ((PersistentCollection) work.getContributors()).wasInitialized();
-        assert work.getContributors().size()==1;
+        assert work.getContributors().size() == 1;
 
         em.clear();
-        works = workRepository.findByPartialNameWithRelations("Always Love You", null ,null);
-        assert works.size()==1;
+        works = workRepository.findByPartialNameWithRelations("Always Love You", null, null);
+        assert works.size() == 1;
         work = works.iterator().next();
         assert work.getName().equals("I Will Always Love You");
         assert !((PersistentCollection) work.getContributors()).wasInitialized();
-        assert work.getContributors().size()==1;
+        assert work.getContributors().size() == 1;
 
-        works = workRepository.findByArtistWithRelations(artist.getId(),null,null);
-        assert works.size()==2;
+        works = workRepository.findByArtistWithRelations(artist.getId(), null, null);
+        assert works.size() == 2;
         assert works.iterator().next().getName().equals("I Will Always Love You");
 
-        works = workRepository.findByReleaseWithRelations(release.getId(),null,null);
-        assert works.size()==4;
+        works = workRepository.findByReleaseWithRelations(release.getId(), null, null);
+        assert works.size() == 4;
         assert works.iterator().next().getName().equals("I Will Always Love You");
     }
 }
