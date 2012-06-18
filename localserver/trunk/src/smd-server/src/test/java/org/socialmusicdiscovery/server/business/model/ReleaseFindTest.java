@@ -28,7 +28,7 @@
 package org.socialmusicdiscovery.server.business.model;
 
 import com.google.inject.Inject;
-import org.hibernate.collection.PersistentCollection;
+import org.hibernate.collection.spi.PersistentCollection;
 import org.socialmusicdiscovery.server.business.model.core.*;
 import org.socialmusicdiscovery.server.business.repository.core.ArtistRepository;
 import org.socialmusicdiscovery.server.business.repository.core.ReleaseRepository;
@@ -47,68 +47,68 @@ public class ReleaseFindTest extends BaseTestCase {
 
     @BeforeClass
     public void setUpClass() {
-        loadTestData(getClass().getPackage().getName(),"The Bodyguard.xml");
+        loadTestData(getClass().getPackage().getName(), "The Bodyguard.xml");
         updateSearchRelations();
     }
 
     @Test
     public void testFind() {
         Collection<ArtistEntity> artists = artistRepository.findByName("Whitney Houston");
-        assert artists.size()==1;
+        assert artists.size() == 1;
         Artist artist = artists.iterator().next();
 
         em.clear();
         Collection<ReleaseEntity> releases = releaseRepository.findAll();
-        assert releases.size()==1;
+        assert releases.size() == 1;
         Release release = releases.iterator().next();
         assert release.getName().equals("The Bodyguard (Original Soundtrack Album)");
         assert !((PersistentCollection) release.getTracks()).wasInitialized();
-        assert release.getTracks().size()==4;
+        assert release.getTracks().size() == 4;
 
         em.clear();
-        releases = releaseRepository.findAllWithRelations(null,Arrays.asList("tracks"));
-        assert releases.size()==1;
+        releases = releaseRepository.findAllWithRelations(null, Arrays.asList("tracks"));
+        assert releases.size() == 1;
         release = releases.iterator().next();
         assert release.getName().equals("The Bodyguard (Original Soundtrack Album)");
         assert ((PersistentCollection) release.getTracks()).wasInitialized();
-        assert release.getTracks().size()==4;
+        assert release.getTracks().size() == 4;
 
         em.clear();
         release = releaseRepository.findById(releases.iterator().next().getId());
         assert release != null;
 
         releases = releaseRepository.findByName("The Bodyguard (Original Soundtrack Album)");
-        assert releases.size()==1;
+        assert releases.size() == 1;
         assert releases.iterator().next().getName().equals("The Bodyguard (Original Soundtrack Album)");
 
         em.clear();
-        releases = releaseRepository.findByNameWithRelations("The Bodyguard (Original Soundtrack Album)", Arrays.asList("tracks"),null);
-        assert releases.size()==1;
+        releases = releaseRepository.findByNameWithRelations("The Bodyguard (Original Soundtrack Album)", Arrays.asList("tracks"), null);
+        assert releases.size() == 1;
         release = releases.iterator().next();
         assert release.getName().equals("The Bodyguard (Original Soundtrack Album)");
         assert ((PersistentCollection) release.getTracks()).wasInitialized();
-        assert release.getTracks().size()==4;
+        assert release.getTracks().size() == 4;
 
         em.clear();
-        releases = releaseRepository.findByPartialNameWithRelations("The Bodyguard",null,null);
-        assert releases.size()==1;
+        releases = releaseRepository.findByPartialNameWithRelations("The Bodyguard", null, null);
+        assert releases.size() == 1;
         release = releases.iterator().next();
         assert release.getName().equals("The Bodyguard (Original Soundtrack Album)");
         assert !((PersistentCollection) release.getTracks()).wasInitialized();
-        assert release.getTracks().size()==4;
+        assert release.getTracks().size() == 4;
 
-        releases = releaseRepository.findByArtistWithRelations(artist.getId(),null,null);
-        assert releases.size()==1;
+        releases = releaseRepository.findByArtistWithRelations(artist.getId(), null, null);
+        assert releases.size() == 1;
         assert releases.iterator().next().getName().equals("The Bodyguard (Original Soundtrack Album)");
 
         Work work = releases.iterator().next().getTracks().get(0).getRecording().getWorks().iterator().next();
 
-        releases = releaseRepository.findByWorkWithRelations(work.getId(),null,null);
-        assert releases.size()==1;
+        releases = releaseRepository.findByWorkWithRelations(work.getId(), null, null);
+        assert releases.size() == 1;
         assert releases.iterator().next().getName().equals("The Bodyguard (Original Soundtrack Album)");
 
-        releases = releaseRepository.findByLabelWithRelations(releases.iterator().next().getLabel().getId(),null,null);
-        assert releases.size()==1;
+        releases = releaseRepository.findByLabelWithRelations(releases.iterator().next().getLabel().getId(), null, null);
+        assert releases.size() == 1;
         assert releases.iterator().next().getName().equals("The Bodyguard (Original Soundtrack Album)");
     }
 }

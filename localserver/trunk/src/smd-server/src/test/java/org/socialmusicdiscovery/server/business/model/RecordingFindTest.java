@@ -28,7 +28,7 @@
 package org.socialmusicdiscovery.server.business.model;
 
 import com.google.inject.Inject;
-import org.hibernate.collection.PersistentCollection;
+import org.hibernate.collection.spi.PersistentCollection;
 import org.socialmusicdiscovery.server.business.model.core.Recording;
 import org.socialmusicdiscovery.server.business.model.core.RecordingEntity;
 import org.socialmusicdiscovery.server.business.repository.core.RecordingRepository;
@@ -45,7 +45,7 @@ public class RecordingFindTest extends BaseTestCase {
 
     @BeforeClass
     public void setUpClass() {
-        loadTestData(getClass().getPackage().getName(),"The Bodyguard.xml");
+        loadTestData(getClass().getPackage().getName(), "The Bodyguard.xml");
         updateSearchRelations();
     }
 
@@ -53,18 +53,18 @@ public class RecordingFindTest extends BaseTestCase {
     public void testFind() {
         em.clear();
         Collection<RecordingEntity> recordings = recordingRepository.findAll();
-        assert recordings.size()==4;
+        assert recordings.size() == 4;
         Recording recording = recordings.iterator().next();
         assert !((PersistentCollection) recording.getContributors()).wasInitialized();
         assert recording.getWorks().iterator().next().getName().equals("I Will Always Love You");
-        assert recording.getContributors().size()==2;
+        assert recording.getContributors().size() == 2;
 
         em.clear();
         recordings = recordingRepository.findAllWithRelations(Arrays.asList("works"), Arrays.asList("contributors"));
-        assert recordings.size()==4;
+        assert recordings.size() == 4;
         recording = recordings.iterator().next();
         assert ((PersistentCollection) recording.getContributors()).wasInitialized();
-        assert recording.getContributors().size()>0;
+        assert recording.getContributors().size() > 0;
 
         em.clear();
         recording = recordingRepository.findById(recordings.iterator().next().getId());
