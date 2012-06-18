@@ -27,28 +27,9 @@
 
 package org.socialmusicdiscovery.server.plugins.mediaimport.spotify;
 
-import java.util.List;
-
-public class SpotifyPlaylistTrackData {
-    private String name;
+public class SpotifyArtistData {
     private String uri;
-    private String artist;
-    private String album;
-    private String albumuri;
-    private Integer duration;
-    private String cover;
-    private Integer starred;
-    private Integer disc;
-    private Integer index;
-    private List<SpotifyArtistData> artists;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+    private String name;
 
     public String getUri() {
         return uri;
@@ -58,75 +39,11 @@ public class SpotifyPlaylistTrackData {
         this.uri = uri;
     }
 
-    public String getArtist() {
-        return artist;
+    public String getName() {
+        return name;
     }
 
-    public void setArtist(String artist) {
-        this.artist = artist;
-    }
-
-    public String getAlbum() {
-        return album;
-    }
-
-    public void setAlbum(String album) {
-        this.album = album;
-    }
-
-    public Integer getDuration() {
-        return duration;
-    }
-
-    public void setDuration(Integer duration) {
-        this.duration = duration;
-    }
-
-    public String getCover() {
-        return cover;
-    }
-
-    public void setCover(String cover) {
-        this.cover = cover;
-    }
-
-    public Integer getStarred() {
-        return starred;
-    }
-
-    public void setStarred(Integer starred) {
-        this.starred = starred;
-    }
-
-    public String getAlbumuri() {
-        return albumuri;
-    }
-
-    public void setAlbumuri(String albumuri) {
-        this.albumuri = albumuri;
-    }
-
-    public Integer getDisc() {
-        return disc;
-    }
-
-    public void setDisc(Integer disc) {
-        this.disc = disc;
-    }
-
-    public Integer getIndex() {
-        return index;
-    }
-
-    public void setIndex(Integer index) {
-        this.index = index;
-    }
-
-    public List<SpotifyArtistData> getArtists() {
-        return artists;
-    }
-
-    public void setArtists(List<SpotifyArtistData> artists) {
-        this.artists = artists;
+    public void setName(String name) {
+        this.name = name;
     }
 }
