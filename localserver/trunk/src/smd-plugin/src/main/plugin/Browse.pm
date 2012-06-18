@@ -363,10 +363,14 @@ sub _createResponse {
 			   $menu->{'artwork_track_id'} = $image->{'providerImageId'};
 			   $menu->{'image'}            = "music/$image->{providerImageId}/cover";
 
-		   } else {
+			} elsif ($image->{'providerId'} eq 'spotify') {
+			
+			   $menu->{'image'} = "spotifyimage/$image->{providerImageId}/cover.jpg";
+			   
+		    } else {
 
 			   $menu->{'image'} = $image->{'url'};
-		   }
+		    }
 		}
 
 		push @menu, $menu;
