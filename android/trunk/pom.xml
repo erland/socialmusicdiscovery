@@ -10,7 +10,6 @@
 
     <properties>
         <android.sdk.path>/usr/local/Cellar/android-sdk/r16</android.sdk.path>
-        <android.ndk.path>/usr/local/Cellar/android-ndk/r7</android.ndk.path>
     </properties>
 
     <dependencies>
