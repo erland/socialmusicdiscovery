@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SMD</string>
+    <string name="hello_world">Hello World</string>
+    <string name="lets_start">Let\'s start!</string>
+    <string name="server_title">SMD Server</string>
+    <string name="server_summary">SMD Server Host Name</string>
+    <string name="settings_title">Settings</string>
+    <string name="execute_button_title">Execute</string>
+    <string name="execute_button_message">Count to 2</string>
+</resources>
