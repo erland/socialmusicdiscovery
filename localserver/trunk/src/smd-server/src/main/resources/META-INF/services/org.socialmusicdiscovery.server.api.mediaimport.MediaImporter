@@ -2,3 +2,4 @@ org.socialmusicdiscovery.server.plugins.mediaimport.squeezeboxserver.SqueezeboxS
 org.socialmusicdiscovery.server.plugins.mediaimport.filesystem.FileSystem
 org.socialmusicdiscovery.server.plugins.mediaimport.dropdatabase.DropDatabase
 org.socialmusicdiscovery.server.plugins.mediaimport.spotify.SpotifyImporter
+org.socialmusicdiscovery.server.plugins.mediaimport.musicbrainz.AcoustIdMetadataImporter

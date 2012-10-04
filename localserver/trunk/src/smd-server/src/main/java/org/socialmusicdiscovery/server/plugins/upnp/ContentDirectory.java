@@ -39,6 +39,7 @@ import org.socialmusicdiscovery.server.business.service.browse.LibraryBrowseServ
 import org.socialmusicdiscovery.server.business.service.browse.Result;
 import org.socialmusicdiscovery.server.business.service.browse.ResultItem;
 import org.socialmusicdiscovery.server.business.service.browse.ResultItem.ResultItemImage;
+import org.socialmusicdiscovery.server.business.service.browse.TrackBrowseService;
 import org.teleal.cling.binding.annotations.*;
 import org.teleal.cling.model.message.header.UpnpHeader;
 import org.teleal.cling.model.types.ErrorCode;
@@ -64,6 +65,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.StringTokenizer;
+//TODO: investigate problem with Folder:styles/Classification.style:5e7484e8-8cea-4a42-b10e-f4e07c1ff027/Artist:980d5ab6-2932-4158-ba1c-8df59404c177/Release:007019a0-f58e-4df0-9977-40dee95fa9a3
 
 @UpnpStateVariables({
     @UpnpStateVariable(
@@ -116,7 +118,11 @@ public class ContentDirectory extends AbstractContentDirectoryService  {
 
 	@Inject
 	BrowseServiceManager browseServiceManager;
-
+	
+	ArtistBrowseService artistBrowseService;
+	ClassificationBrowseService classificationBrowseService;
+	TrackBrowseService trackBrowseService;
+	
 	public ContentDirectory() {
 
 		super(	// search caps
@@ -124,6 +130,9 @@ public class ContentDirectory extends AbstractContentDirectoryService  {
 				// sort caps
 				Arrays.asList("dc:title", "upnp:author"));
 		InjectHelper.injectMembers(this);
+		artistBrowseService = browseServiceManager.getBrowseService("Artist");
+		classificationBrowseService = browseServiceManager.getBrowseService("Classification");
+		trackBrowseService = browseServiceManager.getBrowseService("Track");		
 	}
 
 	
@@ -137,11 +146,12 @@ public class ContentDirectory extends AbstractContentDirectoryService  {
     				+ " indice="+firstResult + " nbresults="+maxResults);
    
         	// WMP 12 Windows 7 64 family fr: Microsoft-Windows/6.1 UPnP/1.0 Windows-Media-Player/12.0.7600.16667_DLNADOC
+    		//                                Microsoft-Windows/6.1 UPnP/1.0 Windows-Media-Player/12.0.7601.17514_DLNADOC
         	// Foobar: 
         	String UA = null;
         	try {
-        		// UA = ReceivingAction.getRequestMessage().getHeaders().getFirstHeader(UpnpHeader.Type.USER_AGENT).getString();
-        		UA = ReceivingAction.getExtraResponseHeaders().getFirstHeader(UpnpHeader.Type.USER_AGENT).getString();
+        		UA = ReceivingAction.getRequestMessage().getHeaders().getFirstHeader(UpnpHeader.Type.USER_AGENT).getString();
+        		//UA = ReceivingAction.getExtraResponseHeaders().getFirstHeader(UpnpHeader.Type.USER_AGENT).getString();
         		System.err.println(">>>>>>>>>> RequestFrom agent: " + UA);
         	} catch (NullPointerException ex) {
         		System.err.println(">>>>>>>>>> RequestFrom agent: Anonymous");
@@ -151,6 +161,8 @@ public class ContentDirectory extends AbstractContentDirectoryService  {
         	if(browseFlag == BrowseFlag.DIRECT_CHILDREN ) {
         		return getSmdDirectChildrens(objectID, filter, firstResult, maxResults, orderby);
 
+        	} else if(browseFlag == BrowseFlag.METADATA) {
+        		return getSmdMetadata(objectID, filter, firstResult, maxResults, orderby);
         	} else {
         		System.err.println("XXXXXXXXXXXXXX>> Browse called wihout direct children flag");
         	}
@@ -187,6 +199,43 @@ public class ContentDirectory extends AbstractContentDirectoryService  {
         }
     }
 
+    @SuppressWarnings("unchecked")
+	private BrowseResult getSmdMetadata (String objectID,
+                               String filter,
+                               long firstResult, long maxResults,
+                               SortCriterion[] orderby) throws Exception {
+
+    	String smdObjectID = null;
+    	
+    	DIDLContent didl = new DIDLContent();
+		// if objectID is 0, the client asks for root menu (null value for SMD)
+		if(objectID.equals("0")) {
+			smdObjectID = null; 
+		}else {
+			smdObjectID = objectID;
+		}
+
+		Container upnpContainer = new Container();	
+		upnpContainer.setClazz(new org.teleal.cling.support.model.DIDLObject.Class("object.container"));
+		upnpContainer.setRestricted(true);
+		didl.addContainer(upnpContainer);
+
+		if(smdObjectID == null) {
+			upnpContainer.setTitle("Root Container");
+			upnpContainer.setParentID("-1");
+			upnpContainer.setId("0");
+		} else if (smdObjectID.matches("^Folder:([^/]+)$") ) {
+			java.util.regex.Pattern folderRx = java.util.regex.Pattern.compile("^Folder:([^/]+)$");
+			java.util.regex.Matcher matcher = folderRx.matcher(smdObjectID);
+			matcher.find();
+			upnpContainer.setTitle(matcher.group(1));
+			upnpContainer.setParentID("0");
+			upnpContainer.setId(smdObjectID);
+			
+		}
+		
+		return new BrowseResult(new DIDLParser().generate(didl), 1, 1);
+    }
     
     @SuppressWarnings("unchecked")
 	private BrowseResult getSmdDirectChildrens (String objectID,
@@ -199,8 +248,7 @@ public class ContentDirectory extends AbstractContentDirectoryService  {
 		LibraryBrowseService browseService = new LibraryBrowseService();
 
 		
-		ArtistBrowseService artistBrowseService = browseServiceManager.getBrowseService("Artist");
-		ClassificationBrowseService classificationBrowseService = browseServiceManager.getBrowseService("Classification");
+
 		
 		String smdObjectID = null;
 		Integer smdMaxItems;
@@ -330,9 +378,10 @@ public class ContentDirectory extends AbstractContentDirectoryService  {
 			    	if(uriProperty.getValue().toString().endsWith(".png")) {
 			    		upnpProfileID = "PNG_TN";
 			    	} else {
-			    		// if extension isn't png, suppose it's JPEG (maybe a bad guess)
+			    		// if extension isn't png, suppose it's JPEG (may be a bad guess)
 			    		upnpProfileID = "JPEG_TN";
-			    		// TODO: improve image entity to contain image type or to force it 
+			    		// TODO: improve image entity to contain image type or enhance this code
+			    		// to detect image format 
 			    	}
 			    	
 					uriProperty.addAttribute( 
@@ -340,7 +389,7 @@ public class ContentDirectory extends AbstractContentDirectoryService  {
 									new DIDLAttribute(
 									DIDLObject.Property.DLNA.NAMESPACE.URI, 
 									"dlna", 
-									"JPEG_TN")
+									upnpProfileID)
 							)	
 					);					
 				}
@@ -517,7 +566,11 @@ public class ContentDirectory extends AbstractContentDirectoryService  {
 
 
 		if(wantedProperty("dc:creator", filters)) {
-			upnpTrack.setCreator(trackItem.getRecording().getContributors().iterator().next().getArtist().getName());
+			try {
+				upnpTrack.setCreator(trackItem.getRecording().getContributors().iterator().next().getArtist().getName());
+			}catch (Exception NoSuchElementException) {
+				upnpTrack.setCreator("unknown");
+			}
 		}
 		if(wantedProperty("upnp:album", filters)) {		
 			upnpTrack.setAlbum(trackItem.getRelease().getName());
@@ -603,11 +656,41 @@ public class ContentDirectory extends AbstractContentDirectoryService  {
 		
 	}
 
-// NOTE: search request made by WMP11
+// NOTE: search request made by WMP11 (
 //	Received: Search objectid=0 searchCriteria=upnp:class derivedfrom "object.container.playlistContainer" and @refID exists false filter=dc:title,microsoft:folderPath indice=0 nbresults=200
 //	Received: Search objectid=0 searchCriteria=upnp:class derivedfrom "object.item.audioItem" and @refID exists false filter=* indice=0 nbresults=200
 
-    public BrowseResult search(String objectID, String searchCriteria,
+	// NOTE: search request made by WMP11 ( at startup )
+//	sort cap called
+//	Received: Search objectid=0 searchCriteria=upnp:class derivedfrom "object.container.playlistContainer" and @refID exists false filter=dc:title,microsoft:folderPath indice=0 nbresults=200
+//	sort cap called
+//	sort cap called
+//	sort cap called
+//	Received: Search objectid=0 searchCriteria=upnp:class derivedfrom "object.item.audioItem" and @refID exists false filter=* indice=0 nbresults=200
+
+	
+	// NOTE: search request made by WMP11 ( after a manual "refresh" )	
+//	Received: Browse  DC objectid=0 filter=* indice=0 nbresults=200
+//	>>>>>>>>>> RequestFrom agent: Microsoft-Windows/6.1 UPnP/1.0 Windows-Media-Player/12.0.7601.17514_DLNADOC
+//	Received: Browse  DC objectid=Folder:styles filter=* indice=0 nbresults=200
+//	Received: Browse  DC objectid=Folder:styles/Classification.style:607728fa-2f2c-433d-9625-da82e581c331 filter=* indice=0 nbresults=200
+//	CurrentArtist: Jimmy Scott
+//	Received: Browse  DC objectid=Folder:styles/Classification.style:607728fa-2f2c-433d-9625-da82e581c331/Artist:08216615-06da-4b31-83d6-b10177a10a14 filter=* indice=0 nbresults=200
+//	Received: Browse  DC objectid=Folder:styles/Classification.style:607728fa-2f2c-433d-9625-da82e581c331/Artist:08216615-06da-4b31-83d6-b10177a10a14/Release:72a61174-0f71-4b4d-8c00-0835abbcd4b1 filter=* indice=0 nbresults=200
+//	[cling-28        ] WARNING - 13:15:55,86  - te.hql.ast.QueryTranslatorImpl#list: firstResult/maxResults specified with collection fetch; applying in memory!
+//	Received: Browse  DC objectid=Folder:styles/Classification.style:2a4ad998-2c7c-406c-afc7-9be805f3ea84 filter=* indice=0 nbresults=200
+//	CurrentArtist: The Beach Boys
+//	Received: Browse  DC objectid=Folder:styles/Classification.style:2a4ad998-2c7c-406c-afc7-9be805f3ea84/Artist:a1c75c5d-db2b-427f-abb1-a1d76b688ddb filter=* indice=0 nbresults=200
+//	Received: Browse  DC objectid=Folder:styles/Classification.style:2a4ad998-2c7c-406c-afc7-9be805f3ea84/Artist:a1c75c5d-db2b-427f-abb1-a1d76b688ddb/Release:bdbe4fd1-dcf6-4e1e-b8e0-6a1aa217db41 filter=* indice=0 nbresults=200
+//	[cling-28        ] WARNING - 13:15:58,245 - te.hql.ast.QueryTranslatorImpl#list: firstResult/maxResults specified with collection fetch; applying in memory!
+//	Received: Browse  DC objectid=Folder:styles/Classification.style:df943ee4-d547-4f47-8f85-a92ece1b3b30 filter=* indice=0 nbresults=200
+//	CurrentArtist: Mirwais
+//	Received: Browse  DC objectid=Folder:styles/Classification.style:df943ee4-d547-4f47-8f85-a92ece1b3b30/Artist:edc903f0-af64-4104-b5ee-96b338840b6a filter=* indice=0 nbresults=200
+//	Received: Browse  DC objectid=Folder:styles/Classification.style:df943ee4-d547-4f47-8f85-a92ece1b3b30/Artist:edc903f0-af64-4104-b5ee-96b338840b6a/Release:b5c085f9-63e9-42a7-b7ff-8b3795603e79 filter=* indice=0 nbresults=200
+//	[cling-28        ] WARNING - 13:16:00,156 - te.hql.ast.QueryTranslatorImpl#list: firstResult/maxResults specified with collection fetch; applying in memory!
+//	Received: Browse  DC objectid=Folder:styles/Classification.style:2f499758-54fa-4c3f-95c4-602c36acdd51 filter=* indice=0 nbresults=200
+
+	public BrowseResult search(String objectID, String searchCriteria,
             String filter,
             long firstResult, long maxResults,
             SortCriterion[] orderby)  {
@@ -627,6 +710,7 @@ public class ContentDirectory extends AbstractContentDirectoryService  {
 			smdObjectID = objectID;
 		}
 		
+		System.err.println("XXXXXXXX ARG2!!!!");
 		// if upnp maxResults is 0, there's no limit 
 		if(maxResults==0) {
 			smdMaxItems = null;
@@ -636,8 +720,10 @@ public class ContentDirectory extends AbstractContentDirectoryService  {
 
 
 		// quick and dirty hack for WMP search tracks
-		if(searchCriteria.startsWith("upnp:class derivedfrom \"object.item.audioItem\"") ) { 
-			Result<TrackEntity> searchResult = new org.socialmusicdiscovery.server.business.service.browse.TrackBrowseService().findChildren(new ArrayList<String>(), new ArrayList<String>(), (int)firstResult, (int)smdMaxItems, true);
+		if( (searchCriteria != null) && searchCriteria.startsWith("upnp:class derivedfrom \"object.item.audioItem\"") ) {
+			
+			// Result<TrackEntity> searchResult = new org.socialmusicdiscovery.server.business.service.browse.TrackBrowseService().findChildren(new ArrayList<String>(), new ArrayList<String>(), (int)firstResult, (int)smdMaxItems, true);
+			Result<TrackEntity> searchResult = trackBrowseService.findChildren(new ArrayList<String>(), new ArrayList<String>(), (int)firstResult, (int)smdMaxItems, true);
 
 			for( ResultItem<TrackEntity> resultItem: searchResult.getItems() ) {
 				Track smdTrack = resultItem.getItem();
