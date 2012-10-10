@@ -1,0 +1,82 @@
+#labels Jython,experimental
+# How to use Jython for some SMD Exploration
+
+= Introduction =
+
+This page documents how to run SMD from a Jython shell to do some SMD scripting or exploration with Jython. 
+
+Method used isn't very elegant, but it works rather easily without bothering too much with SMD Dependency Injection mechanic.
+
+== Toolbox ==
+[http://dreampie.sourceforge.net/ Dreampie] (we used version 1.1.1)<br/>
+[http://www.jython.org/ Jython] (we usd version 2.5.2)
+
+= Launching Python Shell =
+
+This method works with Jython default interactive shell, but we recommend using an alternative like IPython or Dreampie. As of today, October 2012 Jython 2.5.2 doesn't fits well with latests IPython, these tests were done with Dreampie shell.
+
+
+== Do some environment initialization==
+Do as you like, but you should have something like:
+
+<code language="bat">
+REM Prepare environment (partially wrapped in jython-smd.bat because of classpath setting in dreampie shell)
+set CLASSPATH=%CLASSPATH%;X:\mystuff\smd\localserver\trunk\src\smd-server\target\smd-server-1.0-SNAPSHOT.jar
+REM these -D options aren't meaningful for the setup, it's just an example
+set JYTHON_OPTS=-Djava.util.logging.config.file=X:\mystuff\cling-upnp-test\src\main\java\mylogging.properties  -Dsqueezeboxserver.host=192.168.1.69
+set JYTHONHOME=X:\mystuff\dev\python\Jython
+</code>
+
+== Start SMDApplication in a dedicated thread ==
+
+<code language="py">
+from threading import Thread
+from java.lang import System
+from org.socialmusicdiscovery.server.business.logic import SMDApplication
+
+def launch_smd2():
+	System.setProperty("org.socialmusicdiscovery.server.database", "h2")
+	System.setProperty("squeezeboxserver.host","192.168.1.3")
+	System.setProperty("java.util.logging.config.file", "J:\documents\Projects\perso\playground-workspace\cling-upnp-test\src\main\java\mylogging.properties")
+	SMDApplication.main(None)
+
+t = Thread(target=lambda: launch_smd())
+t.setDaemon(True)
+t.start()
+
+</code>
+
+You should now see a lot of SMD logs scrolling.
+
+
+== Initialize the browse service ==
+
+<code language="python">
+from org.socialmusicdiscovery.server.business.service.browse import ArtistBrowseService, BrowseServiceManager, ClassificationBrowseService, TrackBrowseService, LibraryBrowseService
+
+from org.socialmusicdiscovery.server.business.logic import InjectHelper
+
+from java.util import Arrays, ArrayList
+
+
+
+bsm = InjectHelper.instance(BrowseServiceManager)
+abs = bsm.getBrowseService("Artist")
+</code>
+
+
+
+== Have fun ==
+
+<code language="python">
+>>> ac = abs.findChildren(ArrayList(), ArrayList(), 0, 20, False)
+>>> ac
+2: org.socialmusicdiscovery.server.business.service.browse.Result@e95431
+>>> ac.getCount()
+3: 1384
+>>> len(items)
+5: 20
+>>> ac = abs.findChildren(ArrayList(), ArrayList(), 20, 30,False)
+>>> len(ac.getItems())
+6: 30
+</code>
