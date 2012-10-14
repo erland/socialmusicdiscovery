@@ -39,6 +39,7 @@ import java.util.Map;
 public interface ProcessingModule {
     /**
      * Returns the unique identity of the processing module, this is used when you want to issue a command to the processing module
+     *
      * @return
      */
     String getId();
@@ -46,6 +47,7 @@ public interface ProcessingModule {
     /**
      * Called when the processing module is supposed to execute its logic, the module should use the provided callback interface to
      * report the progress of the operation
+     *
      * @param progressHandler A callback object which the processing module should call to report the current status
      */
     void execute(ProcessingStatusCallback progressHandler);
@@ -58,6 +60,7 @@ public interface ProcessingModule {
     /**
      * Will be called to retrieve available configuration parameters and their default value, a plugin should return all its configuration
      * parameters in this call to make them accessible from the configuration user interface
+     *
      * @return A list of configuration parameters with their default values
      */
     Collection<ConfigurationParameter> getDefaultConfiguration();
@@ -71,5 +74,5 @@ public interface ProcessingModule {
      * Will be called just before the execute module to do any initialization needed before the import module is
      * ready for usage
      */
-    void init(Map<String,String> parameters);
+    void init(Map<String, String> parameters) throws InitializationFailedException;
 }
