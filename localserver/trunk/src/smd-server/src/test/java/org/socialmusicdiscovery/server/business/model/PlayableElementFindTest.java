@@ -25,19 +25,44 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.socialmusicdiscovery.server.business.repository.core;
+package org.socialmusicdiscovery.server.business.model;
 
-import com.google.inject.ImplementedBy;
-import org.socialmusicdiscovery.server.business.model.core.PlayableElementEntity;
-import org.socialmusicdiscovery.server.business.repository.SMDIdentityRepository;
+import com.google.inject.Inject;
+import org.hibernate.collection.spi.PersistentCollection;
+import org.socialmusicdiscovery.server.business.model.core.*;
+import org.socialmusicdiscovery.server.business.repository.core.ArtistRepository;
+import org.socialmusicdiscovery.server.business.repository.core.PlayableElementRepository;
+import org.socialmusicdiscovery.server.business.repository.core.ReleaseRepository;
+import org.socialmusicdiscovery.server.business.repository.core.WorkRepository;
+import org.socialmusicdiscovery.test.BaseTestCase;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
+import java.util.Arrays;
 import java.util.Collection;
 
-@ImplementedBy(JPAPlayableElementRepository.class)
-public interface PlayableElementRepository extends SMDIdentityRepository<PlayableElementEntity> {
-    Collection<PlayableElementEntity> findBySmdID(String smdID);
-    Collection<PlayableElementEntity> findByPartialURIWithRelations(String uriContains, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
-    Collection<PlayableElementEntity> findByURIWithRelations(String uriContains, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
-    Collection<PlayableElementEntity> findBySmdIDWithRelations(String smdID, Collection<String> mandatoryRelations, Collection<String> optionalRelations);
-    Collection<PlayableElementEntity> findAllInSameRelease(PlayableElementEntity playableElement);
+public class PlayableElementFindTest extends BaseTestCase {
+
+    @Inject
+    PlayableElementRepository playableElementRepository;
+
+    @BeforeClass
+    public void setUpClass() {
+        loadTestData(getClass().getPackage().getName(), "The Bodyguard.xml");
+        updateSearchRelations();
+    }
+
+    @Test
+    public void testFind() {
+        Collection<PlayableElementEntity> playableElements = playableElementRepository.findAll();
+        assert playableElements.size() == 4;
+        
+        em.clear();
+        PlayableElementEntity playableElement = playableElementRepository.findById("80001");
+        assert playableElement.getUri().equals("file:///music/TheBodyGuard/track1.flac");
+
+        em.clear();
+        Collection<PlayableElementEntity> playableElementsInSameRelease = playableElementRepository.findAllInSameRelease(playableElement);
+        assert playableElementsInSameRelease.size() == 4;
+    }
 }

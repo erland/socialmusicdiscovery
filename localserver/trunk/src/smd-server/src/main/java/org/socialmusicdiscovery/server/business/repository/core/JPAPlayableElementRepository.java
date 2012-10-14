@@ -58,4 +58,20 @@ public class JPAPlayableElementRepository extends AbstractJPASMDIdentityReposito
         query.setParameter("uri", "%" + uriContains.toLowerCase() + "%");
         return query.getResultList();
     }
+
+    public Collection<PlayableElementEntity> findAllInSameRelease(PlayableElementEntity playableElement) {
+        Query query = entityManager.createQuery(
+        		"SELECT pe FROM TrackEntity t " +
+        		"JOIN t.playableElements pe " +
+        		"JOIN t.release r " +
+        		"WHERE r IN  (" +
+        		"	SELECT r FROM ReleaseEntity r " +
+        		"	JOIN r.tracks t " +
+        		"	JOIN t.playableElements pe " +
+        		"	WHERE pe.id = :playableElementId" +
+        		")" 
+        );
+        query.setParameter("playableElementId",playableElement.getId());
+        return query.getResultList();
+    }
 }
