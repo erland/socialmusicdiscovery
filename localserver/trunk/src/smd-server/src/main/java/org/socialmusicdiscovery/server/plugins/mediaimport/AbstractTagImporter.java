@@ -98,7 +98,7 @@ public abstract class AbstractTagImporter extends AbstractProcessingModule {
     private javax.validation.Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     @Inject
-    private PlayableElementRepository playableElementRepository;
+    protected PlayableElementRepository playableElementRepository;
 
     @Inject
     private MediumRepository mediumRepository;
@@ -107,7 +107,7 @@ public abstract class AbstractTagImporter extends AbstractProcessingModule {
     private TrackRepository trackRepository;
 
     @Inject
-    private ReleaseRepository releaseRepository;
+    protected ReleaseRepository releaseRepository;
 
     @Inject
     private RecordingRepository recordingRepository;

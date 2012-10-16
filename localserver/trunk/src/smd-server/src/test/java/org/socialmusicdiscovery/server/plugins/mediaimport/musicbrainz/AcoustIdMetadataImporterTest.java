@@ -24,7 +24,7 @@ import org.testng.annotations.Test;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
-public class AcoustIdMetadataImporterTest {
+public class AcoustIdMetadataImporterTest extends BaseTestCase {
 
 	AcoustIdMetadataImporter ami;
 
@@ -72,7 +72,12 @@ public class AcoustIdMetadataImporterTest {
 	@BeforeClass
 	public void setUp() {
 		InjectHelper.injectMembers(this);
-		ami = new AcoustIdMetadataImporter();
+
+		// load test data
+		loadTestData(getClass().getPackage().getName(), "Blood on the Tracks.xml");
+        updateSearchRelations();
+
+        ami = new AcoustIdMetadataImporter();
 
 		String pluginConfigurationPath = "org.socialmusicdiscovery.server.plugins.mediaimport."
 				+ ami.getId() + ".";
@@ -93,6 +98,7 @@ public class AcoustIdMetadataImporterTest {
 				pluginConfigurationPath, defaultValueConfigurationManager));
 		Map<String, String> parameters = new HashMap<String, String>();
 		ami.init(parameters);
+
 	}
 
 	@BeforeTest

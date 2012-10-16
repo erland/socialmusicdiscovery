@@ -37,6 +37,7 @@ import java.util.Map;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
+import org.socialmusicdiscovery.server.api.ConfigurationContext;
 import org.socialmusicdiscovery.server.api.mediaimport.MediaImporter;
 import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
 
@@ -157,6 +158,11 @@ public class AcoustIdMetadataImporter extends AbstractTagImporter implements Med
     	// TODO: implement core logic
     	System.out.println("executeImport of acoustid plugin has been called");
     	// WIP this.entityManager
+    	ConfigurationContext conf = this.getConfiguration();
+
+    	for(PlayableElement playableElement: this.playableElementRepository.findAll()) {
+    		System.out.println(playableElement.getUri());
+    	}
     	// for PlayableElement playableElement:
     }
     
