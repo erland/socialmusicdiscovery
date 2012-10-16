@@ -40,6 +40,7 @@ import com.google.inject.name.Named;
 import org.socialmusicdiscovery.server.api.mediaimport.MediaImporter;
 import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
 
+import org.socialmusicdiscovery.server.business.model.core.PlayableElement;
 import org.socialmusicdiscovery.server.business.repository.GlobalIdentityRepository;
 import org.socialmusicdiscovery.server.plugins.mediaimport.AbstractTagImporter;
 
@@ -155,6 +156,8 @@ public class AcoustIdMetadataImporter extends AbstractTagImporter implements Med
     protected void executeImport(ProcessingStatusCallback progressHandler) {
     	// TODO: implement core logic
     	System.out.println("executeImport of acoustid plugin has been called");
+    	// WIP this.entityManager
+    	// for PlayableElement playableElement:
     }
     
     /**
