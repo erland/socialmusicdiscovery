@@ -35,6 +35,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.socialmusicdiscovery.server.api.mediaimport.InitializationFailedException;
 import org.socialmusicdiscovery.server.api.mediaimport.MediaImporter;
 import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
 import org.socialmusicdiscovery.server.business.logic.ImageProviderManager;
@@ -85,10 +86,11 @@ public class SqueezeboxServer extends AbstractTagImporter implements MediaImport
     }
 
     /**
+     * @throws InitializationFailedException 
      * @inherit
      */
     @Override
-    public void init(Map<String, String> executionParameters) {
+    public void init(Map<String, String> executionParameters) throws InitializationFailedException {
         super.init(executionParameters);
     }
 

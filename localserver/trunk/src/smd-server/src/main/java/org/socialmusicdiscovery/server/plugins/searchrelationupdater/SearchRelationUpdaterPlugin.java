@@ -27,6 +27,7 @@
 
 package org.socialmusicdiscovery.server.plugins.searchrelationupdater;
 
+import org.socialmusicdiscovery.server.api.mediaimport.InitializationFailedException;
 import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
 import org.socialmusicdiscovery.server.api.plugin.AbstractPlugin;
 import org.socialmusicdiscovery.server.api.plugin.Plugin;
@@ -48,7 +49,12 @@ public class SearchRelationUpdaterPlugin extends AbstractPlugin {
         if ((database != null && (database.endsWith("-test"))) || (forcedUpdateOfSearchRelations != null && forcedUpdateOfSearchRelations.equalsIgnoreCase("true"))) {
             System.out.println("Starting to update search relations...");
             SearchRelationPostProcessor searchRelationPostProcessor = new SearchRelationPostProcessor();
-            searchRelationPostProcessor.init(null);
+            try {
+				searchRelationPostProcessor.init(null);
+			} catch (InitializationFailedException e) {
+				// // searchRelationPostProcessor initialization doesn't throw initialization failed
+				e.printStackTrace();
+			}
             searchRelationPostProcessor.execute(new ProcessingStatusCallback() {
                 public void progress(String module, String currentDescription, Long currentNo, Long totalNo) {
                     System.out.println(currentNo + " of " + totalNo + ": " + currentDescription);

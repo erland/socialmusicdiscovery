@@ -119,7 +119,7 @@ public abstract class AbstractProcessingModule implements ProcessingModule {
      * Default implementation which resets abort flag and makes sure the entity manager and execution parameters are ready to use
      */
     @Override
-    public void init(Map<String,String> executionParameters) {
+    public void init(Map<String,String> executionParameters) throws InitializationFailedException {
         InjectHelper.injectMembers(this);
         this.aborted = false;
         this.executionParameters = executionParameters;

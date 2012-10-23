@@ -35,6 +35,7 @@ import liquibase.resource.ClassLoaderResourceAccessor;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.socialmusicdiscovery.server.api.mediaimport.AbstractProcessingModule;
+import org.socialmusicdiscovery.server.api.mediaimport.InitializationFailedException;
 import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
 import org.socialmusicdiscovery.server.business.logic.ImageProviderManager;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
@@ -140,7 +141,7 @@ public abstract class AbstractTagImporter extends AbstractProcessingModule {
      * @inherit
      */
     @Override
-    public void init(Map<String, String> executionParameters) {
+    public void init(Map<String, String> executionParameters) throws InitializationFailedException {
         classificationCache = new HashMap<TypeIdentity, Collection<String>>();
         artistCache = new HashMap<String, Collection<String>>();
         artistMusicbrainzCache = new HashSet<String>();

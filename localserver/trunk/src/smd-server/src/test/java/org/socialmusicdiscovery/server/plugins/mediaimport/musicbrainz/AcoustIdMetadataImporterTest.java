@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.socialmusicdiscovery.server.api.mediaimport.InitializationFailedException;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
 import org.socialmusicdiscovery.server.business.logic.config.MappedConfigurationContext;
 import org.socialmusicdiscovery.server.business.logic.config.MemoryConfigurationManager;
@@ -97,7 +98,12 @@ public class AcoustIdMetadataImporterTest extends BaseTestCase {
 		ami.setConfiguration(new MappedConfigurationContext(
 				pluginConfigurationPath, defaultValueConfigurationManager));
 		Map<String, String> parameters = new HashMap<String, String>();
-		ami.init(parameters);
+		try {
+			ami.init(parameters);
+		} catch (InitializationFailedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 

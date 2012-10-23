@@ -30,6 +30,7 @@ package org.socialmusicdiscovery.server.plugins.mediaimport.filesystem;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import org.apache.commons.io.FileUtils;
+import org.socialmusicdiscovery.server.api.mediaimport.InitializationFailedException;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
 import org.socialmusicdiscovery.server.business.logic.config.MappedConfigurationContext;
 import org.socialmusicdiscovery.server.business.logic.config.MemoryConfigurationManager;
@@ -69,7 +70,13 @@ public class FileSystemTest {
         defaultValueConfigurationManager.setParametersForPath(pluginConfigurationPath, defaultConfiguration);
         fileSystem.setConfiguration(new MappedConfigurationContext(pluginConfigurationPath, defaultValueConfigurationManager));
         Map<String, String> parameters = new HashMap<String, String>();
-        fileSystem.init(parameters);
+        try {
+			fileSystem.init(parameters);
+		} catch (InitializationFailedException e) {
+			// TODO Better exception handling 
+			//      This was added after the throw clause in ProcessingModule interface was added)
+			e.printStackTrace();
+		}
     }
 
     @Test

@@ -28,6 +28,8 @@
 package org.socialmusicdiscovery.server.business.model;
 
 import com.google.inject.Inject;
+
+import org.socialmusicdiscovery.server.api.mediaimport.InitializationFailedException;
 import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
 import org.socialmusicdiscovery.server.business.logic.SearchRelationPostProcessor;
 import org.socialmusicdiscovery.server.business.model.core.*;
@@ -65,7 +67,13 @@ public class RecordingRefreshTest extends BaseTestCase {
     public void loadData() {
         loadTestData("org.socialmusicdiscovery.server.business.model", "The Bodyguard.xml");
         SearchRelationPostProcessor searchRelationPostProcessor = new SearchRelationPostProcessor();
-        searchRelationPostProcessor.init(null);
+        try {
+			searchRelationPostProcessor.init(null);
+		} catch (InitializationFailedException e) {
+			// TODO Better exception handling 
+			//      This was added after the throw clause in ProcessingModule interface was added)
+			e.printStackTrace();
+		}
         searchRelationPostProcessor.execute(new ProcessingStatusCallback() {
             public void progress(String module, String currentDescription, Long currentNo, Long totalNo) {
             }

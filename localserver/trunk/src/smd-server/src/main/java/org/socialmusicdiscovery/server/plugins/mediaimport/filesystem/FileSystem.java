@@ -28,6 +28,8 @@
 package org.socialmusicdiscovery.server.plugins.mediaimport.filesystem;
 
 import com.google.inject.Inject;
+
+import org.socialmusicdiscovery.server.api.mediaimport.InitializationFailedException;
 import org.socialmusicdiscovery.server.api.mediaimport.MediaImporter;
 import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
 import org.socialmusicdiscovery.server.business.model.config.ConfigurationParameter;
@@ -62,10 +64,11 @@ public class FileSystem extends AbstractTagImporter implements MediaImporter {
     }
 
     /**
+     * @throws InitializationFailedException 
      * @inherit
      */
     @Override
-    public void init(Map<String, String> executionParameters) {
+    public void init(Map<String, String> executionParameters) throws InitializationFailedException {
         super.init(executionParameters);
     }
 

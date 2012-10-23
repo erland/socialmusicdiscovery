@@ -28,6 +28,9 @@
 package org.socialmusicdiscovery.server.database.sampledata;
 
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.filter.LoggingFilter;
+
 import org.socialmusicdiscovery.server.business.model.classification.Classification;
 import org.socialmusicdiscovery.server.business.model.core.Contributor;
 import org.testng.annotations.Test;
@@ -69,7 +72,7 @@ public class DiscogsSampleCreator extends SampleCreator {
         importedRoles.put("Saxophone", Contributor.PERFORMER);
         importedRoles.put("Orchestra", Contributor.PERFORMER);
     }
-    private static final String USER_AGENT = "Social Music Discovery";
+    private static final String USER_AGENT = "Social Music Discovery/0.0 +http://code.google.com/p/socialmusicdiscovery/";
 
     @Test(groups = {"manual"})
     public void importTheBodyguardRelease() throws Exception {
@@ -82,6 +85,13 @@ public class DiscogsSampleCreator extends SampleCreator {
     public void importTheBodyguardReleaseAsDbUnit() throws Exception {
         Map<String, List<String>> result = new HashMap<String, List<String>>();
         importRelease(result, "1794218");
+        printCollectedDataAsDbUnit(result);
+    }
+
+    @Test(groups = {"manual"})
+    public void importBloodOnTheTracksReleaseAsDbUnit() throws Exception {
+        Map<String, List<String>> result = new HashMap<String, List<String>>();
+        importRelease(result, "381524");
         printCollectedDataAsDbUnit(result);
     }
 
@@ -185,8 +195,13 @@ public class DiscogsSampleCreator extends SampleCreator {
     }
 
     private void importRelease(Map<String, List<String>> result, Map<String, String> artistCache, Map<String, String> personCache, Map<String, String> labelCache, Map<String, String> genreCache, Map<String, String> styleCache, String discogsReleaseId) throws ParserConfigurationException, IOException, SAXException {
-        String data = Client.create().resource("http://www.discogs.com/release/" + discogsReleaseId + "?f=xml&api_key=" + API_KEY).accept(MediaType.APPLICATION_XML).header("Accept-Encoding", "gzip").header("User-Agent",USER_AGENT).get(String.class);
-
+//        String data = Client.create().resource("http://www.discogs.com/release/" + discogsReleaseId + "?f=xml&api_key=" + API_KEY).accept(MediaType.APPLICATION_XML).header("Accept-Encoding", "gzip").header("User-Agent",USER_AGENT).get(String.class);
+// Logging version
+    	Client client = Client.create();
+		client.addFilter(new LoggingFilter(System.out));
+		WebResource webResource = client.resource("http://www.discogs.com/release/" + discogsReleaseId + "?f=xml&api_key=" + API_KEY);
+		String data = webResource.accept(MediaType.APPLICATION_XML).header("Accept-Encoding", "gzip").header("User-Agent",USER_AGENT).get(String.class);
+		
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(data.getBytes()));
         NodeList releases = doc.getElementsByTagName("release");
         for (int i = 0; i < releases.getLength(); i++) {

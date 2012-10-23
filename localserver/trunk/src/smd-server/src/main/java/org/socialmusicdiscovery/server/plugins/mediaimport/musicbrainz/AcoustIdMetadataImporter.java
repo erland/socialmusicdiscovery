@@ -38,6 +38,7 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
 import org.socialmusicdiscovery.server.api.ConfigurationContext;
+import org.socialmusicdiscovery.server.api.mediaimport.InitializationFailedException;
 import org.socialmusicdiscovery.server.api.mediaimport.MediaImporter;
 import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
 
@@ -54,6 +55,10 @@ import org.socialmusicdiscovery.server.plugins.mediaimport.AbstractTagImporter;
  */
 public class AcoustIdMetadataImporter extends AbstractTagImporter implements MediaImporter {
 
+	// TODO: add private property and revert playableElementRepository and releaseRepository from protected to private in AbstractTagImporter.java  
+	//			@Inject   
+	//           private PlayableElementRepository playableElementRepository;
+	//
 	@Inject
     @Named("musicbrainz.acoustid.fpcalcFilename")
 	private String fpcalcFilename;
@@ -113,26 +118,32 @@ public class AcoustIdMetadataImporter extends AbstractTagImporter implements Med
      * Init of the plugin. Construct fpcalc binary path, check its existence and prepare process builder object
      */
     @Override
-    public void init(Map<String, String> executionParameters)  {
+    public void init(Map<String, String> executionParameters) throws InitializationFailedException {
         super.init(executionParameters);
 
         // TODO: replace static "arch/win32" with something smarter
         // inspired by http://www.mkyong.com/java/how-to-detect-os-in-java-systemgetpropertyosname/
+        
+        if(this.fpcalcFilename == null) {
+        	throw new InitializationFailedException("fpcalc file name not set. Please configure it with musicbrainz.acoustid.fpcalcFilename");
+        }
+        if(this.binariesPath == null) {
+        	throw new InitializationFailedException("Binary directory not set. Please configure it with org.socialmusicdiscovery.path.binaries");
+        }        
         try {
         	// Strange hack to concatenate path (how come that Java doesn't include such tools?
 			this.fpcalcPath = new File(new File(binariesPath, "arch/win32").getCanonicalPath(), this.fpcalcFilename).getCanonicalPath();
 		} catch (IOException e) {
 			// TODO: change init interface method to throw exception?
-			e.printStackTrace();
+			throw new InitializationFailedException("fpcalc executable path invalid or not set: "+ binariesPath+"/"+"arch/win32/"+this.fpcalcFilename);
 		}
     	if(this.fpcalcPath == null  || (new File(this.fpcalcPath).isFile() == false) ) {
-    		//throw new FileNotFoundException("fpcalc executable path invalid or not set: "+ this.fpcalcPath);
-    		// TODO: Throw InitFailedException in parent class?
-    		System.err.println("fpcalc executable path invalid or not set: "+ this.fpcalcPath);
-    		return;
+    		throw new InitializationFailedException("fpcalc executable path invalid or not set: "+ this.fpcalcPath);
     	}
-    	// second argument is media filename and will be completed later in the process for each file
+    	
+    	// second argument of constructor is media filename and will be completed later in the process for each file
     	this.pb = new ProcessBuilder(this.fpcalcPath, null);
+
     	// we want stderr and stdout as a single stream 
     	this.pb.redirectErrorStream(true);
     }
@@ -158,6 +169,7 @@ public class AcoustIdMetadataImporter extends AbstractTagImporter implements Med
     	// TODO: implement core logic
     	System.out.println("executeImport of acoustid plugin has been called");
     	// WIP this.entityManager
+    	
     	ConfigurationContext conf = this.getConfiguration();
 
     	for(PlayableElement playableElement: this.playableElementRepository.findAll()) {
