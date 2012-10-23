@@ -29,6 +29,8 @@ package org.socialmusicdiscovery.server.plugins.mediaimport;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
+
+import org.socialmusicdiscovery.server.api.mediaimport.InitializationFailedException;
 import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
 import org.socialmusicdiscovery.server.business.logic.config.MappedConfigurationContext;
 import org.socialmusicdiscovery.server.business.logic.config.MemoryConfigurationManager;
@@ -105,13 +107,25 @@ public class AbstractTagImporterTest extends BaseTestCase {
         }
         defaultValueConfigurationManager.setParametersForPath(pluginConfigurationPath, defaultConfiguration);
         tagImporter.setConfiguration(new MappedConfigurationContext(pluginConfigurationPath, defaultValueConfigurationManager));
-        tagImporter.init(null);
+        try {
+			tagImporter.init(null);
+		} catch (InitializationFailedException e) {
+			// TODO Better exception handling 
+			//      This was added after the throw clause in ProcessingModule interface was added)
+			e.printStackTrace();
+		}
     }
 
     @BeforeMethod
     public void setUpMethod() {
         em.clear();
-        tagImporter.init(null);
+        try {
+			tagImporter.init(null);
+		} catch (InitializationFailedException e) {
+			// TODO Better exception handling 
+			//      This was added after the throw clause in ProcessingModule interface was added)
+			e.printStackTrace();
+		}
     }
 
     @Test

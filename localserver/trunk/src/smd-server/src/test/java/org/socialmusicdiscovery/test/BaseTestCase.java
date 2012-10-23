@@ -41,6 +41,7 @@ import org.dbunit.ext.h2.H2DataTypeFactory;
 import org.dbunit.ext.hsqldb.HsqldbDataTypeFactory;
 import org.dbunit.ext.mysql.MySqlDataTypeFactory;
 import org.dbunit.operation.DatabaseOperation;
+import org.socialmusicdiscovery.server.api.mediaimport.InitializationFailedException;
 import org.socialmusicdiscovery.server.api.mediaimport.ProcessingStatusCallback;
 import org.socialmusicdiscovery.server.business.logic.InjectHelper;
 import org.socialmusicdiscovery.server.business.logic.SearchRelationPostProcessor;
@@ -166,7 +167,12 @@ public abstract class BaseTestCase {
      */
     protected void updateSearchRelations() {
         SearchRelationPostProcessor searchRelationPostProcessor = new SearchRelationPostProcessor();
-        searchRelationPostProcessor.init(null);
+        try {
+			searchRelationPostProcessor.init(null);
+		} catch (InitializationFailedException e) {
+			// searchRelationPostProcessor initialization doesn't throw initialization failed
+			e.printStackTrace();
+		}
         searchRelationPostProcessor.execute(new ProcessingStatusCallback() {
             public void progress(String module, String currentDescription, Long currentNo, Long totalNo) {
             }

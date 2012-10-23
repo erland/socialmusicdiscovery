@@ -109,7 +109,7 @@
             last_updated_by="JUnit"/>
     <smdidentity_references id="80001" type="org.socialmusicdiscovery.server.business.model.core.PlayableElement"/>
     <playable_elements id="80001" track_id="50001" smdID="fd4fe48417dd941af53799619ecf1a40-10000000" format="flac"
-                       uri="file:///music/TheBodyGuard/track1.flac" last_updated="2010-08-01" last_updated_by="JUnit"/>
+                       uri="file:///I:/SB/CD%20HBVR/Bob%20Dylan/1974%20Blood%20On%20The%20Tracks/01%20Tangled%20Up%20In%20Blue.flac" last_updated="2010-08-01" last_updated_by="JUnit"/>
     <smdidentity_references id="30001001" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
     <contributors id="30001001" type="composer" work_id="30001" artist_id="1" last_updated="2010-08-01"
                   last_updated_by="JUnit"/>
