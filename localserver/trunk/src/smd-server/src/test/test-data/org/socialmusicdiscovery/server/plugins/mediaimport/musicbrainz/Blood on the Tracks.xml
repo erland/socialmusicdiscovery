@@ -1,263 +1,128 @@
 <dataset>
-    <smdidentity_references id="10000" type="org.socialmusicdiscovery.server.business.model.core.LabelEntity"/>
-    <labels id="10000" name="Arista" sort_as="Arista" last_updated="2010-08-01" last_updated_by="JUnit"/>
-    <smdidentity_references id="20000" type="org.socialmusicdiscovery.server.business.model.core.ReleaseEntity"/>
-    <releases id="20000" date="1992-01-01" name="The Bodyguard (Original Soundtrack Album)"
-              sort_as="The Bodyguard (Original Soundtrack Album)" label_id="10000" last_updated="2010-08-01"
-              last_updated_by="JUnit"/>
+<artists id="701cef66-bc32-408d-865e-1c078a3264c5" name="Bob Dylan" sort_as="Bob Dylan" last_updated="2011-01-01T00:00:00" last_updated_by="musicbrainz" />
+
+<contributors id="b9658140-b168-4a30-9fd6-5e924cb7560d" artist_id="701cef66-bc32-408d-865e-1c078a3264c5" release_id="8d2b0c40-c793-4b62-9a9a-8d12487ed4f9" type="performer" last_updated="2011-01-01T00:00:00" last_updated_by="musicbrainz" />
+
+<recordings id="7e76da85-d857-4fc5-811b-1ebf9b58fa92" last_updated="2011-01-01T00:00:00" last_updated_by="musicbrainz" />
+<recordings id="4867efbe-4a1f-4e5b-b764-c5d3b85ef132" last_updated="2011-01-01T00:00:00" last_updated_by="musicbrainz" />
+<recordings id="dc98c592-0743-4857-893d-dc79943855be" last_updated="2011-01-01T00:00:00" last_updated_by="musicbrainz" />
+<recordings id="19369ed3-06b3-4611-9798-79522700e256" last_updated="2011-01-01T00:00:00" last_updated_by="musicbrainz" />
+<recordings id="dc412d4c-f93c-4978-bcf2-48ab257f29e9" last_updated="2011-01-01T00:00:00" last_updated_by="musicbrainz" />
+<recordings id="21872b19-840b-4fad-98d1-69d7213596f6" last_updated="2011-01-01T00:00:00" last_updated_by="musicbrainz" />
+<recordings id="827bd056-5793-43bc-a695-08e3e490deb3" last_updated="2011-01-01T00:00:00" last_updated_by="musicbrainz" />
+<recordings id="975136fe-7cba-45ff-bf57-5a042979a918" last_updated="2011-01-01T00:00:00" last_updated_by="musicbrainz" />
+<recordings id="6cae4db6-08d3-4e7e-b2df-77d0bfbd5f65" last_updated="2011-01-01T00:00:00" last_updated_by="musicbrainz" />
+<recordings id="a0d51d60-5e65-4ec8-849d-74949a19df90" last_updated="2011-01-01T00:00:00" last_updated_by="musicbrainz" />
+
+<recording_works recording_id="7e76da85-d857-4fc5-811b-1ebf9b58fa92" work_id="f6c17dde-9631-489c-be18-4a2b656b7455" />
+<recording_works recording_id="4867efbe-4a1f-4e5b-b764-c5d3b85ef132" work_id="d2aa8713-3f0d-4e01-a1a6-a55e6f8db952" />
+<recording_works recording_id="dc98c592-0743-4857-893d-dc79943855be" work_id="c38f406e-94e2-4c18-b379-45805ed72194" />
+<recording_works recording_id="19369ed3-06b3-4611-9798-79522700e256" work_id="16ed61c1-e113-4cd3-876b-0d101cf6d9b8" />
+<recording_works recording_id="dc412d4c-f93c-4978-bcf2-48ab257f29e9" work_id="1622b1b8-4516-4469-a36a-2e968de30adb" />
+<recording_works recording_id="21872b19-840b-4fad-98d1-69d7213596f6" work_id="92bfb402-a060-4df0-bc54-864dfb27467e" />
+<recording_works recording_id="827bd056-5793-43bc-a695-08e3e490deb3" work_id="1e278f8d-b084-42c0-8748-af87d6238361" />
+<recording_works recording_id="975136fe-7cba-45ff-bf57-5a042979a918" work_id="1d349b58-c5bf-4035-84e4-33f163bc537f" />
+<recording_works recording_id="6cae4db6-08d3-4e7e-b2df-77d0bfbd5f65" work_id="cd7d6d8e-dedd-4ec9-9474-ac57c524156e" />
+<recording_works recording_id="a0d51d60-5e65-4ec8-849d-74949a19df90" work_id="cb8bf284-236a-4d44-bacb-bd6db3e7f5cd" />
+
+<smdidentity_references id="8d2b0c40-c793-4b62-9a9a-8d12487ed4f9" type="Release" />
+<smdidentity_references id="701cef66-bc32-408d-865e-1c078a3264c5" type="Artist" />
+<smdidentity_references id="b9658140-b168-4a30-9fd6-5e924cb7560d" type="Contributor" />
+<smdidentity_references id="f6c17dde-9631-489c-be18-4a2b656b7455" type="Work" />
+<smdidentity_references id="7e76da85-d857-4fc5-811b-1ebf9b58fa92" type="Recording" />
+<smdidentity_references id="3eb51c16-b351-4ec3-b407-991c29f8d8c8" type="Track" />
+<smdidentity_references id="d2aa8713-3f0d-4e01-a1a6-a55e6f8db952" type="Work" />
+<smdidentity_references id="4867efbe-4a1f-4e5b-b764-c5d3b85ef132" type="Recording" />
+<smdidentity_references id="4e2a4ace-3a23-4a14-bbd5-4275cc255447" type="Track" />
+<smdidentity_references id="c38f406e-94e2-4c18-b379-45805ed72194" type="Work" />
+<smdidentity_references id="dc98c592-0743-4857-893d-dc79943855be" type="Recording" />
+<smdidentity_references id="67a8a291-9b41-4dc3-94de-59cd7f645a4e" type="Track" />
+<smdidentity_references id="16ed61c1-e113-4cd3-876b-0d101cf6d9b8" type="Work" />
+<smdidentity_references id="19369ed3-06b3-4611-9798-79522700e256" type="Recording" />
+<smdidentity_references id="66eeafa7-1292-4358-b0c3-1e9de6b4cc7f" type="Track" />
+<smdidentity_references id="1622b1b8-4516-4469-a36a-2e968de30adb" type="Work" />
+<smdidentity_references id="dc412d4c-f93c-4978-bcf2-48ab257f29e9" type="Recording" />
+<smdidentity_references id="84c69f4f-1d5c-4605-83a6-7dcae47e0a75" type="Track" />
+<smdidentity_references id="92bfb402-a060-4df0-bc54-864dfb27467e" type="Work" />
+<smdidentity_references id="21872b19-840b-4fad-98d1-69d7213596f6" type="Recording" />
+<smdidentity_references id="d37e8d33-faa5-4d67-9fbd-1f821c07c2bf" type="Track" />
+<smdidentity_references id="1e278f8d-b084-42c0-8748-af87d6238361" type="Work" />
+<smdidentity_references id="827bd056-5793-43bc-a695-08e3e490deb3" type="Recording" />
+<smdidentity_references id="68c2fe22-31da-4fce-b934-1317f8e7bc7d" type="Track" />
+<smdidentity_references id="1d349b58-c5bf-4035-84e4-33f163bc537f" type="Work" />
+<smdidentity_references id="975136fe-7cba-45ff-bf57-5a042979a918" type="Recording" />
+<smdidentity_references id="17ef7e19-fea3-48fe-b7ed-47a03e4e3b6e" type="Track" />
+<smdidentity_references id="cd7d6d8e-dedd-4ec9-9474-ac57c524156e" type="Work" />
+<smdidentity_references id="6cae4db6-08d3-4e7e-b2df-77d0bfbd5f65" type="Recording" />
+<smdidentity_references id="1b1345ee-7f17-44b0-9f92-b931860203de" type="Track" />
+<smdidentity_references id="cb8bf284-236a-4d44-bacb-bd6db3e7f5cd" type="Work" />
+<smdidentity_references id="a0d51d60-5e65-4ec8-849d-74949a19df90" type="Recording" />
+<smdidentity_references id="24a3975e-3e85-4d07-8cf4-38f45197ed75" type="Track" />
+
+<releases id="8d2b0c40-c793-4b62-9a9a-8d12487ed4f9" name="Blood on the Tracks" sort_as="Blood on the Tracks" last_updated="2011-01-01T00:00:00" last_updated_by="musicbrainz" />
+
+<tracks id="3eb51c16-b351-4ec3-b407-991c29f8d8c8" release_id="8d2b0c40-c793-4b62-9a9a-8d12487ed4f9" recording_id="7e76da85-d857-4fc5-811b-1ebf9b58fa92" number="1" last_updated="2011-01-01T00:00:00" last_updated_by="musicbrainz" />
+<tracks id="4e2a4ace-3a23-4a14-bbd5-4275cc255447" release_id="8d2b0c40-c793-4b62-9a9a-8d12487ed4f9" recording_id="4867efbe-4a1f-4e5b-b764-c5d3b85ef132" number="2" last_updated="2011-01-01T00:00:00" last_updated_by="musicbrainz" />
+<tracks id="67a8a291-9b41-4dc3-94de-59cd7f645a4e" release_id="8d2b0c40-c793-4b62-9a9a-8d12487ed4f9" recording_id="dc98c592-0743-4857-893d-dc79943855be" number="3" last_updated="2011-01-01T00:00:00" last_updated_by="musicbrainz" />
+<tracks id="66eeafa7-1292-4358-b0c3-1e9de6b4cc7f" release_id="8d2b0c40-c793-4b62-9a9a-8d12487ed4f9" recording_id="19369ed3-06b3-4611-9798-79522700e256" number="4" last_updated="2011-01-01T00:00:00" last_updated_by="musicbrainz" />
+<tracks id="84c69f4f-1d5c-4605-83a6-7dcae47e0a75" release_id="8d2b0c40-c793-4b62-9a9a-8d12487ed4f9" recording_id="dc412d4c-f93c-4978-bcf2-48ab257f29e9" number="5" last_updated="2011-01-01T00:00:00" last_updated_by="musicbrainz" />
+<tracks id="d37e8d33-faa5-4d67-9fbd-1f821c07c2bf" release_id="8d2b0c40-c793-4b62-9a9a-8d12487ed4f9" recording_id="21872b19-840b-4fad-98d1-69d7213596f6" number="6" last_updated="2011-01-01T00:00:00" last_updated_by="musicbrainz" />
+<tracks id="68c2fe22-31da-4fce-b934-1317f8e7bc7d" release_id="8d2b0c40-c793-4b62-9a9a-8d12487ed4f9" recording_id="827bd056-5793-43bc-a695-08e3e490deb3" number="7" last_updated="2011-01-01T00:00:00" last_updated_by="musicbrainz" />
+<tracks id="17ef7e19-fea3-48fe-b7ed-47a03e4e3b6e" release_id="8d2b0c40-c793-4b62-9a9a-8d12487ed4f9" recording_id="975136fe-7cba-45ff-bf57-5a042979a918" number="8" last_updated="2011-01-01T00:00:00" last_updated_by="musicbrainz" />
+<tracks id="1b1345ee-7f17-44b0-9f92-b931860203de" release_id="8d2b0c40-c793-4b62-9a9a-8d12487ed4f9" recording_id="6cae4db6-08d3-4e7e-b2df-77d0bfbd5f65" number="9" last_updated="2011-01-01T00:00:00" last_updated_by="musicbrainz" />
+<tracks id="24a3975e-3e85-4d07-8cf4-38f45197ed75" release_id="8d2b0c40-c793-4b62-9a9a-8d12487ed4f9" recording_id="a0d51d60-5e65-4ec8-849d-74949a19df90" number="10" last_updated="2011-01-01T00:00:00" last_updated_by="musicbrainz" />
+
+<works id="f6c17dde-9631-489c-be18-4a2b656b7455" type="Work" name="Tangled Up in Blue" sort_as="Tangled Up in Blue" last_updated="2011-01-01T00:00:00" last_updated_by="musicbrainz" />
+<works id="d2aa8713-3f0d-4e01-a1a6-a55e6f8db952" type="Work" name="Simple Twist of Fate" sort_as="Simple Twist of Fate" last_updated="2011-01-01T00:00:00" last_updated_by="musicbrainz" />
+<works id="c38f406e-94e2-4c18-b379-45805ed72194" type="Work"  name="You're a Big Girl Now" sort_as="You're a Big Girl Now" last_updated="2011-01-01T00:00:00" last_updated_by="musicbrainz" />
+<works id="16ed61c1-e113-4cd3-876b-0d101cf6d9b8" type="Work"  name="Idiot Wind" sort_as="Idiot Wind" last_updated="2011-01-01T00:00:00" last_updated_by="musicbrainz" />
+<works id="1622b1b8-4516-4469-a36a-2e968de30adb" type="Work"  name="You're Gonna Make Me Lonesome When You Go" sort_as="You're Gonna Make Me Lonesome When You Go" last_updated="2011-01-01T00:00:00" last_updated_by="musicbrainz" />
+<works id="92bfb402-a060-4df0-bc54-864dfb27467e" type="Work"  name="Meet Me in the Morning" sort_as="Meet Me in the Morning" last_updated="2011-01-01T00:00:00" last_updated_by="musicbrainz" />
+<works id="1e278f8d-b084-42c0-8748-af87d6238361" type="Work"  name="Lily, Rosemary and the Jack of Hearts" sort_as="Lily, Rosemary and the Jack of Hearts" last_updated="2011-01-01T00:00:00" last_updated_by="musicbrainz" />
+<works id="1d349b58-c5bf-4035-84e4-33f163bc537f" type="Work"  name="If You See Her, Say Hello" sort_as="If You See Her, Say Hello" last_updated="2011-01-01T00:00:00" last_updated_by="musicbrainz" />
+<works id="cd7d6d8e-dedd-4ec9-9474-ac57c524156e" type="Work"  name="Shelter From the Storm" sort_as="Shelter From the Storm" last_updated="2011-01-01T00:00:00" last_updated_by="musicbrainz" />
+<works id="cb8bf284-236a-4d44-bacb-bd6db3e7f5cd" type="Work"  name="Buckets of Rain" sort_as="Buckets of Rain" last_updated="2011-01-01T00:00:00" last_updated_by="musicbrainz" />
 
 
-    <smdidentity_references id="101" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
-    <persons id="101" name="Dolly Rebecca Parton" sort_as="Parton, Dolly Rebecca" last_updated="2010-08-01"
-             last_updated_by="JUnit"/>
-    <smdidentity_references id="102" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
-    <persons id="102" name="Ricky Minor" sort_as="Minor, Ricky" last_updated="2010-08-01" last_updated_by="JUnit"/>
-    <smdidentity_references id="103" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
-    <persons id="103" name="Kenneth Brian Edmonds" sort_as="Edmonds, Kenneth Brian" last_updated="2010-08-01"
-             last_updated_by="JUnit"/>
-    <smdidentity_references id="104" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
-    <persons id="104" name="Daryl L. Simmons" sort_as="Simmons, Daryl L." last_updated="2010-08-01"
-             last_updated_by="JUnit"/>
-    <smdidentity_references id="105" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
-    <persons id="105" name="Antonio M. Reid" sort_as="Reid, Antonio M." last_updated="2010-08-01"
-             last_updated_by="JUnit"/>
-    <smdidentity_references id="106" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
-    <persons id="106" name="Whitney Elisabeth Houston" sort_as="Houston, Whitney Elisabeth" last_updated="2010-08-01"
-             last_updated_by="JUnit"/>
-    <smdidentity_references id="107" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
-    <persons id="107" name="William Harrison Withers, Jr." sort_as="Withers, William Harrison, Jr."
-             last_updated="2010-08-01" last_updated_by="JUnit"/>
-    <smdidentity_references id="108" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
-    <persons id="108" name="David Bryon Cole" sort_as="Cole, David Bryon" last_updated="2010-08-01"
-             last_updated_by="JUnit"/>
-    <smdidentity_references id="109" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
-    <persons id="109" name="Robert Manuel Clivilles" sort_as="Clivilles, Robert Manuel" last_updated="2010-08-01"
-             last_updated_by="JUnit"/>
-    <smdidentity_references id="110" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
-    <persons id="110" name="Clarence Alexander Scarborough" sort_as="Scarborough, Clarence Alexander"
-             last_updated="2010-08-01" last_updated_by="JUnit"/>
-    <smdidentity_references id="111" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
-    <persons id="111" name="Tommy Never" sort_as="Never, Tommy" last_updated="2010-08-01" last_updated_by="JUnit"/>
-    <smdidentity_references id="112" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
-    <persons id="112" name="Alan Antonio Silverstri" sort_as="Silverstri, Alan Antonio" last_updated="2010-08-01"
-             last_updated_by="JUnit"/>
-    <smdidentity_references id="113" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
-    <persons id="113" name="Gary Grant" sort_as="Grant, Gary" last_updated="2010-08-01" last_updated_by="JUnit"/>
-    <smdidentity_references id="114" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
-    <persons id="114" name="William Ross" sort_as="Ross, William" last_updated="2010-08-01" last_updated_by="JUnit"/>
-    <smdidentity_references id="115" type="org.socialmusicdiscovery.server.business.model.core.PersonEntity"/>
-    <persons id="115" name="Michelle Shupack" sort_as="Shupack, Michelle" last_updated="2010-08-01"
-             last_updated_by="JUnit"/>
 
-    <smdidentity_references id="1" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
-    <artists id="1" person_id="101" name="Dolly Parton" sort_as="Parton, Dolly" last_updated="2010-08-01"
-             last_updated_by="JUnit"/>
-    <smdidentity_references id="2" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
-    <artists id="2" person_id="102" name="Ricky Minor" sort_as="Minor, Ricky" last_updated="2010-08-01"
-             last_updated_by="JUnit"/>
-    <smdidentity_references id="3" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
-    <artists id="3" person_id="103" name="Babyface" sort_as="Babyface" last_updated="2010-08-01"
-             last_updated_by="JUnit"/>
-    <smdidentity_references id="4" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
-    <artists id="4" person_id="104" name="Daryl Simmons" sort_as="Simmons, Daryl" last_updated="2010-08-01"
-             last_updated_by="JUnit"/>
-    <smdidentity_references id="5" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
-    <artists id="5" person_id="105" name="L.A. Reid" sort_as="Reid, L.A." last_updated="2010-08-01"
-             last_updated_by="JUnit"/>
-    <smdidentity_references id="6" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
-    <artists id="6" person_id="106" name="Whitney Houston" sort_as="Houston, Whitney" last_updated="2010-08-01"
-             last_updated_by="JUnit"/>
-    <smdidentity_references id="7" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
-    <artists id="7" person_id="107" name="Bill Withers" sort_as="Withers, Bill" last_updated="2010-08-01"
-             last_updated_by="JUnit"/>
-    <smdidentity_references id="8" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
-    <artists id="8" person_id="108" name="David Cole" sort_as="Cole, David" last_updated="2010-08-01"
-             last_updated_by="JUnit"/>
-    <smdidentity_references id="9" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
-    <artists id="9" person_id="109" name="Robert Clivilles" sort_as="Clivilles, Robert" last_updated="2010-08-01"
-             last_updated_by="JUnit"/>
-    <smdidentity_references id="10" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
-    <artists id="10" person_id="110" name="Skip Scarborough" sort_as="Scarborough, Skip" last_updated="2010-08-01"
-             last_updated_by="JUnit"/>
-    <smdidentity_references id="11" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
-    <artists id="11" person_id="111" name="Tommy Never" sort_as="Never, Tommy" last_updated="2010-08-01"
-             last_updated_by="JUnit"/>
-    <smdidentity_references id="12" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
-    <artists id="12" person_id="112" name="Alan Silverstri" sort_as="Silverstri, Alan" last_updated="2010-08-01"
-             last_updated_by="JUnit"/>
-    <smdidentity_references id="13" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
-    <artists id="13" person_id="113" name="Gary Grant" sort_as="Grant, Gary" last_updated="2010-08-01"
-             last_updated_by="JUnit"/>
-    <smdidentity_references id="14" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
-    <artists id="14" person_id="114" name="William Ross" sort_as="Ross, William" last_updated="2010-08-01"
-             last_updated_by="JUnit"/>
-    <smdidentity_references id="15" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
-    <artists id="15" person_id="115" name="Michelle Visage" sort_as="Visage, Michelle" last_updated="2010-08-01"
-             last_updated_by="JUnit"/>
-    <smdidentity_references id="16" type="org.socialmusicdiscovery.server.business.model.core.ArtistEntity"/>
-    <artists id="16" name="The S.O.U.L. S.Y.S.T.E.M." sort_as="S.O.U.L. S.Y.S.T.E.M., The" last_updated="2010-08-01"
-             last_updated_by="JUnit"/>
 
-    <smdidentity_references id="30001" type="org.socialmusicdiscovery.server.business.model.core.WorkEntity"/>
-    <works id="30001" type="Work" name="I Will Always Love You" sort_as="I Will Always Love You"
-           last_updated="2010-08-01" last_updated_by="JUnit"/>
-    <smdidentity_references id="40001" type="org.socialmusicdiscovery.server.business.model.core.RecordingEntity"/>
-    <recordings id="40001" last_updated="2010-08-01" last_updated_by="JUnit"/>
-    <recording_works recording_id="40001" work_id="30001"/>
-    <smdidentity_references id="50001" type="org.socialmusicdiscovery.server.business.model.core.TrackEntity"/>
-    <tracks id="50001" number="1" recording_id="40001" release_id="20000" last_updated="2010-08-01"
-            last_updated_by="JUnit"/>
-    <smdidentity_references id="80001" type="org.socialmusicdiscovery.server.business.model.core.PlayableElement"/>
-    <playable_elements id="80001" track_id="50001" smdID="fd4fe48417dd941af53799619ecf1a40-10000000" format="flac"
+
+
+
+
+
+
+
+<smdidentity_references id="46140af9-66a0-4c80-82e7-f1a7cec73c50" type="org.socialmusicdiscovery.server.business.model.core.PlayableElement"/>
+<smdidentity_references id="ab1d7dc9-d845-47f8-9334-75b30891a31c" type="org.socialmusicdiscovery.server.business.model.core.PlayableElement"/>
+<smdidentity_references id="1216b2f4-acf2-4d67-884b-d4ceaf08a01c" type="org.socialmusicdiscovery.server.business.model.core.PlayableElement"/>
+<smdidentity_references id="f821b61d-c5c6-424a-889a-50f51e862e64" type="org.socialmusicdiscovery.server.business.model.core.PlayableElement"/>
+<smdidentity_references id="99d0f285-701c-4604-ab44-e7bb50c110ad" type="org.socialmusicdiscovery.server.business.model.core.PlayableElement"/>
+<smdidentity_references id="cf5ebe97-ffa2-4193-84a4-a7d740a21160" type="org.socialmusicdiscovery.server.business.model.core.PlayableElement"/>
+<smdidentity_references id="da5a828f-37a1-4b98-925a-f0681ccc5e60" type="org.socialmusicdiscovery.server.business.model.core.PlayableElement"/>
+<smdidentity_references id="fdaba4ab-fe26-4961-925d-b532c9014d30" type="org.socialmusicdiscovery.server.business.model.core.PlayableElement"/>
+<smdidentity_references id="985ae885-64d6-4e23-97f5-56c9d6c2a97d" type="org.socialmusicdiscovery.server.business.model.core.PlayableElement"/>
+<smdidentity_references id="cdc937d5-fd8f-45a1-b339-ac4e30372783" type="org.socialmusicdiscovery.server.business.model.core.PlayableElement"/>
+
+<playable_elements id="46140af9-66a0-4c80-82e7-f1a7cec73c50" track_id="3eb51c16-b351-4ec3-b407-991c29f8d8c8" smdID="fd4fe48417dd941af53799619ecf1a40-13000000" format="flac"
                        uri="file:///I:/SB/CD%20HBVR/Bob%20Dylan/1974%20Blood%20On%20The%20Tracks/01%20Tangled%20Up%20In%20Blue.flac" last_updated="2010-08-01" last_updated_by="JUnit"/>
-    <smdidentity_references id="30001001" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
-    <contributors id="30001001" type="composer" work_id="30001" artist_id="1" last_updated="2010-08-01"
-                  last_updated_by="JUnit"/>
-    <smdidentity_references id="40001002" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
-    <contributors id="40001002" type="performer" recording_id="40001" artist_id="6" last_updated="2010-08-01"
-                  last_updated_by="JUnit"/>
-    <smdidentity_references id="40001003" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
-    <contributors id="40001003" type="conductor" recording_id="40001" artist_id="2" last_updated="2010-08-01"
-                  last_updated_by="JUnit"/>
+<playable_elements id="ab1d7dc9-d845-47f8-9334-75b30891a31c" track_id="4e2a4ace-3a23-4a14-bbd5-4275cc255447" smdID="fd4fe48417dd941af53799619ecf1a41-10000001" format="flac"
+                       uri="file:///I:/SB/CD%20HBVR/Bob%20Dylan/1974%20Blood%20On%20The%20Tracks/02%20Simple%20Twist%20Of%20Fate.flac" last_updated="2010-08-01" last_updated_by="JUnit"/>
+<playable_elements id="1216b2f4-acf2-4d67-884b-d4ceaf08a01c" track_id="67a8a291-9b41-4dc3-94de-59cd7f645a4e" smdID="fd4fe48417dd941af53799619ecf1a42-10000002" format="flac"
+                       uri="file:///I:/SB/CD%20HBVR/Bob%20Dylan/1974%20Blood%20On%20The%20Tracks/03%20You%27re%20A%20Big%20Girl%20Now.flac" last_updated="2010-08-01" last_updated_by="JUnit"/>
+<playable_elements id="f821b61d-c5c6-424a-889a-50f51e862e64" track_id="66eeafa7-1292-4358-b0c3-1e9de6b4cc7f" smdID="fd4fe48417dd941af53799619ecf1a43-10000003" format="flac"
+                       uri="file:///I:/SB/CD%20HBVR/Bob%20Dylan/1974%20Blood%20On%20The%20Tracks/04%20Idiot%20Wind.flac" last_updated="2010-08-01" last_updated_by="JUnit"/>
+<playable_elements id="99d0f285-701c-4604-ab44-e7bb50c110ad" track_id="84c69f4f-1d5c-4605-83a6-7dcae47e0a75" smdID="fd4fe48417dd941af53799619ecf1a44-10000004" format="flac"
+                       uri="file:///I:/SB/CD%20HBVR/Bob%20Dylan/1974%20Blood%20On%20The%20Tracks/05%20You%27re%20Gonna%20Make%20Me%20Lonesome%20When%20You%20Go.flac" last_updated="2010-08-01" last_updated_by="JUnit"/>
+<playable_elements id="cf5ebe97-ffa2-4193-84a4-a7d740a21160" track_id="d37e8d33-faa5-4d67-9fbd-1f821c07c2bf" smdID="fd4fe48417dd941af53799619ecf1a45-10000005" format="flac"
+                       uri="file:///I:/SB/CD%20HBVR/Bob%20Dylan/1974%20Blood%20On%20The%20Tracks/06%20Meet%20Me%20In%20The%20Morning.flac" last_updated="2010-08-01" last_updated_by="JUnit"/>
+<playable_elements id="da5a828f-37a1-4b98-925a-f0681ccc5e60" track_id="68c2fe22-31da-4fce-b934-1317f8e7bc7d" smdID="fd4fe48417dd941af53799619ecf1a46-10000006" format="flac"
+                       uri="file:///I:/SB/CD%20HBVR/Bob%20Dylan/1974%20Blood%20On%20The%20Tracks/07%20Lily,%20Rosemary%20And%20The%20Jack%20Of%20Hearts.flac" last_updated="2010-08-01" last_updated_by="JUnit"/>
+<playable_elements id="fdaba4ab-fe26-4961-925d-b532c9014d30" track_id="17ef7e19-fea3-48fe-b7ed-47a03e4e3b6e" smdID="fd4fe48417dd941af53799619ecf1a48-10000007" format="flac"
+                       uri="file:///I:/SB/CD%20HBVR/Bob%20Dylan/1974%20Blood%20On%20The%20Tracks/08%20If%20You%20See%20Her,%20Say%20Hello.flac" last_updated="2010-08-01" last_updated_by="JUnit"/>
+<playable_elements id="985ae885-64d6-4e23-97f5-56c9d6c2a97d" track_id="1b1345ee-7f17-44b0-9f92-b931860203de" smdID="fd4fe48417dd941af53799619ecf1a49-10000008" format="flac"
+                       uri="file:///I:/SB/CD%20HBVR/Bob%20Dylan/1974%20Blood%20On%20The%20Tracks/09%20Shelter%20From%20The%20Storm.flac" last_updated="2010-08-01" last_updated_by="JUnit"/>
+<playable_elements id="cdc937d5-fd8f-45a1-b339-ac4e30372783" track_id="24a3975e-3e85-4d07-8cf4-38f45197ed75" smdID="fd4fe48417dd941af53799619ecf1a50-10000009" format="flac"
+                       uri="file:///I:/SB/CD%20HBVR/Bob%20Dylan/1974%20Blood%20On%20The%20Tracks/10%20Buckets%20Of%20Rain.flac" last_updated="2010-08-01" last_updated_by="JUnit"/>
 
-    <smdidentity_references id="30005" type="org.socialmusicdiscovery.server.business.model.core.WorkEntity"/>
-    <works id="30005" type="Work" name="Queen Of The Night" sort_as="Queen Of The Night" last_updated="2010-08-01"
-           last_updated_by="JUnit"/>
-    <smdidentity_references id="40005" type="org.socialmusicdiscovery.server.business.model.core.RecordingEntity"/>
-    <recordings id="40005" last_updated="2010-08-01" last_updated_by="JUnit"/>
-    <recording_works recording_id="40005" work_id="30005"/>
-    <smdidentity_references id="50005" type="org.socialmusicdiscovery.server.business.model.core.TrackEntity"/>
-    <tracks id="50005" number="5" recording_id="40005" release_id="20000" last_updated="2010-08-01"
-            last_updated_by="JUnit"/>
-    <smdidentity_references id="80005" type="org.socialmusicdiscovery.server.business.model.core.PlayableElement"/>
-    <playable_elements id="80005" track_id="50005" smdID="fd4fe48417dd941af53799619ecf1a40-50000000" format="flac"
-                       uri="file:///music/TheBodyGuard/track5.flac" last_updated="2010-08-01" last_updated_by="JUnit"/>
-    <smdidentity_references id="30005001" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
-    <contributors id="30005001" type="composer" work_id="30005" artist_id="3" last_updated="2010-08-01"
-                  last_updated_by="JUnit"/>
-    <smdidentity_references id="30005002" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
-    <contributors id="30005002" type="composer" work_id="30005" artist_id="4" last_updated="2010-08-01"
-                  last_updated_by="JUnit"/>
-    <smdidentity_references id="30005003" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
-    <contributors id="30005003" type="composer" work_id="30005" artist_id="5" last_updated="2010-08-01"
-                  last_updated_by="JUnit"/>
-    <smdidentity_references id="30005004" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
-    <contributors id="30005004" type="composer" work_id="30005" artist_id="6" last_updated="2010-08-01"
-                  last_updated_by="JUnit"/>
-    <smdidentity_references id="40005005" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
-    <contributors id="40005005" type="performer" recording_id="40005" artist_id="6" last_updated="2010-08-01"
-                  last_updated_by="JUnit"/>
-
-    <smdidentity_references id="30009" type="org.socialmusicdiscovery.server.business.model.core.WorkEntity"/>
-    <works id="30009" type="Work" name="It's Gonna Be A Lovely Day" sort_as="It's Gonna Be A Lovely Day"
-           last_updated="2010-08-01" last_updated_by="JUnit"/>
-    <smdidentity_references id="40009" type="org.socialmusicdiscovery.server.business.model.core.RecordingEntity"/>
-    <recordings id="40009" last_updated="2010-08-01" last_updated_by="JUnit"/>
-    <recording_works recording_id="40009" work_id="30009"/>
-    <smdidentity_references id="50009" type="org.socialmusicdiscovery.server.business.model.core.TrackEntity"/>
-    <tracks id="50009" number="9" recording_id="40009" release_id="20000" last_updated="2010-08-01"
-            last_updated_by="JUnit"/>
-    <smdidentity_references id="80009" type="org.socialmusicdiscovery.server.business.model.core.PlayableElement"/>
-    <playable_elements id="80009" track_id="50009" smdID="fd4fe48417dd941af53799619ecf1a40-90000000" format="flac"
-                       uri="file:///music/TheBodyGuard/track9.flac" last_updated="2010-08-01" last_updated_by="JUnit"/>
-    <smdidentity_references id="30009001" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
-    <contributors id="30009001" type="composer" work_id="30009" artist_id="7" last_updated="2010-08-01"
-                  last_updated_by="JUnit"/>
-    <smdidentity_references id="30009002" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
-    <contributors id="30009002" type="composer" work_id="30009" artist_id="8" last_updated="2010-08-01"
-                  last_updated_by="JUnit"/>
-    <smdidentity_references id="30009003" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
-    <contributors id="30009003" type="composer" work_id="30009" artist_id="15" last_updated="2010-08-01"
-                  last_updated_by="JUnit"/>
-    <smdidentity_references id="30009004" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
-    <contributors id="30009004" type="composer" work_id="30009" artist_id="9" last_updated="2010-08-01"
-                  last_updated_by="JUnit"/>
-    <smdidentity_references id="30009005" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
-    <contributors id="30009005" type="composer" work_id="30009" artist_id="10" last_updated="2010-08-01"
-                  last_updated_by="JUnit"/>
-    <smdidentity_references id="30009006" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
-    <contributors id="30009006" type="composer" work_id="30009" artist_id="11" last_updated="2010-08-01"
-                  last_updated_by="JUnit"/>
-    <smdidentity_references id="40009007" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
-    <contributors id="40009007" type="performer" recording_id="40009" artist_id="16" last_updated="2010-08-01"
-                  last_updated_by="JUnit"/>
-
-    <smdidentity_references id="30013" type="org.socialmusicdiscovery.server.business.model.core.WorkEntity"/>
-    <works id="30013" type="Work" name="Theme From The Bodyguard" sort_as="Theme From The Bodyguard"
-           last_updated="2010-08-01" last_updated_by="JUnit"/>
-    <smdidentity_references id="40013" type="org.socialmusicdiscovery.server.business.model.core.RecordingEntity"/>
-    <recordings id="40013" last_updated="2010-08-01" last_updated_by="JUnit"/>
-    <recording_works recording_id="40013" work_id="30013"/>
-    <smdidentity_references id="50013" type="org.socialmusicdiscovery.server.business.model.core.TrackEntity"/>
-    <tracks id="50013" number="13" recording_id="40013" release_id="20000" last_updated="2010-08-01"
-            last_updated_by="JUnit"/>
-    <smdidentity_references id="80013" type="org.socialmusicdiscovery.server.business.model.core.PlayableElement"/>
-    <playable_elements id="80013" track_id="50013" smdID="fd4fe48417dd941af53799619ecf1a40-13000000" format="flac"
-                       uri="file:///music/TheBodyGuard/track13.flac" last_updated="2010-08-01" last_updated_by="JUnit"/>
-    <smdidentity_references id="30013001" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
-    <contributors id="30013001" type="composer" work_id="30013" artist_id="12" last_updated="2010-08-01"
-                  last_updated_by="JUnit"/>
-    <smdidentity_references id="40013002" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
-    <contributors id="40013002" type="performer" recording_id="40013" artist_id="13" last_updated="2010-08-01"
-                  last_updated_by="JUnit"/>
-    <smdidentity_references id="40013003" type="org.socialmusicdiscovery.server.business.model.core.ContributorEntity"/>
-    <contributors id="40013003" type="conductor" recording_id="40013" artist_id="14" last_updated="2010-08-01"
-                  last_updated_by="JUnit"/>
-
-    <smdidentity_references id="60001"
-                            type="org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity"/>
-    <classifications id="60001" type="genre" name="Movie" sort_as="Movie" last_updated="2010-08-01"
-                     last_updated_by="JUnit"/>
-    <smdidentity_references id="60002"
-                            type="org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity"/>
-    <classifications id="60002" type="genre" name="Instrumental" sort_as="Instrumental" last_updated="2010-08-01"
-                     last_updated_by="JUnit"/>
-    <smdidentity_references id="60003"
-                            type="org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity"/>
-    <classifications id="60003" type="genre" name="Soundtrack" sort_as="Soundtrack" last_updated="2010-08-01"
-                     last_updated_by="JUnit"/>
-    <smdidentity_references id="60004"
-                            type="org.socialmusicdiscovery.server.business.model.classification.ClassificationEntity"/>
-    <classifications id="60004" type="genre" name="Romantic" sort_as="Romantic" last_updated="2010-08-01"
-                     last_updated_by="JUnit"/>
-
-    <smdidentity_references id="70001"
-                            type="org.socialmusicdiscovery.server.business.model.classification.ClassificationReferenceEntity"/>
-    <classification_references id="70001" classification_id="60001" reference_to_id="20000" last_updated="2010-08-01"
-                               last_updated_by="JUnit"/>
-    <smdidentity_references id="70002"
-                            type="org.socialmusicdiscovery.server.business.model.classification.ClassificationReferenceEntity"/>
-    <classification_references id="70002" classification_id="60002" reference_to_id="40013" last_updated="2010-08-01"
-                               last_updated_by="JUnit"/>
-    <smdidentity_references id="70003"
-                            type="org.socialmusicdiscovery.server.business.model.classification.ClassificationReferenceEntity"/>
-    <classification_references id="70003" classification_id="60003" reference_to_id="20000" last_updated="2010-08-01"
-                               last_updated_by="JUnit"/>
-    <smdidentity_references id="70004"
-                            type="org.socialmusicdiscovery.server.business.model.classification.ClassificationReferenceEntity"/>
-    <classification_references id="70004" classification_id="60004" reference_to_id="40001" last_updated="2010-08-01"
-                               last_updated_by="JUnit"/>
-
-    <mediums/>
-    <credits/>
-    <relations/>
-    <global_identities/>
-    <releases_search_relations/>
-    <recording_labels_search_relations/>
-    <recording_releases_search_relations/>
-    <recording_tracks_search_relations/>
-    <recording_works_search_relations/>
-    <recording_artists_search_relations/>
-    <recording_persons_search_relations/>
-    <recording_classifications_search_relations/>
-    <persons_search_relations/>
-    <playable_elements/>
-    <configurations/>
-    <release_recording_sessions/>
-    <recording_sessions/>
-    <images id="bf87a7ad-88fa-4ec4-8da0-dfec05d7cf5e" related_to_id="20000" type="front"
-            uri="http://s.dsimg.com/image/R-1794218-1260432856.jpeg"
-            last_updated="2011-05-23" last_updated_by="JUnit" provider_id="JUnit" provider_image_id="JUnit_007"/>
-    <smdidentity_references id="bf87a7ad-88fa-4ec4-8da0-dfec05d7cf5e"
-                            type="org.socialmusicdiscovery.server.business.model.core.ImageEntity"/>
 </dataset>
