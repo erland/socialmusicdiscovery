@@ -191,7 +191,10 @@ This section contains online streaming sources that would be interesting to inte
   * *Mynamusic*
     * https://www.mynamusic.com/
     * Not sure if and how it could be integrated but they have an API and it's about music discovery
-  * 
+  * *Tuneefy*
+    * Search for a track in multiple online streaming services
+    * http://tuneefy.com/
+    * API: http://api.tuneefy.com/
 
 = Other sites/tools which is of interest =
   * *tuneglue*
